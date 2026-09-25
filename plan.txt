@@ -1,0 +1,6 @@
+Non-Invasive Fetal ECG Arrhythmia Database- https://physionet.org/content/nifeadb/1.0.0/
+Fetal ECG Synthetic Database- https://physionet.org/content/fecgsyndb/1.0.0/
+
+https://link.springer.com/article/10.1007/s12575-009-9006-z
+
+
