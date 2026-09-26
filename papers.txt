@@ -1,0 +1,13 @@
+Non-Invasive Fetal ECG Arrhythmia Database- https://physionet.org/content/nifeadb/1.0.0/
+Fetal ECG Synthetic Database- https://physionet.org/content/fecgsyndb/1.0.0/
+
+https://link.springer.com/article/10.1007/s12575-009-9006-z
+
+A comprehensive survey on signal processing and machine learning techniques for non-invasive fetal ECG extraction: https://link.springer.com/article/10.1007/s11042-022-13391-0
+
+ 
+A Review of Signal Processing Techniques for Non-Invasive Fetal Electrocardiography: https://ieeexplore.ieee.org/abstract/document/8820039
+
+Research of fetal ECG extraction using wavelet analysis and adaptive filtering: https://www.sciencedirect.com/science/article/pii/S0010482513002023
+
+Multichannel ECG and Noise Modeling: Application to Maternal and Fetal ECG Signals: https://link.springer.com/article/10.1155/2007/43407
