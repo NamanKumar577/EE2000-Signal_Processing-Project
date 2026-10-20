@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-10-20T21:42:18",
+  "test_cases": [
+    "TC1"
+  ],
+  "methods": [
+    "svd_v1",
+    "svd_v2",
+    "svd_v3"
+  ],
+  "dry_run": false,
+  "runs": [
+    {
+      "tc": "TC1",
+      "method": "svd_v1",
+      "status": "completed",
+      "f1": 0.16151545363908276,
+      "runtime_s": 0.35073607899994386
+    },
+    {
+      "tc": "TC1",
+      "method": "svd_v2",
+      "status": "completed",
+      "f1": 0.16338582677165356,
+      "runtime_s": 5.029499363000468
+    },
+    {
+      "tc": "TC1",
+      "method": "svd_v3",
+      "status": "completed",
+      "f1": 0.1432896064581231,
+      "runtime_s": 0.21546847700028593
+    }
+  ]
+}
