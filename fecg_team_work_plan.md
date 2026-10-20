@@ -280,3 +280,253 @@ The reviews are for finding and understanding methods. Do not try to implement e
 - [ ] Ensure all members use the same common test cases and report failed cases.
 
 **Decision principle:** first make the input and evaluation protocol reliable; then compare methods. Otherwise, apparent algorithm improvements may actually come from different inputs, references, preprocessing or scoring rules.
+
+---
+
+## 11. Added responsibilities: preprocessing, QRS detection, FHR, integration and verification
+
+The extraction algorithms alone do not make a complete system. The following cross-cutting tasks now have named owners. Each owner is responsible for the shared module and its tests, while all members must use the same version.
+
+### Ownership matrix
+
+| Owner | Primary extraction work | Additional shared responsibility | Required output |
+|---|---|---|---|
+| **Naman** | SVD variants | **Integration lead and common interface** | Connect loader → preprocessing → extraction → QRS detector → FHR → evaluation; maintain the shared method interface and integration checklist |
+| **Anshu** | Template subtraction | **Fetal QRS detector** | Implement and independently test one common fetal QRS detector, including peak indices/timestamps, duplicate-peak handling and overlap/failure analysis |
+| **Astitva** | SWT–LMS–SSNF | **Shared preprocessing module** | Implement the common preprocessing baseline, validate filters and edge effects, freeze and document parameters |
+| **Vivek** | Additional method compatible with available channels | **Dataset validation, mixture verification and evaluation/FHR metrics** | Verify headers, channel/reference availability, mixture construction, annotation semantics; implement FHR calculation and the shared metric/evaluation script |
+
+This is an ownership split, not permission for one person to work in isolation. All four members must review the interface and verify that their own algorithm passes the shared automated tests.
+
+### Naman — integration lead
+
+In addition to the SVD work:
+
+1. Create and maintain the shared repository structure described below.
+2. Define one common function interface for every extraction method.
+3. Integrate all methods with the same loader, preprocessing, QRS detector and evaluation script.
+4. Ensure every test run saves its method name, variant, test ID, parameters, software version, outputs and metrics.
+5. Track blockers and run the final integration test; do not silently change another member's algorithm to make it pass.
+
+**Suggested interface:** each extraction module receives a documented input signal plus a configuration object and returns an estimated fetal waveform and metadata. A method requiring additional reference channels must declare those inputs explicitly. It must not silently read the clean fetal reference or maternal ground-truth component.
+
+### Anshu — common fetal QRS detector
+
+In addition to template subtraction:
+
+1. Implement a common detector for the **extracted fetal waveform**, not a detector that uses the clean fetal signal.
+2. Use the project's PPR-8 detector proposal as the initial reference: band-pass filtering, squaring, moving-window integration, adaptive thresholding and refractory-period logic. Confirm the exact frequency limits and window/threshold parameters from PPR-8 before freezing them; do not invent them.
+3. Return detected R-peak sample indices and timestamps.
+4. Handle duplicate detections and define how peaks that are too close together are treated.
+5. Test the detector separately on the clean fetal reference as a diagnostic check, but do not use that diagnostic result as the extraction result.
+6. Test the detector on outputs from every member's method using the same detector configuration.
+
+**Deliverable:** one shared detector function, documented parameters, automated tests and a short detector-failure report.
+
+### Astitva — common preprocessing
+
+In addition to SWT–LMS–SSNF:
+
+1. Inspect the sampling rate and signal units before filtering.
+2. Implement the agreed baseline preprocessing pipeline. Candidate stages are baseline-wander removal, a power-line notch filter only if the dataset actually contains relevant interference, and a band-pass filter appropriate to the intended ECG/QRS analysis.
+3. Use the same baseline preprocessing configuration for all extraction methods wherever technically appropriate.
+4. Document each filter's type, order, cutoff frequencies, notch frequency/Q, phase behavior, and handling of signal edges. Do not apply zero-phase offline filtering and then claim the same result is available in a causal real-time FPGA pipeline.
+5. Plot and test the filter's frequency response and compare waveforms before/after filtering.
+6. Freeze the shared preprocessing configuration before final benchmark runs. Method-specific extra transforms must be documented separately.
+
+**Deliverable:** one reusable preprocessing function, a configuration file, frequency-response plots, and a short note on waveform distortion and edge artifacts.
+
+### Vivek — data validation, FHR and shared evaluation
+
+In addition to the selected alternative extraction method:
+
+1. Validate `.hea`/`.dat` consistency, sample frequency, sample count, gain/units, channel count, missing/non-finite values and time alignment.
+2. Confirm the official mixture equation, component scaling and SNR definition from dataset documentation. Implement a pass/fail check for the shared mixture builder.
+3. Verify whether `.qrs` files annotate fetal beats, maternal beats, or another signal. Record the annotation convention and index/time units.
+4. Verify exact existence and case labels for all five tests, especially `c1` and `c4`.
+5. Determine whether real multi-channel abdominal recordings and a real thoracic reference are available. Record the result before ICA or reference-based adaptive filtering is selected.
+6. Implement FHR calculation from the detected fetal R–R intervals and compare it with reference FHR.
+7. Implement the common evaluation script: TP/FP/FN matching, sensitivity, PPV, F1, waveform error, FHR error and runtime.
+
+**FHR calculation rules:**
+
+- For consecutive detected fetal peaks at times \(t_i\) and \(t_{i+1}\), calculate \(RR_i=t_{i+1}-t_i\) seconds and \(FHR_i=60/RR_i\) BPM.
+- Save an FHR-versus-time series.
+- Define a consistent rule for implausible intervals and missed/extra beats; do not silently delete inconvenient intervals.
+- Compare against reference fetal annotations using the same interval policy for every method.
+- Report both beat-detection performance and FHR error. Good FHR alone does not prove good waveform extraction.
+
+**Deliverable:** a data-validation report, verified mixture builder, FHR module, evaluation script and a machine-readable result table.
+
+---
+
+## 12. Shared code structure and method interface
+
+Use one common repository structure so that methods can be run interchangeably. The names below are proposed and can be adjusted to the current repository, but the responsibilities must remain separate.
+
+```text
+project/
+├── data/                     # data location/configuration; do not commit large raw data unnecessarily
+├── configs/
+│   ├── tests.yaml            # TC1–TC5 paths and metadata
+│   └── preprocessing.yaml    # frozen common filter settings
+├── src/
+│   ├── data_loader.py        # read headers/data and validate metadata
+│   ├── mixture.py            # verified mixture reconstruction
+│   ├── preprocessing.py      # shared preprocessing (Astitva)
+│   ├── qrs_detector.py       # common fetal QRS detector (Anshu)
+│   ├── fhr.py                # FHR calculation (Vivek)
+│   ├── evaluation.py         # common metrics (Vivek)
+│   ├── methods/
+│   │   ├── svd.py            # Naman
+│   │   ├── template_subtraction.py  # Anshu
+│   │   ├── swt_lms_ssnf.py   # Astitva
+│   │   └── alternative.py    # Vivek
+│   └── run_benchmark.py      # integrated execution (Naman)
+├── tests/
+│   ├── test_loader.py
+│   ├── test_mixture.py
+│   ├── test_qrs_matching.py
+│   ├── test_fhr.py
+│   └── test_metrics.py
+└── results/
+    ├── plots/
+    ├── metrics.csv
+    └── run_metadata.json
+```
+
+Do not commit the full database or generated outputs blindly. Keep the selected test IDs and local data paths in configuration so each member can run the same tests.
+
+### Standard extraction interface
+
+Each method must document:
+
+- Input waveform(s) and required reference channels.
+- Sampling frequency and units expected.
+- Output waveform length and units.
+- Whether the method is offline, windowed, or causal/streaming.
+- Parameters and random seeds, if applicable.
+- Any additional input that would make its result an oracle-assisted experiment.
+
+Every method must return a result in the same format so the benchmark runner can call it without custom logic for each member.
+
+---
+
+## 13. Freeze the evaluation rules before comparing methods
+
+### QRS matching
+
+- Use the PPR-8 specification's **±50 ms** beat-matching tolerance as the initial rule.
+- Convert milliseconds to samples using the verified sampling rate.
+- Match each reference beat to at most one detection and each detection to at most one reference beat.
+- Resolve duplicate detections consistently; do not count one detected beat as multiple true positives.
+- If the team changes the tolerance, document the reason and rerun every method with the same new value.
+
+### Metrics
+
+For every method and test case, report:
+
+- TP, FP and FN counts.
+- Sensitivity/recall, PPV/precision and F1.
+- False detections and missed beats.
+- FHR mean absolute error in BPM and, if appropriate, error over time.
+- Waveform error after documented alignment.
+- Runtime under the same machine/software conditions.
+- The input condition: single abdominal mixture, genuine multichannel observations, or reference-assisted experiment.
+
+If a metric has a zero denominator, report it as undefined and explain why; do not silently assign a perfect score.
+
+### Waveform comparison
+
+- Verify the reference and estimate use the same sampling rate and compatible lengths.
+- Document time alignment and any resampling.
+- Report raw-scale error. If normalized error is also reported, show the normalization separately.
+- State the exact formula for any SNR-improvement measure.
+- Preserve the clean fetal component only for evaluation; never use it to tune or select a component inside the extraction algorithm.
+
+---
+
+## 14. Automated checks and acceptance criteria
+
+Before the benchmark is considered ready, the following tests must pass.
+
+| Check | Owner | Pass condition |
+|---|---|---|
+| Header/data loader | Vivek | Sample rate, lengths, channels and units are parsed/validated; malformed or inconsistent files produce a clear error |
+| Test inventory | Vivek | Exact paths for TC1–TC5 are confirmed; unavailable cases are marked pending rather than substituted silently |
+| Mixture reconstruction | Vivek | Equation/scaling are documented and the reconstruction passes a documented consistency check |
+| Preprocessing | Astitva | Filter settings are frozen; frequency response and edge behavior are checked |
+| QRS detector | Anshu | Returns valid, sorted sample indices; duplicate handling and tolerance are tested |
+| FHR calculation | Vivek | Known synthetic peak intervals produce the expected BPM; invalid intervals are handled according to the documented policy |
+| Metric calculations | Vivek | Hand-checkable TP/FP/FN examples produce correct sensitivity, PPV and F1 |
+| Method interface | Each method owner; coordinated by Naman | Each method returns the common output format for a smoke-test record |
+| End-to-end integration | Naman | Every available method runs through the same pipeline and produces outputs, metrics and run metadata |
+| Reproducibility | All; tracked by Naman | A second run with the same code/configuration reproduces the same outputs within the stated numerical tolerance |
+
+**Midterm acceptance criteria:** no method is considered integrated merely because its algorithm works in an isolated notebook. It must load the shared test input, return the required output format, run through the common detector/evaluation path, and save results for at least TC1. The final benchmark milestone requires all available TC1–TC5 cases, with any unavailable test explicitly documented.
+
+---
+
+## 15. Schedule and progress tracking
+
+Use milestone-based deadlines relative to the team's actual project schedule rather than inventing calendar dates.
+
+| Milestone | Owner(s) | Completion evidence |
+|---|---|---|
+| M1 — Data and channel audit | Vivek; all members review | Verified headers, mixture equation, channel availability, annotation semantics and test inventory |
+| M2 — Shared pipeline skeleton | Naman | Common interface, configuration, runner and output format committed |
+| M3 — First baseline works | Anshu + Vivek | Template baseline and detector/FHR/evaluation run on TC1 |
+| M4 — All primary methods run on TC1 | All method owners | Saved waveform, peaks, metrics and run metadata for each method |
+| M5 — Preprocessing and test suite frozen | Astitva + Vivek | Filter config, automated tests and metric definitions committed |
+| M6 — Full initial benchmark | All; Naman integrates | Results for every available TC1–TC5 case and failure analysis |
+| M7 — Selection and FPGA preparation | All; Naman coordinates | Winner decision table, runtime/memory profile and fixed-point test plan |
+
+Track every task as **Not started / In progress / Blocked / Complete**. A task can be marked complete only when its code or report, test evidence and parameter/configuration notes are committed or shared with the team.
+
+---
+
+## 16. Algorithm priority and selection rule
+
+The PPR-8 project description makes template subtraction and LMS adaptive filtering the core comparison, with PCA/ICA as future extensions. Therefore:
+
+1. **Required core comparison:** template subtraction versus LMS adaptive filtering, using the same valid input condition.
+2. **Research extension:** SVD variants and the complete SWT–LMS–SSNF method.
+3. **Conditional extension:** Vivek's alternative method, selected only after channel availability is verified.
+4. If the project schedule becomes tight, finish the core comparison and full evaluation pipeline before adding more methods.
+
+Do not call a method the overall winner based only on F1 or on one high-SNR case. Compare performance across the test matrix, waveform preservation, false/missed beats, runtime, memory, robustness, and FPGA suitability. Agree on any minimum performance requirement before inspecting the final results; do not invent a threshold after seeing which method wins.
+
+---
+
+## 17. FPGA preparation and software-to-hardware verification
+
+Once the software benchmark is stable, the team must prepare a reproducible hardware reference.
+
+- Profile runtime and estimate operations per sample, memory and buffering needs.
+- Identify matrix decompositions, divisions, adaptive updates and other expensive operations.
+- Choose a proposed fixed-point format, word lengths, scaling and rounding/saturation policy.
+- Compare fixed-point Python results against floating-point outputs on identical test vectors.
+- Quantify changes in waveform error, QRS sensitivity/PPV/F1 and FHR error.
+- Save test vectors and expected outputs for later RTL simulation and hardware verification.
+- Clearly distinguish estimated hardware feasibility from measured synthesis/timing results; do not claim FPGA performance before implementation.
+
+---
+
+## 18. Final checklist
+
+- [ ] Confirm all five selected test paths, especially `c1` and `c4`.
+- [ ] Verify metadata, units, lengths and sampling frequency.
+- [ ] Verify mixture equation, scaling and SNR convention.
+- [ ] Verify QRS annotation meaning and time/index convention.
+- [ ] Confirm actual abdominal and thoracic reference channels.
+- [ ] Freeze common preprocessing settings.
+- [ ] Freeze QRS matching tolerance at ±50 ms unless formally revised.
+- [ ] Implement and test fetal QRS detection and FHR calculation.
+- [ ] Run automated tests for loader, mixture, detector, FHR and metrics.
+- [ ] Integrate every method through the same pipeline.
+- [ ] Record failed cases, parameter settings and run metadata.
+- [ ] Compare template subtraction versus LMS as the core experiment.
+- [ ] Complete all available initial test cases before selecting a winner.
+- [ ] Prepare fixed-point and software-to-hardware test vectors only after the software reference is stable.
+
+**Final principle:** reliable input construction, shared detection and evaluation, and integration ownership are just as important as the extraction algorithms. A method comparison is valid only when differences in results are caused by the methods—not by different input signals, preprocessing, reference information or scoring rules.
