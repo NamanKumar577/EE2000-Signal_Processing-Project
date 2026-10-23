@@ -138,7 +138,9 @@ code/
 ├── src/
 │   ├── qrs_detector.py                  # Common Fetal QRS Detector (PPR-8 Section 5.3)
 │   ├── methods/template_subtraction.py   # Maternal Template Subtraction (PPR-8 Section 5.2)
-│   └── multichannel_study.py            # Systematic 1-34 Channel Scaling Benchmark
+│   ├── multichannel_study.py            # Systematic 1-34 Channel Scaling Benchmark
+│   ├── models/fecg_unet.py              # Deep 1D Convolutional U-Net Architecture
+│   └── train_deep_model.py              # GPU/CUDA Training & Benchmark Runner
 ├── tests/
 │   ├── test_qrs_detector.py             # 9/9 unit tests passing (Robustness, Blanking, Ref)
 │   └── test_method_interface.py         # 38/38 interface tests passing
@@ -146,9 +148,19 @@ code/
     ├── metrics.csv                      # Official 35-run single-channel benchmark matrix
     ├── multichannel_scaling_metrics.csv  # 80-run multi-channel scaling matrix (1 to 34 leads)
     ├── Multi_Channel_Scaling_and_FPGA_Report_Anshu.md # Phase 5 Spartan-7 HIL Hardware Report
+    ├── Deep_Learning_Model_Training_Guide.md # Step-by-step GPU training guide for ASUS TUF
     └── plots/
         ├── multichannel_accuracy_scaling.png
         ├── multichannel_fpga_resource_scaling.png
         └── multichannel_lead_geometry_map.png
 ```
+
+---
+
+## 9. Deep Learning (1D U-Net) Model & Continuation Documentation
+
+- [x] **Architecture Developed:** 1D Multi-Scale Convolutional U-Net with skip connections in [`code/src/models/fecg_unet.py`](file:///Users/anshuram/EEcore/EE2000-Signal_Processing-Project/code/src/models/fecg_unet.py) ($1.4\text{M}$ parameters).
+- [x] **Training Pipeline Built:** GPU-accelerated training with Composite Smooth L1 + Pearson Correlation morphology loss in [`code/src/train_deep_model.py`](file:///Users/anshuram/EEcore/EE2000-Signal_Processing-Project/code/src/train_deep_model.py). Supports automatic NVIDIA CUDA acceleration on ASUS TUF laptop.
+- [x] **Continuation & Handoff Guide:** Created comprehensive markdown instructions for teammates/collaborators: [`code/results/Deep_Learning_Model_Training_Guide.md`](file:///Users/anshuram/EEcore/EE2000-Signal_Processing-Project/code/results/Deep_Learning_Model_Training_Guide.md). Details how to train on ASUS TUF GPU, parameters, loss functions, and evaluation metrics.
+
 
