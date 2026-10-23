@@ -59,7 +59,7 @@ from typing import Any, Optional
 
 import numpy as np
 import pywt
-from scipy.signal import find_peaks
+from scipy.signal import find_peaks, butter, sosfiltfilt
 
 from src.methods.base import BaseExtractor
 
@@ -74,7 +74,7 @@ _DEFAULT_CONFIG: dict = {
     "swt_levels": 4,              # number of SWT decomposition levels
 
     # LMS parameters
-    "lms_mu": 0.01,               # LMS step size (learning rate); smaller = more stable
+    "lms_mu": 0.05,               # NLMS step size (learning rate)
     "lms_filter_order": 32,       # number of adaptive filter taps
 
     # SSNF parameters
@@ -373,7 +373,22 @@ class SWTLMSSNFExtractor(BaseExtractor):
         fecg_padded = pywt.iswt(ssnf_coeffs, wavelet)
 
         # Strip padding and return original length
-        fecg_est = fecg_padded[:n_orig]
+        fecg_raw = fecg_padded[:n_orig]
+
+        # Multi-scale sub-band filter (8-38 Hz) to isolate fetal QRS
+        if len(fecg_raw) > int(fs * 0.1):
+            nyq = 0.5 * fs
+            low = max(0.01, min(8.0 / nyq, 0.95))
+            high = max(low + 0.01, min(38.0 / nyq, 0.99))
+            sos = butter(3, [low, high], btype="band", output="sos")
+            fecg_est = sosfiltfilt(sos, fecg_raw)
+            std_f = float(np.std(fecg_est))
+            std_r = float(np.std(fecg_raw))
+            if std_f > 1e-9 and std_r > 1e-9:
+                fecg_est = fecg_est * (std_r / std_f)
+        else:
+            fecg_est = fecg_raw.copy()
+
         return fecg_est
 
 
@@ -388,28 +403,7 @@ def _lms_filter(
     order: int,
 ) -> np.ndarray:
     """
-    Standard FIR LMS adaptive filter.
-
-    Parameters
-    ----------
-    desired   : 1-D array -- signal containing noise to cancel (mixture / subband).
-    reference : 1-D array -- correlated noise reference (maternal reference / subband).
-    mu        : step size (learning rate).
-    order     : number of filter taps.
-
-    Returns
-    -------
-    error : 1-D array (same length) -- residual (~ fetal ECG after maternal cancellation).
-
-    Notes
-    -----
-    LMS update equations:
-        y(n)   = w^T(n) . x(n)      (filter output, maternal estimate)
-        e(n)   = d(n) - y(n)        (error ~ FECG)
-        w(n+1) = w(n) + mu . e(n) . x(n)
-    where x(n) is the reference window of length `order` and d(n) is desired.
-    Reference is amplitude-normalised before filtering to decouple step size
-    from signal power.
+    Normalized FIR LMS (NLMS) adaptive filter.
     """
     n = len(desired)
     w = np.zeros(order, dtype=np.float64)
@@ -418,7 +412,6 @@ def _lms_filter(
     # Normalise reference amplitude to avoid step-size sensitivity
     ref_power = float(np.var(reference))
     if ref_power < 1e-20:
-        # Reference is effectively zero — return desired unchanged
         return desired.copy()
     ref_norm = reference / (np.sqrt(ref_power) + 1e-10)
 
@@ -426,7 +419,8 @@ def _lms_filter(
         x = ref_norm[i - order: i][::-1]   # flip for convolution convention
         y = np.dot(w, x)                    # filter output (maternal estimate)
         e = desired[i] - y                  # error ~ fetal signal
-        w += mu * e * x                     # weight update
+        norm_x = float(np.dot(x, x)) + 1e-4
+        w += (mu / norm_x) * e * x          # NLMS weight update
         error[i] = e
 
     # Edges (first `order` samples) -- copy input to avoid zero artifact
@@ -499,8 +493,8 @@ def _apply_ssnf(
         effective_thresh = thresh * (1.0 - inter_scale)
         cD_ssnf = np.sign(cD) * np.maximum(np.abs(cD) - effective_thresh, 0.0)
 
-        # Leave approximation coefficients (cA) untouched
-        out_coeffs.append((cA, cD_ssnf))
+        # Suppress approximation coefficients (cA) to eliminate low-frequency maternal T-waves (0-7.8 Hz)
+        out_coeffs.append((np.zeros_like(cA), cD_ssnf))
 
     return out_coeffs
 
@@ -518,5 +512,5 @@ def _apply_soft_threshold_only(
         sigma = _mad_std(cD)
         thresh = threshold_scale * sigma
         cD_soft = np.sign(cD) * np.maximum(np.abs(cD) - thresh, 0.0)
-        out.append((cA, cD_soft))
+        out.append((np.zeros_like(cA), cD_soft))
     return out

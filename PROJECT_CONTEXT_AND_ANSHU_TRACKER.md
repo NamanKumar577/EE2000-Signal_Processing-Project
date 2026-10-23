@@ -93,28 +93,28 @@ Following **PPR-8 Section 5.2 Method B**:
 
 ## 5. TC1 Comparative Benchmark Summary (12 dB Baseline, c0)
 
-All methods evaluated under identical data, preprocessing (0.5–40 Hz), and frozen QRS detection rules:
+All methods evaluated under identical data, preprocessing (0.5–40 Hz), and frozen QRS detection rules after resolving core architectural bugs:
 
 | Method / Variant | Owner | Det. Beats | TP | FP | FN | Precision (PPV) | Sensitivity (Recall) | F1-Score | Waveform RMSE | Correlation | Runtime |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| **Template Subtraction (Fixed Ensemble)** | **Anshu** | **379** | **128** | 251 | **588** | **33.8%** | **17.9%** | **0.2338** | **0.0681** | **0.463** | **0.0058 s** |
-| **Template Subtraction (Adaptive EMA)** | **Anshu** | **390** | **126** | 264 | **590** | **32.3%** | **17.6%** | **0.2278** | **0.0707** | **0.452** | **0.0059 s** |
-| **SWT–LMS–SSNF** | Astitva | 52 | 15 | 37 | 701 | 28.8% | 2.1% | 0.0391 | 0.0888 | 0.111 | 0.6041 s |
-| **SVD Variant 2 (SVR Resampling)** | Naman | 45 | 14 | 31 | 702 | 31.1% | 2.0% | 0.0368 | 0.1024 | 0.012 | 0.3712 s |
-| **SVD Variant 1 (Fixed Period)** | Naman | 43 | 13 | 30 | 703 | 30.2% | 1.8% | 0.0343 | 0.1016 | 0.015 | 0.0282 s |
-| **SVD Variant 3 (Moving Window)** | Naman | 44 | 12 | 32 | 704 | 27.3% | 1.7% | 0.0316 | 0.0957 | 0.011 | 0.0283 s |
-
-> [!NOTE]
-> **Key Observations:**
-> 1. Maternal Template Subtraction achieved the **highest F1-score (0.2338)** and **highest true positive beat detections (128 beats)** among all implemented algorithms.
-> 2. Template Subtraction yielded the **lowest waveform RMSE (0.0681)** and **highest morphological correlation (0.463)** with the ground-truth fetal ECG.
-> 3. Runtime is approximately **5.8 ms** per 5-minute record, making it exceptionally well-suited for streaming FPGA implementation on the Spartan-7.
+| **Alternative Method** | Vivek | **715** | **553** | 162 | 163 | **77.3%** | **77.2%** | **0.7729** | **0.0636** | **0.270** | **0.018 s** |
+| **Template Subtraction (Fixed Ensemble)** | **Anshu** | **714** | **546** | 168 | 170 | **76.5%** | **76.3%** | **0.7636** | **0.0636** | **0.271** | **0.017 s** |
+| **SVD Variant 1 (Fixed Period)** | Naman | **714** | **546** | 168 | 170 | **76.5%** | **76.3%** | **0.7636** | **0.0636** | **0.271** | **0.025 s** |
+| **Template Subtraction (Adaptive)** | **Anshu** | **680** | **474** | 206 | 242 | **69.7%** | **66.2%** | **0.6791** | **0.0645** | **0.264** | **0.062 s** |
+| **SVD Variant 2 (SVR Resampling)** | Naman | **691** | **395** | 296 | 321 | **57.2%** | **55.2%** | **0.5615** | **0.0763** | **0.183** | **0.443 s** |
+| **SVD Variant 3 (Moving Window)** | Naman | **558** | **273** | 285 | 443 | **48.9%** | **38.1%** | **0.4286** | **0.0577** | **0.301** | **0.034 s** |
+| **SWT–LMS–SSNF** | Astitva | **373** | **82** | 291 | 634 | **22.0%** | **11.5%** | **0.1506** | **0.2319** | **0.056** | **1.812 s** |
 
 ---
 
-## 6. Immediate Gate: Naman's Phase 3 Unblocked 🚀
+## 6. Complete 35-Run Benchmark Matrix Across Stress Conditions (TC1–TC5)
 
-Naman's Phase 3 integration checklist is now completely unblocked:
-- [x] Anshu's Maternal Template Subtraction extractor implemented and integrated.
-- [x] Common fetal QRS detector audited, frozen, and passing all unit tests.
-- [x] Benchmark runner runs all methods cleanly and records outputs without error.
+| Method | Variant | Owner | TC1 (12 dB) | TC2 (6 dB) | TC3 (0 dB) | TC4 ($c1$, move) | TC5 ($c4$, ectopic) | **Mean F1** |
+|---|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Alternative** | Multi-Scale SVD-Template | Vivek | **0.7729** | **0.3140** | **0.2464** | **0.3683** | 0.2805 | **0.3964** |
+| **Template Subtraction** | Fixed Ensemble | **Anshu** | **0.7636** | 0.3084 | 0.2388 | 0.3572 | **0.2848** | **0.3906** |
+| **SVD** | Variant 1 (Fixed Period) | Naman | **0.7636** | 0.3098 | 0.2372 | 0.3602 | 0.2769 | **0.3896** |
+| **Template Subtraction** | Adaptive Moving Ensemble | **Anshu** | 0.6791 | 0.2698 | 0.2349 | 0.3314 | 0.2707 | **0.3572** |
+| **SVD** | Variant 2 (SVR Resampling) | Naman | 0.5615 | 0.3098 | 0.2372 | 0.3602 | 0.2758 | **0.3489** |
+| **SVD** | Variant 3 (Moving Window) | Naman | 0.4286 | 0.2635 | 0.2409 | 0.2772 | 0.2505 | **0.2921** |
+| **SWT-LMS-SSNF** | Hybrid Wavelet-NLMS | Astitva | 0.1506 | 0.1756 | 0.1915 | 0.1850 | 0.1457 | **0.1697** |

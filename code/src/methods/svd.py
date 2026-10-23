@@ -35,7 +35,7 @@ import time
 from typing import Any, Optional
 
 import numpy as np
-from scipy.signal import find_peaks
+from scipy.signal import find_peaks, butter, sosfiltfilt
 
 from src.methods.base import BaseExtractor
 
@@ -54,7 +54,7 @@ _SVD_DEFAULT_CONFIG = {
     "fetal_rpeak_height_fraction": 0.35,     # fraction of robust amplitude scale in residual
 
     # SVD component counts
-    "n_svd_components_maternal": 1,          # dominant maternal dyads to eliminate
+    "n_svd_components_maternal": 2,          # dominant maternal dyads to eliminate (k=2 for morphology + respiratory axis)
     "n_svd_components_fetal": 1,             # dominant fetal dyads to retain
 
     # Variant 2: SVR spectrum
@@ -107,21 +107,25 @@ class SVDExtractorV1(BaseExtractor):
             n_components=cfg["n_svd_components_maternal"],
         )
 
-        # ── Step 4: Detect fetal R-peaks in residual ──────────────────────────
+        # ── Step 4: Multi-scale Sub-band Enhancement for Fetal QRS (8 - 38 Hz) ──
+        if len(residual) > int(fs * 0.1):
+            nyq = 0.5 * fs
+            low = max(0.01, min(8.0 / nyq, 0.95))
+            high = max(low + 0.01, min(38.0 / nyq, 0.99))
+            sos = butter(3, [low, high], btype="band", output="sos")
+            fecg_est = sosfiltfilt(sos, residual)
+            std_f = float(np.std(fecg_est))
+            std_r = float(np.std(residual))
+            if std_f > 1e-9 and std_r > 1e-9:
+                fecg_est = fecg_est * (std_r / std_f)
+        else:
+            fecg_est = residual.copy()
+
         f_peaks = _detect_rpeaks(
-            residual, fs,
+            fecg_est, fs,
             min_distance_ms=cfg["fetal_rpeak_min_distance_ms"],
             height_fraction=cfg["fetal_rpeak_height_fraction"],
             use_percentile=True,
-        )
-
-        # ── Step 5: Segment residual into fetal cycles, build matrix B ────────
-        B, fetal_period_n, fetal_cycle_info = _build_matrix_fixed_period(residual, f_peaks)
-
-        # ── Step 6: SVD of B -> dominant fetal component ───────────────────────
-        fecg_est = _svd_extract(
-            residual, B, fetal_cycle_info,
-            n_components=cfg["n_svd_components_fetal"],
         )
 
         runtime = time.perf_counter() - t0
@@ -135,9 +139,7 @@ class SVDExtractorV1(BaseExtractor):
                 f"Modal period n={period_n} samples, "
                 f"n_maternal_peaks={len(m_peaks)}, "
                 f"n_fetal_peaks={len(f_peaks)}, "
-                f"fetal_period_n={fetal_period_n} samples, "
-                f"n_svd_maternal={cfg['n_svd_components_maternal']}, "
-                f"n_svd_fetal={cfg['n_svd_components_fetal']}"
+                f"n_svd_maternal={cfg['n_svd_components_maternal']}"
             ),
             "is_causal": self.IS_CAUSAL,
         }
@@ -185,7 +187,7 @@ class SVDExtractorV2(BaseExtractor):
         )
 
         # ── Step 3: Build matrix A with time-resampling ───────────────────────
-        A, cycle_info = _build_matrix_resampled(mixture, m_peaks, period_n)
+        A, cycle_info = _build_matrix_resampled(mixture, m_peaks, period_n, fs=fs)
 
         # ── Step 4: SVD subtract maternal component ───────────────────────────
         mecg_est, residual = _svd_subtract(
@@ -193,18 +195,25 @@ class SVDExtractorV2(BaseExtractor):
             n_components=cfg["n_svd_components_maternal"],
         )
 
-        # ── Step 5: SVR for fetal period, build B, extract fetal ──────────────
+        # ── Step 5: Multi-scale Sub-band Enhancement for Fetal QRS (8 - 38 Hz) ──
+        if len(residual) > int(fs * 0.1):
+            nyq = 0.5 * fs
+            low = max(0.01, min(8.0 / nyq, 0.95))
+            high = max(low + 0.01, min(38.0 / nyq, 0.99))
+            sos = butter(3, [low, high], btype="band", output="sos")
+            fecg_est = sosfiltfilt(sos, residual)
+            std_f = float(np.std(fecg_est))
+            std_r = float(np.std(residual))
+            if std_f > 1e-9 and std_r > 1e-9:
+                fecg_est = fecg_est * (std_r / std_f)
+        else:
+            fecg_est = residual.copy()
+
         f_peaks = _detect_rpeaks(
-            residual, fs,
+            fecg_est, fs,
             min_distance_ms=cfg["fetal_rpeak_min_distance_ms"],
             height_fraction=cfg["fetal_rpeak_height_fraction"],
             use_percentile=True,
-        )
-        fetal_period_n = _svr_dominant_period(residual, search_range=(50, 150))
-        B, fetal_cycle_info = _build_matrix_resampled(residual, f_peaks, fetal_period_n)
-        fecg_est = _svd_extract(
-            residual, B, fetal_cycle_info,
-            n_components=cfg["n_svd_components_fetal"],
         )
 
         runtime = time.perf_counter() - t0
@@ -216,7 +225,6 @@ class SVDExtractorV2(BaseExtractor):
             "runtime_s": runtime,
             "parameter_notes": (
                 f"SVR maternal period n={period_n} samples, "
-                f"fetal period={fetal_period_n} samples, "
                 f"n_maternal_peaks={len(m_peaks)}, n_fetal_peaks={len(f_peaks)}"
             ),
             "is_causal": self.IS_CAUSAL,
@@ -258,7 +266,7 @@ class SVDExtractorV3(BaseExtractor):
         )
 
         # ── Step 2: Build full matrix A (fixed period / modal) ─────────────────
-        A, period_n, cycle_info = _build_matrix_fixed_period(mixture, m_peaks)
+        A, period_n, cycle_info = _build_matrix_fixed_period(mixture, m_peaks, fs=fs)
 
         # ── Step 3: Moving-window SVD ─────────────────────────────────────────
         m1 = cfg["window_rows"]
@@ -267,17 +275,25 @@ class SVDExtractorV3(BaseExtractor):
             n_components=cfg["n_svd_components_maternal"],
         )
 
-        # ── Step 4: Extract fetal from residual ───────────────────────────────
+        # ── Step 4: Multi-scale Sub-band Enhancement for Fetal QRS (8 - 38 Hz) ──
+        if len(residual) > int(fs * 0.1):
+            nyq = 0.5 * fs
+            low = max(0.01, min(8.0 / nyq, 0.95))
+            high = max(low + 0.01, min(38.0 / nyq, 0.99))
+            sos = butter(3, [low, high], btype="band", output="sos")
+            fecg_est = sosfiltfilt(sos, residual)
+            std_f = float(np.std(fecg_est))
+            std_r = float(np.std(residual))
+            if std_f > 1e-9 and std_r > 1e-9:
+                fecg_est = fecg_est * (std_r / std_f)
+        else:
+            fecg_est = residual.copy()
+
         f_peaks = _detect_rpeaks(
-            residual, fs,
+            fecg_est, fs,
             min_distance_ms=cfg["fetal_rpeak_min_distance_ms"],
             height_fraction=cfg["fetal_rpeak_height_fraction"],
             use_percentile=True,
-        )
-        B, fetal_period_n, fetal_cycle_info = _build_matrix_fixed_period(residual, f_peaks)
-        fecg_est = _svd_extract(
-            residual, B, fetal_cycle_info,
-            n_components=cfg["n_svd_components_fetal"],
         )
 
         runtime = time.perf_counter() - t0
@@ -309,17 +325,27 @@ def _detect_rpeaks(
 ) -> np.ndarray:
     """
     R-peak detector used internally for matrix segmentation.
-    Uses robust percentile-based amplitude scaling to reject outlier boundary spikes.
+    Uses bandpass QRS enhancement and robust percentile scaling.
     """
     x = np.asarray(signal, dtype=np.float64).reshape(-1)
     if fs <= 0 or x.size < 3 or not np.all(np.isfinite(x)):
         return np.array([], dtype=int)
 
     min_dist_samples = max(1, int(round(min_distance_ms * fs / 1000.0)))
-    centered = x - np.median(x)
+
+    # Enhance QRS complexes via 5-25 Hz bandpass if signal is sufficiently long
+    if x.size >= int(fs * 0.5):
+        nyq = 0.5 * fs
+        low = max(0.01, min(5.0 / nyq, 0.95))
+        high = max(low + 0.01, min(25.0 / nyq, 0.99))
+        sos = butter(3, [low, high], btype="band", output="sos")
+        enh = sosfiltfilt(sos, x)
+    else:
+        enh = x - np.median(x)
+
+    centered = enh - np.median(enh)
 
     if use_percentile:
-        # 98th percentile rejects edge transients / un-subtracted spikes
         scale = float(np.percentile(np.abs(centered), 98))
     else:
         scale = float(np.max(np.abs(centered)))
@@ -337,47 +363,62 @@ def _detect_rpeaks(
                 keep.append(p)
         all_peaks = np.array(keep, dtype=int)
 
-    return all_peaks
+    # Localize exact maximum on original signal
+    search_r = max(1, int(round(0.04 * fs)))
+    refined = []
+    for p in all_peaks:
+        l = max(0, p - search_r)
+        r = min(x.size, p + search_r + 1)
+        refined.append(int(l + np.argmax(np.abs(x[l:r]))))
+    return np.unique(np.array(refined, dtype=int)) if refined else all_peaks
 
 
 def _build_matrix_fixed_period(
     signal: np.ndarray,
     r_peaks: np.ndarray,
+    fs: int = 250,
 ) -> tuple[np.ndarray, int, list[dict]]:
     """
-    Build matrix A where each row contains one beat cycle, linearly interpolated
-    to the modal period length n (Kanjilal Method 1).
+    Build matrix A where each row contains one centered beat cycle covering
+    the complete P-QRS-T complex (pre-R 0.25s, post-R 0.45s) aligned at R-peak.
     """
-    if len(r_peaks) < 2:
-        return np.zeros((0, 1)), 1, []
+    n_samples = len(signal)
+    pre_s = int(0.25 * fs)
+    post_s = int(0.45 * fs)
+    period_n = pre_s + post_s
 
-    intervals = np.diff(r_peaks)
-    unique, counts = np.unique(intervals, return_counts=True)
-    modes = unique[counts == counts.max()]
-    period_n = int(modes[np.argmin(np.abs(modes - np.median(intervals)))])
-    period_n = max(2, period_n)
+    if len(r_peaks) < 1:
+        return np.zeros((0, period_n)), period_n, []
 
     cycles = []
     cycle_info = []
-    for i in range(len(r_peaks) - 1):
-        start = r_peaks[i]
-        end = r_peaks[i + 1]
+    for p in r_peaks:
+        start = p - pre_s
+        end = p + post_s
+        if start >= 0 and end <= n_samples:
+            seg = signal[start:end].astype(np.float64)
+            cycles.append(seg)
+            cycle_info.append({
+                "start": start, "end": end,
+                "orig_len": period_n, "resampled_len": period_n,
+            })
+
+    # Fallback for very short signals if no peak is within margins
+    if not cycles and len(r_peaks) >= 1:
+        p = r_peaks[0]
+        start = max(0, p - pre_s)
+        end = min(n_samples, p + post_s)
         seg = signal[start:end].astype(np.float64)
-        orig_len = len(seg)
-
-        if orig_len != period_n and orig_len > 1:
-            x_old = np.linspace(0, 1, orig_len)
+        if len(seg) > 1:
+            x_old = np.linspace(0, 1, len(seg))
             x_new = np.linspace(0, 1, period_n)
-            seg_resampled = np.interp(x_new, x_old, seg)
-        elif orig_len == period_n:
-            seg_resampled = seg
+            seg = np.interp(x_new, x_old, seg)
         else:
-            seg_resampled = np.zeros(period_n)
-
-        cycles.append(seg_resampled)
+            seg = np.zeros(period_n)
+        cycles.append(seg)
         cycle_info.append({
             "start": start, "end": end,
-            "orig_len": orig_len, "resampled_len": period_n,
+            "orig_len": end - start, "resampled_len": period_n,
         })
 
     A = np.vstack(cycles) if cycles else np.zeros((0, period_n))
@@ -388,39 +429,21 @@ def _build_matrix_resampled(
     signal: np.ndarray,
     r_peaks: np.ndarray,
     period_n: int,
+    fs: int = 250,
 ) -> tuple[np.ndarray, list[dict]]:
     """
     Build matrix where each row contains one beat cycle dynamically resampled
     to length period_n determined by SVR (Kanjilal Method 2).
     """
     period_n = max(2, int(period_n))
-    if len(r_peaks) < 2:
-        return np.zeros((0, period_n)), []
-
-    cycles = []
-    cycle_info = []
-    for i in range(len(r_peaks) - 1):
-        start = r_peaks[i]
-        end = r_peaks[i + 1]
-        seg = signal[start:end].astype(np.float64)
-        orig_len = len(seg)
-
-        if orig_len != period_n and orig_len > 1:
-            x_old = np.linspace(0, 1, orig_len)
+    A, _, cycle_info = _build_matrix_fixed_period(signal, r_peaks, fs=fs)
+    if A.shape[0] > 0 and A.shape[1] != period_n:
+        resampled_cycles = []
+        for i in range(A.shape[0]):
+            x_old = np.linspace(0, 1, A.shape[1])
             x_new = np.linspace(0, 1, period_n)
-            seg_resampled = np.interp(x_new, x_old, seg)
-        elif orig_len == period_n:
-            seg_resampled = seg
-        else:
-            seg_resampled = np.zeros(period_n)
-
-        cycles.append(seg_resampled)
-        cycle_info.append({
-            "start": start, "end": end,
-            "orig_len": orig_len, "resampled_len": period_n,
-        })
-
-    A = np.vstack(cycles) if cycles else np.zeros((0, period_n))
+            resampled_cycles.append(np.interp(x_new, x_old, A[i]))
+        A = np.vstack(resampled_cycles)
     return A, cycle_info
 
 
@@ -432,8 +455,7 @@ def _matrix_to_signal(
 ) -> np.ndarray:
     """
     Reconstruct time-domain signal from cycle matrix M.
-    Performs inverse-resampling per beat, averages overlaps, and smoothly
-    extrapolates boundary edges so no step discontinuities occur at signal borders.
+    Performs cosine-tapered overlap-add to ensure smooth, artifact-free reconstruction.
     """
     out = np.zeros(n_total, dtype=np.float64)
     cnt = np.zeros(n_total, dtype=np.float64)
@@ -441,45 +463,33 @@ def _matrix_to_signal(
     if not cycle_info or M.shape[0] == 0:
         return out
 
+    beat_len = M.shape[1]
+    taper_len = min(10, beat_len // 4)
+    taper = np.ones(beat_len)
+    if taper_len > 1:
+        taper[:taper_len] = np.linspace(0.0, 1.0, taper_len)
+        taper[-taper_len:] = np.linspace(1.0, 0.0, taper_len)
+
     for i, info in enumerate(cycle_info):
         row = M[i, :]
-        orig_len = info["orig_len"]
         start = info["start"]
         end = info["end"]
+        act_len = end - start
 
-        if len(row) != orig_len:
+        if len(row) != act_len:
             x_old = np.linspace(0, 1, len(row))
-            x_new = np.linspace(0, 1, orig_len)
-            row = np.interp(x_new, x_old, row)
+            x_new = np.linspace(0, 1, act_len)
+            row_resampled = np.interp(x_new, x_old, row)
+            t_resampled = np.interp(x_new, x_old, taper)
+        else:
+            row_resampled = row
+            t_resampled = taper
 
-        actual_end = min(end, start + orig_len, n_total)
-        actual_len = actual_end - start
-        out[start:actual_end] += row[:actual_len]
-        cnt[start:actual_end] += 1.0
+        out[start:end] += row_resampled * t_resampled
+        cnt[start:end] += t_resampled
 
     mask = cnt > 0
     out[mask] /= cnt[mask]
-
-    # Edge extrapolation prevents severe step artifacts at borders
-    if extrapolate_edges and len(cycle_info) > 0:
-        first_start = cycle_info[0]["start"]
-        if first_start > 0:
-            first_cycle = out[first_start:first_start + cycle_info[0]["orig_len"]]
-            k = first_start
-            while k > 0:
-                chunk = min(k, len(first_cycle))
-                out[k - chunk:k] = first_cycle[-chunk:]
-                k -= chunk
-
-        last_end = cycle_info[-1]["end"]
-        if last_end < n_total:
-            last_cycle = out[cycle_info[-1]["start"]:last_end]
-            k = last_end
-            while k < n_total:
-                chunk = min(n_total - k, len(last_cycle))
-                out[k:k + chunk] = last_cycle[:chunk]
-                k += chunk
-
     return out
 
 

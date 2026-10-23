@@ -118,17 +118,14 @@ class TemplatSubtractionExtractor(BaseExtractor):
             return mixture.copy(), metadata
 
         # ── 3. Beat segmentation ──────────────────────────────────────────────
-        half_win = max(1, int(round(self.window_ms * fs / 1000.0)))
-        win_len = 2 * half_win + 1
+        pre_s = int(0.25 * fs)
+        post_s = int(0.45 * fs)
+        beat_len = pre_s + post_s
 
-        # Collect complete maternal beats for template initialization
-        valid_beats: list[np.ndarray] = []
-        for p in m_peaks:
-            if p - half_win >= 0 and p + half_win < n:
-                valid_beats.append(mixture[p - half_win : p + half_win + 1])
+        # Collect complete maternal beats for template construction
+        valid_peaks = [p for p in m_peaks if pre_s <= p < n - post_s]
 
-        if len(valid_beats) == 0:
-            # All peaks too close to boundary
+        if len(valid_peaks) == 0:
             runtime = time.perf_counter() - t0
             metadata = {
                 "method_name": "template_subtraction",
@@ -140,53 +137,63 @@ class TemplatSubtractionExtractor(BaseExtractor):
             }
             return mixture.copy(), metadata
 
-        valid_beats_arr = np.array(valid_beats)
+        beats = np.array([mixture[p - pre_s : p + post_s].astype(np.float64) for p in valid_peaks])
 
-        # ── 4. Template initialization ────────────────────────────────────────
-        # Window taper (10-sample Tukey-style transition at flanks)
-        taper = np.ones(win_len)
-        n_taper = min(10, half_win // 4)
-        if n_taper > 1:
-            taper[:n_taper] = np.linspace(0.0, 1.0, n_taper)
-            taper[-n_taper:] = np.linspace(1.0, 0.0, n_taper)
+        # ── 4. Window taper ───────────────────────────────────────────────────
+        taper_len = min(10, max(1, int(0.04 * fs)))
+        taper = np.ones(beat_len)
+        if taper_len > 1:
+            taper[:taper_len] = 0.5 * (1.0 - np.cos(np.linspace(0, np.pi, taper_len)))
+            taper[-taper_len:] = taper[:taper_len][::-1]
 
-        k_init = min(len(valid_beats_arr), self.k_init)
+        mecg_est = np.zeros(n, dtype=np.float64)
+        weight_sum = np.zeros(n, dtype=np.float64)
+
         if self.variant == "fixed_ensemble":
-            # Static median template across entire recording
-            template = np.median(valid_beats_arr, axis=0)
+            # Global low-rank regularized ensemble (captures dominant morphology + respiratory dipole axis tilt)
+            u, s, vt = np.linalg.svd(beats, full_matrices=False)
+            k = min(2, len(s))
+            recon_beats = (u[:, :k] * s[:k]) @ vt[:k, :]
+
+            for idx, p in enumerate(valid_peaks):
+                seg = recon_beats[idx] * taper
+                mecg_est[p - pre_s : p + post_s] += seg
+                weight_sum[p - pre_s : p + post_s] += taper
         else:
-            # Adaptive EMA template initialized from first K beats
-            template = np.median(valid_beats_arr[:k_init], axis=0)
+            # Block-adaptive moving template ensemble (adapts locally to heart rate & axis shifts)
+            m_win = 15
+            for idx, p in enumerate(valid_peaks):
+                w_start = max(0, idx - m_win + 1)
+                sub = beats[w_start : idx + 1]
+                if len(sub) >= 2:
+                    u, s, vt = np.linalg.svd(sub, full_matrices=False)
+                    k = min(2, len(s))
+                    sub_recon = (u[:, :k] * s[:k]) @ vt[:k, :]
+                    seg = sub_recon[-1] * taper
+                else:
+                    seg = beats[idx] * taper
+                mecg_est[p - pre_s : p + post_s] += seg
+                weight_sum[p - pre_s : p + post_s] += taper
 
-        alpha = self.ema_alpha
-        fecg_est = mixture.copy().astype(np.float64)
+        # Normalize overlapping regions
+        mask = weight_sum > 1.0
+        mecg_est[mask] /= weight_sum[mask]
 
-        # ── 5. Template subtraction & dynamic adaptation ──────────────────────
-        for p in m_peaks:
-            start = max(0, p - half_win)
-            end = min(n, p + half_win + 1)
-            t_start = start - (p - half_win)
-            t_end = t_start + (end - start)
+        residual = mixture - mecg_est
 
-            curr_beat = mixture[start:end]
-            curr_template = template[t_start:t_end]
-            curr_taper = taper[t_start:t_end]
-
-            # Amplitude scaling factor (least-squares fit to accommodate respiration)
-            scale = 1.0
-            if self.amplitude_scaling:
-                denom = np.dot(curr_template, curr_template)
-                if denom > 1e-8:
-                    scale = float(np.dot(curr_beat, curr_template) / denom)
-                    scale = float(np.clip(scale, 0.6, 1.5))
-
-            # Subtract scaled, tapered maternal template
-            fecg_est[start:end] -= scale * curr_template * curr_taper
-
-            # Adaptive EMA update (only for full beats in adaptive mode)
-            if self.variant != "fixed_ensemble" and t_start == 0 and t_end == win_len:
-                normalized_beat = curr_beat / scale if scale > 1e-3 else curr_beat
-                template = (1.0 - alpha) * template + alpha * normalized_beat
+        # ── 6. Multi-scale subband filter (8-38 Hz) to isolate fetal QRS ───────
+        if len(residual) > int(fs * 0.1):
+            nyq = 0.5 * fs
+            low = max(0.01, min(8.0 / nyq, 0.95))
+            high = max(low + 0.01, min(38.0 / nyq, 0.99))
+            sos = butter(3, [low, high], btype="band", output="sos")
+            fecg_est = sosfiltfilt(sos, residual)
+            std_f = float(np.std(fecg_est))
+            std_r = float(np.std(residual))
+            if std_f > 1e-9 and std_r > 1e-9:
+                fecg_est = fecg_est * (std_r / std_f)
+        else:
+            fecg_est = residual.copy()
 
         runtime = time.perf_counter() - t0
 
