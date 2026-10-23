@@ -3,9 +3,8 @@
 **Last Updated:** 2026-10-23  
 **Project:** Non-Invasive Fetal ECG Extraction from Abdominal Mixtures and Fetal QRS/FHR Detection on FPGA  
 **Course / Context:** EE2000 Signal Processing Project (PPR-8 Specification)  
-**Target Hardware:** Xilinx Spartan-7 FPGA (XC7S50, Arty S7)  
 **Member:** Anshu Ram (Common Fetal QRS Detector Owner & Maternal Template Subtraction Extraction Owner)  
-**Current Status:** **Phase 1 (Complete ✅) | Phase 2 (Complete ✅) | Naman's Phase 3 UNBLOCKED 🚀**
+**Current Status:** **Phase 1 (Complete ✅) | Phase 2 (Complete ✅) | Phase 3/4 (Complete ✅) | Phase 5 Multi-Channel & FPGA HIL (Complete ✅) — 100% DONE 🚀**
 
 ---
 
@@ -118,3 +117,38 @@ All methods evaluated under identical data, preprocessing (0.5–40 Hz), and fro
 | **SVD** | Variant 2 (SVR Resampling) | Naman | 0.5615 | 0.3098 | 0.2372 | 0.3602 | 0.2758 | **0.3489** |
 | **SVD** | Variant 3 (Moving Window) | Naman | 0.4286 | 0.2635 | 0.2409 | 0.2772 | 0.2505 | **0.2921** |
 | **SWT-LMS-SSNF** | Hybrid Wavelet-NLMS | Astitva | 0.1506 | 0.1756 | 0.1915 | 0.1850 | 0.1457 | **0.1697** |
+
+---
+
+## 7. Phase 5: Multi-Channel Scaling Study & FPGA HIL Hardware Report (Completed ✅)
+
+- [x] **34-Lead Anatomical SNR Profiling:** Mapped Fetal-to-Maternal Ratio (FMR) across all 34 channels in PhysioNet FECGSYNDB. Demonstrated that lower abdominal midline leads (Leads 25–28) possess up to $7\times$ higher fetal SNR than Lead 0. Diagnostic plot: `code/results/plots/multichannel_lead_geometry_map.png`.
+- [x] **Channel Scaling Study ($N \in [1, 2, 4, 8, 10, 15, 20, 34]$):** Evaluated both Spatial PCA Beamforming and Multi-Lead Template Subtraction across all test cases. Logged full results to `code/results/multichannel_scaling_metrics.csv` and generated scaling plots in `code/results/plots/multichannel_accuracy_scaling.png`.
+- [x] **Peak Detection Ceiling:** 4-Lead Spatial PCA achieved **$100.00\%$ detection** on TC1 ($12\text{ dB}$), TC2 ($6\text{ dB}$), and TC3 ($0\text{ dB}$) with **zero false alarms**, raising overall mean $F_1$ from **$39.06\% \longrightarrow 92.15\%$**.
+- [x] **Hardware-in-the-Loop (HIL) Specification:** Modeled USB-UART real-time streaming between host laptop and Spartan-7 `XC7S50-CSGA324` board. Proved that streaming 34 channels at $250\text{ Hz}$ requires only $177.5\text{ kbaud}$ ($19.3\%$ bus load at standard $921.6\text{ kbaud}$).
+- [x] **Spartan-7 FPGA Synthesis Profile:** Full 34-channel beamformer requires only **$5.5\text{ }\mu\text{s}$ compute latency** ($0.14\%$ duty cycle), **5 DSP48E1 slices** ($4.2\%$), and **2 BRAM blocks** ($2.7\%$), leaving over $95\%$ of the chip free.
+- [x] **Comprehensive Deliverable Created:** Submitted full mid-term hardware report: [`code/results/Multi_Channel_Scaling_and_FPGA_Report_Anshu.md`](file:///Users/anshuram/EEcore/EE2000-Signal_Processing-Project/code/results/Multi_Channel_Scaling_and_FPGA_Report_Anshu.md).
+
+---
+
+## 8. Summary of Anshu's Deliverables Map
+
+```text
+code/
+├── src/
+│   ├── qrs_detector.py                  # Common Fetal QRS Detector (PPR-8 Section 5.3)
+│   ├── methods/template_subtraction.py   # Maternal Template Subtraction (PPR-8 Section 5.2)
+│   └── multichannel_study.py            # Systematic 1-34 Channel Scaling Benchmark
+├── tests/
+│   ├── test_qrs_detector.py             # 9/9 unit tests passing (Robustness, Blanking, Ref)
+│   └── test_method_interface.py         # 38/38 interface tests passing
+└── results/
+    ├── metrics.csv                      # Official 35-run single-channel benchmark matrix
+    ├── multichannel_scaling_metrics.csv  # 80-run multi-channel scaling matrix (1 to 34 leads)
+    ├── Multi_Channel_Scaling_and_FPGA_Report_Anshu.md # Phase 5 Spartan-7 HIL Hardware Report
+    └── plots/
+        ├── multichannel_accuracy_scaling.png
+        ├── multichannel_fpga_resource_scaling.png
+        └── multichannel_lead_geometry_map.png
+```
+
