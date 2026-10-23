@@ -5,7 +5,7 @@
 **Course / Context:** EE2000 Signal Processing Project (PPR-8 Specification)  
 **Target Hardware:** Xilinx Spartan-7 FPGA  
 **Member:** Astitva (Preprocessing Lead & SWT–LMS–SSNF Hybrid Extraction Owner)  
-**Current Status:** **Phase 1 (In Progress / Preprocessing Ready) | Phase 2 (In Progress) | Unblocking Naman's Phase 3**
+**Overall Status:** **All Phases Complete (Phase 1 ✅ | Phase 2 ✅ | Phase 3 ✅ | Phase 4 ✅ | Phase 5 ✅)**
 
 ---
 
@@ -136,32 +136,38 @@ Naman has completed Phase 1 (Architecture) and Phase 2 (SVD Variants on TC1). Na
 
 ---
 
-### Phase 4: Full Test Matrix Benchmarking & Ablation Study (Milestone M6)
-- [ ] **TC1 Smoke Test:** Run TC1 (12 dB baseline) and verify plot generation and metric logging.
-- [ ] **Full Matrix Run (TC1–TC5):**
-  - Run TC1 (12 dB, $c0$ baseline).
-  - Run TC2 (6 dB, $c0$ moderate noise).
-  - Run TC3 (0 dB, $c0$ high noise / 1:1 SNR).
-  - Run TC4 (6 dB, $c1$ fetal movement condition).
-  - Run TC5 (6 dB, $c4$ fetal ectopic beat condition).
-- [ ] **Ablation Comparison:**
-  - Quantify performance improvement: **LMS Alone** vs. **Full SWT–LMS–SSNF**.
-  - Log TP, FP, FN, Precision, Recall, F1-score, FHR MAE/RMSE, and SNR improvement into `code/results/metrics.csv`.
-- [ ] **Failure Mode Analysis:**
-  - Document sensitivity to overlapping maternal/fetal QRS complexes and low SNR degradation.
+### Phase 4: Full Test Matrix Benchmarking & Ablation Study (Milestone M6) (Completed ✅)
+- [x] **TC1 Smoke Test:** Run TC1 (12 dB baseline) and verify plot generation and metric logging.
+- [x] **Full Matrix Run (TC1–TC5):**
+  - Run TC1 (12 dB, $c0$ baseline): F1 = 0.1506, RMSE = 0.3429, Runtime = 1.77s.
+  - Run TC2 (6 dB, $c0$ moderate noise): F1 = 0.1756, RMSE = 0.7496, Runtime = 1.80s.
+  - Run TC3 (0 dB, $c0$ high noise / 1:1 SNR): F1 = 0.1915, RMSE = 0.6524, Runtime = 1.79s.
+  - Run TC4 (6 dB, $c1$ fetal movement condition): F1 = 0.1850, RMSE = 0.5951, Runtime = 1.77s.
+  - Run TC5 (6 dB, $c4$ fetal ectopic beat condition): F1 = 0.1457, RMSE = 0.5869, Runtime = 1.81s.
+  - All test cases benchmarked and recorded in `code/results/metrics.csv` and diagnostic plots in `code/results/plots/`.
+- [x] **Ablation Comparison:**
+  - Quantified performance: **LMS Alone** vs. **Full SWT–LMS–SSNF** on TC1:
+    - **LMS Alone:** F1 = 0.0560, Sensitivity = 0.0307, PPV = 0.3143, RMSE = 0.1673
+    - **Full SWT–LMS–SSNF:** F1 = 0.1506, Sensitivity = 0.1145, PPV = 0.2198, RMSE = 0.3429
+    - **Improvement:** Full hybrid approach provides nearly **3x higher F1 score** and **3.7x higher fetal sensitivity** compared to raw LMS alone.
+  - Diagnostic comparison figure generated: `code/results/plots/TC1_lms_baseline.png`.
+- [x] **Failure Mode Analysis:**
+  - Documented low sensitivity at high-overlap regions where maternal QRS completely masks smaller fetal spikes.
+  - Documented that while Waveform RMSE is higher for the hybrid method due to non-linear SSNF threshold shrinkage, the beat detection accuracy (F1) is substantially higher.
 
 ---
 
-### Phase 5: Spartan-7 FPGA Feasibility & Hardware Roadmap (Milestone M7)
-- [ ] **Computational Complexity Profiling:**
-  - Quantify MAC operations per sample for SWT filter banks vs. adaptive LMS filter.
-  - Assess memory/buffering requirements for shift-invariant SWT on Spartan-7 block RAM (BRAM).
-- [ ] **Fixed-Point Feasibility Analysis:**
-  - Evaluate word-length sensitivity (Q15 / Q31 representation for LMS coefficients and wavelet filter coefficients).
-  - Assess potential limit cycles and overflow risks during adaptive weight updates.
-- [ ] **FPGA Trade-off Report:**
-  - Compare hardware resource footprint (DSP48E1 slices, BRAM, LUTs) of SWT–LMS–SSNF against SVD and Template Subtraction.
-  - Finalize personal sections for the team EE2000 final project report.
+### Phase 5: Spartan-7 FPGA Feasibility & Hardware Roadmap (Milestone M7) (Completed ✅)
+- [x] **Computational Complexity Profiling:**
+  - Calculated MAC load: 516 MACs per sample (128 for SWT + 320 for LMS + 4 for SSNF + 64 for ISWT).
+  - At $f_s = 250\text{ Hz}$ and 50 MHz clock, 200,000 clock cycles are available per sample. Total execution time requires only $10.32\text{ }\mu\text{s}$ (0.26% duty cycle), enabling extensive time-multiplexing onto 4–8 DSP48E1 slices.
+- [x] **Fixed-Point Feasibility Analysis:**
+  - Specified fixed-point word lengths: Q1.15 for inputs/wavelet coefficients, Q2.30 for adaptive LMS weights, and 48-bit internal accumulation.
+  - Proposed Leaky LMS with leakage factor $\gamma = 2^{-12}$ to prevent weight bursting during isoelectric intervals on FPGA.
+- [x] **FPGA Trade-off Report:**
+  - Compared SWT–LMS–SSNF vs. SVD (Naman) and Template Subtraction (Anshu) in detail.
+  - Concluded that SWT–LMS–SSNF is optimal for streaming hardware implementation without requiring matrix decomposition or deep beat-history buffering.
+  - Deliverable created: `code/results/FPGA_Feasibility_Report_Astitva.md`.
 
 ---
 
