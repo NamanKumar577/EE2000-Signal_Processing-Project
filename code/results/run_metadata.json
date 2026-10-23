@@ -1,19 +1,43 @@
 {
-  "timestamp": "2026-10-21T18:46:35",
+  "timestamp": "2026-10-23T13:02:24",
   "test_cases": [
     "TC1"
   ],
   "methods": [
+    "svd_v1",
+    "svd_v2",
+    "svd_v3",
     "swt_lms_ssnf"
   ],
   "dry_run": false,
   "runs": [
     {
       "tc": "TC1",
+      "method": "svd_v1",
+      "status": "completed",
+      "f1": 0.034255599472990776,
+      "runtime_s": 0.028206042014062405
+    },
+    {
+      "tc": "TC1",
+      "method": "svd_v2",
+      "status": "completed",
+      "f1": 0.03679369250985545,
+      "runtime_s": 0.37124933302402496
+    },
+    {
+      "tc": "TC1",
+      "method": "svd_v3",
+      "status": "completed",
+      "f1": 0.031578947368421054,
+      "runtime_s": 0.02827650000108406
+    },
+    {
+      "tc": "TC1",
       "method": "swt_lms_ssnf",
       "status": "completed",
-      "f1": 0.16945996275605216,
-      "runtime_s": 1.375691199999892
+      "f1": 0.03906249999999999,
+      "runtime_s": 0.604072084010113
     }
   ]
 }

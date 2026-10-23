@@ -71,7 +71,10 @@ from src.evaluation import (
 
 # Method registry — add new methods here
 from src.methods.svd import SVDExtractorV1, SVDExtractorV2, SVDExtractorV3
-from src.methods.template_subtraction import TemplatSubtractionExtractor
+from src.methods.template_subtraction import (
+    TemplatSubtractionExtractor,
+    FixedTemplateSubtractionExtractor,
+)
 from src.methods.swt_lms_ssnf import SWTLMSSNFExtractor
 from src.methods.alternative import AlternativeExtractor
 
@@ -80,6 +83,7 @@ METHOD_REGISTRY = {
     "svd_v2":              SVDExtractorV2,
     "svd_v3":              SVDExtractorV3,
     "template_subtraction": TemplatSubtractionExtractor,
+    "template_fixed":      FixedTemplateSubtractionExtractor,
     "swt_lms_ssnf":        SWTLMSSNFExtractor,
     "alternative":         AlternativeExtractor,
 }
@@ -360,12 +364,28 @@ def main():
 
     # ── Save metrics CSV ──────────────────────────────────────────────────────
     if all_results:
-        rows = [eval_result_to_row(r) for r in all_results]
-        fieldnames = list(rows[0].keys())
+        new_rows = [eval_result_to_row(r) for r in all_results]
+        fieldnames = list(new_rows[0].keys())
+
+        existing_rows: list[dict] = []
+        if METRICS_CSV.exists():
+            try:
+                with open(METRICS_CSV, "r", newline="") as f:
+                    reader = csv.DictReader(f)
+                    existing_rows = list(reader)
+            except Exception:
+                existing_rows = []
+
+        # Merge by (method, variant, test_id)
+        row_dict = {(r.get("method"), r.get("variant"), r.get("test_id")): r for r in existing_rows}
+        for r in new_rows:
+            row_dict[(r.get("method"), r.get("variant"), r.get("test_id"))] = r
+
+        merged_rows = list(row_dict.values())
         with open(METRICS_CSV, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerows(rows)
+            writer.writerows(merged_rows)
         print(f"\nMetrics saved: {METRICS_CSV}")
 
     # ── Save run metadata JSON ────────────────────────────────────────────────
