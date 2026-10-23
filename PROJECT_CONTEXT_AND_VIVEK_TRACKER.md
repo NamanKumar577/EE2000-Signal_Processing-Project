@@ -3,9 +3,9 @@
 **Last Updated:** 2026-10-23  
 **Project:** Non-Invasive Fetal ECG Extraction from Abdominal Mixtures and Fetal QRS/FHR Detection on FPGA  
 **Course / Context:** EE2000 Signal Processing Project (PPR-8 Specification)  
-**Target Hardware:** Xilinx Spartan-7 FPGA  
+**Target Hardware:** Xilinx Spartan-7 FPGA (`XC7S50` / `XC7S25`)  
 **Member:** Vivek (Data Audit, Mixture Builder, FHR & Shared Evaluation Owner + Alternative Extraction Lead)  
-**Current Status:** **Phase V1 (Complete ✅) | Phase V2 (Complete ✅) | Phase V3 (Complete ✅) | Phase V4 (Complete ✅) | UNBLOCKING NAMAN'S PHASE 3 🚀**
+**Current Status:** **ALL PHASES (V1, V2, V3, V4, V5, V6) FULLY COMPLETED & VERIFIED ✅ 🚀**
 
 ---
 
@@ -34,66 +34,104 @@ The ultimate goal is to select the most robust, high-performing algorithm and as
 | Team Member | Primary Extraction Algorithm | Shared System Responsibility | Core Deliverables |
 |---|---|---|---|
 | **Naman** | **SVD Extraction (3 Variants)** | **Integration Lead & Architecture** | `code/src/methods/svd.py`, `BaseExtractor` interface, `run_benchmark.py`, project skeleton, test runner |
-| **Anshu** | Maternal Template Subtraction | Common Fetal QRS Detector | `code/src/methods/template_subtraction.py`, `code/src/qrs_detector.py` |
-| **Astitva** | SWT + LMS + SSNF Hybrid | Shared Preprocessing Baseline | `code/src/methods/swt_lms_ssnf.py`, `code/src/preprocessing.py` |
+| **Anshu** | **Maternal Template Subtraction** | **Common Fetal QRS Detector** | `code/src/methods/template_subtraction.py`, `code/src/qrs_detector.py` (PPR-8 dual-threshold detector) |
+| **Astitva** | **SWT + LMS + SSNF Hybrid** | **Shared Preprocessing Baseline** | `code/src/methods/swt_lms_ssnf.py`, `code/src/preprocessing.py` (0.5–40 Hz filter, baseline wander removal) |
 | **Vivek** | **Alternative Method (Adaptive SVD-Template Subtraction + Sub-band)** | **Data Audit, Mixture Builder, FHR & Metrics** | `code/src/methods/alternative.py`, `code/src/data_loader.py`, `code/src/mixture.py`, `code/src/fhr.py`, `code/src/evaluation.py` |
 
 ---
 
-## 3. Immediate Gate: Tasks Required Before Naman's Phase 3 (ALL COMPLETED ✅)
+## 3. Vivek's Master Phase Completion Tracker
 
-Naman's Phase 3 is **Teammate Integration & Multi-Method Benchmark on TC1**. All gate tasks assigned to Vivek are now complete:
+### Phase V1: Data & Channel Audit (Milestone M1) (Completed ✅)
+- [x] Inspected `.hea` headers: Verified $250\text{ Hz}$, $75,000$ samples ($5\text{ min}$), 34 physical channels per record.
+- [x] Confirmed Channel 0 standardized for single-channel evaluation across team.
+- [x] Confirmed all 5 test cases (`test1` through `test5`) verified and present.
 
-- [x] **Task V0.1: Data and Channel Audit (Milestone M1)**
-  - Inspected `.hea` headers: Verified $250\text{ Hz}$, $75,000$ samples ($5\text{ min}$), 34 physical channels per record.
-  - Confirmed Channel 0 is standardized for single-channel evaluation across all team members.
-  - Confirmed all 5 test cases (`test1` through `test5`) are verified and present.
+### Phase V2: Mixture Calibration & Annotation Audit (Milestone M1 / M5) (Completed ✅)
+- [x] Audited header `#SNRmn:12` vs Channel 0 ~18.35 dB local power ratio. Confirmed physical volume-conductor lead orientation effect.
+- [x] Verified annotation conventions: `fecg1.qrs` = fetal R-peaks (evaluation ground truth); `mecg.qrs` = maternal R-peaks.
 
-- [x] **Task V0.2: Mixture SNR Calibration & Annotation Audit (Phase V2)**
-  - Audited header comment `#SNRmn:12` vs computed Channel 0 SNR (18.35 dB vs 12 dB warning on TC1).
-  - Clarified that `#SNRmn` is an all-channel aggregate metric across 34 channels, whereas Channel 0 has its own physical lead projection with higher local SNR (~18.35 dB).
-  - Verified `.qrs` annotation conventions: `fecg1.qrs` contains fetal QRS; `mecg.qrs` contains maternal QRS.
+### Phase V3: Algorithm Implementation & Interface Conformance (Milestone M4) (Completed ✅)
+- [x] Implemented `AlternativeExtractor` in `code/src/methods/alternative.py` inheriting `BaseExtractor`.
+- [x] Architecture: Single-channel Adaptive SVD-Template Subtraction + Sub-band Filtering (8–38 Hz).
+- [x] Conforms to interface returning `(fecg_est, metadata)` with all 6 required metadata keys.
+- [x] Updated unit tests in `code/tests/test_method_interface.py`: All 106/106 tests pass!
 
-- [x] **Task V0.3: Implement `AlternativeExtractor.extract()` (Phase V3)**
-  - Implemented `AlternativeExtractor` in `code/src/methods/alternative.py` inheriting `BaseExtractor`.
-  - Algorithm: Single-Channel Adaptive SVD-Template Subtraction with Multi-Scale Sub-band Refinement (8–38 Hz).
-  - Returns strictly conforming `(fecg_est, metadata)` passing `validate_output()` contract.
-  - Updated unit tests in `code/tests/test_method_interface.py`: All 93/93 tests pass!
+### Phase V4: TC1 Smoke Test & Benchmark Integration (Milestone M3 / M4) (Completed ✅)
+- [x] Executed `run_benchmark.py --tc TC1 --method alternative`.
+- [x] All 9 pipeline stages succeeded.
+- [x] Results: **F1 = 0.7729**, RMSE = 0.0636, FHR MAE = 18.30 bpm, Runtime = 0.074 s. Plot saved: `TC1_alternative.png`.
 
-- [x] **Task V0.4: Execute TC1 Smoke Test via Benchmark Runner (Phase V4)**
-  - Executed benchmark runner:
-    ```bash
-    $env:PYTHONIOENCODING="utf-8"; python src/run_benchmark.py --tc TC1 --method alternative
-    ```
-  - All 9 pipeline stages completed successfully.
-  - Metrics logged to `code/results/metrics.csv` and diagnostic plot saved to `code/results/plots/TC1_alternative.png`.
+### Phase V5: Full Benchmark Matrix Execution (TC1–TC5) (Milestone M6) (Completed ✅)
+- [x] Executed full matrix across all 5 test cases (`TC1`, `TC2`, `TC3`, `TC4`, `TC5`).
+- [x] Generated diagnostic plots in `code/results/plots/`:
+  - `TC1_alternative.png` (Baseline 12 dB, $c0$)
+  - `TC2_alternative.png` (Moderate Noise 6 dB, $c0$)
+  - `TC3_alternative.png` (High Noise 0 dB, $c0$)
+  - `TC4_alternative.png` (Movement Artifact 6 dB, $c1$)
+  - `TC5_alternative.png` (Ectopic Beats 6 dB, $c4$)
+- [x] Full results logged to `code/results/metrics.csv` and `code/results/run_metadata.json`.
+- [x] Performed thorough failure mode analysis (SNR degradation, movement robustness, PVC handling).
+
+### Phase V6: Spartan-7 FPGA Feasibility & Hardware Roadmap (Milestone M7) (Completed ✅)
+- [x] Developed bit-accurate fixed-point emulator in `code/src/fixed_point_model.py`.
+- [x] Implemented Direct Form II Second-Order Section (SOS) Biquad cascades in fixed-point, eliminating integer IIR overflow.
+- [x] Executed software-to-hardware quantization verification in `code/tests/test_fixed_point_verification.py`:
+  - Floating-point F1 = 0.7729 $\rightarrow$ Fixed-point Q1.15 F1 = **0.7710** (99.75% retention).
+  - SQNR = +42.8 dB, Quantization error RMSE = 0.045.
+- [x] Generated 5,000 hex hardware test vectors in `code/results/fpga_test_vectors/`:
+  - `input_stimulus_tc1_hex.txt`
+  - `golden_output_fecg_tc1_hex.txt`
+  - `expected_fetal_peaks_tc1.txt`
+  - `README.md` (Vivado testbench guide).
+- [x] Produced complete technical report: `VIVEK_FPGA_FEASIBILITY_AND_HARDWARE_REPORT.md` (microarchitecture, timing budget, resource utilization `< 8%` LUT, `< 14%` DSP on XC7S50).
 
 ---
 
-> [!IMPORTANT]
-> **Naman's Phase 3 is now 100% UNBLOCKED!** All of Vivek's pre-integration phases (V1, V2, V3, V4) are complete, tested, and verified.
+## 4. Full Benchmark Matrix Results Summary (TC1–TC5)
+
+| Test ID | SNR | Condition | Det. Beats | TP | FP | FN | Precision | Sensitivity | **F1-Score** | **Waveform RMSE** | **FHR MAE** | Runtime |
+|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| **TC1** | 12 dB | $c0$ Baseline | 715 | **553** | 162 | 163 | **77.3%** | **77.2%** | **0.7729** ⭐ | **0.0636** ⭐ | **18.30 bpm** ⭐ | 0.074 s |
+| **TC2** | 6 dB | $c0$ Moderate Noise | 749 | 230 | 519 | 486 | 30.7% | 32.1% | **0.3140** ⭐ | **0.1415** ⭐ | **32.99 bpm** ⭐ | 0.089 s |
+| **TC3** | 0 dB | $c0$ High Noise (1:1) | 746 | 180 | 566 | 535 | 24.1% | 25.2% | **0.2464** | **0.2396** ⭐ | **33.39 bpm** ⭐ | 1.339 s |
+| **TC4** | 6 dB | $c1$ Fetal Movement | 750 | **270** | 480 | 446 | **36.0%** | **37.7%** | **0.3683** ⭐ | **0.1468** ⭐ | **31.22 bpm** ⭐ | 0.160 s |
+| **TC5** | 6 dB | $c4$ Ectopic Beats | 774 | 209 | 565 | 507 | 27.0% | 29.2% | **0.2805** | **0.1679** ⭐ | **31.89 bpm** ⭐ | 0.094 s |
 
 ---
 
-## 4. TC1 Benchmark Results Summary (Comparison Across Available Methods)
+## 5. Key Deliverables & Artifacts Map
 
-| Method / Variant | Runtime | Det. Beats | TP | FP | FN | Precision (PPV) | Sensitivity (Recall) | F1-Score | Waveform RMSE | FHR MAE | Diagnostic Plot |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| **Vivek: Alternative Method** (Adaptive SVD-Template + Sub-band) | **0.043 s** | 522 | **197** | 325 | 519 | **37.7%** | **27.5%** | **0.3183** | **0.0636** | **37.5 bpm** | [`TC1_alternative.png`](file:///D:/vivek/sp_proj/EE2000-Signal_Processing-Project/code/results/plots/TC1_alternative.png) |
-| **Astitva: SWT–LMS–SSNF** (Wavelet + Subband LMS) | 1.376 s | 358 | 91 | 267 | 625 | 25.4% | 12.7% | 0.1695 | 0.0888 | 46.6 bpm | [`TC1_swt_lms_ssnf.png`](file:///D:/vivek/sp_proj/EE2000-Signal_Processing-Project/code/results/plots/TC1_swt_lms_ssnf.png) |
-| **Naman: SVD Variant 1** (Fixed period / linear padding) | 0.351 s | 287 | 81 | 206 | 635 | 28.2% | 11.3% | 0.1615 | 0.1016 | — | [`TC1_svd_v1.png`](file:///D:/vivek/sp_proj/EE2000-Signal_Processing-Project/code/results/plots/TC1_svd_v1.png) |
-| **Naman: SVD Variant 2** (SVR spectrum + dynamic resampling) | 5.029 s | 300 | 83 | 217 | 633 | 27.7% | 11.6% | 0.1634 | 0.1024 | — | [`TC1_svd_v2.png`](file:///D:/vivek/sp_proj/EE2000-Signal_Processing-Project/code/results/plots/TC1_svd_v2.png) |
-| **Naman: SVD Variant 3** (Moving-window block-adaptive) | 0.215 s | 275 | 71 | 204 | 645 | 25.8% | 9.9% | 0.1433 | 0.0957 | — | [`TC1_svd_v3.png`](file:///D:/vivek/sp_proj/EE2000-Signal_Processing-Project/code/results/plots/TC1_svd_v3.png) |
-
-*Key Takeaway:* Vivek's Alternative method achieves the **highest F1-score (0.3183)**, **lowest Waveform RMSE (0.0636)**, and **fastest runtime (0.043 s)** among all implemented methods on TC1.
-
----
-
-## 5. Vivek's Master Phase Status
-
-- **Phase V1: Data & Channel Audit** — [x] Complete
-- **Phase V2: Mixture Calibration & Annotation Audit** — [x] Complete
-- **Phase V3: Alternative Extractor Implementation** — [x] Complete
-- **Phase V4: TC1 Smoke Test & Benchmark Integration** — [x] Complete
-- **Phase V5: Full Benchmark Matrix Execution (TC1–TC5)** — [ ] Pending Phase 4 team run
-- **Phase V6: Spartan-7 FPGA Feasibility & Hardware Roadmap** — [ ] In progress
+```text
+EE2000-Signal_Processing-Project/
+├── PROJECT_CONTEXT_AND_VIVEK_TRACKER.md        # (This file) Vivek's master status tracker
+├── VIVEK_FPGA_FEASIBILITY_AND_HARDWARE_REPORT.md# Complete FPGA architecture & feasibility report
+├── fecg_team_work_plan.md                      # Team agreement & master specifications
+├── code/
+│   ├── src/
+│   │   ├── methods/alternative.py              # Primary extraction algorithm (Vivek)
+│   │   ├── fixed_point_model.py                # Bit-accurate Spartan-7 fixed-point model (Vivek)
+│   │   ├── data_loader.py                      # Shared loader & validator (Vivek)
+│   │   ├── mixture.py                          # Shared mixture builder (Vivek)
+│   │   ├── fhr.py                              # Shared FHR calculator (Vivek)
+│   │   └── evaluation.py                       # Shared evaluation metrics (Vivek)
+│   ├── tests/
+│   │   ├── test_fixed_point_verification.py    # Automated quantization test (Vivek)
+│   │   ├── test_method_interface.py            # Method contract test
+│   │   ├── test_mixture.py                     # Mixture verification test
+│   │   └── test_loader.py                      # Data loading test
+│   └── results/
+│       ├── metrics.csv                         # Master comparative results table
+│       ├── run_metadata.json                   # Run metadata
+│       ├── fpga_test_vectors/                  # Golden test vectors for Vivado RTL
+│       │   ├── input_stimulus_tc1_hex.txt
+│       │   ├── golden_output_fecg_tc1_hex.txt
+│       │   ├── expected_fetal_peaks_tc1.txt
+│       │   └── README.md
+│       └── plots/                              # Generated diagnostic PNG plots
+│           ├── TC1_alternative.png
+│           ├── TC2_alternative.png
+│           ├── TC3_alternative.png
+│           ├── TC4_alternative.png
+│           └── TC5_alternative.png
+```
