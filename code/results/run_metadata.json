@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-23T13:02:24",
+  "timestamp": "2026-10-23T14:50:00",
   "test_cases": [
     "TC1"
   ],
@@ -7,7 +7,9 @@
     "svd_v1",
     "svd_v2",
     "svd_v3",
-    "swt_lms_ssnf"
+    "swt_lms_ssnf",
+    "template_subtraction",
+    "alternative"
   ],
   "dry_run": false,
   "runs": [
@@ -38,6 +40,20 @@
       "status": "completed",
       "f1": 0.03906249999999999,
       "runtime_s": 0.604072084010113
+    },
+    {
+      "tc": "TC1",
+      "method": "template_subtraction",
+      "status": "completed",
+      "f1": 0.22784810126582278,
+      "runtime_s": 0.005948374979197979
+    },
+    {
+      "tc": "TC1",
+      "method": "alternative",
+      "status": "completed",
+      "f1": 0.3182552504038772,
+      "runtime_s": 0.04274090001126751
     }
   ]
 }

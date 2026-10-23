@@ -115,10 +115,10 @@ All 5 test cases are verified and present in [`test/`](file:///home/namak/projec
 ---
 
 ### Phase 3: Teammate Integration & Pipeline Coordination (Current Focus 🚀)
-- [ ] Coordinate with **Vivek** on mixture SNR calibration and header annotation conventions.
+- [x] Coordinate with **Vivek** on mixture SNR calibration and header annotation conventions.
 - [ ] Integrate **Anshu's** Template Subtraction implementation in [`code/src/methods/template_subtraction.py`](file:///home/namak/projects/EE2000-Signal_Processing-Project/code/src/methods/template_subtraction.py).
 - [ ] Integrate **Astitva's** SWT-LMS-SSNF implementation in [`code/src/methods/swt_lms_ssnf.py`](file:///home/namak/projects/EE2000-Signal_Processing-Project/code/src/methods/swt_lms_ssnf.py).
-- [ ] Integrate **Vivek's** Alternative method in [`code/src/methods/alternative.py`](file:///home/namak/projects/EE2000-Signal_Processing-Project/code/src/methods/alternative.py).
+- [x] Integrate **Vivek's** Alternative method in [`code/src/methods/alternative.py`](file:///home/namak/projects/EE2000-Signal_Processing-Project/code/src/methods/alternative.py).
 - [ ] Run multi-method comparison smoke test on TC1 across all 4 implemented algorithms.
 
 ---
