@@ -8,7 +8,7 @@ Architecture:
   - Multi-Scale 1D Encoder (Downsampling path capturing wide maternal waves)
   - Latent Bottleneck with expanded receptive field
   - Multi-Scale 1D Decoder with Skip Connections (Preserves sharp fetal QRS temporal resolution)
-  - Composite Waveform Loss (Smooth L1 + Negative Pearson Correlation)
+  - Numerically Stable Composite Waveform Loss (Smooth L1 + Pearson Correlation)
 """
 
 import torch
@@ -58,15 +58,16 @@ class UpBlock1D(nn.Module):
         # Pad if odd sequence length
         diff = x_skip.size(-1) - x_up.size(-1)
         if diff > 0:
-            x_up = F.pad(x_up, (diff // 2, diff - diff // 2))
-        x = torch.cat([x_skip, x_up], dim=1)
-        return self.conv(x)
+            x_up = F.pad(x_up, (0, diff))
+        x_cat = torch.cat([x_skip, x_up], dim=1)
+        return self.conv(x_cat)
 
 
 class FECGUNet1D(nn.Module):
     """
-    1D U-Net Deep Neural Network for End-to-End Fetal ECG Extraction.
-    Supports in_channels = 1 (single lead) or in_channels = 4 (multi-lead).
+    1D U-Net specifically sized for 1024-sample physiological time-series.
+    Input shape:  [Batch, In_Channels, 1024]
+    Output shape: [Batch, 1, 1024]
     """
     def __init__(self, in_channels: int = 1, base_filters: int = 32):
         super().__init__()
@@ -106,7 +107,7 @@ class FECGUNet1D(nn.Module):
 
 class CompositeECGLoss(nn.Module):
     """
-    Combined Smooth L1 (Huber) + Negative Pearson Correlation Loss.
+    Combined Smooth L1 (Huber) + Numerically-Stable Negative Pearson Correlation Loss.
     Ensures waveform magnitude accuracy while strictly preserving QRS morphology and phase.
     """
     def __init__(self, alpha_l1: float = 1.0, beta_corr: float = 0.5):
@@ -118,13 +119,16 @@ class CompositeECGLoss(nn.Module):
     def forward(self, pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
         loss_l1 = self.smooth_l1(pred, target)
 
-        # Pearson correlation per sequence in batch
+        # Pearson correlation per sequence in batch with strict numerical stability
         pred_mean = pred - pred.mean(dim=-1, keepdim=True)
         targ_mean = target - target.mean(dim=-1, keepdim=True)
         
         nom = torch.sum(pred_mean * targ_mean, dim=-1)
-        denom = torch.sqrt(torch.sum(pred_mean ** 2, dim=-1) * torch.sum(targ_mean ** 2, dim=-1) + 1e-8)
-        corr = nom / denom
+        eps = 1e-4
+        pred_std = torch.sqrt(torch.sum(pred_mean ** 2, dim=-1) + eps)
+        targ_std = torch.sqrt(torch.sum(targ_mean ** 2, dim=-1) + eps)
+        
+        corr = (nom / (pred_std * targ_std + eps)).clamp(min=-1.0, max=1.0)
         loss_corr = 1.0 - torch.mean(corr)
 
         return self.alpha_l1 * loss_l1 + self.beta_corr * loss_corr

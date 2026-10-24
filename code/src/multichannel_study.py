@@ -12,9 +12,9 @@ Evaluates:
 
 Outputs:
   - code/results/multichannel_scaling_metrics.csv
-  - code/results/plots/multichannel_accuracy_scaling.png
-  - code/results/plots/multichannel_fpga_resource_scaling.png
-  - code/results/plots/multichannel_lead_geometry_map.png
+  - code/results/plots/multichannel/multichannel_accuracy_scaling.png
+  - code/results/plots/multichannel/multichannel_fpga_resource_scaling.png
+  - code/results/plots/multichannel/multichannel_lead_geometry_map.png
 """
 
 import os
@@ -121,7 +121,7 @@ def calculate_fpga_metrics(N: int, method: str):
 # ──────────────────────────────────────────────────────────────────────────────
 def run_study():
     results = []
-    os.makedirs("code/results/plots", exist_ok=True)
+    os.makedirs("code/results/plots/multichannel", exist_ok=True)
     csv_path = "code/results/multichannel_scaling_metrics.csv"
     
     print("=" * 80)
@@ -160,9 +160,9 @@ def run_study():
 
     plt.title("Spatial SNR Characterization Across 34 Leads (PhysioNet FECGSYNDB)", fontsize=13, fontweight="bold", pad=12)
     fig.tight_layout()
-    plt.savefig("code/results/plots/multichannel_lead_geometry_map.png", dpi=300)
+    plt.savefig("code/results/plots/multichannel/multichannel_lead_geometry_map.png", dpi=300)
     plt.close()
-    print("Saved: code/results/plots/multichannel_lead_geometry_map.png")
+    print("Saved: code/results/plots/multichannel/multichannel_lead_geometry_map.png")
 
     # 2. Benchmark Across Test Cases and Channel Counts
     for tcid, base, snr, case_type, desc in TEST_CASES:
@@ -337,9 +337,9 @@ def _generate_scaling_plots(results):
 
     fig.suptitle("Fetal ECG Extraction Accuracy Scaling Across Channel Counts (1 to 34 Leads)", fontsize=14, fontweight="bold", y=0.98)
     fig.tight_layout()
-    plt.savefig("code/results/plots/multichannel_accuracy_scaling.png", dpi=300)
+    plt.savefig("code/results/plots/multichannel/multichannel_accuracy_scaling.png", dpi=300)
     plt.close()
-    print("Saved: code/results/plots/multichannel_accuracy_scaling.png")
+    print("Saved: code/results/plots/multichannel/multichannel_accuracy_scaling.png")
 
     # Plot 2: FPGA Hardware Resource & Timing Scaling on XC7S50
     fig, axes = plt.subplots(1, 2, figsize=(16, 5.5))
@@ -391,9 +391,9 @@ def _generate_scaling_plots(results):
 
     fig.suptitle("Spartan-7 XC7S50 Hardware Feasibility Across Channel Counts (50 MHz Clock)", fontsize=14, fontweight="bold", y=0.98)
     fig.tight_layout()
-    plt.savefig("code/results/plots/multichannel_fpga_resource_scaling.png", dpi=300)
+    plt.savefig("code/results/plots/multichannel/multichannel_fpga_resource_scaling.png", dpi=300)
     plt.close()
-    print("Saved: code/results/plots/multichannel_fpga_resource_scaling.png")
+    print("Saved: code/results/plots/multichannel/multichannel_fpga_resource_scaling.png")
 
 
 if __name__ == "__main__":

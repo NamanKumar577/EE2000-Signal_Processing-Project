@@ -89,7 +89,7 @@ METHOD_REGISTRY = {
 }
 
 RESULTS_DIR = _CODE_DIR / "results"
-PLOTS_DIR   = RESULTS_DIR / "plots"
+PLOTS_DIR   = RESULTS_DIR / "plots" / "benchmark_runs"
 METRICS_CSV = RESULTS_DIR / "metrics.csv"
 METADATA_JSON = RESULTS_DIR / "run_metadata.json"
 
