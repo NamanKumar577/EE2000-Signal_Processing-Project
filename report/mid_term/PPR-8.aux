@@ -1,0 +1,303 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{hasan2009,sameni2010}
+\citation{abel2023,behar2014}
+\citation{clifford2014}
+\citation{abel2023,sornmo_ecg}
+\@writefile{toc}{\contentsline {section}{\numberline {1}\hskip -1em.~Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{\hskip -1em.~Introduction}{section.1}{}}
+\newlabel{sec:intro@cref}{{[section][1][]1}{[1][1][]1}{}{}{}}
+\@writefile{brf}{\backcite{hasan2009,sameni2010}{{1}{1}{section.1}}}
+\@writefile{brf}{\backcite{abel2023,behar2014}{{1}{1}{section.1}}}
+\@writefile{brf}{\backcite{clifford2014}{{1}{1}{section.1}}}
+\citation{widrow1975,cerutti1986}
+\citation{abel2023,hasan2009}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textbf  {[L1]}\ Signal component amplitude disparity in abdominal ECG biopotentials. The maternal QRS complex dominates the mixture by $10$--$25\times $ in peak amplitude (${\approx }2.5\,$mV vs ${\approx }0.1\,$mV), illustrating why linear single-channel frequency filtering fails.}}{2}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:amplitude_disparity}{{1}{2}{\tagLone \ Signal component amplitude disparity in abdominal ECG biopotentials. The maternal QRS complex dominates the mixture by $10$--$25\times $ in peak amplitude (${\approx }2.5\,$mV vs ${\approx }0.1\,$mV), illustrating why linear single-channel frequency filtering fails}{figure.caption.1}{}}
+\newlabel{fig:amplitude_disparity@cref}{{[figure][1][]1}{[1][1][]2}{}{}{}}
+\@writefile{brf}{\backcite{abel2023,sornmo_ecg}{{2}{1}{figure.caption.1}}}
+\@writefile{brf}{\backcite{widrow1975,cerutti1986}{{2}{1}{figure.caption.1}}}
+\@writefile{brf}{\backcite{abel2023,hasan2009}{{2}{1}{figure.caption.1}}}
+\citation{sornmo_ecg,sameni2010}
+\citation{clifford2014,andreotti2016}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Target clinical engineering specifications for real-time edge NIFECG monitoring.}}{3}{table.caption.2}\protected@file@percent }
+\newlabel{tab:clinical_specs}{{1}{3}{Target clinical engineering specifications for real-time edge NIFECG monitoring}{table.caption.2}{}}
+\newlabel{tab:clinical_specs@cref}{{[table][1][]1}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}\hskip -1em.~Real-World Applications and Clinical Specifications}{3}{section.2}\protected@file@percent }
+\newlabel{sec:clinical_specs}{{2}{3}{\hskip -1em.~Real-World Applications and Clinical Specifications}{section.2}{}}
+\newlabel{sec:clinical_specs@cref}{{[section][2][]2}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}\hskip -1em.~Problem Statement and Formal Engineering Objectives}{3}{section.3}\protected@file@percent }
+\newlabel{sec:problem_statement}{{3}{3}{\hskip -1em.~Problem Statement and Formal Engineering Objectives}{section.3}{}}
+\newlabel{sec:problem_statement@cref}{{[section][3][]3}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}\hskip -1em.~Physiological Signal Model and Dataset}{3}{section.4}\protected@file@percent }
+\newlabel{sec:dataset}{{4}{3}{\hskip -1em.~Physiological Signal Model and Dataset}{section.4}{}}
+\newlabel{sec:dataset@cref}{{[section][4][]4}{[1][3][]3}{}{}{}}
+\@writefile{brf}{\backcite{sornmo_ecg,sameni2010}{{3}{4}{section.4}}}
+\@writefile{brf}{\backcite{clifford2014,andreotti2016}{{3}{4}{figure.caption.4}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {[L1]}/\textbf  {[L2]}\ Complete end-to-end NIFECG extraction and FPGA processing pipeline: (1)~4-Channel abdominal mixture acquisition; (2)~4th-order Butterworth 0.5--40\,Hz IIR preprocessing and dual 50/60\,Hz notch filter; (3)~Spatial covariance matrix computation and polarity-aligned beamforming; (4)~PPR-8 derivative-energy fetal QRS peak detection; (5)~Median-filtered FHR estimation and 7-segment / UART display.}}{4}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:system_pipeline}{{2}{4}{\tagLone /\tagLtwo \ Complete end-to-end NIFECG extraction and FPGA processing pipeline: (1)~4-Channel abdominal mixture acquisition; (2)~4th-order Butterworth 0.5--40\,Hz IIR preprocessing and dual 50/60\,Hz notch filter; (3)~Spatial covariance matrix computation and polarity-aligned beamforming; (4)~PPR-8 derivative-energy fetal QRS peak detection; (5)~Median-filtered FHR estimation and 7-segment / UART display}{figure.caption.3}{}}
+\newlabel{fig:system_pipeline@cref}{{[figure][2][]2}{[1][3][]4}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {[L1]}\ 34-Channel Fetal-to-Maternal Ratio (FMR) topography on PhysioNet FECGSYNDB benchmark. Suprapubic Leads 25--28 exhibit the highest fetal coupling ($0.54$ peak FMR on Lead 27), defining our 4-channel primary sub-array $[27, 26, 28, 25]$.}}{4}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:fmr_topography}{{3}{4}{\tagLone \ 34-Channel Fetal-to-Maternal Ratio (FMR) topography on PhysioNet FECGSYNDB benchmark. Suprapubic Leads 25--28 exhibit the highest fetal coupling ($0.54$ peak FMR on Lead 27), defining our 4-channel primary sub-array $[27, 26, 28, 25]$}{figure.caption.4}{}}
+\newlabel{fig:fmr_topography@cref}{{[figure][3][]3}{[1][3][]4}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \textbf  {[L1]}\ Magnitude response of the causal 4th-order Butterworth Second-Order Section (SOS) bandpass filter ($0.5$--$40\,$Hz) at $f_s = 250\,$Hz: $>40\,$dB attenuation at $0.1\,$Hz baseline wander, $>14\,$dB attenuation at $60\,$Hz powerline mains.}}{4}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:filter_responses}{{4}{4}{\tagLone \ Magnitude response of the causal 4th-order Butterworth Second-Order Section (SOS) bandpass filter ($0.5$--$40\,$Hz) at $f_s = 250\,$Hz: $>40\,$dB attenuation at $0.1\,$Hz baseline wander, $>14\,$dB attenuation at $60\,$Hz powerline mains}{figure.caption.5}{}}
+\newlabel{fig:filter_responses@cref}{{[figure][4][]4}{[1][4][]4}{}{}{}}
+\citation{kanjilal1997}
+\citation{pan1985}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Comprehensive inventory of nine implemented and benchmarked fetal ECG extraction architectures.}}{5}{table.caption.6}\protected@file@percent }
+\newlabel{tab:method_inventory}{{2}{5}{Comprehensive inventory of nine implemented and benchmarked fetal ECG extraction architectures}{table.caption.6}{}}
+\newlabel{tab:method_inventory@cref}{{[table][2][]2}{[1][5][]5}{}{}{}}
+\@writefile{brf}{\backcite{kanjilal1997}{{5}{2}{table.caption.6}}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.~Multi-Channel Signal Processing Architectures}{5}{section.5}\protected@file@percent }
+\newlabel{sec:architectures}{{5}{5}{\hskip -1em.~Multi-Channel Signal Processing Architectures}{section.5}{}}
+\newlabel{sec:architectures@cref}{{[section][5][]5}{[1][5][]5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}\hskip -1em.~Method 1: Multi-Channel Spatial PCA Beamforming (Primary Architecture)}{5}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:pca_beamformer}{{5.1}{5}{\hskip -1em.~Method 1: Multi-Channel Spatial PCA Beamforming (Primary Architecture)}{subsection.5.1}{}}
+\newlabel{sec:pca_beamformer@cref}{{[subsection][1][5]5.1}{[1][5][]5}{}{}{}}
+\newlabel{eq:inner_product}{{5}{5}{\hskip -1em.~Method 1: Multi-Channel Spatial PCA Beamforming (Primary Architecture)}{equation.5}{}}
+\newlabel{eq:inner_product@cref}{{[equation][5][]5}{[1][5][]5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}\hskip -1em.~Peak-Energy Fetal QRS Detector}{5}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:detector}{{5.2}{5}{\hskip -1em.~Peak-Energy Fetal QRS Detector}{subsection.5.2}{}}
+\newlabel{sec:detector@cref}{{[subsection][2][5]5.2}{[1][5][]5}{}{}{}}
+\@writefile{brf}{\backcite{pan1985}{{5}{5.2}{subsection.5.2}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}\hskip -1em.~Method 2: Deep 1D Convolutional U-Net (Neural Extractor)}{5}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:unet}{{5.3}{5}{\hskip -1em.~Method 2: Deep 1D Convolutional U-Net (Neural Extractor)}{subsection.5.3}{}}
+\newlabel{sec:unet@cref}{{[subsection][3][5]5.3}{[1][5][]5}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \textbf  {[L2]}\ Quantization word-length design sweep: (a)~Maternal subspace null depth vs weight word length $B$, showing agreement with finite-wordlength error theory; (b)~Fetal beat detection F1 retention vs word length. Precision $\ge 12$ bits achieves $>60\,$dB nulling, guaranteeing 100\% F1 retention.}}{6}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:quantization_sweep}{{5}{6}{\tagLtwo \ Quantization word-length design sweep: (a)~Maternal subspace null depth vs weight word length $B$, showing agreement with finite-wordlength error theory; (b)~Fetal beat detection F1 retention vs word length. Precision $\ge 12$ bits achieves $>60\,$dB nulling, guaranteeing 100\% F1 retention}{figure.caption.7}{}}
+\newlabel{fig:quantization_sweep@cref}{{[figure][5][]5}{[1][6][]6}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.~Fixed-Point Implementation and Word-Length Design}{6}{section.6}\protected@file@percent }
+\newlabel{sec:fixed_point}{{6}{6}{\hskip -1em.~Fixed-Point Implementation and Word-Length Design}{section.6}{}}
+\newlabel{sec:fixed_point@cref}{{[section][6][]6}{[1][6][]6}{}{}{}}
+\newlabel{eq:null_bound}{{10}{6}{\hskip -1em.~Fixed-Point Implementation and Word-Length Design}{equation.10}{}}
+\newlabel{eq:null_bound@cref}{{[equation][10][]10}{[1][6][]6}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}\hskip -1em.~Host--FPGA Interface and Boolean Board Interaction}{6}{section.7}\protected@file@percent }
+\newlabel{sec:host_interface}{{7}{6}{\hskip -1em.~Host--FPGA Interface and Boolean Board Interaction}{section.7}{}}
+\newlabel{sec:host_interface@cref}{{[section][7][]7}{[1][6][]6}{}{}{}}
+\citation{clifford2014}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces \textbf  {[L2]}\ Real-time host-to-FPGA UART streaming protocol at 921,600 baud. 4-channel biopotential frames (8 bytes) transmit in $86.8\,\mu $s, providing a $46\times $ timing margin against the $4,000\,\mu $s sampling period.}}{7}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:uart_protocol}{{6}{7}{\tagLtwo \ Real-time host-to-FPGA UART streaming protocol at 921,600 baud. 4-channel biopotential frames (8 bytes) transmit in $86.8\,\mu $s, providing a $46\times $ timing margin against the $4,000\,\mu $s sampling period}{figure.caption.8}{}}
+\newlabel{fig:uart_protocol@cref}{{[figure][6][]6}{[1][6][]7}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}\hskip -1em.~Development and Verification Methodology}{7}{section.8}\protected@file@percent }
+\newlabel{sec:methodology}{{8}{7}{\hskip -1em.~Development and Verification Methodology}{section.8}{}}
+\newlabel{sec:methodology@cref}{{[section][8][]8}{[1][7][]7}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}\hskip -1em.~Experimental Plan and Evaluation Methodology}{7}{section.9}\protected@file@percent }
+\newlabel{sec:experimental_plan}{{9}{7}{\hskip -1em.~Experimental Plan and Evaluation Methodology}{section.9}{}}
+\newlabel{sec:experimental_plan@cref}{{[section][9][]9}{[1][7][]7}{}{}{}}
+\@writefile{brf}{\backcite{clifford2014}{{7}{9}{section.9}}}
+\newlabel{eq:clustered_ci}{{18}{8}{\hskip -1em.~Experimental Plan and Evaluation Methodology}{equation.18}{}}
+\newlabel{eq:clustered_ci@cref}{{[equation][18][]18}{[1][8][]8}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}\hskip -1em.~Preliminary Results and Comparative Analysis}{8}{section.10}\protected@file@percent }
+\newlabel{sec:results}{{10}{8}{\hskip -1em.~Preliminary Results and Comparative Analysis}{section.10}{}}
+\newlabel{sec:results@cref}{{[section][10][]10}{[1][8][]8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}\hskip -1em.~Audited Performance Analysis and Reconciliations}{8}{subsection.10.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2}\hskip -1em.~Multichannel Scaling and Lead Redundancy}{8}{subsection.10.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.3}\hskip -1em.~Population Mega-Benchmark (250 Records, 2,250 Runs)}{8}{subsection.10.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \textbf  {[L1]}/\textbf  {[L2]}\ Controlled In-Sample Stress Benchmark on Subject 1 across all five standardized PhysioNet FECGSYNDB stress test cases (TC1--TC5, 75,000 samples each). Evaluated at $\pm 50\,$ms tolerance window.}}{9}{table.caption.9}\protected@file@percent }
+\newlabel{tab:master_benchmark}{{3}{9}{\tagLone /\tagLtwo \ Controlled In-Sample Stress Benchmark on Subject 1 across all five standardized PhysioNet FECGSYNDB stress test cases (TC1--TC5, 75,000 samples each). Evaluated at $\pm 50\,$ms tolerance window}{table.caption.9}{}}
+\newlabel{tab:master_benchmark@cref}{{[table][3][]3}{[1][8][]9}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces \textbf  {[L1]}\ Reconciled Performance on Subject 1 Stress Benchmark (TC1--TC5), generated programmatically by unweighted average of Tab.~\ref {tab:master_benchmark}.}}{9}{table.caption.10}\protected@file@percent }
+\newlabel{tab:executive_summary}{{4}{9}{\tagLone \ Reconciled Performance on Subject 1 Stress Benchmark (TC1--TC5), generated programmatically by unweighted average of Tab.~\ref {tab:master_benchmark}}{table.caption.10}{}}
+\newlabel{tab:executive_summary@cref}{{[table][4][]4}{[1][8][]9}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces \textbf  {[L1]}\ Population Benchmark across the Full 250-Record FECGSYNDB Database ($N_{\text  {subj}}=10$, 25 runs/subject). Reported intervals are 95\% Subject-Level Clustered Confidence Intervals (Student-$t$, $df=9$, $t_{\text  {crit}}=2.262$); corresponding 95\% run-level CI half-widths across all $N=250$ records are $\pm 1.08\%$ for Spatial PCA and $\pm 1.97\%$ for Deep U-Net.}}{9}{table.caption.17}\protected@file@percent }
+\newlabel{tab:mega_benchmark}{{5}{9}{\tagLone \ Population Benchmark across the Full 250-Record FECGSYNDB Database ($N_{\text {subj}}=10$, 25 runs/subject). Reported intervals are 95\% Subject-Level Clustered Confidence Intervals (Student-$t$, $df=9$, $t_{\text {crit}}=2.262$); corresponding 95\% run-level CI half-widths across all $N=250$ records are $\pm 1.08\%$ for Spatial PCA and $\pm 1.97\%$ for Deep U-Net}{table.caption.17}{}}
+\newlabel{tab:mega_benchmark@cref}{{[table][5][]5}{[1][8][]9}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces \textbf  {[L1]}\ Cross-Subject Partition Breakdown across Training (7 subjects, 175 records), Validation (1 subject, 25 records), Held-Out Test (2 subjects, 50 records), and All Data (10 subjects, 250 records).}}{9}{table.caption.18}\protected@file@percent }
+\newlabel{tab:partition_breakdown}{{6}{9}{\tagLone \ Cross-Subject Partition Breakdown across Training (7 subjects, 175 records), Validation (1 subject, 25 records), Held-Out Test (2 subjects, 50 records), and All Data (10 subjects, 250 records)}{table.caption.18}{}}
+\newlabel{tab:partition_breakdown@cref}{{[table][6][]6}{[1][8][]9}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces \textbf  {[L1]}\ Per-Subject Consistency Table for Spatial PCA (4-Ch) across all 10 simulated anatomical subjects (25 records per subject, varying SNRs and clinical stress cases).}}{9}{table.caption.19}\protected@file@percent }
+\newlabel{tab:subject_consistency}{{7}{9}{\tagLone \ Per-Subject Consistency Table for Spatial PCA (4-Ch) across all 10 simulated anatomical subjects (25 records per subject, varying SNRs and clinical stress cases)}{table.caption.19}{}}
+\newlabel{tab:subject_consistency@cref}{{[table][7][]7}{[1][8][]9}{}{}{}}
+\citation{sornmo_ecg,sameni2010}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \textbf  {[L1]}\ Comparative F1-score performance across all six extraction architectures on the five frozen PhysioNet stress test cases (TC1--TC5). Spatial PCA Beamforming and Deep U-Net achieve near-perfect detection on baseline cases, whereas single-channel temporal subtraction algorithms collapse under severe noise and arrhythmia.}}{10}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:f1_comparison}{{7}{10}{\tagLone \ Comparative F1-score performance across all six extraction architectures on the five frozen PhysioNet stress test cases (TC1--TC5). Spatial PCA Beamforming and Deep U-Net achieve near-perfect detection on baseline cases, whereas single-channel temporal subtraction algorithms collapse under severe noise and arrhythmia}{figure.caption.11}{}}
+\newlabel{fig:f1_comparison@cref}{{[figure][7][]7}{[1][8][]10}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \textbf  {[L1]}/\textbf  {[L2]}\ Fetal Heart Rate (FHR) precision analysis: (a)~FHR Mean Absolute Error across TC1--TC5; (b)~Bland-Altman agreement plot for Spatial PCA against reference ground truth ($95\%$ limits of agreement: $[-6.75, +5.90]\,$bpm under noise).}}{10}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:fhr_bland_altman}{{8}{10}{\tagLone /\tagLtwo \ Fetal Heart Rate (FHR) precision analysis: (a)~FHR Mean Absolute Error across TC1--TC5; (b)~Bland-Altman agreement plot for Spatial PCA against reference ground truth ($95\%$ limits of agreement: $[-6.75, +5.90]\,$bpm under noise)}{figure.caption.12}{}}
+\newlabel{fig:fhr_bland_altman@cref}{{[figure][8][]8}{[1][8][]10}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {11}\hskip -1em.~Theoretical Foundation and Analytical Predictions}{10}{section.11}\protected@file@percent }
+\newlabel{sec:theory}{{11}{10}{\hskip -1em.~Theoretical Foundation and Analytical Predictions}{section.11}{}}
+\newlabel{sec:theory@cref}{{[section][11][]11}{[1][9][]10}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}\hskip -1em.~The 3D Maternal Dipole Loop and Subspace Rank Analysis}{10}{subsection.11.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces \textbf  {[L1]}\ Algorithm robustness under input SNR degradation ($12\,\text  {dB} \to 6\,\text  {dB} \to 0\,\text  {dB}$). Spatial PCA maintains $100\%$ detection down to $0\,$dB on Subject 1, while single-channel baselines degrade to $<24\%$.}}{10}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:snr_curve}{{9}{10}{\tagLone \ Algorithm robustness under input SNR degradation ($12\,\text {dB} \to 6\,\text {dB} \to 0\,\text {dB}$). Spatial PCA maintains $100\%$ detection down to $0\,$dB on Subject 1, while single-channel baselines degrade to $<24\%$}{figure.caption.13}{}}
+\newlabel{fig:snr_curve@cref}{{[figure][9][]9}{[1][8][]10}{}{}{}}
+\@writefile{brf}{\backcite{sornmo_ecg,sameni2010}{{10}{11.1}{subsection.11.1}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces \textbf  {[L1]}\ Heatmap matrix of F1-scores across all methods and stress cases. Reconciled values confirm Spatial PCA and Deep U-Net dominance on Subject 1.}}{11}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:heatmap}{{10}{11}{\tagLone \ Heatmap matrix of F1-scores across all methods and stress cases. Reconciled values confirm Spatial PCA and Deep U-Net dominance on Subject 1}{figure.caption.14}{}}
+\newlabel{fig:heatmap@cref}{{[figure][10][]10}{[1][8][]11}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces \textbf  {[L1]}\ Morphological reconstruction by Deep 1D U-Net over a 5-second window: (A)~Raw abdominal mixture; (B)~Ground truth reference; (C)~U-Net reconstructed waveform exhibiting near-perfect morphology recovery ($r = 0.979$).}}{11}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:deep_learning_plot}{{11}{11}{\tagLone \ Morphological reconstruction by Deep 1D U-Net over a 5-second window: (A)~Raw abdominal mixture; (B)~Ground truth reference; (C)~U-Net reconstructed waveform exhibiting near-perfect morphology recovery ($r = 0.979$)}{figure.caption.15}{}}
+\newlabel{fig:deep_learning_plot@cref}{{[figure][11][]11}{[1][8][]11}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces \textbf  {[L1]}\ F1-score accuracy scaling from 1 to 34 leads. Spatial PCA converges to 100\% accuracy on TC1--TC3 with just 4 channels, saturating beyond 8 leads.}}{11}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:accuracy_scaling}{{12}{11}{\tagLone \ F1-score accuracy scaling from 1 to 34 leads. Spatial PCA converges to 100\% accuracy on TC1--TC3 with just 4 channels, saturating beyond 8 leads}{figure.caption.16}{}}
+\newlabel{fig:accuracy_scaling@cref}{{[figure][12][]12}{[1][8][]11}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces \textbf  {[L1]}\ Population F1 distributions across all 250 evaluation recordings. Spatial PCA achieves the highest population mean of 93.00\%, followed by 4-channel Deep U-Net at 90.76\%.}}{11}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:mega_f1}{{13}{11}{\tagLone \ Population F1 distributions across all 250 evaluation recordings. Spatial PCA achieves the highest population mean of 93.00\%, followed by 4-channel Deep U-Net at 90.76\%}{figure.caption.20}{}}
+\newlabel{fig:mega_f1@cref}{{[figure][13][]13}{[1][8][]11}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces \textbf  {[L1]}\ Robustness across SNR levels ($0$--$12\,$dB) averaged over 50 records per point. Spatial PCA and 4-Ch U-Net maintain $>91\%$ accuracy across all noise tiers, whereas single-channel baselines drop to $35$--$46\%$.}}{11}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:mega_snr}{{14}{11}{\tagLone \ Robustness across SNR levels ($0$--$12\,$dB) averaged over 50 records per point. Spatial PCA and 4-Ch U-Net maintain $>91\%$ accuracy across all noise tiers, whereas single-channel baselines drop to $35$--$46\%$}{figure.caption.21}{}}
+\newlabel{fig:mega_snr@cref}{{[figure][14][]14}{[1][8][]11}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces \textbf  {[L1]}\ Performance across clinical conditions ($c0$: baseline, $c1$: motion, $c2$: HR dynamics, $c3$: contractions, $c4$: arrhythmia). Spatial PCA retains 96.82\% under uterine contractions.}}{11}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:mega_cases}{{15}{11}{\tagLone \ Performance across clinical conditions ($c0$: baseline, $c1$: motion, $c2$: HR dynamics, $c3$: contractions, $c4$: arrhythmia). Spatial PCA retains 96.82\% under uterine contractions}{figure.caption.22}{}}
+\newlabel{fig:mega_cases@cref}{{[figure][15][]15}{[1][8][]11}{}{}{}}
+\citation{xilinx_dsp48,constantinides2004}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces \textbf  {[L1]}\ Cross-subject consistency across all 10 simulated anatomies (\texttt  {sub01}--\texttt  {sub10}). Spatial PCA achieves $>85\%$ performance across diverse lead orientations (averaging $93.00\%$).}}{12}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:mega_subjects}{{16}{12}{\tagLone \ Cross-subject consistency across all 10 simulated anatomies (\texttt {sub01}--\texttt {sub10}). Spatial PCA achieves $>85\%$ performance across diverse lead orientations (averaging $93.00\%$)}{figure.caption.23}{}}
+\newlabel{fig:mega_subjects@cref}{{[figure][16][]16}{[1][8][]12}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces \textbf  {[L1]}\ Covariance eigen-spectrum and torso subspace dimensionality: (a)~4-Lead covariance eigen-spectrum ($[27, 26, 28, 25]$), showing maternal dipole energy concentrated in $\mathbf  {v}_1$ ($88.4\%$) and fetal signal in $\mathbf  {v}_2$ ($7.8\%$); (b)~Cumulative explained variance across 4-lead and 8-lead arrays, confirming that 4 components capture $100\%$ of maternal+fetal signal space.}}{12}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:eigen_spectrum}{{17}{12}{\tagLone \ Covariance eigen-spectrum and torso subspace dimensionality: (a)~4-Lead covariance eigen-spectrum ($[27, 26, 28, 25]$), showing maternal dipole energy concentrated in $\mathbf {v}_1$ ($88.4\%$) and fetal signal in $\mathbf {v}_2$ ($7.8\%$); (b)~Cumulative explained variance across 4-lead and 8-lead arrays, confirming that 4 components capture $100\%$ of maternal+fetal signal space}{figure.caption.24}{}}
+\newlabel{fig:eigen_spectrum@cref}{{[figure][17][]17}{[1][12][]12}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2}\hskip -1em.~Single-DSP48E1 Time-Multiplexed Scheduling}{12}{subsection.11.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12}\hskip -1em.~Hardware Resource Utilization and Synthesis Feasibility}{12}{section.12}\protected@file@percent }
+\newlabel{sec:hardware_resources}{{12}{12}{\hskip -1em.~Hardware Resource Utilization and Synthesis Feasibility}{section.12}{}}
+\newlabel{sec:hardware_resources@cref}{{[section][12][]12}{[1][12][]12}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces \textbf  {[L2]}/\textbf  {[L4]}\ Single-DSP48E1 time-multiplexed execution schedule [L4 Target]. All four IIR filters, the 4-lead beamformer, and the derivative stage execute in exactly 128 clock cycles ($1.28\,\mu $s at 100\,MHz), consuming $0.032\%$ of the $400,000$-cycle per-sample budget.}}{13}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:dsp_schedule}{{18}{13}{\tagLtwo /\tagLfour \ Single-DSP48E1 time-multiplexed execution schedule [L4 Target]. All four IIR filters, the 4-lead beamformer, and the derivative stage execute in exactly 128 clock cycles ($1.28\,\mu $s at 100\,MHz), consuming $0.032\%$ of the $400,000$-cycle per-sample budget}{figure.caption.25}{}}
+\newlabel{fig:dsp_schedule@cref}{{[figure][18][]18}{[1][12][]13}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces \textbf  {[L2]}/\textbf  {[L4]}\ Analytical Architectural Resource Allocations \& Sizing [L4 Target] on Xilinx Spartan-7 XC7S50-1CSGA324C at 100\,MHz master clock (RTL simulation [L3] and physical board bring-up [L5] scheduled for final report sprint).}}{13}{table.caption.26}\protected@file@percent }
+\newlabel{tab:hardware_resources}{{8}{13}{\tagLtwo /\tagLfour \ Analytical Architectural Resource Allocations \& Sizing [L4 Target] on Xilinx Spartan-7 XC7S50-1CSGA324C at 100\,MHz master clock (RTL simulation [L3] and physical board bring-up [L5] scheduled for final report sprint)}{table.caption.26}{}}
+\newlabel{tab:hardware_resources@cref}{{[table][8][]8}{[1][12][]13}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces \textbf  {[L2]}/\textbf  {[L4]}\ Hardware resource scaling and UART bus utilization across lead counts on Spartan-7. A 4-lead array requires only 1 DSP slice and consumes $<2.2\%$ of UART throughput at 921,600 baud.}}{13}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:fpga_scaling}{{19}{13}{\tagLtwo /\tagLfour \ Hardware resource scaling and UART bus utilization across lead counts on Spartan-7. A 4-lead array requires only 1 DSP slice and consumes $<2.2\%$ of UART throughput at 921,600 baud}{figure.caption.27}{}}
+\newlabel{fig:fpga_scaling@cref}{{[figure][19][]19}{[1][12][]13}{}{}{}}
+\@writefile{brf}{\backcite{xilinx_dsp48,constantinides2004}{{13}{12}{figure.caption.30}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces \textbf  {[L1]}/\textbf  {[L2]}\ Hardware cost vs detection accuracy Pareto trade-off. Spatial PCA (4-Ch) provides the optimal trade-off: 92.15\% F1 consuming only 990 LUTs and 1 DSP slice.}}{13}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:hw_tradeoff}{{20}{13}{\tagLone /\tagLtwo \ Hardware cost vs detection accuracy Pareto trade-off. Spatial PCA (4-Ch) provides the optimal trade-off: 92.15\% F1 consuming only 990 LUTs and 1 DSP slice}{figure.caption.28}{}}
+\newlabel{fig:hw_tradeoff@cref}{{[figure][20][]20}{[1][12][]13}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces \textbf  {[L1]}\ Multi-dimensional radar chart comparing six operational dimensions. Spatial PCA offers the most balanced profile for edge FPGA implementation.}}{13}{figure.caption.29}\protected@file@percent }
+\newlabel{fig:radar_chart}{{21}{13}{\tagLone \ Multi-dimensional radar chart comparing six operational dimensions. Spatial PCA offers the most balanced profile for edge FPGA implementation}{figure.caption.29}{}}
+\newlabel{fig:radar_chart@cref}{{[figure][21][]21}{[1][12][]13}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {13}\hskip -1em.~Optional Extensions and Real-Time Tracking}{13}{section.13}\protected@file@percent }
+\newlabel{sec:extensions}{{13}{13}{\hskip -1em.~Optional Extensions and Real-Time Tracking}{section.13}{}}
+\newlabel{sec:extensions@cref}{{[section][13][]13}{[1][13][]13}{}{}{}}
+\citation{widrow1975}
+\citation{cerutti1986}
+\citation{agostinelli2014}
+\citation{callaerts1990}
+\citation{kanjilal1997}
+\citation{delathauwer2000}
+\citation{cardoso1999}
+\citation{hyvarinen2000}
+\citation{sameni2007}
+\citation{andreotti2016}
+\citation{ronneberger2015}
+\citation{lee2020}
+\citation{zhong2022}
+\citation{ahlstrom1985}
+\citation{kanjilal1997}
+\citation{delathauwer2000}
+\citation{widrow1975}
+\citation{hasan2009}
+\citation{andreotti2016}
+\citation{lee2020}
+\citation{zhong2022}
+\citation{widrow1975}
+\citation{agostinelli2014}
+\citation{ahlstrom1985}
+\citation{lee2020}
+\citation{zhong2022}
+\@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces \textbf  {[L1]}\ Software execution time per 5-minute record across algorithmic paradigms. Spatial PCA on CPU completes in 190.7\,ms, while GPU-accelerated U-Net executes in 98.6\,ms and SWT-LMS requires 107.5\,s.}}{14}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:runtime_bars}{{22}{14}{\tagLone \ Software execution time per 5-minute record across algorithmic paradigms. Spatial PCA on CPU completes in 190.7\,ms, while GPU-accelerated U-Net executes in 98.6\,ms and SWT-LMS requires 107.5\,s}{figure.caption.30}{}}
+\newlabel{fig:runtime_bars@cref}{{[figure][22][]22}{[1][12][]14}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {14}\hskip -1em.~Comprehensive Related Literature Survey}{14}{section.14}\protected@file@percent }
+\newlabel{sec:literature_survey}{{14}{14}{\hskip -1em.~Comprehensive Related Literature Survey}{section.14}{}}
+\newlabel{sec:literature_survey@cref}{{[section][14][]14}{[1][14][]14}{}{}{}}
+\@writefile{brf}{\backcite{widrow1975}{{14}{1}{Item.36}}}
+\@writefile{brf}{\backcite{cerutti1986}{{14}{1}{Item.36}}}
+\@writefile{brf}{\backcite{agostinelli2014}{{14}{1}{Item.36}}}
+\@writefile{brf}{\backcite{callaerts1990}{{14}{2}{Item.37}}}
+\@writefile{brf}{\backcite{kanjilal1997}{{14}{2}{Item.37}}}
+\@writefile{brf}{\backcite{delathauwer2000}{{14}{3}{Item.38}}}
+\@writefile{brf}{\backcite{cardoso1999}{{14}{3}{Item.38}}}
+\@writefile{brf}{\backcite{hyvarinen2000}{{14}{3}{Item.38}}}
+\@writefile{brf}{\backcite{sameni2007}{{14}{4}{Item.39}}}
+\@writefile{brf}{\backcite{andreotti2016}{{14}{4}{Item.39}}}
+\@writefile{brf}{\backcite{ronneberger2015}{{14}{5}{Item.40}}}
+\@writefile{brf}{\backcite{lee2020}{{14}{5}{Item.40}}}
+\@writefile{brf}{\backcite{zhong2022}{{14}{5}{Item.40}}}
+\@writefile{toc}{\contentsline {section}{\numberline {15}\hskip -1em.~Results Replicated from the Literature}{14}{section.15}\protected@file@percent }
+\newlabel{sec:replications}{{15}{14}{\hskip -1em.~Results Replicated from the Literature}{section.15}{}}
+\newlabel{sec:replications@cref}{{[section][15][]15}{[1][14][]14}{}{}{}}
+\@writefile{brf}{\backcite{ahlstrom1985}{{14}{15}{table.caption.31}}}
+\@writefile{brf}{\backcite{lee2020}{{14}{15}{table.caption.31}}}
+\@writefile{brf}{\backcite{zhong2022}{{14}{15}{table.caption.31}}}
+\@writefile{toc}{\contentsline {section}{\numberline {16}\hskip -1em.~Hardware Demonstration Script and Evaluation Presets}{14}{section.16}\protected@file@percent }
+\newlabel{sec:demo_script}{{16}{14}{\hskip -1em.~Hardware Demonstration Script and Evaluation Presets}{section.16}{}}
+\newlabel{sec:demo_script@cref}{{[section][16][]16}{[1][14][]14}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces \textbf  {[L1]}/\textbf  {[L2]}\ Comprehensive Literature Replication Scorecard comparing published baselines against our in-house implementations evaluated under identical PhysioNet FECGSYNDB conditions.}}{15}{table.caption.31}\protected@file@percent }
+\newlabel{tab:replication_scorecard}{{9}{15}{\tagLone /\tagLtwo \ Comprehensive Literature Replication Scorecard comparing published baselines against our in-house implementations evaluated under identical PhysioNet FECGSYNDB conditions}{table.caption.31}{}}
+\newlabel{tab:replication_scorecard@cref}{{[table][9][]9}{[1][14][]15}{}{}{}}
+\@writefile{brf}{\backcite{ahlstrom1985}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{kanjilal1997}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{delathauwer2000}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{widrow1975}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{hasan2009}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{andreotti2016}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{lee2020}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{zhong2022}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{widrow1975}{{15}{9}{table.caption.31}}}
+\@writefile{brf}{\backcite{agostinelli2014}{{15}{9}{table.caption.31}}}
+\citation{clifford2014}
+\citation{anthropic2024}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Hardware demonstration presets mapped to Boolean Board switches and reference recordings.}}{16}{table.caption.32}\protected@file@percent }
+\newlabel{tab:demo_presets}{{10}{16}{Hardware demonstration presets mapped to Boolean Board switches and reference recordings}{table.caption.32}{}}
+\newlabel{tab:demo_presets@cref}{{[table][10][]10}{[1][14][]16}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {17}\hskip -1em.~Scope, Limitations, and Validation Status}{16}{section.17}\protected@file@percent }
+\newlabel{sec:limitations}{{17}{16}{\hskip -1em.~Scope, Limitations, and Validation Status}{section.17}{}}
+\newlabel{sec:limitations@cref}{{[section][17][]17}{[1][16][]16}{}{}{}}
+\@writefile{brf}{\backcite{clifford2014}{{16}{1}{Item.45}}}
+\@writefile{toc}{\contentsline {section}{\numberline {18}\hskip -1em.~Register of Changes to the Preliminary Report}{16}{section.18}\protected@file@percent }
+\newlabel{sec:change_register}{{18}{16}{\hskip -1em.~Register of Changes to the Preliminary Report}{section.18}{}}
+\newlabel{sec:change_register@cref}{{[section][18][]18}{[1][16][]16}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {19}\hskip -1em.~AI Usage Disclosure}{16}{section.19}\protected@file@percent }
+\newlabel{sec:ai_disclosure}{{19}{16}{\hskip -1em.~AI Usage Disclosure}{section.19}{}}
+\newlabel{sec:ai_disclosure@cref}{{[section][19][]19}{[1][16][]16}{}{}{}}
+\@writefile{brf}{\backcite{anthropic2024}{{16}{19}{section.19}}}
+\@writefile{toc}{\contentsline {section}{\numberline {20}\hskip -1em.~Code Availability and Single-Command Reproducibility}{16}{section.20}\protected@file@percent }
+\newlabel{sec:code_availability}{{20}{16}{\hskip -1em.~Code Availability and Single-Command Reproducibility}{section.20}{}}
+\newlabel{sec:code_availability@cref}{{[section][20][]20}{[1][16][]16}{}{}{}}
+\bibcite{hasan2009}{1}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Comprehensive hierarchical validation status matrix across all engineering development levels.}}{17}{table.caption.33}\protected@file@percent }
+\newlabel{tab:validation_status}{{11}{17}{Comprehensive hierarchical validation status matrix across all engineering development levels}{table.caption.33}{}}
+\newlabel{tab:validation_status@cref}{{[table][11][]11}{[1][16][]17}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {21}\hskip -1em.~Team Work Breakdown and Milestone Roadmap}{17}{section.21}\protected@file@percent }
+\newlabel{sec:roadmap}{{21}{17}{\hskip -1em.~Team Work Breakdown and Milestone Roadmap}{section.21}{}}
+\newlabel{sec:roadmap@cref}{{[section][21][]21}{[1][17][]17}{}{}{}}
+\bibcite{sameni2010}{2}
+\bibcite{clifford2014}{3}
+\bibcite{behar2014}{4}
+\bibcite{abel2023}{5}
+\bibcite{sornmo_ecg}{6}
+\bibcite{widrow1975}{7}
+\bibcite{cerutti1986}{8}
+\bibcite{agostinelli2014}{9}
+\bibcite{callaerts1990}{10}
+\bibcite{kanjilal1997}{11}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Audited register of changes and engineering improvements since Preliminary Report (PPR-8).}}{18}{table.caption.34}\protected@file@percent }
+\newlabel{tab:change_register}{{12}{18}{Audited register of changes and engineering improvements since Preliminary Report (PPR-8)}{table.caption.34}{}}
+\newlabel{tab:change_register@cref}{{[table][12][]12}{[1][16][]18}{}{}{}}
+\bibcite{delathauwer2000}{12}
+\bibcite{sameni2007}{13}
+\bibcite{cardoso1999}{14}
+\bibcite{hyvarinen2000}{15}
+\bibcite{fecgsyndb}{16}
+\bibcite{andreotti2016}{17}
+\bibcite{nifeadb}{18}
+\bibcite{ronneberger2015}{19}
+\bibcite{lee2020}{20}
+\bibcite{zhong2022}{21}
+\bibcite{ahlstrom1985}{22}
+\bibcite{xilinx_dsp48}{23}
+\bibcite{constantinides2004}{24}
+\bibcite{pan1985}{25}
+\bibcite{haykin2002}{26}
+\bibcite{zarzoso2001}{27}
+\bibcite{kher2019}{28}
+\bibcite{realdigital_boolean}{29}
+\bibcite{anthropic2024}{30}
+\gdef \@abspage@last{19}
