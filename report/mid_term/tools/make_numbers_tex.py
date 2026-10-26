@@ -33,17 +33,6 @@ def compute_all_metrics():
     metrics_csv = os.path.join(project_root, 'code', 'results', 'metrics.csv')
     output_tex = os.path.join(base_dir, '..', 'numbers.tex')
     
-    if not os.path.exists(mega_csv):
-        # Alternative search
-        candidates = [
-            os.path.join(project_root, 'code', 'results', 'mega_benchmark_results.csv'),
-            r'd:\signal_project\code\results\mega_benchmark_results.csv'
-        ]
-        for c in candidates:
-            if os.path.exists(c):
-                mega_csv = c
-                break
-        
     print(f"Reading mega benchmark: {mega_csv}")
     mega = pd.read_csv(mega_csv)
     
@@ -77,6 +66,8 @@ def compute_all_metrics():
         mean_rmse = valid_rmse.mean()
         agr_5bpm = (valid_mae <= 5.0).mean() * 100
         mean_corr = m_df['correlation'].mean()
+        mean_abs_corr = m_df['correlation'].abs().mean()
+        pos_corr_frac = (m_df['correlation'] > 0).mean() * 100
         mean_runtime_ms = m_df['runtime_s'].mean() * 1000
         min_f1 = run_f1.min()
         max_f1 = run_f1.max()
@@ -85,6 +76,8 @@ def compute_all_metrics():
         train_f1 = m_df[m_df['sub_id'].isin([f'sub0{i}' for i in range(1, 8)])]['f1'].mean() * 100
         val_f1 = m_df[m_df['sub_id'] == 'sub08']['f1'].mean() * 100
         test_f1 = m_df[m_df['sub_id'].isin(['sub09', 'sub10'])]['f1'].mean() * 100
+        train_mae = m_df[m_df['sub_id'].isin([f'sub0{i}' for i in range(1, 8)])]['fhr_mae_bpm'].dropna().mean()
+        val_mae = m_df[m_df['sub_id'] == 'sub08']['fhr_mae_bpm'].dropna().mean()
         test_mae = m_df[m_df['sub_id'].isin(['sub09', 'sub10'])]['fhr_mae_bpm'].dropna().mean()
         test_agr = (m_df[m_df['sub_id'].isin(['sub09', 'sub10'])]['fhr_mae_bpm'].dropna() <= 5.0).mean() * 100
         
@@ -103,10 +96,14 @@ def compute_all_metrics():
         lines.append(f"\\newcommand{{\\{prefix}RMSE}}{{{mean_rmse:.2f}}}")
         lines.append(f"\\newcommand{{\\{prefix}Agr}}{{{agr_5bpm:.1f}}}")
         lines.append(f"\\newcommand{{\\{prefix}Corr}}{{{mean_corr:.3f}}}")
+        lines.append(f"\\newcommand{{\\{prefix}AbsCorr}}{{{mean_abs_corr:.3f}}}")
+        lines.append(f"\\newcommand{{\\{prefix}PosCorrFrac}}{{{pos_corr_frac:.1f}}}")
         lines.append(f"\\newcommand{{\\{prefix}SpeedMs}}{{{mean_runtime_ms:.1f}}}")
         lines.append(f"\\newcommand{{\\{prefix}TrainFOne}}{{{train_f1:.2f}}}")
         lines.append(f"\\newcommand{{\\{prefix}ValFOne}}{{{val_f1:.2f}}}")
         lines.append(f"\\newcommand{{\\{prefix}TestFOne}}{{{test_f1:.2f}}}")
+        lines.append(f"\\newcommand{{\\{prefix}TrainMAE}}{{{train_mae:.2f}}}")
+        lines.append(f"\\newcommand{{\\{prefix}ValMAE}}{{{val_mae:.2f}}}")
         lines.append(f"\\newcommand{{\\{prefix}TestMAE}}{{{test_mae:.2f}}}")
         lines.append(f"\\newcommand{{\\{prefix}TestAgr}}{{{test_agr:.1f}}}")
         lines.append("")
@@ -115,34 +112,65 @@ def compute_all_metrics():
     # 2. Partition Invariance for Spatial PCA across conditions and SNRs
     # -------------------------------------------------------------------------
     pca_df = mega[mega['method'] == 'Spatial_PCA_4ch']
-    lines.append("% --- Partition Invariance: Spatial PCA (4-Ch) ---")
+    lines.append("% --- Partition Invariance & Breakdown: Spatial PCA (4-Ch) ---")
     c_means = pca_df.groupby('case_id')['f1'].mean() * 100
+    c_maes = pca_df.groupby('case_id')['fhr_mae_bpm'].mean()
+    c_agrs = (pca_df.groupby('case_id')['fhr_mae_bpm'].apply(lambda x: (x <= 5.0).mean())) * 100
     for cid in ['c0', 'c1', 'c2', 'c3', 'c4']:
         c_name = to_alpha_macro(cid)
         lines.append(f"\\newcommand{{\\pcaCond{c_name.upper()}}}{{{c_means[cid]:.2f}}}")
+        lines.append(f"\\newcommand{{\\pcaCond{c_name.upper()}MAE}}{{{c_maes[cid]:.2f}}}")
+        lines.append(f"\\newcommand{{\\pcaCond{c_name.upper()}Agr}}{{{c_agrs[cid]:.1f}}}")
     lines.append(f"\\newcommand{{\\pcaCondMean}}{{{c_means.mean():.2f}}}")
     
     snr_means = pca_df.groupby('snr_db')['f1'].mean() * 100
+    snr_maes = pca_df.groupby('snr_db')['fhr_mae_bpm'].mean()
+    snr_agrs = (pca_df.groupby('snr_db')['fhr_mae_bpm'].apply(lambda x: (x <= 5.0).mean())) * 100
     for sdb in [0, 3, 6, 9, 12]:
         sdb_name = to_alpha_macro(str(sdb))
         lines.append(f"\\newcommand{{\\pcaSNR{sdb_name}dB}}{{{snr_means[sdb]:.2f}}}")
+        lines.append(f"\\newcommand{{\\pcaSNR{sdb_name}dBMAE}}{{{snr_maes[sdb]:.2f}}}")
+        lines.append(f"\\newcommand{{\\pcaSNR{sdb_name}dBAgr}}{{{snr_agrs[sdb]:.1f}}}")
     lines.append(f"\\newcommand{{\\pcaSNRMean}}{{{snr_means.mean():.2f}}}")
     lines.append("")
 
     # -------------------------------------------------------------------------
-    # 3. Subject-by-Subject breakdown for Spatial PCA (Table for C-03)
+    # 3. Subject-by-Subject breakdown for Spatial PCA and Deep U-Net (Table 7)
     # -------------------------------------------------------------------------
-    lines.append("% --- Per-Subject Breakdown: Spatial PCA (4-Ch) ---")
+    lines.append("% --- Per-Subject Breakdown: Spatial PCA & Deep U-Net ---")
     pca_subj = pca_df.groupby('sub_id')['f1'].mean() * 100
     pca_subj_mae = pca_df.groupby('sub_id')['fhr_mae_bpm'].mean()
+    unet_df = mega[mega['method'] == 'Deep_UNet_4ch']
+    unet_subj = unet_df.groupby('sub_id')['f1'].mean() * 100
+    unet_subj_mae = unet_df.groupby('sub_id')['fhr_mae_bpm'].mean()
     for sid in sorted(pca_subj.index):
         s_alpha = to_alpha_macro(sid)
         lines.append(f"\\newcommand{{\\pcaSubj{s_alpha}FOne}}{{{pca_subj[sid]:.2f}}}")
         lines.append(f"\\newcommand{{\\pcaSubj{s_alpha}MAE}}{{{pca_subj_mae[sid]:.2f}}}")
+        lines.append(f"\\newcommand{{\\unetSubj{s_alpha}FOne}}{{{unet_subj[sid]:.2f}}}")
+        lines.append(f"\\newcommand{{\\unetSubj{s_alpha}MAE}}{{{unet_subj_mae[sid]:.2f}}}")
     lines.append("")
 
     # -------------------------------------------------------------------------
-    # 4. Hardware Sizing and Timing Constants (E-08, E-09, E-10)
+    # 4. Storage Arithmetic and Closed-Form Constants
+    # -------------------------------------------------------------------------
+    lines.append("% --- Storage Arithmetic and Closed-Form Constants (S-06, S-07, T-06) ---")
+    lines.append(r"\newcommand{\datasetSizeIntSixteenGB}{1.28}")
+    lines.append(r"\newcommand{\datasetSizeFloatThirtyTwoGB}{2.55}")
+    lines.append(r"\newcommand{\datasetSizeFloatSixtyFourGB}{5.10}")
+    lines.append(r"\newcommand{\datasetTrainSizeFloatThirtyTwoGB}{1.79}")
+    lines.append(r"\newcommand{\datasetValSizeFloatThirtyTwoGB}{0.26}")
+    lines.append(r"\newcommand{\datasetTestSizeFloatThirtyTwoGB}{0.51}")
+    lines.append(r"\newcommand{\probFetalOverlapPercent}{17.5}")
+    lines.append(r"\newcommand{\probMaternalOverlapPercent}{32.6}")
+    lines.append(r"\newcommand{\probCompleteContainmentPercent}{5.0}")
+    lines.append(r"\newcommand{\hwNullDepthSixteenBits}{95.1}")
+    lines.append(r"\newcommand{\hwNullDepthTwelveBits}{71.0}")
+    lines.append(r"\newcommand{\hwNullDepthTenBits}{59.0}")
+    lines.append("")
+
+    # -------------------------------------------------------------------------
+    # 5. Hardware Sizing and Timing Constants (E-08, E-09, E-10)
     # -------------------------------------------------------------------------
     lines.append("% --- Hardware & Timing Constants ---")
     lines.append(r"\newcommand{\hwClockMHz}{100}")
@@ -152,8 +180,10 @@ def compute_all_metrics():
     lines.append(r"\newcommand{\hwSizedCycles}{128}")
     lines.append(r"\newcommand{\hwComputeTimeUs}{1.28}")
     lines.append(r"\newcommand{\hwComputeMargin}{3125}")
-    lines.append(r"\newcommand{\hwFilterGroupDelaySamples}{24}")
-    lines.append(r"\newcommand{\hwFilterGroupDelayMs}{96}")
+    lines.append(r"\newcommand{\hwFilterGroupDelayPassbandMs}{12.1}")
+    lines.append(r"\newcommand{\hwFilterGroupDelayPassbandSamples}{3.0}")
+    lines.append(r"\newcommand{\hwFilterGroupDelayEdgeMs}{96}")
+    lines.append(r"\newcommand{\hwFilterGroupDelayEdgeSamples}{24}")
     lines.append(r"\newcommand{\hwUartBaudRate}{921600}")
     lines.append(r"\newcommand{\hwUartSampleBytes}{8}")
     lines.append(r"\newcommand{\hwUartSampleTimeUs}{86.8}")
