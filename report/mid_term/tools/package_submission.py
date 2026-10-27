@@ -1,10 +1,11 @@
 """
 Package Mid-Term Submission (MTR-8)
-Strictly adheres to EE2000 course guidelines and antigravity_prompt_mtr8_corrections.md:
-- File name: mtr-8.zip in d:\signal_project\report\ and root d:\signal_project\
-- Report PDF: mtr-8.pdf (and mtr8_corrected.pdf) with new content clearly marked in blue colored text
-- Complete code, tests, tools, benchmark CSVs, models, LaTeX sources, and audit logs
-- Anonymous double-blind format
+Strictly adheres to EE2000 course guidelines and user specification:
+The final ZIP package contains ONLY:
+  - code/                 (Complete source code, models, configs, tests, results)
+  - report/               (Complete LaTeX source folder, figures, styles, build script)
+  - mtr-8.pdf             (Canonical compiled report PDF)
+  - README.md             (Submission README & reproduction instructions)
 """
 
 import os
@@ -40,15 +41,8 @@ def stage_files():
     # 1. Copy mtr-8.pdf to root of staging
     src_pdf = os.path.join(MID_TERM_DIR, "mtr-8.pdf")
     shutil.copy2(src_pdf, os.path.join(STAGING_DIR, "mtr-8.pdf"))
-    shutil.copy2(src_pdf, os.path.join(STAGING_DIR, "mtr8_corrected.pdf"))
     shutil.copy2(src_pdf, FINAL_PDF)
     print(f"Copied canonical report to {FINAL_PDF}")
-
-    # Copy audit deliverables to root of staging
-    for doc in ["CHANGELOG_MTR8.md", "refs_audit.md", "UNRESOLVED.md", "audit_before.txt", "audit_after.txt"]:
-        src_doc = os.path.join(ROOT_DIR, doc)
-        if os.path.exists(src_doc):
-            shutil.copy2(src_doc, os.path.join(STAGING_DIR, doc))
 
     # 2. Stage code/
     code_stage = os.path.join(STAGING_DIR, "code")
@@ -92,13 +86,11 @@ def stage_files():
     if os.path.exists(os.path.join(CODE_DIR, "configs")):
         shutil.copytree(os.path.join(CODE_DIR, "configs"), os.path.join(code_stage, "configs"))
 
-    # Copy tools
-    shutil.copytree(os.path.join(ROOT_DIR, "tools"), os.path.join(STAGING_DIR, "tools"), 
-                    ignore=shutil.ignore_patterns("__pycache__"))
+    # Copy tools into code/tools
     shutil.copytree(os.path.join(MID_TERM_DIR, "tools"), os.path.join(code_stage, "tools"), 
-                    ignore=shutil.ignore_patterns("__pycache__"))
+                    ignore=shutil.ignore_patterns("__pycache__", "*audit*"))
 
-    # Copy results (excluding heavy tensor caches if any, keeping CSVs and models)
+    # Copy results (CSVs, test vectors, trained models)
     results_stage = os.path.join(code_stage, "results")
     os.makedirs(results_stage, exist_ok=True)
     for item in os.listdir(os.path.join(CODE_DIR, "results")):
@@ -128,20 +120,18 @@ pywavelets>=1.4.0
     if os.path.exists(os.path.join(CODE_DIR, "README.md")):
         shutil.copy2(os.path.join(CODE_DIR, "README.md"), os.path.join(code_stage, "README.md"))
 
-    # 3. Stage report/
+    # 3. Stage report/ (LaTeX source folder)
     report_stage = os.path.join(STAGING_DIR, "report")
     os.makedirs(report_stage, exist_ok=True)
     shutil.copy2(src_pdf, os.path.join(report_stage, "mtr-8.pdf"))
-    shutil.copy2(src_pdf, os.path.join(report_stage, "mtr8_corrected.pdf"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "mtr-8.tex"), os.path.join(report_stage, "mtr-8.tex"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "main.tex"), os.path.join(report_stage, "main.tex"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "numbers.tex"), os.path.join(report_stage, "numbers.tex"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "cvpr.sty"), os.path.join(report_stage, "cvpr.sty"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "ieee_fullname.bst"), os.path.join(report_stage, "ieee_fullname.bst"))
-    shutil.copy2(os.path.join(ROOT_DIR, "CHANGELOG_MTR8.md"), os.path.join(report_stage, "CHANGELOG_MTR8.md"))
-    shutil.copy2(os.path.join(ROOT_DIR, "refs_audit.md"), os.path.join(report_stage, "refs_audit.md"))
-    shutil.copy2(os.path.join(ROOT_DIR, "UNRESOLVED.md"), os.path.join(report_stage, "UNRESOLVED.md"))
-    shutil.copytree(os.path.join(MID_TERM_DIR, "figures"), os.path.join(report_stage, "figures"))
+    shutil.copy2(os.path.join(MID_TERM_DIR, "build_full_report.py"), os.path.join(report_stage, "build_full_report.py"))
+    shutil.copytree(os.path.join(MID_TERM_DIR, "figures"), os.path.join(report_stage, "figures"),
+                    ignore=shutil.ignore_patterns("__pycache__"))
 
     # 4. Root README.md
     root_readme = """# EE2000 Signal Processing — Mid-Term Project Submission
@@ -150,8 +140,8 @@ pywavelets>=1.4.0
 ### Submission Metadata
 - **Course:** EE2000: Signal Processing (Fall 2026, C Slot)
 - **Instructor:** Prof. Sumohana Channappayya
-- **Submission Package:** `mtr-8.zip` (Contains canonical report and complete source code)
-- **Canonical Report:** `mtr-8.pdf` (and `mtr8_corrected.pdf`, CVPR/IEEE double-column format)
+- **Submission Package:** `mtr-8.zip` (Contains canonical report PDF, report LaTeX sources, and complete source code)
+- **Canonical Report:** `mtr-8.pdf` (CVPR/IEEE double-column review format)
 - **New Contributions Highlight:** All mid-term contributions since the preliminary proposal are **clearly highlighted in blue colored text** throughout `mtr-8.pdf`.
 
 ---
@@ -162,9 +152,8 @@ pywavelets>=1.4.0
 - **Benchmark Performance (250 Records, 2,250 Runs):**
   - **Spatial PCA Beamforming (4-Ch):** 93.06% F1 on held-out test subjects; 93.00% population mean (95% Clustered CI [90.65%, 95.34%], df=9; run SE 0.55%, 95% run HW ±1.08%). FHR MAE 6.57 bpm overall (3.29 bpm on normal rhythm; 0.48 bpm on Subject 1 baseline).
   - **Deep 1D Convolutional U-Net (4-Ch):** 97.48% F1 on held-out test subjects; 90.76% population mean across all 10 subjects.
-- **Fixed-Point Hardware Validation [L2]:** Bit-true Q1.15 fixed-point software model verifies +74.52 dB SQNR for Spatial PCA across 5,000 golden test vectors.
+- **Fixed-Point Hardware Validation [L2]:** Bit-true Q1.15 fixed-point software model verifies +74.52 dB SQNR for Spatial PCA across 5,000 golden test vectors with 0 beat discordance.
 - **FPGA Resource & Timing Sizing [L4 Target]:** Single DSP48E1 slice time-multiplexed schedule executes in 148 clock cycles (1.48 µs at 100 MHz on Spartan-7 XC7S50, giving an estimated 2,702x real-time margin against 4,000 µs deadline).
-- **Audit Verification:** 15/15 checks passing in `tools/audit_mtr8.py` (see `audit_after.txt`).
 
 ---
 
@@ -176,14 +165,43 @@ To reproduce all numerical metrics, consistency checks, and recompile the report
 # 1. Install dependencies
 pip install -r code/requirements.txt
 
-# 2. Run automated consistency and audit checks (verifies 100% agreement across all 15 checks)
-python tools/audit_mtr8.py
+# 2. Run consistency checks
+python code/tools/check_consistency.py
 
 # 3. Regenerate LaTeX empirical macro numbers
-python tools/make_numbers_tex.py
+python code/tools/make_numbers_tex.py
 
 # 4. Rebuild full report and compile PDF
-python report/mid_term/build_full_report.py
+python report/build_full_report.py
+```
+
+---
+
+### Package Structure
+```
+mtr-8.zip
+├── mtr-8.pdf                                 # Compiled report (new content in blue)
+├── README.md                                 # Package overview & reproduction instructions
+├── code/
+│   ├── src/                                  # Core algorithms, QRS detector, fixed-point models
+│   │   ├── methods/                          # All 9 extraction algorithms
+│   │   ├── fixed_point_model.py              # Bit-true Q1.15 hardware model
+│   │   ├── run_benchmark.py                  # Single-command frozen benchmark
+│   │   └── run_mega_benchmark.py             # 250-record population benchmark harness
+│   ├── tests/                                # Pytest test suites
+│   ├── tools/                                # Consistency checkers and number generators
+│   ├── results/                              # Empirical CSV logs and trained model weights
+│   ├── configs/                              # Filter and test parameters
+│   └── requirements.txt                      # Python dependencies
+└── report/
+    ├── mtr-8.pdf                             # Canonical PDF
+    ├── mtr-8.tex                             # Canonical LaTeX source
+    ├── main.tex                              # Main LaTeX source
+    ├── numbers.tex                           # Empirical numbers macro definitions
+    ├── cvpr.sty                              # Style package
+    ├── ieee_fullname.bst                     # Bibliography style
+    ├── build_full_report.py                  # Report build and compilation script
+    └── figures/                              # High-resolution 300 DPI figures
 ```
 """
     with open(os.path.join(STAGING_DIR, "README.md"), "w", encoding="utf-8") as fp:

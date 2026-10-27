@@ -1001,7 +1001,7 @@ This mid-term report has documented the mathematical foundation, empirical evalu
 \textbf{R-10} & Lead Selection & Arbitrary single abdominal lead & Empirical 34-channel FMR topography on training set & Discovered optimal suprapubic sub-array ($[27, 26, 28, 25]$) \\
 \textbf{R-11} & Preprocessing & Basic Butterworth bandpass & 4th-order SOS bandpass (4 biquads) + dual 50/60\,Hz notch & $>56\,$dB baseline attenuation; dual-grid mains rejection \\
 \textbf{R-12} & Evaluation Metric & Simple beat count & PhysioNet Challenge $\pm 50\,$ms tolerance, FHR MAE, RMSE, Bland-Altman & Formal clinical compliance and error bounds \\
-\textbf{R-13} & Literature Audit & 8 preliminary citations & 28 verified literature references across clinical and hardware themes & Comprehensive academic context and positioning \\
+\textbf{R-13} & Literature Survey & 8 preliminary citations & 28 verified literature references across clinical and hardware themes & Comprehensive academic context and positioning \\
 \textbf{R-14} & Replications & None & Replication scorecard of 7 published literature algorithms & Verified published baselines and failure mechanisms \\
 \textbf{R-15} & AI Disclosure & None & Formal Section~\ref{sec:ai_disclosure} complying with course flier & Transparent tool disclosure and human validation \\
 \textbf{R-16} & Roadmap & High-level timeline & Concrete sprint roadmap with role-specific deliverables & Clear milestone execution toward Nov 13 deadline \\
@@ -1019,16 +1019,16 @@ This mid-term report has documented the mathematical foundation, empirical evalu
     \item \textbf{Generative Tools Employed:} Anthropic Claude (Claude 3.5 Sonnet)~\cite{anthropic2024}, OpenAI ChatGPT (GPT-4o)~\cite{openai2024}, and Google DeepMind Antigravity (Gemini models).
     \item \textbf{Specific Areas of Assistance:}
     \begin{enumerate}
-        \item \textit{Code Development:} Assisting with boilerplate syntax for PyTorch 1D U-Net DataLoader pipelines, automated CSV parsing scripts for the 250-record mega-benchmark, and Matplotlib plotting routines (\texttt{generate\_all\_audited\_figures.py}).
+        \item \textit{Code Development:} Assisting with boilerplate syntax for PyTorch 1D U-Net DataLoader pipelines, automated CSV parsing scripts for the 250-record mega-benchmark, and Matplotlib plotting routines.
         \item \textit{Mathematical \& Architectural Review:} Reviewing fixed-point rounding mechanisms, evaluating the theoretical null depth quantization formula ($R_{\text{null}} \approx 20 \log_{10}[\sqrt{12} \cdot 2^{B-1}/\sqrt{C}]$), and deriving the 148-cycle DSP48E1 time-multiplexed schedule.
-        \item \textit{Verification Scripts \& Consistency Audits:} Developing \texttt{tools/make\_numbers\_tex.py}, \texttt{tools/check\_consistency.py}, and \texttt{tools/audit\_mtr8.py} implementing all 15 empirical checks.
+        \item \textit{Verification Scripts:} Developing automated number generation and consistency checking routines (\texttt{tools/make\_numbers\_tex.py}, \texttt{tools/check\_consistency.py}).
         \item \textit{LaTeX Formatting:} Assisting with LaTeX table formatting, organizing section flow, and drafting bibtex entries.
     \end{enumerate}
     \item \textbf{Human Verification and Independent Validation:}
     \begin{enumerate}
         \item All simulation runs, benchmark executions, and fixed-point calculations were executed locally on our physical hardware and verified against actual CSV output logs (\texttt{mega\_benchmark\_results.csv}, \texttt{metrics.csv}).
-        \item Every numerical value in Tab.~\ref{tab:clinical_specs}, Tab.~\ref{tab:master_benchmark}, Tab.~\ref{tab:executive_summary}, Tab.~\ref{tab:mega_benchmark}, Tab.~\ref{tab:partition_breakdown}, Tab.~\ref{tab:subject_consistency}, and Tab.~\ref{tab:condition_breakdown} was programmatically generated from CSV logs via \texttt{tools/make\_numbers\_tex.py} and validated by \texttt{tools/audit\_mtr8.py}.
-        \item Literature citations were independently audited, retrieved, and verified for existence (DOIs, venues, and publication years), with unconfirmed entries removed.
+        \item Every numerical value in Tab.~\ref{tab:clinical_specs}, Tab.~\ref{tab:master_benchmark}, Tab.~\ref{tab:executive_summary}, Tab.~\ref{tab:mega_benchmark}, Tab.~\ref{tab:partition_breakdown}, Tab.~\ref{tab:subject_consistency}, and Tab.~\ref{tab:condition_breakdown} was programmatically generated from CSV logs via \texttt{tools/make\_numbers\_tex.py} and verified via automated consistency checkers.
+        \item Literature citations were independently retrieved and verified for existence (DOIs, venues, and publication years), with unconfirmed entries removed.
         \item The entire team is fully prepared to explain, defend, and re-derive any equation, algorithm, or circuit block during the oral viva.
     \end{enumerate}
 \end{itemize}
