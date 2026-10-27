@@ -1,9 +1,9 @@
 """
 Package Mid-Term Submission (MTR-8)
-Strictly adheres to EE2000 course guidelines:
-- File name: mtr-8.zip in d:\signal_project\report\
-- Report PDF: mtr-8.pdf with new content clearly marked in blue colored text
-- Complete code, tests, tools, benchmark CSVs, models, and LaTeX sources
+Strictly adheres to EE2000 course guidelines and antigravity_prompt_mtr8_corrections.md:
+- File name: mtr-8.zip in d:\signal_project\report\ and root d:\signal_project\
+- Report PDF: mtr-8.pdf (and mtr8_corrected.pdf) with new content clearly marked in blue colored text
+- Complete code, tests, tools, benchmark CSVs, models, LaTeX sources, and audit logs
 - Anonymous double-blind format
 """
 
@@ -17,14 +17,16 @@ REPORT_DIR = os.path.join(ROOT_DIR, "report")
 MID_TERM_DIR = os.path.join(REPORT_DIR, "mid_term")
 CODE_DIR = os.path.join(ROOT_DIR, "code")
 
-STAGING_DIR = r"C:\Users\Naman\.gemini\antigravity\brain\da3f4eb8-753d-4dc3-92ab-0db4c5b82ea6\scratch\staging_mtr8"
+STAGING_DIR = os.path.join(ROOT_DIR, "temp_staging_mtr8")
 FINAL_ZIP = os.path.join(REPORT_DIR, "mtr-8.zip")
+ROOT_ZIP = os.path.join(ROOT_DIR, "mtr-8.zip")
 FINAL_PDF = os.path.join(REPORT_DIR, "mtr-8.pdf")
 
 def sanitize_content(text):
     # Sanitize individual names to ensure double-blind compliance
-    text = re.sub(r'Owner\s*:\s*(Vivek|Naman|Anshu|Astitva)[^\n]*', 'Owner    : Team 0008 (EE2000)', text, flags=re.IGNORECASE)
-    text = re.sub(r'Author\s*:\s*(Vivek|Naman|Anshu|Astitva)[^\n]*', 'Author   : Team 0008 (EE2000)', text, flags=re.IGNORECASE)
+    text = re.sub(r'Owner\s*:\s*(Vivek|Naman|Anshu|Astitva|Pritam)[^\n]*', 'Owner    : Team 0008 (EE2000)', text, flags=re.IGNORECASE)
+    text = re.sub(r'Author\s*:\s*(Vivek|Naman|Anshu|Astitva|Pritam)[^\n]*', 'Author   : Team 0008 (EE2000)', text, flags=re.IGNORECASE)
+    text = re.sub(r"Vivek_Hybrid_Alt", "Wavelet_Threshold_Hybrid", text)
     text = re.sub(r"Vivek's Method", "Spatial PCA and Alternative Method", text)
     text = re.sub(r"Vivek's Alternative Extractor", "Alternative Hybrid Extractor", text)
     text = re.sub(r"Astitva's module", "Baseline Preprocessing Module", text)
@@ -38,8 +40,15 @@ def stage_files():
     # 1. Copy mtr-8.pdf to root of staging
     src_pdf = os.path.join(MID_TERM_DIR, "mtr-8.pdf")
     shutil.copy2(src_pdf, os.path.join(STAGING_DIR, "mtr-8.pdf"))
+    shutil.copy2(src_pdf, os.path.join(STAGING_DIR, "mtr8_corrected.pdf"))
     shutil.copy2(src_pdf, FINAL_PDF)
     print(f"Copied canonical report to {FINAL_PDF}")
+
+    # Copy audit deliverables to root of staging
+    for doc in ["CHANGELOG_MTR8.md", "refs_audit.md", "UNRESOLVED.md", "audit_before.txt", "audit_after.txt"]:
+        src_doc = os.path.join(ROOT_DIR, doc)
+        if os.path.exists(src_doc):
+            shutil.copy2(src_doc, os.path.join(STAGING_DIR, doc))
 
     # 2. Stage code/
     code_stage = os.path.join(STAGING_DIR, "code")
@@ -80,9 +89,12 @@ def stage_files():
                     fp.write(content)
 
     # Copy configs
-    shutil.copytree(os.path.join(CODE_DIR, "configs"), os.path.join(code_stage, "configs"))
+    if os.path.exists(os.path.join(CODE_DIR, "configs")):
+        shutil.copytree(os.path.join(CODE_DIR, "configs"), os.path.join(code_stage, "configs"))
 
     # Copy tools
+    shutil.copytree(os.path.join(ROOT_DIR, "tools"), os.path.join(STAGING_DIR, "tools"), 
+                    ignore=shutil.ignore_patterns("__pycache__"))
     shutil.copytree(os.path.join(MID_TERM_DIR, "tools"), os.path.join(code_stage, "tools"), 
                     ignore=shutil.ignore_patterns("__pycache__"))
 
@@ -113,17 +125,22 @@ pywavelets>=1.4.0
         fp.write(req_content)
 
     # Code README
-    shutil.copy2(os.path.join(CODE_DIR, "README.md"), os.path.join(code_stage, "README.md"))
+    if os.path.exists(os.path.join(CODE_DIR, "README.md")):
+        shutil.copy2(os.path.join(CODE_DIR, "README.md"), os.path.join(code_stage, "README.md"))
 
     # 3. Stage report/
     report_stage = os.path.join(STAGING_DIR, "report")
     os.makedirs(report_stage, exist_ok=True)
     shutil.copy2(src_pdf, os.path.join(report_stage, "mtr-8.pdf"))
+    shutil.copy2(src_pdf, os.path.join(report_stage, "mtr8_corrected.pdf"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "mtr-8.tex"), os.path.join(report_stage, "mtr-8.tex"))
+    shutil.copy2(os.path.join(MID_TERM_DIR, "main.tex"), os.path.join(report_stage, "main.tex"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "numbers.tex"), os.path.join(report_stage, "numbers.tex"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "cvpr.sty"), os.path.join(report_stage, "cvpr.sty"))
     shutil.copy2(os.path.join(MID_TERM_DIR, "ieee_fullname.bst"), os.path.join(report_stage, "ieee_fullname.bst"))
-    shutil.copy2(os.path.join(MID_TERM_DIR, "CHANGELOG_MTR8.md"), os.path.join(report_stage, "CHANGELOG_MTR8.md"))
+    shutil.copy2(os.path.join(ROOT_DIR, "CHANGELOG_MTR8.md"), os.path.join(report_stage, "CHANGELOG_MTR8.md"))
+    shutil.copy2(os.path.join(ROOT_DIR, "refs_audit.md"), os.path.join(report_stage, "refs_audit.md"))
+    shutil.copy2(os.path.join(ROOT_DIR, "UNRESOLVED.md"), os.path.join(report_stage, "UNRESOLVED.md"))
     shutil.copytree(os.path.join(MID_TERM_DIR, "figures"), os.path.join(report_stage, "figures"))
 
     # 4. Root README.md
@@ -134,7 +151,7 @@ pywavelets>=1.4.0
 - **Course:** EE2000: Signal Processing (Fall 2026, C Slot)
 - **Instructor:** Prof. Sumohana Channappayya
 - **Submission Package:** `mtr-8.zip` (Contains canonical report and complete source code)
-- **Canonical Report:** `mtr-8.pdf` (18 pages, CVPR/IEEE double-column format)
+- **Canonical Report:** `mtr-8.pdf` (and `mtr8_corrected.pdf`, CVPR/IEEE double-column format)
 - **New Contributions Highlight:** All mid-term contributions since the preliminary proposal are **clearly highlighted in blue colored text** throughout `mtr-8.pdf`.
 
 ---
@@ -145,8 +162,9 @@ pywavelets>=1.4.0
 - **Benchmark Performance (250 Records, 2,250 Runs):**
   - **Spatial PCA Beamforming (4-Ch):** 93.06% F1 on held-out test subjects; 93.00% population mean (95% Clustered CI [90.65%, 95.34%], df=9; run SE 0.55%, 95% run HW ±1.08%). FHR MAE 6.57 bpm overall (3.29 bpm on normal rhythm; 0.48 bpm on Subject 1 baseline).
   - **Deep 1D Convolutional U-Net (4-Ch):** 97.48% F1 on held-out test subjects; 90.76% population mean across all 10 subjects.
-- **Fixed-Point Hardware Validation [L2]:** Bit-true Q1.15 fixed-point software model verifies +85.04 dB SQNR across 5,000 golden test vectors.
-- **FPGA Resource & Timing Sizing [L4 Target]:** Single DSP48E1 slice time-multiplexed schedule executes in 128 clock cycles (1.28 µs at 100 MHz on Spartan-7 XC7S50, giving 3,125x real-time margin against 4,000 µs deadline).
+- **Fixed-Point Hardware Validation [L2]:** Bit-true Q1.15 fixed-point software model verifies +74.52 dB SQNR for Spatial PCA across 5,000 golden test vectors.
+- **FPGA Resource & Timing Sizing [L4 Target]:** Single DSP48E1 slice time-multiplexed schedule executes in 148 clock cycles (1.48 µs at 100 MHz on Spartan-7 XC7S50, giving an estimated 2,702x real-time margin against 4,000 µs deadline).
+- **Audit Verification:** 15/15 checks passing in `tools/audit_mtr8.py` (see `audit_after.txt`).
 
 ---
 
@@ -158,45 +176,14 @@ To reproduce all numerical metrics, consistency checks, and recompile the report
 # 1. Install dependencies
 pip install -r code/requirements.txt
 
-# 2. Run automated consistency checks (verifies 100% agreement across all 8 checks)
-python code/tools/check_consistency.py
+# 2. Run automated consistency and audit checks (verifies 100% agreement across all 15 checks)
+python tools/audit_mtr8.py
 
 # 3. Regenerate LaTeX empirical macro numbers
-python code/tools/make_numbers_tex.py
+python tools/make_numbers_tex.py
 
-# 4. Run frozen 35-run benchmark on Subject 1
-python code/src/run_benchmark.py
-
-# 5. Run bit-true fixed-point simulation (5,000 vectors)
-python code/src/fixed_point_model.py
-```
-
----
-
-### Package Structure
-```
-mtr-8.zip
-├── mtr-8.pdf                                 # Compiled report (18 pages, new content in blue)
-├── README.md                                 # Package overview & reproduction instructions
-├── code/
-│   ├── src/                                  # Core algorithms, QRS detector, fixed-point models
-│   │   ├── methods/                          # All 9 extraction algorithms
-│   │   ├── fixed_point_model.py              # Bit-true Q1.15 hardware model
-│   │   ├── run_benchmark.py                  # Single-command frozen benchmark
-│   │   └── run_mega_benchmark.py             # 250-record population benchmark harness
-│   ├── tests/                                # Pytest test suites
-│   ├── tools/                                # Consistency checkers and number generators
-│   ├── results/                              # Empirical CSV logs and trained model weights
-│   ├── configs/                              # Filter and test parameters
-│   └── requirements.txt                      # Python dependencies
-└── report/
-    ├── mtr-8.pdf                             # Canonical PDF
-    ├── mtr-8.tex                             # LaTeX source
-    ├── numbers.tex                           # Empirical numbers macro definitions
-    ├── cvpr.sty                              # Style package
-    ├── ieee_fullname.bst                     # Bibliography style
-    ├── CHANGELOG_MTR8.md                     # Comprehensive audit changelog
-    └── figures/                              # High-resolution vector and bitmap figures
+# 4. Rebuild full report and compile PDF
+python report/mid_term/build_full_report.py
 ```
 """
     with open(os.path.join(STAGING_DIR, "README.md"), "w", encoding="utf-8") as fp:
@@ -214,8 +201,15 @@ def make_zip():
                 rel_path = os.path.relpath(abs_path, STAGING_DIR)
                 zf.write(abs_path, arcname=rel_path)
 
+    # Copy to root zip as well
+    shutil.copy2(FINAL_ZIP, ROOT_ZIP)
+
+    # Clean up staging dir
+    if os.path.exists(STAGING_DIR):
+        shutil.rmtree(STAGING_DIR)
+
     zip_size_mb = os.path.getsize(FINAL_ZIP) / (1024 * 1024)
-    print(f"Successfully generated {FINAL_ZIP} ({zip_size_mb:.2f} MB)")
+    print(f"Successfully generated {FINAL_ZIP} and {ROOT_ZIP} ({zip_size_mb:.2f} MB)")
 
 if __name__ == "__main__":
     stage_files()

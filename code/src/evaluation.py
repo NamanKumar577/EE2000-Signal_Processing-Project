@@ -3,7 +3,7 @@ src/evaluation.py
 ──────────────────────────────────────────────────────────────────────────────
 Shared evaluation script: QRS matching, beat-detection metrics, waveform error.
 
-Owner    : Vivek (evaluation/metrics module)
+Role     : Data Validation & Evaluation Lead
 Used by  : all members via run_benchmark.py
 
 Beat-matching rule (from Section 13 of team work plan)

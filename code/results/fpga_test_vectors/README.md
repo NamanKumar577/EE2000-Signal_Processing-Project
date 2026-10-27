@@ -1,6 +1,6 @@
 # Spartan-7 FPGA Test Vectors & Simulation Guide
 
-**Author:** Vivek  
+**Author:** Anonymous EE2000 Submission (Paper ID 0008)  
 **Target Device:** Xilinx Spartan-7 XC7S50-CSGA324 (Arty S7 / Custom Board)  
 **Verification Level:** Bit-accurate Software-to-Hardware Golden Model
 

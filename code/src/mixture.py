@@ -3,7 +3,7 @@ src/mixture.py
 ──────────────────────────────────────────────────────────────────────────────
 Centralized abdominal mixture construction from FECGSYNDB components.
 
-Owner    : Vivek (mixture verification)
+Role     : Data Validation & Evaluation Lead
 Used by  : all members — everyone MUST call build_mixture() rather than
            constructing their own combination.
 

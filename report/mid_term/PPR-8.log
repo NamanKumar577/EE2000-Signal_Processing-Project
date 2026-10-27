@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.26)  26 OCT 2026 17:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.26)  27 OCT 2026 12:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**d:/signal_project/report/mid_term/PPR-8.tex
+**D:/signal_project/report/mid_term/PPR-8.tex
 (d:/signal_project/report/mid_term/PPR-8.tex
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-09-09>
@@ -23,7 +23,7 @@ File: size10.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip50
 \bibindent=\dimen150
 )
-(d:\signal_project\report\mid_term/cvpr.sty
+(D:\signal_project\report\mid_term/cvpr.sty
 Package: cvpr 2021/08/23 Example LaTex class for IEEE CVPR
 
 (c:/texlive/2026/texmf-dist/tex/latex/psnfss/times.sty
@@ -489,11 +489,11 @@ Package cleveref Info: always capitalise cross-reference names on input line 78
 52.
 )
 ==> First Aid for cleveref.sty applied!
-(d:\signal_project\report\mid_term/numbers.tex)
+(D:\signal_project\report\mid_term/numbers.tex)
 Package translations Info: No language package found. I am going to use `englis
-h' as default language. on input line 55.
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 5
-5.
+h' as default language. on input line 62.
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 6
+2.
 
 (c:/texlive/2026/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -502,27 +502,27 @@ File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 File: l3backend-pdftex.def 2026-09-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count350
 )
-(d:\signal_project\report\mid_term/PPR-8.aux)
+(D:\signal_project\report\mid_term/PPR-8.aux)
 \openout1 = `PPR-8.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 62.
+LaTeX Font Info:    ... okay on input line 62.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
@@ -580,35 +580,35 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 55.
-Package hyperref Info: Link coloring ON on input line 55.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 65.
+or `english'. on input line 62.
+Package hyperref Info: Link coloring ON on input line 62.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 72.
 
  (c:/texlive/2026/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 65.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 72.
 
 
 (c:/texlive/2026/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 6
-5.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 7
+2.
 
 (c:/texlive/2026/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <10> not available
-(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 65.
-<figures/signal_amplitude_disparity.png, id=9, 469.755pt x 231.264pt>
+(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 72.
+<figures/signal_amplitude_disparity.png, id=9, 491.436pt x 245.718pt>
 File: figures/signal_amplitude_disparity.png Graphic file (type png)
 <use figures/signal_amplitude_disparity.png>
 Package pdftex.def Info: figures/signal_amplitude_disparity.png  used on input 
-line 76.
-(pdftex.def)             Requested size: 237.13594pt x 116.74327pt.
+line 83.
+(pdftex.def)             Requested size: 237.13594pt x 118.56943pt.
 LaTeX Font Info:    Trying to load font information for OT1+phv on input line 8
-2.
+9.
 
 (c:/texlive/2026/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
@@ -616,192 +616,183 @@ File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
 026/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
- <d:\signal_project\report\mid_term/figures/signal_amplitude_disparity.png>] [2
+ <D:\signal_project\report\mid_term/figures/signal_amplitude_disparity.png>] [2
 ]
-<figures/system_pipeline.png, id=64, 560.5743pt x 166.221pt>
+<figures/system_pipeline.png, id=70, 831.105pt x 303.534pt>
 File: figures/system_pipeline.png Graphic file (type png)
 <use figures/system_pipeline.png>
-Package pdftex.def Info: figures/system_pipeline.png  used on input line 141.
-(pdftex.def)             Requested size: 457.10683pt x 135.54118pt.
+Package pdftex.def Info: figures/system_pipeline.png  used on input line 147.
+(pdftex.def)             Requested size: 457.10683pt x 166.9442pt.
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
-58.
+83.
  (c:/texlive/2026/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-<figures/fmr_lead_topography_34ch.png, id=67, 542.025pt x 252.945pt>
+<figures/fmr_lead_topography_34ch.png, id=74, 542.025pt x 252.945pt>
 File: figures/fmr_lead_topography_34ch.png Graphic file (type png)
 <use figures/fmr_lead_topography_34ch.png>
 Package pdftex.def Info: figures/fmr_lead_topography_34ch.png  used on input li
-ne 177.
+ne 202.
 (pdftex.def)             Requested size: 237.13594pt x 110.66316pt.
-<figures/butterworth_sos_frequency_response.png, id=71, 614.295pt x 245.718pt>
+<figures/butterworth_sos_frequency_response.png, id=83, 614.295pt x 245.718pt>
 File: figures/butterworth_sos_frequency_response.png Graphic file (type png)
 <use figures/butterworth_sos_frequency_response.png>
 Package pdftex.def Info: figures/butterworth_sos_frequency_response.png  used o
-n input line 193.
+n input line 218.
 (pdftex.def)             Requested size: 237.13594pt x 94.8548pt.
 
-[3] [4 <d:\signal_project\report\mid_term/figures/system_pipeline.png> <d:\sign
-al_project\report\mid_term/figures/fmr_lead_topography_34ch.png> <d:\signal_pro
-ject\report\mid_term/figures/butterworth_sos_frequency_response.png>] [5]
-<figures/quantization_null_depth.png, id=135, 469.755pt x 245.718pt>
+[3] [4 <D:\signal_project\report\mid_term/figures/system_pipeline.png>]
+[5 <D:\signal_project\report\mid_term/figures/fmr_lead_topography_34ch.png> <D:
+\signal_project\report\mid_term/figures/butterworth_sos_frequency_response.png>
+] [6]
+<figures/quantization_null_depth.png, id=160, 469.755pt x 245.718pt>
 File: figures/quantization_null_depth.png Graphic file (type png)
 <use figures/quantization_null_depth.png>
 Package pdftex.def Info: figures/quantization_null_depth.png  used on input lin
-e 332.
+e 383.
 (pdftex.def)             Requested size: 237.13594pt x 124.03973pt.
-
-[6 <d:\signal_project\report\mid_term/figures/quantization_null_depth.png>]
-<figures/f1_comparison_all_methods.png, id=156, 563.706pt x 310.761pt>
+ [7 <D:\signal_project\report\mid_term/figures/quantization_null_depth.png>]
+<figures/f1_comparison_all_methods.png, id=182, 717.6411pt x 293.1753pt>
 File: figures/f1_comparison_all_methods.png Graphic file (type png)
 <use figures/f1_comparison_all_methods.png>
 Package pdftex.def Info: figures/f1_comparison_all_methods.png  used on input l
-ine 476.
-(pdftex.def)             Requested size: 496.85625pt x 273.91151pt.
-<figures/fhr_error_bland_altman.png, id=157, 722.7pt x 303.534pt>
+ine 529.
+(pdftex.def)             Requested size: 496.85625pt x 202.98009pt.
+<figures/fhr_error_bland_altman.png, id=183, 722.7pt x 303.534pt>
 File: figures/fhr_error_bland_altman.png Graphic file (type png)
 <use figures/fhr_error_bland_altman.png>
 Package pdftex.def Info: figures/fhr_error_bland_altman.png  used on input line
- 483.
+ 536.
 (pdftex.def)             Requested size: 237.13594pt x 99.59683pt.
-<figures/snr_degradation_curve.png, id=158, 377.7312pt x 238.491pt>
+<figures/snr_degradation_curve.png, id=184, 469.755pt x 274.626pt>
 File: figures/snr_degradation_curve.png Graphic file (type png)
 <use figures/snr_degradation_curve.png>
 Package pdftex.def Info: figures/snr_degradation_curve.png  used on input line 
-490.
-(pdftex.def)             Requested size: 237.13594pt x 149.72609pt.
-<figures/f1_heatmap.png, id=159, 407.8437pt x 238.491pt>
+543.
+(pdftex.def)             Requested size: 237.13594pt x 138.63264pt.
+<figures/f1_heatmap.png, id=185, 505.89pt x 289.08pt>
 File: figures/f1_heatmap.png Graphic file (type png)
 <use figures/f1_heatmap.png>
-Package pdftex.def Info: figures/f1_heatmap.png  used on input line 497.
-(pdftex.def)             Requested size: 237.13594pt x 138.67058pt.
-
-[7]
-<figures/deep_learning_waveform_comparison.png, id=192, 1011.78pt x 578.16pt>
+Package pdftex.def Info: figures/f1_heatmap.png  used on input line 550.
+(pdftex.def)             Requested size: 237.13594pt x 135.5059pt.
+ [8]
+<figures/deep_learning_waveform_comparison.png, id=214, 1011.78pt x 578.16pt>
 File: figures/deep_learning_waveform_comparison.png Graphic file (type png)
 <use figures/deep_learning_waveform_comparison.png>
 Package pdftex.def Info: figures/deep_learning_waveform_comparison.png  used on
- input line 513.
+ input line 566.
 (pdftex.def)             Requested size: 237.13594pt x 135.5059pt.
-<figures/multichannel_accuracy_scaling.png, id=193, 1156.32pt x 433.62pt>
+<figures/multichannel_accuracy_scaling.png, id=215, 1156.32pt x 433.62pt>
 File: figures/multichannel_accuracy_scaling.png Graphic file (type png)
 <use figures/multichannel_accuracy_scaling.png>
 Package pdftex.def Info: figures/multichannel_accuracy_scaling.png  used on inp
-ut line 520.
+ut line 573.
 (pdftex.def)             Requested size: 237.13594pt x 88.92575pt.
-<figures/mega_f1_by_method.png, id=201, 578.16pt x 325.215pt>
+ [9]
+<figures/mega_f1_by_method.png, id=231, 520.344pt x 303.534pt>
 File: figures/mega_f1_by_method.png Graphic file (type png)
 <use figures/mega_f1_by_method.png>
-Package pdftex.def Info: figures/mega_f1_by_method.png  used on input line 633.
+Package pdftex.def Info: figures/mega_f1_by_method.png  used on input line 686.
 
-(pdftex.def)             Requested size: 237.13594pt x 133.38863pt.
-<figures/mega_snr_degradation.png, id=202, 433.62pt x 289.08pt>
+(pdftex.def)             Requested size: 237.13594pt x 138.33049pt.
+<figures/mega_snr_degradation.png, id=232, 475.5366pt x 284.0211pt>
 File: figures/mega_snr_degradation.png Graphic file (type png)
 <use figures/mega_snr_degradation.png>
 Package pdftex.def Info: figures/mega_snr_degradation.png  used on input line 6
-40.
-(pdftex.def)             Requested size: 237.13594pt x 158.09023pt.
-<figures/mega_case_breakdown.png, id=203, 505.89pt x 289.08pt>
+93.
+(pdftex.def)             Requested size: 237.13594pt x 141.63315pt.
+<figures/mega_case_breakdown.png, id=233, 546.3612pt x 284.0211pt>
 File: figures/mega_case_breakdown.png Graphic file (type png)
 <use figures/mega_case_breakdown.png>
-Package pdftex.def Info: figures/mega_case_breakdown.png  used on input line 64
-7.
-(pdftex.def)             Requested size: 237.13594pt x 135.5059pt.
-<figures/mega_subject_consistency.png, id=204, 505.89pt x 289.08pt>
+Package pdftex.def Info: figures/mega_case_breakdown.png  used on input line 70
+0.
+(pdftex.def)             Requested size: 237.13594pt x 123.27081pt.
+<figures/mega_subject_consistency.png, id=234, 570.4512pt x 284.0211pt>
 File: figures/mega_subject_consistency.png Graphic file (type png)
 <use figures/mega_subject_consistency.png>
 Package pdftex.def Info: figures/mega_subject_consistency.png  used on input li
-ne 654.
-(pdftex.def)             Requested size: 237.13594pt x 135.5059pt.
- [8] [9 <d:\signal_project\report\mid_term/figures/f1_comparison_all_methods.pn
-g> <d:\signal_project\report\mid_term/figures/fhr_error_bland_altman.png> <d:\s
-ignal_project\report\mid_term/figures/snr_degradation_curve.png>] [10 <d:\signa
-l_project\report\mid_term/figures/f1_heatmap.png> <d:\signal_project\report\mid
-_term/figures/deep_learning_waveform_comparison.png> <d:\signal_project\report\
-mid_term/figures/multichannel_accuracy_scaling.png>]
-
-LaTeX Warning: Text page 11 contains only floats.
-
-<figures/eigenvalue_subspace_spectrum.png, id=241, 686.565pt x 289.08pt>
+ne 707.
+(pdftex.def)             Requested size: 237.13594pt x 118.0659pt.
+ [10 <D:\signal_project\report\mid_term/figures/f1_comparison_all_methods.png> 
+<D:\signal_project\report\mid_term/figures/fhr_error_bland_altman.png> <D:\sign
+al_project\report\mid_term/figures/snr_degradation_curve.png>]
+[11 <D:\signal_project\report\mid_term/figures/f1_heatmap.png> <D:\signal_proje
+ct\report\mid_term/figures/deep_learning_waveform_comparison.png> <D:\signal_pr
+oject\report\mid_term/figures/multichannel_accuracy_scaling.png>] [12 <D:\signa
+l_project\report\mid_term/figures/mega_f1_by_method.png> <D:\signal_project\rep
+ort\mid_term/figures/mega_snr_degradation.png> <D:\signal_project\report\mid_te
+rm/figures/mega_case_breakdown.png> <D:\signal_project\report\mid_term/figures/
+mega_subject_consistency.png>]
+<figures/eigenvalue_subspace_spectrum.png, id=276, 614.295pt x 245.718pt>
 File: figures/eigenvalue_subspace_spectrum.png Graphic file (type png)
 <use figures/eigenvalue_subspace_spectrum.png>
 Package pdftex.def Info: figures/eigenvalue_subspace_spectrum.png  used on inpu
-t line 682.
-(pdftex.def)             Requested size: 237.13594pt x 99.84297pt.
-[11 <d:\signal_project\report\mid_term/figures/mega_f1_by_method.png> <d:\signa
-l_project\report\mid_term/figures/mega_snr_degradation.png> <d:\signal_project\
-report\mid_term/figures/mega_case_breakdown.png> <d:\signal_project\report\mid_
-term/figures/mega_subject_consistency.png>]
-<figures/dsp_time_multiplexing_schedule.png, id=256, 686.565pt x 231.264pt>
+t line 739.
+(pdftex.def)             Requested size: 237.13594pt x 94.8548pt.
+<figures/dsp_time_multiplexing_schedule.png, id=279, 578.16pt x 260.172pt>
 File: figures/dsp_time_multiplexing_schedule.png Graphic file (type png)
 <use figures/dsp_time_multiplexing_schedule.png>
 Package pdftex.def Info: figures/dsp_time_multiplexing_schedule.png  used on in
-put line 705.
-(pdftex.def)             Requested size: 237.13594pt x 79.87437pt.
-<figures/multichannel_fpga_resource_scaling.png, id=257, 1156.32pt x 397.485pt>
+put line 788.
+(pdftex.def)             Requested size: 237.13594pt x 106.71089pt.
+<figures/multichannel_fpga_resource_scaling.png, id=280, 520.344pt x 260.172pt>
 
 File: figures/multichannel_fpga_resource_scaling.png Graphic file (type png)
 <use figures/multichannel_fpga_resource_scaling.png>
 Package pdftex.def Info: figures/multichannel_fpga_resource_scaling.png  used o
-n input line 735.
-(pdftex.def)             Requested size: 237.13594pt x 81.51527pt.
-<figures/hw_accuracy_tradeoff.png, id=258, 419.166pt x 274.3851pt>
+n input line 819.
+(pdftex.def)             Requested size: 237.13594pt x 118.56898pt.
+<figures/hw_accuracy_tradeoff.png, id=281, 542.025pt x 289.08pt>
 File: figures/hw_accuracy_tradeoff.png Graphic file (type png)
 <use figures/hw_accuracy_tradeoff.png>
-Package pdftex.def Info: figures/hw_accuracy_tradeoff.png  used on input line 7
-42.
-(pdftex.def)             Requested size: 237.13594pt x 155.22882pt.
-<figures/method_radar_comparison.png, id=259, 325.215pt x 255.8358pt>
+Package pdftex.def Info: figures/hw_accuracy_tradeoff.png  used on input line 8
+26.
+(pdftex.def)             Requested size: 237.13594pt x 126.47218pt.
+<figures/method_radar_comparison.png, id=282, 421.8159pt x 356.2911pt>
 File: figures/method_radar_comparison.png Graphic file (type png)
 <use figures/method_radar_comparison.png>
 Package pdftex.def Info: figures/method_radar_comparison.png  used on input lin
-e 749.
-(pdftex.def)             Requested size: 237.13594pt x 186.55168pt.
-<figures/runtime_comparison.png, id=260, 520.344pt x 252.945pt>
+e 833.
+(pdftex.def)             Requested size: 237.13594pt x 200.29907pt.
+<figures/runtime_comparison.png, id=283, 542.025pt x 260.172pt>
 File: figures/runtime_comparison.png Graphic file (type png)
 <use figures/runtime_comparison.png>
-Package pdftex.def Info: figures/runtime_comparison.png  used on input line 756
+Package pdftex.def Info: figures/runtime_comparison.png  used on input line 840
 .
-(pdftex.def)             Requested size: 237.13594pt x 115.2754pt.
- [12 <d:\signal_project\report\mid_term/figures/eigenvalue_subspace_spectrum.pn
-g> <d:\signal_project\report\mid_term/figures/dsp_time_multiplexing_schedule.pn
-g> <d:\signal_project\report\mid_term/figures/multichannel_fpga_resource_scalin
-g.png> <d:\signal_project\report\mid_term/figures/hw_accuracy_tradeoff.png>] [1
-3 <d:\signal_project\report\mid_term/figures/method_radar_comparison.png> <d:\s
-ignal_project\report\mid_term/figures/runtime_comparison.png>] [14] [15]
-
-LaTeX Warning: Text page 16 contains only floats.
-
-
-LaTeX Warning: Text page 16 contains only floats.
-
-[16] (d:\signal_project\report\mid_term/PPR-8.brf)
+(pdftex.def)             Requested size: 237.13594pt x 113.82495pt.
+ [13 <D:\signal_project\report\mid_term/figures/eigenvalue_subspace_spectrum.pn
+g> <D:\signal_project\report\mid_term/figures/dsp_time_multiplexing_schedule.pn
+g>] [14 <D:\signal_project\report\mid_term/figures/multichannel_fpga_resource_s
+caling.png> <D:\signal_project\report\mid_term/figures/hw_accuracy_tradeoff.png
+> <D:\signal_project\report\mid_term/figures/method_radar_comparison.png> <D:\s
+ignal_project\report\mid_term/figures/runtime_comparison.png>] [15] [16] [17] [
+18] (D:\signal_project\report\mid_term/PPR-8.brf)
 \tf@brf=\write3
 \openout3 = `PPR-8.brf'.
 
- [17]
+[19]
 
 Package caption Warning: Unused \captionsetup[sub] on input line 25.
 See the caption package documentation for explanation.
 
-[18
+[20
 
-] (d:\signal_project\report\mid_term/PPR-8.aux)
+] (D:\signal_project\report\mid_term/PPR-8.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-09-09>
  ***********
 Package rerunfilecheck Info: File `PPR-8.brf' has not changed.
-(rerunfilecheck)             Checksum: 558A8E406EB0BD1061786AC0D4D4608C;1991.
+(rerunfilecheck)             Checksum: E84CE890A40EA4DF2697696F75D0B773;2265.
  ) 
 Here is how much of TeX's memory you used:
- 19615 strings out of 467050
- 388703 string characters out of 5410549
- 885457 words of memory out of 5000000
- 48581 multiletter control sequences out of 15000+600000
- 667180 words of font info for 117 fonts, out of 8000000 for 9000
+ 19650 strings out of 467050
+ 389341 string characters out of 5410549
+ 864402 words of memory out of 5000000
+ 48603 multiletter control sequences out of 15000+600000
+ 668276 words of font info for 119 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 89i,13n,93p,2102b,1181s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 89i,13n,93p,1746b,1242s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/tex
 live/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><c:/texlive/2026/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2026/texmf-dis
@@ -822,11 +813,11 @@ nts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/2026/texmf-dist/fonts/type1/urw/h
 elvetic/uhvr8a.pfb><c:/texlive/2026/texmf-dist/fonts/type1/urw/times/utmb8a.pfb
 ><c:/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><c:/texlive/2026/
 texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on d:\signal_project\report\mid_term/PPR-8.pdf (18 pages, 422998
-4 bytes).
+Output written on D:\signal_project\report\mid_term/PPR-8.pdf (20 pages, 439620
+6 bytes).
 PDF statistics:
- 587 PDF objects out of 1000 (max. 8388607)
- 472 compressed objects within 5 object streams
- 177 named destinations out of 1000 (max. 500000)
+ 679 PDF objects out of 1000 (max. 8388607)
+ 559 compressed objects within 6 object streams
+ 189 named destinations out of 1000 (max. 500000)
  106 words of extra memory for PDF output out of 10000 (max. 10000000)
 

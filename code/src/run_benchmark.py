@@ -3,7 +3,7 @@ src/run_benchmark.py
 ──────────────────────────────────────────────────────────────────────────────
 Integrated benchmark runner — connects every module end-to-end.
 
-Owner    : Naman (integration lead)
+Role     : Integration & SVD Extraction Lead
 
 Pipeline per (method, test_case):
     1. Load test case data          (data_loader.load_test_case)

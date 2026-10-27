@@ -3,7 +3,7 @@ src/fhr.py
 ──────────────────────────────────────────────────────────────────────────────
 Fetal Heart Rate (FHR) calculation from detected fetal R-peak sample indices.
 
-Owner    : Vivek (FHR and shared evaluation metrics)
+Role     : Data Validation & Evaluation Lead
 Used by  : all members via run_benchmark.py
 
 FHR definition

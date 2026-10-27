@@ -1,0 +1,93 @@
+================================================================================
+MTR-8 VERIFICATION AUDIT (Section 7 Checklist)
+Project root: D:\signal_project
+================================================================================
+
+--- Check 1: Table 3 Internal Arithmetic (Det, FN, PPV, Se, F1) ---
+  [PASS] All 35 rows in metrics.csv satisfy Det=TP+FP, FN=Ref-TP, and PPV/Se/F1 definitions.
+
+--- Check 2: Table 4 = Unweighted Mean of Table 3 ---
+  Computed Table 4 unweighted means from Table 3 (Subject 1):
+    SVD (variant_1_fixed_period): F1=38.96%, MAE=29.89 bpm, Corr=0.140
+    SVD (variant_2_svr_resampling): F1=34.89%, MAE=32.54 bpm, Corr=0.131
+    SVD (variant_3_moving_window): F1=29.21%, MAE=34.80 bpm, Corr=0.097
+    SWT_LMS_SSNF (swt_lms_ssnf): F1=16.97%, MAE=46.92 bpm, Corr=0.005
+    alternative (default): F1=39.64%, MAE=29.56 bpm, Corr=0.141
+    template_subtraction (adaptive_ema): F1=35.72%, MAE=31.58 bpm, Corr=0.124
+    template_subtraction (fixed_ensemble): F1=39.06%, MAE=30.24 bpm, Corr=0.139
+  [PASS] Table 4 unweighted means verified against Table 3 raw rows.
+
+--- Check 3: Table 6 vs Table 7 (Partition Means from Per-Subject Values) ---
+  Spatial PCA from CSV: Train F1=92.90%, MAE=6.43 bpm; Val F1=93.51%, MAE=4.66 bpm; Test F1=93.06%, MAE=8.00 bpm; All F1=93.00%, MAE=6.57 bpm
+  [PASS] Table 6 and Table 7 partition means agree with per-subject CSV calculations.
+
+--- Check 4: Confidence Intervals (df=9, t=2.262) ---
+  Spatial PCA: Pop Mean=93.00%, SD=3.28%, HW=2.35%, CI=[90.65, 95.34]; Run SE=0.55%, HW=1.08%
+  Deep U-Net: Pop Mean=90.76%, SD=10.16%, HW=7.27%, CI=[83.48, 98.03]; Run SE=1.00%, HW=1.97%
+  [PASS] Clustered CIs and run-level SEs correctly derived.
+
+--- Check 5: Table 8 vs Table 5 Invariance ---
+  Condition Mean F1: 92.9950%, SNR Mean F1: 92.9950%, Pop Mean: 92.9950%
+  Condition Mean MAE: 6.5684, SNR Mean MAE: 6.5684, Pop Mean: 6.5684
+  [PASS] Table 8 condition and SNR means perfectly match Table 5 population mean.
+
+--- Check 6: Fixed-Point Quantization Arithmetic ---
+  [PASS] Fixed-point formulas, null depths (95.1, 71.0, 59.0 dB), and LSB counts (131, 16384) verified.
+
+--- Check 7: Hardware Sizing & Utilisation Arithmetic ---
+  Spatial PCA Utilisation: LUT=990/32600 (3.04%), FF=720/65200 (1.10%), DSP=1/120 (0.83%), BRAM=1/75 (1.33%)
+  [PASS] Hardware utilisation percentages and cycles verified.
+
+--- Check 8: UART Bandwidth Arithmetic ---
+  UART: 8 bytes x 10 bits = 80 bits at 921600 baud -> 86.81 us (2.17% of 4,000 us)
+  [PASS] UART timing (86.8 us, 2.17%) verified.
+
+--- Check 9: Data-Size Arithmetic ---
+  Per record: 5.10 MB (int16), 10.20 MB (float32)
+  Total 250 records: 1.275 GB (int16), 2.550 GB (float32)
+  Partitions (float32): Train=1.785 GB, Val=0.255 GB, Test=0.510 GB
+  [PASS] Data size arithmetic (1.275 GB int16, 2.55 GB float32, 1.79/0.26/0.51 GB) verified.
+
+--- Check 10: Detector Constants and Filter Delays ---
+  [PASS] Detector constants (W=15=60ms, refr=50=200ms, offset=9.5=38ms) and filter delays verified.
+
+--- Check 11: Eigen-Spectrum Arithmetic ---
+  Eigenvalue shares: 88.4 + 7.8 + 2.6 + 1.2 = 100.0%; Top 2 = 96.2%
+  [PASS] Eigen-spectrum shares sum to 100.0% (top 2 = 96.2%).
+
+--- Check 12: Probabilities in Eq. 1 ---
+  Probabilities: Fetal overlap=17.5%, Maternal overlap=32.6%, Containment=5.0%
+  [PASS] Probabilities (17.5%, 32.6%, 5.0%) verified.
+
+--- Check 13: Text vs Table Grep Inconsistencies ---
+  [PASS] Text claims match table numbers perfectly.
+
+--- Check 14: Anonymity Grep (Names, Local Paths, URLs) ---
+  [PASS] Anonymity scan clean: 0 author names, local user paths, or personal repository URLs found.
+
+--- Check 15: Citation & Bibliography Integrity ---
+  Total unique cited keys: 28
+  Total bibliography items: 28
+  [PASS] All cited references exist and all bibliography entries are cited in text.
+
+================================================================================
+MTR-8 AUDIT SUMMARY
+================================================================================
+  [PASS]  Check 1: Table 3 internal arithmetic
+  [PASS]  Check 2: Table 4 unweighted mean of Table 3
+  [PASS]  Check 3: Table 6 vs Table 7 partition means
+  [PASS]  Check 4: Confidence intervals
+  [PASS]  Check 5: Table 8 vs Table 5 invariance
+  [PASS]  Check 6: Fixed-point arithmetic
+  [PASS]  Check 7: Hardware sizing arithmetic
+  [PASS]  Check 8: UART bandwidth arithmetic
+  [PASS]  Check 9: Data-size arithmetic
+  [PASS]  Check 10: Detector constants and filter delays
+  [PASS]  Check 11: Eigen-spectrum arithmetic
+  [PASS]  Check 12: Probabilities in Eq. 1
+  [PASS]  Check 13: Text vs table consistency
+  [PASS]  Check 14: Anonymity check
+  [PASS]  Check 15: Citation integrity
+================================================================================
+RESULT: ALL 15 AUDIT CHECKS PASSED SUCCESSFULLY (100% COMPLIANT)!
+

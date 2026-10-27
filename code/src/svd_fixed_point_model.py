@@ -4,7 +4,7 @@ src/svd_fixed_point_model.py
 Bit-accurate fixed-point hardware emulation and FPGA feasibility model
 for SVD-based Fetal ECG Extraction on Xilinx Spartan-7 FPGA.
 
-Author : Naman (Integration Lead & SVD Extraction Owner)
+Role   : Integration Lead & SVD Extraction Lead
 Target : AMD / Xilinx Spartan-7 (XC7S50-CSGA324 / XC7S25)
 Context: EE2000 Signal Processing Project (Milestone M7 / Phase 5)
 

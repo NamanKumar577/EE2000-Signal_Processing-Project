@@ -3,7 +3,7 @@ src/methods/base.py
 ──────────────────────────────────────────────────────────────────────────────
 Standard extraction interface contract.
 
-Owner    : Naman (integration lead)
+Role     : Integration & SVD Extraction Lead
 All extraction method classes MUST inherit from BaseExtractor and implement
 extract().  This guarantees the benchmark runner can call every method
 identically without method-specific logic.

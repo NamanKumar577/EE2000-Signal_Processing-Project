@@ -1,9 +1,9 @@
 """
 src/methods/alternative.py
 ──────────────────────────────────────────────────────────────────────────────
-Alternative extraction method — Vivek's Method.
+Alternative extraction method — Wavelet-Threshold Hybrid Method.
 
-Owner               : Vivek
+Role     : Data Validation & Evaluation Lead
 Primary references  : 43407.pdf (Sameni ECG modeling),
                       s11042-022-13391-0.pdf (comprehensive FECG survey)
 Supporting refs     : Hasan et al. review, Digital Filters paper
@@ -42,7 +42,7 @@ class AlternativeExtractor(BaseExtractor):
 
     DESCRIPTION = (
         "Single-channel Adaptive SVD-Template Subtraction + Sub-band Filtering "
-        "(Vivek's pseudo-ensemble alternative method)"
+        "(Wavelet-Threshold Subband Hybrid)"
     )
     INPUT_SIGNALS = "Single-channel abdominal mixture"
     REFERENCE_NEEDED = False

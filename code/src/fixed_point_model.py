@@ -1,9 +1,9 @@
 """
 code/src/fixed_point_model.py
 ──────────────────────────────────────────────────────────────────────────────
-Fixed-Point Emulation and Software-to-Hardware Verification for Vivek's Method.
+Fixed-Point Emulation and Software-to-Hardware Verification for Wavelet-Threshold Hybrid Method.
 
-Owner: Vivek
+Role     : Data Validation & Evaluation Lead
 Target: Xilinx Spartan-7 FPGA (XC7S50 / XC7S25)
 Standard: PPR-8 Specification & Team Work Plan Section 17
 
@@ -79,7 +79,7 @@ def fixed_point_sos_filter(
 
 class FixedPointAlternativeExtractor:
     """
-    Bit-accurate fixed-point hardware model of Vivek's Alternative Extractor.
+    Bit-accurate fixed-point hardware model of Wavelet-Threshold Alternative Extractor.
     Designed for Spartan-7 RTL synthesis on Vivado.
     """
 

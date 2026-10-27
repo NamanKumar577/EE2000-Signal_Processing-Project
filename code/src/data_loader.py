@@ -3,7 +3,7 @@ src/data_loader.py
 ──────────────────────────────────────────────────────────────────────────────
 Loads WFDB records and validates metadata against expected values.
 
-Owner    : Vivek (data validation)
+Role     : Data Validation & Evaluation Lead
 Used by  : all members via run_benchmark.py
 
 Public API

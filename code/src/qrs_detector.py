@@ -3,7 +3,7 @@ src/qrs_detector.py
 ──────────────────────────────────────────────────────────────────────────────
 Common fetal QRS detector applied to the EXTRACTED fetal waveform.
 
-Owner    : Anshu (QRS detector module)
+Role     : QRS Detection & Template Subtraction Lead
 Used by  : all members via run_benchmark.py
 
 Algorithm (from PPR-8 Section 5.3 Specification & Sörnmo & Laguna [2]):

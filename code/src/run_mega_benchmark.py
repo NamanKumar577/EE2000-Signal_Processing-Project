@@ -17,7 +17,7 @@ Includes both Multichannel and Single-Channel Extraction Methods:
     3. Deep 1D Convolutional U-Net (4-Channel Neural Extractor)
   [Single-Channel]
     4. Deep 1D Convolutional U-Net (1-Channel Neural Extractor on Lead 27)
-    5. Vivek's SVD-Template Subband Hybrid Filter (Lead 27)
+    5. Wavelet-Threshold Subband Hybrid Filter (Lead 27)
     6. Fixed Ensemble Template Subtraction (Lead 27)
     7. Adaptive EMA Template Subtraction (Lead 27)
     8. SVD Subspace Decomposition Variant 1 (Fixed Modal Period)
@@ -316,7 +316,7 @@ def run_mega_benchmark(
         print("  4-Channel U-Net: Not available.")
 
     # Initialize traditional extractors
-    extractor_vivek = AlternativeExtractor()
+    extractor_wavelet_thr = AlternativeExtractor()
     extractor_tf = FixedTemplateSubtractionExtractor()
     extractor_ta = TemplatSubtractionExtractor()
     extractor_svd1 = SVDExtractorV1()
@@ -469,12 +469,12 @@ def run_mega_benchmark(
                     det_u1, est_u1, rt_u1 = run_deep_unet(deep_models["1ch"], prep_ch27, 1, torch.device(device), fs=250)
                     evaluate_and_record("Deep_UNet_1ch", "single_channel", f"[{single_channel}]", det_u1, est_u1, rt_u1)
 
-                # ── 5. Single-Channel: Vivek Hybrid Alternative ──
+                # 5. Single-Channel: Wavelet-Threshold Hybrid
                 t0 = time.time()
-                est_alt, _ = extractor_vivek.extract(prep_ch27, fs=250)
+                est_alt, _ = extractor_wavelet_thr.extract(prep_ch27, fs=250)
                 det_alt, _ = detect_fetal_qrs(est_alt, fs=250)
                 rt_alt = time.time() - t0
-                evaluate_and_record("Vivek_Hybrid_Alt", "single_channel", f"[{single_channel}]", det_alt, est_alt, rt_alt)
+                evaluate_and_record("Wavelet_Threshold_Hybrid", "single_channel", f"[{single_channel}]", det_alt, est_alt, rt_alt)
 
                 # ── 6. Single-Channel: Fixed Ensemble Template Subtraction ──
                 t0 = time.time()

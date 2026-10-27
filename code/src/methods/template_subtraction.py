@@ -3,7 +3,7 @@ src/methods/template_subtraction.py
 ──────────────────────────────────────────────────────────────────────────────
 Maternal template subtraction for non-invasive fetal ECG extraction.
 
-Owner    : Anshu (Maternal Template Subtraction extraction owner)
+Role     : QRS Detection & Template Subtraction Lead
 Reference: PPR-8 Section 5.2 Method B;
            A Review of Signal Processing Techniques for Non-Invasive Fetal
            Electrocardiography (Hasan et al., 2009);
@@ -42,7 +42,7 @@ from src.methods.base import BaseExtractor
 
 class TemplatSubtractionExtractor(BaseExtractor):
     """
-    Maternal template subtraction (Anshu's method).
+    Maternal template subtraction (Maternal Template Subtraction method).
 
     Supports:
       - 'adaptive_ema'  : PPR-8 default with exponential moving average (alpha=0.1)

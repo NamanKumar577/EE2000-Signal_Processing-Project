@@ -3,7 +3,7 @@ src/methods/svd.py
 ──────────────────────────────────────────────────────────────────────────────
 SVD-based fetal ECG extraction — all three variants from Kanjilal et al. (1997).
 
-Owner         : Naman (Primary Extraction Workstream)
+Role     : Integration & SVD Extraction Lead
 Primary paper : Fetal_ECG_extraction_from_single-channel_maternal_ECG_using_
                 singular_value_decomposition.pdf
                 (Kanjilal, Palit & Saha, IEEE TBME, Vol. 44 No. 1, Jan 1997)
