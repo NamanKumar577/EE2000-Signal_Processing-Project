@@ -1,0 +1,2672 @@
+{
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/01_fixed_point_scaling/scripts/run_fixed_point_scaling_audit.py": {
+    "mtime": 1793440876.3903885,
+    "seen": 1793708806.0334055,
+    "ast_hash": "9c7bcced9b8389831d9d83e2c7d3a12b",
+    "semantic_hash": "9c7bcced9b8389831d9d83e2c7d3a12b"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/03_fhr_reconciliation/scripts/run_fhr_reconciliation_audit.py": {
+    "mtime": 1793441058.0100894,
+    "seen": 1793708806.0334232,
+    "ast_hash": "bc6384579659f115c60bd268604cb22e",
+    "semantic_hash": "bc6384579659f115c60bd268604cb22e"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/04_calibration/scripts/run_calibration_audit.py": {
+    "mtime": 1793441163.9806817,
+    "seen": 1793708806.0334308,
+    "ast_hash": "c64ee317b4668c9e6c389ff52ac925a5",
+    "semantic_hash": "c64ee317b4668c9e6c389ff52ac925a5"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/05_filter_timing/tests/run_filter_delay_audit.py": {
+    "mtime": 1793441312.7909684,
+    "seen": 1793708806.0334342,
+    "ast_hash": "8c025af4d222d67efd07540d59883529",
+    "semantic_hash": "8c025af4d222d67efd07540d59883529"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/07_uart/UART_PACKET_IMPLEMENTATION_FINAL.py": {
+    "mtime": 1793440570.8046007,
+    "seen": 1793708806.0334377,
+    "ast_hash": "a5d331823c768eb8c3a5e8d6ccb48e0b",
+    "semantic_hash": "a5d331823c768eb8c3a5e8d6ccb48e0b"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/09_final_specification/FINAL_HARDWARE_PARAMETERS.json": {
+    "mtime": 1793441492.4489589,
+    "seen": 1793708806.0334404,
+    "ast_hash": "c825a6b6de5ec1f1da11e27874d655db",
+    "semantic_hash": "c825a6b6de5ec1f1da11e27874d655db"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/conftest.py": {
+    "mtime": 1793441793.8497314,
+    "seen": 1793708806.0334437,
+    "ast_hash": "b8dbafd177e6b7a843164f76c2eee7eb",
+    "semantic_hash": "b8dbafd177e6b7a843164f76c2eee7eb"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/run_all_experiments.sh": {
+    "mtime": 1793442139.5689688,
+    "seen": 1793708806.033446,
+    "ast_hash": "fb8ca34dabcbd6d322362dc9dfa2d0b3",
+    "semantic_hash": "fb8ca34dabcbd6d322362dc9dfa2d0b3"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/run_all_tests.sh": {
+    "mtime": 1793442139.5689688,
+    "seen": 1793708806.0334487,
+    "ast_hash": "8eafc71ead20800785ba1ede41212849",
+    "semantic_hash": "8eafc71ead20800785ba1ede41212849"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_calibration_confidence_and_recalibration.py": {
+    "mtime": 1793441861.7453833,
+    "seen": 1793708806.0334513,
+    "ast_hash": "4a7ff7ef0447ce9d947a319f99cc52c4",
+    "semantic_hash": "4a7ff7ef0447ce9d947a319f99cc52c4"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_end_to_end_pipeline_synthetic.py": {
+    "mtime": 1793442107.0294893,
+    "seen": 1793708806.033454,
+    "ast_hash": "10662f91192d4c4015520230e64e565d",
+    "semantic_hash": "10662f91192d4c4015520230e64e565d"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_fhr_interval_fusion_and_median5.py": {
+    "mtime": 1793442087.7748864,
+    "seen": 1793708806.0334575,
+    "ast_hash": "1f1f8b91df9c0321ad670cd2b3b21154",
+    "semantic_hash": "1f1f8b91df9c0321ad670cd2b3b21154"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_filter_coefficients_exact.py": {
+    "mtime": 1793441686.361939,
+    "seen": 1793708806.0334604,
+    "ast_hash": "b8172305d28918be44ffe7f094ecf7ea",
+    "semantic_hash": "b8172305d28918be44ffe7f094ecf7ea"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_filter_delay_and_timing_compensation.py": {
+    "mtime": 1793441698.7156634,
+    "seen": 1793708806.0334632,
+    "ast_hash": "216d067110526d990ecc1832316ca71e",
+    "semantic_hash": "216d067110526d990ecc1832316ca71e"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_fixed_point_scaling_exact.py": {
+    "mtime": 1793441658.8470943,
+    "seen": 1793708806.0334656,
+    "ast_hash": "25dd42c60008e7923de6186775c260bf",
+    "semantic_hash": "25dd42c60008e7923de6186775c260bf"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_hardware_arithmetic_exact.py": {
+    "mtime": 1793441674.524469,
+    "seen": 1793708806.033468,
+    "ast_hash": "15750c6705986181f6dbf006c1c7cc97",
+    "semantic_hash": "15750c6705986181f6dbf006c1c7cc97"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_qrs_matching_strict.py": {
+    "mtime": 1793441977.8324833,
+    "seen": 1793708806.0334704,
+    "ast_hash": "f68f40a16ba830d68008edc7d20584b9",
+    "semantic_hash": "f68f40a16ba830d68008edc7d20584b9"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_uart_protocol_final.py": {
+    "mtime": 1793441944.7509165,
+    "seen": 1793708806.0334735,
+    "ast_hash": "0c66cf2084380788e708655cc2cba879",
+    "semantic_hash": "0c66cf2084380788e708655cc2cba879"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_weight_crossfade_slew.py": {
+    "mtime": 1793441894.4368007,
+    "seen": 1793708806.033476,
+    "ast_hash": "c7fccfcbb4788da53bf3561c21b852d7",
+    "semantic_hash": "c7fccfcbb4788da53bf3561c21b852d7"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/baseline/causal_pipeline.py": {
+    "mtime": 1793438832.6981087,
+    "seen": 1793708806.0334787,
+    "ast_hash": "f7c07d66136c2a281e1716bfc47467f7",
+    "semantic_hash": "f7c07d66136c2a281e1716bfc47467f7"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/baseline/fpga_int_model.py": {
+    "mtime": 1793438832.6991236,
+    "seen": 1793708806.0334811,
+    "ast_hash": "29b644c93a0243b64291e0da2315dfd7",
+    "semantic_hash": "29b644c93a0243b64291e0da2315dfd7"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/__init__.py": {
+    "mtime": 1792788232.4381192,
+    "seen": 1793708806.0334835,
+    "ast_hash": "3b7dd0836f09646a6d203d6c26c51642",
+    "semantic_hash": "3b7dd0836f09646a6d203d6c26c51642"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/bit_accurate_reference_model_final.py": {
+    "mtime": 1793440531.6612785,
+    "seen": 1793708806.0334878,
+    "ast_hash": "b1f116fb3cca895c3f4602c696c3c7b9",
+    "semantic_hash": "b1f116fb3cca895c3f4602c696c3c7b9"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/causal_pipeline.py": {
+    "mtime": 1793424068.9905741,
+    "seen": 1793708806.0334902,
+    "ast_hash": "f7c07d66136c2a281e1716bfc47467f7",
+    "semantic_hash": "f7c07d66136c2a281e1716bfc47467f7"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/data_loader.py": {
+    "mtime": 1793083569.0354216,
+    "seen": 1793708806.0334928,
+    "ast_hash": "fb402b151ab7afb50db42ff7c086fce6",
+    "semantic_hash": "fb402b151ab7afb50db42ff7c086fce6"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/evaluation.py": {
+    "mtime": 1793083569.0374432,
+    "seen": 1793708806.033496,
+    "ast_hash": "4043b6d4e2fe4fa9f87342651a538b98",
+    "semantic_hash": "4043b6d4e2fe4fa9f87342651a538b98"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/fhr.py": {
+    "mtime": 1793083569.0440938,
+    "seen": 1793708806.0334985,
+    "ast_hash": "7db200cd34437ad306726178f4cbd88e",
+    "semantic_hash": "7db200cd34437ad306726178f4cbd88e"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/fhr_implementation_corrected.py": {
+    "mtime": 1793437637.0966587,
+    "seen": 1793708806.033501,
+    "ast_hash": "9ccf801ae245d807c766e1b5b8a3a131",
+    "semantic_hash": "9ccf801ae245d807c766e1b5b8a3a131"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/preprocessing.py": {
+    "mtime": 1792788232.4515693,
+    "seen": 1793708806.0335033,
+    "ast_hash": "8958cedddc2e28f66ced0efdefb04bfe",
+    "semantic_hash": "8958cedddc2e28f66ced0efdefb04bfe"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/qrs_detector.py": {
+    "mtime": 1793083569.0545251,
+    "seen": 1793708806.0335054,
+    "ast_hash": "2903b1bf5a7d08494d0c5b7d40a977aa",
+    "semantic_hash": "2903b1bf5a7d08494d0c5b7d40a977aa"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/corrected/src/uart_protocol_final.py": {
+    "mtime": 1793440570.8046007,
+    "seen": 1793708806.0335078,
+    "ast_hash": "a5d331823c768eb8c3a5e8d6ccb48e0b",
+    "semantic_hash": "a5d331823c768eb8c3a5e8d6ccb48e0b"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/__init__.py": {
+    "mtime": 1792788232.4381192,
+    "seen": 1793708806.0335107,
+    "ast_hash": "3b7dd0836f09646a6d203d6c26c51642",
+    "semantic_hash": "3b7dd0836f09646a6d203d6c26c51642"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/bit_accurate_reference_model_final.py": {
+    "mtime": 1793440531.6612785,
+    "seen": 1793708806.0335133,
+    "ast_hash": "b1f116fb3cca895c3f4602c696c3c7b9",
+    "semantic_hash": "b1f116fb3cca895c3f4602c696c3c7b9"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/causal_pipeline.py": {
+    "mtime": 1793424068.9905741,
+    "seen": 1793708806.0335157,
+    "ast_hash": "f7c07d66136c2a281e1716bfc47467f7",
+    "semantic_hash": "f7c07d66136c2a281e1716bfc47467f7"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/data_loader.py": {
+    "mtime": 1793083569.0354216,
+    "seen": 1793708806.033518,
+    "ast_hash": "fb402b151ab7afb50db42ff7c086fce6",
+    "semantic_hash": "fb402b151ab7afb50db42ff7c086fce6"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/evaluation.py": {
+    "mtime": 1793083569.0374432,
+    "seen": 1793708806.0335207,
+    "ast_hash": "4043b6d4e2fe4fa9f87342651a538b98",
+    "semantic_hash": "4043b6d4e2fe4fa9f87342651a538b98"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/fhr.py": {
+    "mtime": 1793083569.0440938,
+    "seen": 1793708806.033523,
+    "ast_hash": "7db200cd34437ad306726178f4cbd88e",
+    "semantic_hash": "7db200cd34437ad306726178f4cbd88e"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/fhr_implementation_corrected.py": {
+    "mtime": 1793437637.0966587,
+    "seen": 1793708806.0335257,
+    "ast_hash": "9ccf801ae245d807c766e1b5b8a3a131",
+    "semantic_hash": "9ccf801ae245d807c766e1b5b8a3a131"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/preprocessing.py": {
+    "mtime": 1792788232.4515693,
+    "seen": 1793708806.033528,
+    "ast_hash": "8958cedddc2e28f66ced0efdefb04bfe",
+    "semantic_hash": "8958cedddc2e28f66ced0efdefb04bfe"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/qrs_detector.py": {
+    "mtime": 1793083569.0545251,
+    "seen": 1793708806.0335307,
+    "ast_hash": "2903b1bf5a7d08494d0c5b7d40a977aa",
+    "semantic_hash": "2903b1bf5a7d08494d0c5b7d40a977aa"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/reference_model/uart_protocol_final.py": {
+    "mtime": 1793440570.8046007,
+    "seen": 1793708806.0335329,
+    "ast_hash": "a5d331823c768eb8c3a5e8d6ccb48e0b",
+    "semantic_hash": "a5d331823c768eb8c3a5e8d6ccb48e0b"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/tools/reconcile_qrs_metrics.py": {
+    "mtime": 1793437182.885134,
+    "seen": 1793708806.0335352,
+    "ast_hash": "16a664bb893ffc9a1f24b71225235740",
+    "semantic_hash": "16a664bb893ffc9a1f24b71225235740"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/tools/run_calibration_audit.py": {
+    "mtime": 1793441163.9806817,
+    "seen": 1793708806.033538,
+    "ast_hash": "c64ee317b4668c9e6c389ff52ac925a5",
+    "semantic_hash": "c64ee317b4668c9e6c389ff52ac925a5"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/tools/run_fhr_reconciliation_audit.py": {
+    "mtime": 1793441058.0100894,
+    "seen": 1793708806.0335424,
+    "ast_hash": "bc6384579659f115c60bd268604cb22e",
+    "semantic_hash": "bc6384579659f115c60bd268604cb22e"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/tools/run_filter_delay_audit.py": {
+    "mtime": 1793441312.7909684,
+    "seen": 1793708806.0335448,
+    "ast_hash": "8c025af4d222d67efd07540d59883529",
+    "semantic_hash": "8c025af4d222d67efd07540d59883529"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/tools/run_fixed_point_scaling_audit.py": {
+    "mtime": 1793440876.3903885,
+    "seen": 1793708806.033547,
+    "ast_hash": "9c7bcced9b8389831d9d83e2c7d3a12b",
+    "semantic_hash": "9c7bcced9b8389831d9d83e2c7d3a12b"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/conftest.py": {
+    "mtime": 1793441636.0071888,
+    "seen": 1793708806.0335495,
+    "ast_hash": "94a749ef894467b9e9993ff2dc87b863",
+    "semantic_hash": "94a749ef894467b9e9993ff2dc87b863"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/01_metric_reconciliation/scripts/reconcile_qrs_metrics.py": {
+    "mtime": 1793438832.6489334,
+    "seen": 1793708806.0335517,
+    "ast_hash": "16a664bb893ffc9a1f24b71225235740",
+    "semantic_hash": "16a664bb893ffc9a1f24b71225235740"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/02_calibration_correction/scripts/audit_calibration_fallback.py": {
+    "mtime": 1793438832.6544466,
+    "seen": 1793708806.033554,
+    "ast_hash": "3b4f5935a9f2224088a99329ab103048",
+    "semantic_hash": "3b4f5935a9f2224088a99329ab103048"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/03_fixed_point_correction/reference_model/bit_accurate_reference_model_corrected.py": {
+    "mtime": 1793438832.6619651,
+    "seen": 1793708806.0335565,
+    "ast_hash": "4af8d228f3fc963714ea3160940d4b06",
+    "semantic_hash": "4af8d228f3fc963714ea3160940d4b06"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/03_fixed_point_correction/tests/test_fixed_point_arithmetic_exact.py": {
+    "mtime": 1793438832.6629596,
+    "seen": 1793708806.0335588,
+    "ast_hash": "d75168842e87e070491b0f40a60ed178",
+    "semantic_hash": "d75168842e87e070491b0f40a60ed178"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/04_fhr_correction/FHR_IMPLEMENTATION_CORRECTED.py": {
+    "mtime": 1793438832.664949,
+    "seen": 1793708806.0335612,
+    "ast_hash": "b147af54eeaa45eeb186daade22e6ea0",
+    "semantic_hash": "b147af54eeaa45eeb186daade22e6ea0"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/04_fhr_correction/tests/test_fhr_interval_fusion_and_median5.py": {
+    "mtime": 1793438832.6694808,
+    "seen": 1793708806.0335636,
+    "ast_hash": "7ada3b4bf0b7330bac9204b3839d9a17",
+    "semantic_hash": "7ada3b4bf0b7330bac9204b3839d9a17"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/05_fhr_range/tests/test_fhr_range_boundaries.py": {
+    "mtime": 1793438832.67302,
+    "seen": 1793708806.033566,
+    "ast_hash": "a876b759f4ae37afc2eac853432499f1",
+    "semantic_hash": "a876b759f4ae37afc2eac853432499f1"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/06_benchmark_correction/scripts/run_benchmark_coverage_and_twin_audit.py": {
+    "mtime": 1793438832.6780157,
+    "seen": 1793708806.0335686,
+    "ast_hash": "1e10d7228997582529430e94ba56fd2f",
+    "semantic_hash": "1e10d7228997582529430e94ba56fd2f"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/protocol_implementation/uart_protocol.py": {
+    "mtime": 1793438832.6855721,
+    "seen": 1793708806.0335708,
+    "ast_hash": "f733eaab4b19e211a8408e6d11447359",
+    "semantic_hash": "f733eaab4b19e211a8408e6d11447359"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/tests/test_uart_protocol.py": {
+    "mtime": 1793438832.6865819,
+    "seen": 1793708806.0335734,
+    "ast_hash": "379933c81ab11f54f34c8f7d617f7a6e",
+    "semantic_hash": "379933c81ab11f54f34c8f7d617f7a6e"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/conftest.py": {
+    "mtime": 1793438832.71121,
+    "seen": 1793708806.0335763,
+    "ast_hash": "6787d771c1ae6c4dcc8ca5acf31b0f3a",
+    "semantic_hash": "6787d771c1ae6c4dcc8ca5acf31b0f3a"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/run_all_tests.sh": {
+    "mtime": 1793438832.71121,
+    "seen": 1793708806.0335784,
+    "ast_hash": "b12750fe8f3db19777a91e3ba3dd561f",
+    "semantic_hash": "b12750fe8f3db19777a91e3ba3dd561f"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_calibration_confidence_fallback.py": {
+    "mtime": 1793438832.6921237,
+    "seen": 1793708806.0335808,
+    "ast_hash": "ab18ccc85b1ca7a5251a27d1cad87c38",
+    "semantic_hash": "ab18ccc85b1ca7a5251a27d1cad87c38"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_end_to_end_pipeline_synthetic.py": {
+    "mtime": 1793438832.6981087,
+    "seen": 1793708806.0335836,
+    "ast_hash": "68551b90fc622fc9bacb8fdad3f283f8",
+    "semantic_hash": "68551b90fc622fc9bacb8fdad3f283f8"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_fhr_interval_fusion_and_median5.py": {
+    "mtime": 1793438832.6931157,
+    "seen": 1793708806.033586,
+    "ast_hash": "7ada3b4bf0b7330bac9204b3839d9a17",
+    "semantic_hash": "7ada3b4bf0b7330bac9204b3839d9a17"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_fhr_range_boundaries.py": {
+    "mtime": 1793438832.69611,
+    "seen": 1793708806.0335882,
+    "ast_hash": "a876b759f4ae37afc2eac853432499f1",
+    "semantic_hash": "a876b759f4ae37afc2eac853432499f1"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_filter_coefficients_exact.py": {
+    "mtime": 1793438832.697107,
+    "seen": 1793708806.0335908,
+    "ast_hash": "e0d500c48b938adc0be277a73afb7c36",
+    "semantic_hash": "e0d500c48b938adc0be277a73afb7c36"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_fixed_point_arithmetic_exact.py": {
+    "mtime": 1793438832.6931157,
+    "seen": 1793708806.0335937,
+    "ast_hash": "d75168842e87e070491b0f40a60ed178",
+    "semantic_hash": "d75168842e87e070491b0f40a60ed178"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_qrs_matching_strict.py": {
+    "mtime": 1793438832.6911085,
+    "seen": 1793708806.0335958,
+    "ast_hash": "40f7b66f1764558d1a7048fcce937ed8",
+    "semantic_hash": "40f7b66f1764558d1a7048fcce937ed8"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_uart_protocol.py": {
+    "mtime": 1793438832.69611,
+    "seen": 1793708806.0335982,
+    "ast_hash": "379933c81ab11f54f34c8f7d617f7a6e",
+    "semantic_hash": "379933c81ab11f54f34c8f7d617f7a6e"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/baseline/causal_pipeline.py": {
+    "mtime": 1793438832.6981087,
+    "seen": 1793708806.0336006,
+    "ast_hash": "f7c07d66136c2a281e1716bfc47467f7",
+    "semantic_hash": "f7c07d66136c2a281e1716bfc47467f7"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/baseline/fpga_int_model.py": {
+    "mtime": 1793438832.6991236,
+    "seen": 1793708806.033603,
+    "ast_hash": "29b644c93a0243b64291e0da2315dfd7",
+    "semantic_hash": "29b644c93a0243b64291e0da2315dfd7"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/corrected/__init__.py": {
+    "mtime": 1793438832.7046578,
+    "seen": 1793708806.0336053,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/corrected/bit_accurate_reference_model_corrected.py": {
+    "mtime": 1793438832.700123,
+    "seen": 1793708806.0336077,
+    "ast_hash": "4af8d228f3fc963714ea3160940d4b06",
+    "semantic_hash": "4af8d228f3fc963714ea3160940d4b06"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/corrected/fhr_implementation_corrected.py": {
+    "mtime": 1793438832.7016573,
+    "seen": 1793708806.0336099,
+    "ast_hash": "9ccf801ae245d807c766e1b5b8a3a131",
+    "semantic_hash": "9ccf801ae245d807c766e1b5b8a3a131"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/corrected/src/__init__.py": {
+    "mtime": 1793438832.7046578,
+    "seen": 1793708806.0336127,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/corrected/src/bit_accurate_reference_model_corrected.py": {
+    "mtime": 1793438832.7006617,
+    "seen": 1793708806.033615,
+    "ast_hash": "4af8d228f3fc963714ea3160940d4b06",
+    "semantic_hash": "4af8d228f3fc963714ea3160940d4b06"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/corrected/src/fhr_implementation_corrected.py": {
+    "mtime": 1793438832.7026591,
+    "seen": 1793708806.0336175,
+    "ast_hash": "9ccf801ae245d807c766e1b5b8a3a131",
+    "semantic_hash": "9ccf801ae245d807c766e1b5b8a3a131"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/corrected/src/uart_protocol.py": {
+    "mtime": 1793438832.7046578,
+    "seen": 1793708806.0336199,
+    "ast_hash": "f733eaab4b19e211a8408e6d11447359",
+    "semantic_hash": "f733eaab4b19e211a8408e6d11447359"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/corrected/uart_protocol.py": {
+    "mtime": 1793438832.703657,
+    "seen": 1793708806.0336227,
+    "ast_hash": "f733eaab4b19e211a8408e6d11447359",
+    "semantic_hash": "f733eaab4b19e211a8408e6d11447359"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/tools/assemble_corrected_package.py": {
+    "mtime": 1793438832.705674,
+    "seen": 1793708806.0336254,
+    "ast_hash": "14271acb26c3f3b932897fd1253753c1",
+    "semantic_hash": "14271acb26c3f3b932897fd1253753c1"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/tools/audit_calibration_fallback.py": {
+    "mtime": 1793438832.705674,
+    "seen": 1793708806.033628,
+    "ast_hash": "3b4f5935a9f2224088a99329ab103048",
+    "semantic_hash": "3b4f5935a9f2224088a99329ab103048"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/tools/generate_filter_spec.py": {
+    "mtime": 1793438832.7066588,
+    "seen": 1793708806.0336306,
+    "ast_hash": "0b18c47d05f694f28d58a1bf11d77520",
+    "semantic_hash": "0b18c47d05f694f28d58a1bf11d77520"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/tools/reconcile_qrs_metrics.py": {
+    "mtime": 1793438832.7066588,
+    "seen": 1793708806.033633,
+    "ast_hash": "16a664bb893ffc9a1f24b71225235740",
+    "semantic_hash": "16a664bb893ffc9a1f24b71225235740"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/tools/run_benchmark_coverage_and_twin_audit.py": {
+    "mtime": 1793438832.7086728,
+    "seen": 1793708806.0336356,
+    "ast_hash": "1e10d7228997582529430e94ba56fd2f",
+    "semantic_hash": "1e10d7228997582529430e94ba56fd2f"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/tools/run_fhr_stage_audit.py": {
+    "mtime": 1793438832.7101965,
+    "seen": 1793708806.0336382,
+    "ast_hash": "265444f91579fae26e6fea57ccfd1a36",
+    "semantic_hash": "265444f91579fae26e6fea57ccfd1a36"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/tools/run_fixed_point_audit_corrected.py": {
+    "mtime": 1793438832.7101965,
+    "seen": 1793708806.0336404,
+    "ast_hash": "7ad87f0b65d15d8ed0d0eaf973b1dedf",
+    "semantic_hash": "7ad87f0b65d15d8ed0d0eaf973b1dedf"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/conftest.py": {
+    "mtime": 1793438832.71121,
+    "seen": 1793708806.033643,
+    "ast_hash": "1f3a657634b385c26a49380ac8a4f463",
+    "semantic_hash": "1f3a657634b385c26a49380ac8a4f463"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/02_full_layout_validation/scripts/run_full_layout_reproduction.py": {
+    "mtime": 1793435982.4710598,
+    "seen": 1793708806.0336454,
+    "ast_hash": "dc97ed278c9b23b12ac7fb82892b90cb",
+    "semantic_hash": "dc97ed278c9b23b12ac7fb82892b90cb"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/03_spatial_calibration/scripts/run_autocorr_rigorous_validation.py": {
+    "mtime": 1793435982.4770193,
+    "seen": 1793708806.033651,
+    "ast_hash": "03a2922ed82f06d4e4308ceafdb36dd7",
+    "semantic_hash": "03a2922ed82f06d4e4308ceafdb36dd7"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/04_qrs_fhr_validation/scripts/run_raw_qrs_vs_fhr_study.py": {
+    "mtime": 1793435982.4810188,
+    "seen": 1793708806.0336537,
+    "ast_hash": "e3bdcedd4869de93407d5e7631fb8d9a",
+    "semantic_hash": "e3bdcedd4869de93407d5e7631fb8d9a"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/05_detector_validation/scripts/run_detector_rigorous_audit.py": {
+    "mtime": 1793435982.482019,
+    "seen": 1793708806.0336564,
+    "ast_hash": "3b64067c6077fab2c62e0d0e3c7025df",
+    "semantic_hash": "3b64067c6077fab2c62e0d0e3c7025df"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/reference_model/bit_accurate_reference_model.py": {
+    "mtime": 1793435982.4855297,
+    "seen": 1793708806.033659,
+    "ast_hash": "d2ef0ca56d93c68f0d98694d72840e93",
+    "semantic_hash": "d2ef0ca56d93c68f0d98694d72840e93"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/tests/test_bit_accurate_reference.py": {
+    "mtime": 1793435982.4865294,
+    "seen": 1793708806.0336611,
+    "ast_hash": "e0a5531ea394e9ecc3c924e336eda98a",
+    "semantic_hash": "e0a5531ea394e9ecc3c924e336eda98a"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/run_all_tests.sh": {
+    "mtime": 1793435982.49453,
+    "seen": 1793708806.0336635,
+    "ast_hash": "29441f14afd91e99c62786a85ea06737",
+    "semantic_hash": "29441f14afd91e99c62786a85ea06737"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/tests/test_pre_fpga_regression.py": {
+    "mtime": 1793435982.49453,
+    "seen": 1793708806.033666,
+    "ast_hash": "62901ace47de4bb4186afe85a36c57ca",
+    "semantic_hash": "62901ace47de4bb4186afe85a36c57ca"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/causal_pipeline.py": {
+    "mtime": 1793435982.49553,
+    "seen": 1793708806.033668,
+    "ast_hash": "f7c07d66136c2a281e1716bfc47467f7",
+    "semantic_hash": "f7c07d66136c2a281e1716bfc47467f7"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/fpga_int_model.py": {
+    "mtime": 1793435982.4965303,
+    "seen": 1793708806.0336707,
+    "ast_hash": "29b644c93a0243b64291e0da2315dfd7",
+    "semantic_hash": "29b644c93a0243b64291e0da2315dfd7"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/fixed_point/fixed_point_model.py": {
+    "mtime": 1793435982.49753,
+    "seen": 1793708806.0336733,
+    "ast_hash": "1244c7c326d9b849a286d633435d0506",
+    "semantic_hash": "1244c7c326d9b849a286d633435d0506"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/improved/bit_accurate_reference_model.py": {
+    "mtime": 1793435982.4965303,
+    "seen": 1793708806.0336757,
+    "ast_hash": "d2ef0ca56d93c68f0d98694d72840e93",
+    "semantic_hash": "d2ef0ca56d93c68f0d98694d72840e93"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/assemble_validation_package.py": {
+    "mtime": 1793435982.4985304,
+    "seen": 1793708806.033678,
+    "ast_hash": "e67b07ac868ca0c4c3b6049ecd1344c6",
+    "semantic_hash": "e67b07ac868ca0c4c3b6049ecd1344c6"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_autocorr_rigorous_validation.py": {
+    "mtime": 1793435982.4985304,
+    "seen": 1793708806.0336807,
+    "ast_hash": "03a2922ed82f06d4e4308ceafdb36dd7",
+    "semantic_hash": "03a2922ed82f06d4e4308ceafdb36dd7"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_detector_rigorous_audit.py": {
+    "mtime": 1793435982.4995303,
+    "seen": 1793708806.0336833,
+    "ast_hash": "3b64067c6077fab2c62e0d0e3c7025df",
+    "semantic_hash": "3b64067c6077fab2c62e0d0e3c7025df"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_fixed_point_audit.py": {
+    "mtime": 1793435982.4995303,
+    "seen": 1793708806.0336854,
+    "ast_hash": "93192c02ef9aade9bf786836bb931976",
+    "semantic_hash": "93192c02ef9aade9bf786836bb931976"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_full_layout_reproduction.py": {
+    "mtime": 1793435982.5005298,
+    "seen": 1793708806.0336878,
+    "ast_hash": "dc97ed278c9b23b12ac7fb82892b90cb",
+    "semantic_hash": "dc97ed278c9b23b12ac7fb82892b90cb"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_raw_qrs_vs_fhr_study.py": {
+    "mtime": 1793435982.50153,
+    "seen": 1793708806.0336905,
+    "ast_hash": "e3bdcedd4869de93407d5e7631fb8d9a",
+    "semantic_hash": "e3bdcedd4869de93407d5e7631fb8d9a"
+  },
+  "QRS_RESIDUAL_TIMING_ANALYSIS/tests/test_residual_timing_analysis.py": {
+    "mtime": 1793463696.770949,
+    "seen": 1793708806.0336926,
+    "ast_hash": "5be082664a1fb74ad82d93c142cb65a0",
+    "semantic_hash": "5be082664a1fb74ad82d93c142cb65a0"
+  },
+  "QRS_TIMING_CORRECTION/tests/test_qrs_timing_correction_rigorous.py": {
+    "mtime": 1793462786.7471197,
+    "seen": 1793708806.033695,
+    "ast_hash": "53e68985a5ebf56a9b5393b5577e7443",
+    "semantic_hash": "53e68985a5ebf56a9b5393b5577e7443"
+  },
+  "code/brain/patch_test.py": {
+    "mtime": 1792788232.355736,
+    "seen": 1793708806.0336974,
+    "ast_hash": "e3d8ef07a67d8e620ceac912b558580c",
+    "semantic_hash": "e3d8ef07a67d8e620ceac912b558580c"
+  },
+  "code/configs/preprocessing.yaml": {
+    "mtime": 1792788232.355736,
+    "seen": 1793708806.0336998,
+    "ast_hash": "d373757b8019c2ebb293668502f7da3d",
+    "semantic_hash": "d373757b8019c2ebb293668502f7da3d"
+  },
+  "code/configs/tests.yaml": {
+    "mtime": 1792788232.355736,
+    "seen": 1793708806.0337021,
+    "ast_hash": "e5c6cf50c2139f7203abc63007e9c4b6",
+    "semantic_hash": "e5c6cf50c2139f7203abc63007e9c4b6"
+  },
+  "code/results/fpga_golden/sub01_snr12_c0/summary.json": {
+    "mtime": 1793424286.2280443,
+    "seen": 1793708806.0337045,
+    "ast_hash": "a2af8f5f82f9de68e657f729e9c793dc",
+    "semantic_hash": "a2af8f5f82f9de68e657f729e9c793dc"
+  },
+  "code/results/run_metadata.json": {
+    "mtime": 1793424782.7890654,
+    "seen": 1793708806.0337067,
+    "ast_hash": "fa642ab00e99cc45a05b2d20b36dd26f",
+    "semantic_hash": "fa642ab00e99cc45a05b2d20b36dd26f"
+  },
+  "code/src/__init__.py": {
+    "mtime": 1792788232.4381192,
+    "seen": 1793708806.0337093,
+    "ast_hash": "3b7dd0836f09646a6d203d6c26c51642",
+    "semantic_hash": "3b7dd0836f09646a6d203d6c26c51642"
+  },
+  "code/src/bit_accurate_reference_model.py": {
+    "mtime": 1793435187.7459571,
+    "seen": 1793708806.0337117,
+    "ast_hash": "d2ef0ca56d93c68f0d98694d72840e93",
+    "semantic_hash": "d2ef0ca56d93c68f0d98694d72840e93"
+  },
+  "code/src/bit_accurate_reference_model_corrected.py": {
+    "mtime": 1793438010.537215,
+    "seen": 1793708806.0337143,
+    "ast_hash": "4af8d228f3fc963714ea3160940d4b06",
+    "semantic_hash": "4af8d228f3fc963714ea3160940d4b06"
+  },
+  "code/src/bit_accurate_reference_model_final.py": {
+    "mtime": 1793440531.6612785,
+    "seen": 1793708806.0337167,
+    "ast_hash": "b1f116fb3cca895c3f4602c696c3c7b9",
+    "semantic_hash": "b1f116fb3cca895c3f4602c696c3c7b9"
+  },
+  "code/src/causal_pipeline.py": {
+    "mtime": 1793424068.9905741,
+    "seen": 1793708806.0337193,
+    "ast_hash": "f7c07d66136c2a281e1716bfc47467f7",
+    "semantic_hash": "f7c07d66136c2a281e1716bfc47467f7"
+  },
+  "code/src/data_loader.py": {
+    "mtime": 1793083569.0354216,
+    "seen": 1793708806.0337217,
+    "ast_hash": "fb402b151ab7afb50db42ff7c086fce6",
+    "semantic_hash": "fb402b151ab7afb50db42ff7c086fce6"
+  },
+  "code/src/evaluation.py": {
+    "mtime": 1793083569.0374432,
+    "seen": 1793708806.0337358,
+    "ast_hash": "4043b6d4e2fe4fa9f87342651a538b98",
+    "semantic_hash": "4043b6d4e2fe4fa9f87342651a538b98"
+  },
+  "code/src/fhr.py": {
+    "mtime": 1793083569.0440938,
+    "seen": 1793708806.0337386,
+    "ast_hash": "7db200cd34437ad306726178f4cbd88e",
+    "semantic_hash": "7db200cd34437ad306726178f4cbd88e"
+  },
+  "code/src/fhr_implementation_corrected.py": {
+    "mtime": 1793437637.0966587,
+    "seen": 1793708806.0337412,
+    "ast_hash": "9ccf801ae245d807c766e1b5b8a3a131",
+    "semantic_hash": "9ccf801ae245d807c766e1b5b8a3a131"
+  },
+  "code/src/fixed_point_model.py": {
+    "mtime": 1793083569.0440938,
+    "seen": 1793708806.0337439,
+    "ast_hash": "1244c7c326d9b849a286d633435d0506",
+    "semantic_hash": "1244c7c326d9b849a286d633435d0506"
+  },
+  "code/src/fpga_int_model.py": {
+    "mtime": 1793424068.991609,
+    "seen": 1793708806.0337462,
+    "ast_hash": "29b644c93a0243b64291e0da2315dfd7",
+    "semantic_hash": "29b644c93a0243b64291e0da2315dfd7"
+  },
+  "code/src/methods/__init__.py": {
+    "mtime": 1792788232.4425423,
+    "seen": 1793708806.0337484,
+    "ast_hash": "8ad8225d9d444fe388f52f46a3320793",
+    "semantic_hash": "8ad8225d9d444fe388f52f46a3320793"
+  },
+  "code/src/methods/alternative.py": {
+    "mtime": 1793083569.0688326,
+    "seen": 1793708806.0337512,
+    "ast_hash": "529687511d99ab187cac5fd2ecdf1264",
+    "semantic_hash": "529687511d99ab187cac5fd2ecdf1264"
+  },
+  "code/src/methods/base.py": {
+    "mtime": 1793083569.0688326,
+    "seen": 1793708806.0337536,
+    "ast_hash": "14329edb100b206ac9554a308aa3afd3",
+    "semantic_hash": "14329edb100b206ac9554a308aa3afd3"
+  },
+  "code/src/methods/svd.py": {
+    "mtime": 1793083569.0763836,
+    "seen": 1793708806.033756,
+    "ast_hash": "a342be8eaa790aeb57e764dab940b3f3",
+    "semantic_hash": "a342be8eaa790aeb57e764dab940b3f3"
+  },
+  "code/src/methods/svd_phase2.py": {
+    "mtime": 1793083569.0763836,
+    "seen": 1793708806.0337584,
+    "ast_hash": "1aed5cfac07992ec37d0421d252e17cc",
+    "semantic_hash": "1aed5cfac07992ec37d0421d252e17cc"
+  },
+  "code/src/methods/swt_lms_ssnf.py": {
+    "mtime": 1792788232.4457417,
+    "seen": 1793708806.0337613,
+    "ast_hash": "8bbbc4328d5030a0dd6a379d005179c1",
+    "semantic_hash": "8bbbc4328d5030a0dd6a379d005179c1"
+  },
+  "code/src/methods/template_subtraction.py": {
+    "mtime": 1793083569.087267,
+    "seen": 1793708806.033764,
+    "ast_hash": "db9dcc954d86cee6f37bbd29cad36673",
+    "semantic_hash": "db9dcc954d86cee6f37bbd29cad36673"
+  },
+  "code/src/mixture.py": {
+    "mtime": 1793083569.0440938,
+    "seen": 1793708806.033766,
+    "ast_hash": "ec9d7d32c1f687c6f7d5cf7d30a02545",
+    "semantic_hash": "ec9d7d32c1f687c6f7d5cf7d30a02545"
+  },
+  "code/src/models/fecg_unet.py": {
+    "mtime": 1792775178.0670555,
+    "seen": 1793708806.0337687,
+    "ast_hash": "60ef2db4ab91a2fe7a0e4e153e59bdbf",
+    "semantic_hash": "60ef2db4ab91a2fe7a0e4e153e59bdbf"
+  },
+  "code/src/multichannel_study.py": {
+    "mtime": 1792824253.3534775,
+    "seen": 1793708806.033771,
+    "ast_hash": "c13672278954428fc7137463d2dcae91",
+    "semantic_hash": "c13672278954428fc7137463d2dcae91"
+  },
+  "code/src/preprocessing.py": {
+    "mtime": 1792788232.4515693,
+    "seen": 1793708806.0337734,
+    "ast_hash": "8958cedddc2e28f66ced0efdefb04bfe",
+    "semantic_hash": "8958cedddc2e28f66ced0efdefb04bfe"
+  },
+  "code/src/qrs_detector.py": {
+    "mtime": 1793083569.0545251,
+    "seen": 1793708806.0337756,
+    "ast_hash": "2903b1bf5a7d08494d0c5b7d40a977aa",
+    "semantic_hash": "2903b1bf5a7d08494d0c5b7d40a977aa"
+  },
+  "code/src/run_benchmark.py": {
+    "mtime": 1793083569.0579755,
+    "seen": 1793708806.0337782,
+    "ast_hash": "2dd7db314d2c8da46b6b750d16e57de3",
+    "semantic_hash": "2dd7db314d2c8da46b6b750d16e57de3"
+  },
+  "code/src/run_causal_benchmark.py": {
+    "mtime": 1793424068.9925714,
+    "seen": 1793708806.0337808,
+    "ast_hash": "d033556a1668fbc7fe554cfd972cc8d6",
+    "semantic_hash": "d033556a1668fbc7fe554cfd972cc8d6"
+  },
+  "code/src/run_mega_benchmark.py": {
+    "mtime": 1793083569.060902,
+    "seen": 1793708806.033783,
+    "ast_hash": "054811d7120c534fe5a93c8f507b163b",
+    "semantic_hash": "054811d7120c534fe5a93c8f507b163b"
+  },
+  "code/src/svd_fixed_point_model.py": {
+    "mtime": 1793083569.060902,
+    "seen": 1793708806.0337856,
+    "ast_hash": "4351af34abe5c96d7571c5fd8ec762dc",
+    "semantic_hash": "4351af34abe5c96d7571c5fd8ec762dc"
+  },
+  "code/src/train_deep_model.py": {
+    "mtime": 1792824173.6297214,
+    "seen": 1793708806.033788,
+    "ast_hash": "fbefc8ee00de3bfd85d935e583e1c706",
+    "semantic_hash": "fbefc8ee00de3bfd85d935e583e1c706"
+  },
+  "code/src/uart_protocol.py": {
+    "mtime": 1793438193.6502392,
+    "seen": 1793708806.03379,
+    "ast_hash": "f733eaab4b19e211a8408e6d11447359",
+    "semantic_hash": "f733eaab4b19e211a8408e6d11447359"
+  },
+  "code/src/uart_protocol_final.py": {
+    "mtime": 1793440570.8046007,
+    "seen": 1793708806.0337927,
+    "ast_hash": "a5d331823c768eb8c3a5e8d6ccb48e0b",
+    "semantic_hash": "a5d331823c768eb8c3a5e8d6ccb48e0b"
+  },
+  "code/tests/__init__.py": {
+    "mtime": 1792788232.4554904,
+    "seen": 1793708806.0337954,
+    "ast_hash": "f12ec9bbcea773aa979fbdad26ea0c89",
+    "semantic_hash": "f12ec9bbcea773aa979fbdad26ea0c89"
+  },
+  "code/tests/_synth.py": {
+    "mtime": 1793424068.993571,
+    "seen": 1793708806.033798,
+    "ast_hash": "515cd3f33ad7bffd644761be7f867343",
+    "semantic_hash": "515cd3f33ad7bffd644761be7f867343"
+  },
+  "code/tests/test_bit_accurate_reference.py": {
+    "mtime": 1793435237.5773437,
+    "seen": 1793708806.0338001,
+    "ast_hash": "e0a5531ea394e9ecc3c924e336eda98a",
+    "semantic_hash": "e0a5531ea394e9ecc3c924e336eda98a"
+  },
+  "code/tests/test_calibration_confidence_fallback.py": {
+    "mtime": 1793438730.9403195,
+    "seen": 1793708806.0338027,
+    "ast_hash": "ab18ccc85b1ca7a5251a27d1cad87c38",
+    "semantic_hash": "ab18ccc85b1ca7a5251a27d1cad87c38"
+  },
+  "code/tests/test_causal_pipeline.py": {
+    "mtime": 1793424068.9945774,
+    "seen": 1793708806.0338056,
+    "ast_hash": "5b55d06c94017c6f67d1f5b1fc65fd50",
+    "semantic_hash": "5b55d06c94017c6f67d1f5b1fc65fd50"
+  },
+  "code/tests/test_end_to_end_pipeline_synthetic.py": {
+    "mtime": 1793438445.2725198,
+    "seen": 1793708806.0338082,
+    "ast_hash": "68551b90fc622fc9bacb8fdad3f283f8",
+    "semantic_hash": "68551b90fc622fc9bacb8fdad3f283f8"
+  },
+  "code/tests/test_fhr.py": {
+    "mtime": 1792788232.4554904,
+    "seen": 1793708806.0338104,
+    "ast_hash": "2a01e8c39503434f08ab5af603693db0",
+    "semantic_hash": "2a01e8c39503434f08ab5af603693db0"
+  },
+  "code/tests/test_fhr_interval_fusion_and_median5.py": {
+    "mtime": 1793437714.198377,
+    "seen": 1793708806.033813,
+    "ast_hash": "7ada3b4bf0b7330bac9204b3839d9a17",
+    "semantic_hash": "7ada3b4bf0b7330bac9204b3839d9a17"
+  },
+  "code/tests/test_fhr_range_boundaries.py": {
+    "mtime": 1793437724.0397134,
+    "seen": 1793708806.0338156,
+    "ast_hash": "a876b759f4ae37afc2eac853432499f1",
+    "semantic_hash": "a876b759f4ae37afc2eac853432499f1"
+  },
+  "code/tests/test_filter_coefficients_exact.py": {
+    "mtime": 1793438368.496093,
+    "seen": 1793708806.0338178,
+    "ast_hash": "e0d500c48b938adc0be277a73afb7c36",
+    "semantic_hash": "e0d500c48b938adc0be277a73afb7c36"
+  },
+  "code/tests/test_fixed_point_arithmetic_exact.py": {
+    "mtime": 1793437749.116422,
+    "seen": 1793708806.0338202,
+    "ast_hash": "d75168842e87e070491b0f40a60ed178",
+    "semantic_hash": "d75168842e87e070491b0f40a60ed178"
+  },
+  "code/tests/test_fixed_point_verification.py": {
+    "mtime": 1792788232.4554904,
+    "seen": 1793708806.0338225,
+    "ast_hash": "259803ba67aa23b4e830506f20f8c2b5",
+    "semantic_hash": "259803ba67aa23b4e830506f20f8c2b5"
+  },
+  "code/tests/test_fpga_int_model.py": {
+    "mtime": 1793424068.9945774,
+    "seen": 1793708806.033825,
+    "ast_hash": "309b346da80d047b671d654458024f53",
+    "semantic_hash": "309b346da80d047b671d654458024f53"
+  },
+  "code/tests/test_loader.py": {
+    "mtime": 1792788232.4554904,
+    "seen": 1793708806.0338273,
+    "ast_hash": "07d4f62436d1744815ff36a528311465",
+    "semantic_hash": "07d4f62436d1744815ff36a528311465"
+  },
+  "code/tests/test_method_interface.py": {
+    "mtime": 1792788232.4567218,
+    "seen": 1793708806.0338297,
+    "ast_hash": "afa754e34472d53bc9f794f08d694894",
+    "semantic_hash": "afa754e34472d53bc9f794f08d694894"
+  },
+  "code/tests/test_metrics.py": {
+    "mtime": 1792788232.4590588,
+    "seen": 1793708806.033832,
+    "ast_hash": "578e795d1ba05abadbc78043df5dcbe2",
+    "semantic_hash": "578e795d1ba05abadbc78043df5dcbe2"
+  },
+  "code/tests/test_mixture.py": {
+    "mtime": 1792788232.4590588,
+    "seen": 1793708806.0338345,
+    "ast_hash": "c51852b67bf62efc20846da0102a2042",
+    "semantic_hash": "c51852b67bf62efc20846da0102a2042"
+  },
+  "code/tests/test_pre_fpga_regression.py": {
+    "mtime": 1793435627.7457728,
+    "seen": 1793708806.033837,
+    "ast_hash": "62901ace47de4bb4186afe85a36c57ca",
+    "semantic_hash": "62901ace47de4bb4186afe85a36c57ca"
+  },
+  "code/tests/test_preprocessing.py": {
+    "mtime": 1792788232.4590588,
+    "seen": 1793708806.0338397,
+    "ast_hash": "aa72bfecd4ad342975f331927aa53601",
+    "semantic_hash": "aa72bfecd4ad342975f331927aa53601"
+  },
+  "code/tests/test_qrs_detector.py": {
+    "mtime": 1792788232.4601643,
+    "seen": 1793708806.033842,
+    "ast_hash": "ec08426a815e02763f0847f09a7b96d1",
+    "semantic_hash": "ec08426a815e02763f0847f09a7b96d1"
+  },
+  "code/tests/test_qrs_matching.py": {
+    "mtime": 1792788232.4601643,
+    "seen": 1793708806.0338445,
+    "ast_hash": "8411450cd7ea083f230faef631e74c3c",
+    "semantic_hash": "8411450cd7ea083f230faef631e74c3c"
+  },
+  "code/tests/test_qrs_matching_strict.py": {
+    "mtime": 1793438737.4879262,
+    "seen": 1793708806.033847,
+    "ast_hash": "40f7b66f1764558d1a7048fcce937ed8",
+    "semantic_hash": "40f7b66f1764558d1a7048fcce937ed8"
+  },
+  "code/tests/test_run_causal_benchmark.py": {
+    "mtime": 1793424068.9955697,
+    "seen": 1793708806.0338497,
+    "ast_hash": "bdaf089098755c499558601736eb4e3e",
+    "semantic_hash": "bdaf089098755c499558601736eb4e3e"
+  },
+  "code/tests/test_uart_protocol.py": {
+    "mtime": 1793438204.4202383,
+    "seen": 1793708806.0338519,
+    "ast_hash": "379933c81ab11f54f34c8f7d617f7a6e",
+    "semantic_hash": "379933c81ab11f54f34c8f7d617f7a6e"
+  },
+  "code/visualization/plot_fecgsyn_signals.py": {
+    "mtime": 1790509221.7963245,
+    "seen": 1793708806.0338545,
+    "ast_hash": "f188881be02f263e40a02664cd2daecf",
+    "semantic_hash": "f188881be02f263e40a02664cd2daecf"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/02_full_layout_validation/scripts/run_full_layout_reproduction.py": {
+    "mtime": 1793436801.664032,
+    "seen": 1793708806.033857,
+    "ast_hash": "dc97ed278c9b23b12ac7fb82892b90cb",
+    "semantic_hash": "dc97ed278c9b23b12ac7fb82892b90cb"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/03_spatial_calibration/scripts/run_autocorr_rigorous_validation.py": {
+    "mtime": 1793436801.663031,
+    "seen": 1793708806.0338595,
+    "ast_hash": "03a2922ed82f06d4e4308ceafdb36dd7",
+    "semantic_hash": "03a2922ed82f06d4e4308ceafdb36dd7"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/04_qrs_fhr_validation/scripts/run_raw_qrs_vs_fhr_study.py": {
+    "mtime": 1793436801.663031,
+    "seen": 1793708806.0338619,
+    "ast_hash": "e3bdcedd4869de93407d5e7631fb8d9a",
+    "semantic_hash": "e3bdcedd4869de93407d5e7631fb8d9a"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/05_detector_validation/scripts/run_detector_rigorous_audit.py": {
+    "mtime": 1793436801.663031,
+    "seen": 1793708806.0338643,
+    "ast_hash": "3b64067c6077fab2c62e0d0e3c7025df",
+    "semantic_hash": "3b64067c6077fab2c62e0d0e3c7025df"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/reference_model/bit_accurate_reference_model.py": {
+    "mtime": 1793436801.6620321,
+    "seen": 1793708806.0338664,
+    "ast_hash": "d2ef0ca56d93c68f0d98694d72840e93",
+    "semantic_hash": "d2ef0ca56d93c68f0d98694d72840e93"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/tests/test_bit_accurate_reference.py": {
+    "mtime": 1793436801.6620321,
+    "seen": 1793708806.0338688,
+    "ast_hash": "e0a5531ea394e9ecc3c924e336eda98a",
+    "semantic_hash": "e0a5531ea394e9ecc3c924e336eda98a"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/run_all_tests.sh": {
+    "mtime": 1793436801.651814,
+    "seen": 1793708806.0338757,
+    "ast_hash": "29441f14afd91e99c62786a85ea06737",
+    "semantic_hash": "29441f14afd91e99c62786a85ea06737"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/tests/test_pre_fpga_regression.py": {
+    "mtime": 1793436801.661033,
+    "seen": 1793708806.0338783,
+    "ast_hash": "62901ace47de4bb4186afe85a36c57ca",
+    "semantic_hash": "62901ace47de4bb4186afe85a36c57ca"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/causal_pipeline.py": {
+    "mtime": 1793436801.6580331,
+    "seen": 1793708806.0338805,
+    "ast_hash": "f7c07d66136c2a281e1716bfc47467f7",
+    "semantic_hash": "f7c07d66136c2a281e1716bfc47467f7"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/fpga_int_model.py": {
+    "mtime": 1793436801.6580331,
+    "seen": 1793708806.0338829,
+    "ast_hash": "29b644c93a0243b64291e0da2315dfd7",
+    "semantic_hash": "29b644c93a0243b64291e0da2315dfd7"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/fixed_point/fixed_point_model.py": {
+    "mtime": 1793436801.6590323,
+    "seen": 1793708806.0338855,
+    "ast_hash": "1244c7c326d9b849a286d633435d0506",
+    "semantic_hash": "1244c7c326d9b849a286d633435d0506"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/improved/bit_accurate_reference_model.py": {
+    "mtime": 1793436801.6590323,
+    "seen": 1793708806.033888,
+    "ast_hash": "d2ef0ca56d93c68f0d98694d72840e93",
+    "semantic_hash": "d2ef0ca56d93c68f0d98694d72840e93"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/assemble_validation_package.py": {
+    "mtime": 1793436801.6590323,
+    "seen": 1793708806.0338902,
+    "ast_hash": "e67b07ac868ca0c4c3b6049ecd1344c6",
+    "semantic_hash": "e67b07ac868ca0c4c3b6049ecd1344c6"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_autocorr_rigorous_validation.py": {
+    "mtime": 1793436801.6600323,
+    "seen": 1793708806.0338929,
+    "ast_hash": "03a2922ed82f06d4e4308ceafdb36dd7",
+    "semantic_hash": "03a2922ed82f06d4e4308ceafdb36dd7"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_detector_rigorous_audit.py": {
+    "mtime": 1793436801.6600323,
+    "seen": 1793708806.0338955,
+    "ast_hash": "3b64067c6077fab2c62e0d0e3c7025df",
+    "semantic_hash": "3b64067c6077fab2c62e0d0e3c7025df"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_fixed_point_audit.py": {
+    "mtime": 1793436801.6600323,
+    "seen": 1793708806.0338979,
+    "ast_hash": "93192c02ef9aade9bf786836bb931976",
+    "semantic_hash": "93192c02ef9aade9bf786836bb931976"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_full_layout_reproduction.py": {
+    "mtime": 1793436801.6600323,
+    "seen": 1793708806.0339003,
+    "ast_hash": "dc97ed278c9b23b12ac7fb82892b90cb",
+    "semantic_hash": "dc97ed278c9b23b12ac7fb82892b90cb"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_raw_qrs_vs_fhr_study.py": {
+    "mtime": 1793436801.661033,
+    "seen": 1793708806.0339026,
+    "ast_hash": "e3bdcedd4869de93407d5e7631fb8d9a",
+    "semantic_hash": "e3bdcedd4869de93407d5e7631fb8d9a"
+  },
+  "report/mid_term/build_full_report.py": {
+    "mtime": 1793108686.6999514,
+    "seen": 1793708806.0339053,
+    "ast_hash": "332db6e96f845fcb0b66f5a965ca9996",
+    "semantic_hash": "332db6e96f845fcb0b66f5a965ca9996"
+  },
+  "report/mid_term/tools/audit_mtr8.py": {
+    "mtime": 1793082575.0967832,
+    "seen": 1793708806.0339074,
+    "ast_hash": "79556660e772a35ff7750d2c440f4337",
+    "semantic_hash": "79556660e772a35ff7750d2c440f4337"
+  },
+  "report/mid_term/tools/check_consistency.py": {
+    "mtime": 1793015519.5316634,
+    "seen": 1793708806.03391,
+    "ast_hash": "fd610ec7fd96afa44e24c8e5c57e8339",
+    "semantic_hash": "fd610ec7fd96afa44e24c8e5c57e8339"
+  },
+  "report/mid_term/tools/diagnostics_mtr8_v2.py": {
+    "mtime": 1793015113.8785508,
+    "seen": 1793708806.0339127,
+    "ast_hash": "ac621c44bd487b1905812ab8abbe83da",
+    "semantic_hash": "ac621c44bd487b1905812ab8abbe83da"
+  },
+  "report/mid_term/tools/generate_all_audited_figures.py": {
+    "mtime": 1793083938.0921671,
+    "seen": 1793708806.0339148,
+    "ast_hash": "5d3ddbefd91ce7a3a44917f18409034f",
+    "semantic_hash": "5d3ddbefd91ce7a3a44917f18409034f"
+  },
+  "report/mid_term/tools/make_numbers_tex.py": {
+    "mtime": 1793083601.6365936,
+    "seen": 1793708806.0339172,
+    "ast_hash": "8df46784ab60916b721d9f56d01d6006",
+    "semantic_hash": "8df46784ab60916b721d9f56d01d6006"
+  },
+  "report/mid_term/tools/package_submission.py": {
+    "mtime": 1793109125.9397879,
+    "seen": 1793708806.0339196,
+    "ast_hash": "0b14e434f8fce0d322e525fd85b262ba",
+    "semantic_hash": "0b14e434f8fce0d322e525fd85b262ba"
+  },
+  "tests/test_qrs_timing_correction_rigorous.py": {
+    "mtime": 1793462786.7471197,
+    "seen": 1793708806.0339217,
+    "ast_hash": "53e68985a5ebf56a9b5393b5577e7443",
+    "semantic_hash": "53e68985a5ebf56a9b5393b5577e7443"
+  },
+  "tests/test_residual_timing_analysis.py": {
+    "mtime": 1793463709.6839082,
+    "seen": 1793708806.033924,
+    "ast_hash": "5be082664a1fb74ad82d93c142cb65a0",
+    "semantic_hash": "5be082664a1fb74ad82d93c142cb65a0"
+  },
+  "tools/audit_mtr8.py": {
+    "mtime": 1793082594.5901215,
+    "seen": 1793708806.0339267,
+    "ast_hash": "8cee75dbb3422dbe494fb068b20ee5a4",
+    "semantic_hash": "8cee75dbb3422dbe494fb068b20ee5a4"
+  },
+  "tools/clean_anonymity.py": {
+    "mtime": 1793083563.45746,
+    "seen": 1793708806.0339289,
+    "ast_hash": "1509fe9baab2279fbcd9a08f4261e9cb",
+    "semantic_hash": "1509fe9baab2279fbcd9a08f4261e9cb"
+  },
+  "tools/final_verification/run_calibration_audit.py": {
+    "mtime": 1793441163.9806817,
+    "seen": 1793708806.0339313,
+    "ast_hash": "c64ee317b4668c9e6c389ff52ac925a5",
+    "semantic_hash": "c64ee317b4668c9e6c389ff52ac925a5"
+  },
+  "tools/final_verification/run_fhr_reconciliation_audit.py": {
+    "mtime": 1793441058.0100894,
+    "seen": 1793708806.0339336,
+    "ast_hash": "bc6384579659f115c60bd268604cb22e",
+    "semantic_hash": "bc6384579659f115c60bd268604cb22e"
+  },
+  "tools/final_verification/run_filter_delay_audit.py": {
+    "mtime": 1793441312.7909684,
+    "seen": 1793708806.0339358,
+    "ast_hash": "8c025af4d222d67efd07540d59883529",
+    "semantic_hash": "8c025af4d222d67efd07540d59883529"
+  },
+  "tools/final_verification/run_fixed_point_scaling_audit.py": {
+    "mtime": 1793440876.3903885,
+    "seen": 1793708806.0339382,
+    "ast_hash": "9c7bcced9b8389831d9d83e2c7d3a12b",
+    "semantic_hash": "9c7bcced9b8389831d9d83e2c7d3a12b"
+  },
+  "tools/improvements/run_detector_improvements.py": {
+    "mtime": 1793430480.0684247,
+    "seen": 1793708806.0339406,
+    "ast_hash": "572006b612bfa1b265c6d5bdafb64bd6",
+    "semantic_hash": "572006b612bfa1b265c6d5bdafb64bd6"
+  },
+  "tools/improvements/run_fhr_improvements.py": {
+    "mtime": 1793430652.8842962,
+    "seen": 1793708806.0339427,
+    "ast_hash": "36504f2f9f8d9be0a97bb8bc9e219d06",
+    "semantic_hash": "36504f2f9f8d9be0a97bb8bc9e219d06"
+  },
+  "tools/improvements/run_fixed_point_investigation.py": {
+    "mtime": 1793431162.9395878,
+    "seen": 1793708806.0339453,
+    "ast_hash": "5a61d1032f7f451294057c171a7e075b",
+    "semantic_hash": "5a61d1032f7f451294057c171a7e075b"
+  },
+  "tools/improvements/run_full_layout_benchmark.py": {
+    "mtime": 1793429399.7827027,
+    "seen": 1793708806.033948,
+    "ast_hash": "848d3d070fc5f9bacbb4bb5ba4ad5835",
+    "semantic_hash": "848d3d070fc5f9bacbb4bb5ba4ad5835"
+  },
+  "tools/improvements/run_nifea_deep_dive.py": {
+    "mtime": 1793430714.2738304,
+    "seen": 1793708806.0339506,
+    "ast_hash": "62beb8892676f81aa9fe9f88bc0f5f2e",
+    "semantic_hash": "62beb8892676f81aa9fe9f88bc0f5f2e"
+  },
+  "tools/improvements/run_spatial_calibration_study.py": {
+    "mtime": 1793429643.9821825,
+    "seen": 1793708806.033953,
+    "ast_hash": "f2cf315a01d24e61e77fd90c783b31d0",
+    "semantic_hash": "f2cf315a01d24e61e77fd90c783b31d0"
+  },
+  "tools/pre_fpga/assemble_validation_package.py": {
+    "mtime": 1793435900.5777485,
+    "seen": 1793708806.033955,
+    "ast_hash": "e67b07ac868ca0c4c3b6049ecd1344c6",
+    "semantic_hash": "e67b07ac868ca0c4c3b6049ecd1344c6"
+  },
+  "tools/pre_fpga/run_autocorr_rigorous_validation.py": {
+    "mtime": 1793434396.0379522,
+    "seen": 1793708806.0339577,
+    "ast_hash": "03a2922ed82f06d4e4308ceafdb36dd7",
+    "semantic_hash": "03a2922ed82f06d4e4308ceafdb36dd7"
+  },
+  "tools/pre_fpga/run_detector_rigorous_audit.py": {
+    "mtime": 1793434909.8537393,
+    "seen": 1793708806.03396,
+    "ast_hash": "3b64067c6077fab2c62e0d0e3c7025df",
+    "semantic_hash": "3b64067c6077fab2c62e0d0e3c7025df"
+  },
+  "tools/pre_fpga/run_fixed_point_audit.py": {
+    "mtime": 1793435136.7087116,
+    "seen": 1793708806.0339625,
+    "ast_hash": "93192c02ef9aade9bf786836bb931976",
+    "semantic_hash": "93192c02ef9aade9bf786836bb931976"
+  },
+  "tools/pre_fpga/run_full_layout_reproduction.py": {
+    "mtime": 1793434197.0628939,
+    "seen": 1793708806.0339653,
+    "ast_hash": "dc97ed278c9b23b12ac7fb82892b90cb",
+    "semantic_hash": "dc97ed278c9b23b12ac7fb82892b90cb"
+  },
+  "tools/pre_fpga/run_raw_qrs_vs_fhr_study.py": {
+    "mtime": 1793434784.216396,
+    "seen": 1793708806.0339677,
+    "ast_hash": "e3bdcedd4869de93407d5e7631fb8d9a",
+    "semantic_hash": "e3bdcedd4869de93407d5e7631fb8d9a"
+  },
+  "tools/pre_fpga_corrected/assemble_corrected_package.py": {
+    "mtime": 1793438827.3525984,
+    "seen": 1793708806.0339699,
+    "ast_hash": "14271acb26c3f3b932897fd1253753c1",
+    "semantic_hash": "14271acb26c3f3b932897fd1253753c1"
+  },
+  "tools/pre_fpga_corrected/audit_calibration_fallback.py": {
+    "mtime": 1793437357.9962628,
+    "seen": 1793708806.0339723,
+    "ast_hash": "3b4f5935a9f2224088a99329ab103048",
+    "semantic_hash": "3b4f5935a9f2224088a99329ab103048"
+  },
+  "tools/pre_fpga_corrected/generate_filter_spec.py": {
+    "mtime": 1793437507.184198,
+    "seen": 1793708806.0339744,
+    "ast_hash": "0b18c47d05f694f28d58a1bf11d77520",
+    "semantic_hash": "0b18c47d05f694f28d58a1bf11d77520"
+  },
+  "tools/pre_fpga_corrected/reconcile_qrs_metrics.py": {
+    "mtime": 1793437182.885134,
+    "seen": 1793708806.033977,
+    "ast_hash": "16a664bb893ffc9a1f24b71225235740",
+    "semantic_hash": "16a664bb893ffc9a1f24b71225235740"
+  },
+  "tools/pre_fpga_corrected/run_benchmark_coverage_and_twin_audit.py": {
+    "mtime": 1793438106.4095025,
+    "seen": 1793708806.0339794,
+    "ast_hash": "1e10d7228997582529430e94ba56fd2f",
+    "semantic_hash": "1e10d7228997582529430e94ba56fd2f"
+  },
+  "tools/pre_fpga_corrected/run_fhr_stage_audit.py": {
+    "mtime": 1793437684.3597975,
+    "seen": 1793708806.0339818,
+    "ast_hash": "265444f91579fae26e6fea57ccfd1a36",
+    "semantic_hash": "265444f91579fae26e6fea57ccfd1a36"
+  },
+  "tools/pre_fpga_corrected/run_fixed_point_audit_corrected.py": {
+    "mtime": 1793438016.0471852,
+    "seen": 1793708806.033984,
+    "ast_hash": "7ad87f0b65d15d8ed0d0eaf973b1dedf",
+    "semantic_hash": "7ad87f0b65d15d8ed0d0eaf973b1dedf"
+  },
+  "tools/qrs_timing_correction/evaluate_qrs_timing_correction.py": {
+    "mtime": 1793462472.89267,
+    "seen": 1793708806.0339868,
+    "ast_hash": "d20fce3351ec48b98a33e6e1165af525",
+    "semantic_hash": "d20fce3351ec48b98a33e6e1165af525"
+  },
+  "tools/qrs_timing_correction/run_residual_timing_investigation.py": {
+    "mtime": 1793463439.922872,
+    "seen": 1793708806.0339892,
+    "ast_hash": "701a9bf040758cd2cad06783052d0c97",
+    "semantic_hash": "701a9bf040758cd2cad06783052d0c97"
+  },
+  "tools/validation/audit_datasets.py": {
+    "mtime": 1793426485.7757437,
+    "seen": 1793708806.0339916,
+    "ast_hash": "7bf05d4f2c8c1fa585af5cbcd7f0c44b",
+    "semantic_hash": "7bf05d4f2c8c1fa585af5cbcd7f0c44b"
+  },
+  "tools/validation/reproduce_baseline.py": {
+    "mtime": 1793426833.850281,
+    "seen": 1793708806.0339942,
+    "ast_hash": "167961b878623a01990bb81798589da2",
+    "semantic_hash": "167961b878623a01990bb81798589da2"
+  },
+  "tools/validation/run_ablation_study.py": {
+    "mtime": 1793427653.6963398,
+    "seen": 1793708806.0339968,
+    "ast_hash": "b9e0183c5e666de8fc70dff48403181a",
+    "semantic_hash": "b9e0183c5e666de8fc70dff48403181a"
+  },
+  "tools/validation/run_channel_analysis.py": {
+    "mtime": 1793427364.0577376,
+    "seen": 1793708806.033999,
+    "ast_hash": "7df20186c1680d3b6e0a6bf332cd31b0",
+    "semantic_hash": "7df20186c1680d3b6e0a6bf332cd31b0"
+  },
+  "tools/validation/run_extraction_analysis.py": {
+    "mtime": 1793427473.6633358,
+    "seen": 1793708806.0340014,
+    "ast_hash": "4bdb3e8f4e94c289a539f14b77087a03",
+    "semantic_hash": "4bdb3e8f4e94c289a539f14b77087a03"
+  },
+  "tools/validation/run_failure_analysis.py": {
+    "mtime": 1793428066.0478396,
+    "seen": 1793708806.0340037,
+    "ast_hash": "61a69abee1d1f18ebf63f3d68161605e",
+    "semantic_hash": "61a69abee1d1f18ebf63f3d68161605e"
+  },
+  "tools/validation/run_fixed_point_validation.py": {
+    "mtime": 1793427859.5126426,
+    "seen": 1793708806.0340064,
+    "ast_hash": "a8c331d9c303625227f107cbdd066faf",
+    "semantic_hash": "a8c331d9c303625227f107cbdd066faf"
+  },
+  "tools/validation/run_full_synthetic.py": {
+    "mtime": 1793426931.3139882,
+    "seen": 1793708806.0340087,
+    "ast_hash": "71ce11d0d1e186c5a4eda3a7ee7d2171",
+    "semantic_hash": "71ce11d0d1e186c5a4eda3a7ee7d2171"
+  },
+  "tools/validation/run_improvement_verification.py": {
+    "mtime": 1793428123.1203508,
+    "seen": 1793708806.0340114,
+    "ast_hash": "9e1f9570265b544757535d4cd94ea056",
+    "semantic_hash": "9e1f9570265b544757535d4cd94ea056"
+  },
+  "tools/validation/run_nifea_analysis.py": {
+    "mtime": 1793427759.9373455,
+    "seen": 1793708806.0340137,
+    "ast_hash": "db24ea506b32942739ffc71d26481de4",
+    "semantic_hash": "db24ea506b32942739ffc71d26481de4"
+  },
+  "tools/validation/run_qrs_fhr_analysis.py": {
+    "mtime": 1793427544.3079607,
+    "seen": 1793708806.034016,
+    "ast_hash": "47feb9f6de275086ba5e44e038bad17c",
+    "semantic_hash": "47feb9f6de275086ba5e44e038bad17c"
+  },
+  "tools/validation/run_streaming_uart_tests.py": {
+    "mtime": 1793427934.6713412,
+    "seen": 1793708806.0340185,
+    "ast_hash": "6190cf228176eb21d026fa98f1081753",
+    "semantic_hash": "6190cf228176eb21d026fa98f1081753"
+  },
+  "validation/pre_fpga/10_regression_tests/run_all_tests.sh": {
+    "mtime": 1793435676.3318138,
+    "seen": 1793708806.034021,
+    "ast_hash": "29441f14afd91e99c62786a85ea06737",
+    "semantic_hash": "29441f14afd91e99c62786a85ea06737"
+  },
+  "validation/pre_fpga_corrected/01_metric_reconciliation/scripts/reconcile_qrs_metrics.py": {
+    "mtime": 1793437226.9599707,
+    "seen": 1793708806.0340235,
+    "ast_hash": "2bdf7e8ec636328bc796014a592e45eb",
+    "semantic_hash": "2bdf7e8ec636328bc796014a592e45eb"
+  },
+  "validation/pre_fpga_corrected/02_calibration_correction/scripts/audit_calibration_fallback.py": {
+    "mtime": 1793437526.2055726,
+    "seen": 1793708806.0340257,
+    "ast_hash": "77acc7e898e52cb9fa86de271001f958",
+    "semantic_hash": "77acc7e898e52cb9fa86de271001f958"
+  },
+  "validation/pre_fpga_corrected/03_fixed_point_correction/reference_model/bit_accurate_reference_model_corrected.py": {
+    "mtime": 1793438052.6693447,
+    "seen": 1793708806.034028,
+    "ast_hash": "f33d74879f6fef3fd576347cd79afde4",
+    "semantic_hash": "f33d74879f6fef3fd576347cd79afde4"
+  },
+  "validation/pre_fpga_corrected/03_fixed_point_correction/tests/test_fixed_point_arithmetic_exact.py": {
+    "mtime": 1793438052.67035,
+    "seen": 1793708806.0340304,
+    "ast_hash": "cc4b678cb174f17b3972feaea4601d00",
+    "semantic_hash": "cc4b678cb174f17b3972feaea4601d00"
+  },
+  "validation/pre_fpga_corrected/04_fhr_correction/FHR_IMPLEMENTATION_CORRECTED.py": {
+    "mtime": 1793437790.1699789,
+    "seen": 1793708806.0340326,
+    "ast_hash": "b147af54eeaa45eeb186daade22e6ea0",
+    "semantic_hash": "b147af54eeaa45eeb186daade22e6ea0"
+  },
+  "validation/pre_fpga_corrected/06_benchmark_correction/scripts/run_benchmark_coverage_and_twin_audit.py": {
+    "mtime": 1793438485.2053924,
+    "seen": 1793708806.0340352,
+    "ast_hash": "b73324288ee5a848fccb8d24f467197a",
+    "semantic_hash": "b73324288ee5a848fccb8d24f467197a"
+  },
+  "validation/pre_fpga_corrected/08_protocol_correction/protocol_implementation/uart_protocol.py": {
+    "mtime": 1793438193.6502392,
+    "seen": 1793708806.0340376,
+    "ast_hash": "f733eaab4b19e211a8408e6d11447359",
+    "semantic_hash": "f733eaab4b19e211a8408e6d11447359"
+  },
+  "validation/pre_fpga_corrected/08_protocol_correction/tests/test_uart_protocol.py": {
+    "mtime": 1793438204.4202383,
+    "seen": 1793708806.03404,
+    "ast_hash": "379933c81ab11f54f34c8f7d617f7a6e",
+    "semantic_hash": "379933c81ab11f54f34c8f7d617f7a6e"
+  },
+  "CHANGELOG_MTR8.md": {
+    "mtime": 1793108622.621818,
+    "seen": 1793708806.0340426,
+    "ast_hash": "9fd379a98396ec0e388fead5ac4b2965",
+    "semantic_hash": "9fd379a98396ec0e388fead5ac4b2965"
+  },
+  "CLAUDE.md": {
+    "mtime": 1793425928.707795,
+    "seen": 1793708806.0340452,
+    "ast_hash": "e2bc4aa3d584ea3c6121404607b2fac1",
+    "semantic_hash": "e2bc4aa3d584ea3c6121404607b2fac1"
+  },
+  "DATASHEETS_AND_HARDWARE_SPECS.md": {
+    "mtime": 1793426036.279024,
+    "seen": 1793708806.0340476,
+    "ast_hash": "6549226176ea0e5e11789e1929cc862a",
+    "semantic_hash": "6549226176ea0e5e11789e1929cc862a"
+  },
+  "FECG_FPGA_Literature_Notes.md": {
+    "mtime": 1790449921.5018575,
+    "seen": 1793708806.0340502,
+    "ast_hash": "3af0a6391712f6b734e73e4625963282",
+    "semantic_hash": "3af0a6391712f6b734e73e4625963282"
+  },
+  "FECG_MEGA_VALIDATION_FINAL_REPORT.md": {
+    "mtime": 1793428185.099696,
+    "seen": 1793708806.0340953,
+    "ast_hash": "e541d0828115258a57d35601a424cf20",
+    "semantic_hash": "e541d0828115258a57d35601a424cf20"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/01_fixed_point_scaling/FIXED_POINT_SCALING_AUDIT.md": {
+    "mtime": 1793440911.048262,
+    "seen": 1793708806.034098,
+    "ast_hash": "fa46314808cf9c2dae8876fc92901210",
+    "semantic_hash": "fa46314808cf9c2dae8876fc92901210"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/02_hardware_arithmetic/DATAPATH_WIDTH_SPEC_FINAL.md": {
+    "mtime": 1793440944.3822198,
+    "seen": 1793708806.0341005,
+    "ast_hash": "7a85f579a161ebe45dff67b122a2ecf8",
+    "semantic_hash": "7a85f579a161ebe45dff67b122a2ecf8"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/02_hardware_arithmetic/HARDWARE_ARITHMETIC_AUDIT.md": {
+    "mtime": 1793440966.0538714,
+    "seen": 1793708806.0341034,
+    "ast_hash": "be5ea34d9e18a98f38d9acb17a28ed73",
+    "semantic_hash": "be5ea34d9e18a98f38d9acb17a28ed73"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/03_fhr_reconciliation/FHR_METRIC_RECONCILIATION.md": {
+    "mtime": 1793441106.4405217,
+    "seen": 1793708806.0341058,
+    "ast_hash": "5f4ef9cdc04bfef7ba73388204bd2893",
+    "semantic_hash": "5f4ef9cdc04bfef7ba73388204bd2893"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/03_fhr_reconciliation/FHR_REFERENCE_ALIGNMENT_AUDIT.md": {
+    "mtime": 1793441106.4405217,
+    "seen": 1793708806.0341084,
+    "ast_hash": "73c756e3b5d14e07ec465b2e61a075a4",
+    "semantic_hash": "73c756e3b5d14e07ec465b2e61a075a4"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/04_calibration/CALIBRATION_COLD_START_SPEC.md": {
+    "mtime": 1793441237.8031187,
+    "seen": 1793708806.034111,
+    "ast_hash": "d50ef84234aac7c049869b618086f11b",
+    "semantic_hash": "d50ef84234aac7c049869b618086f11b"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/04_calibration/CALIBRATION_METRIC_DEFINITIONS.md": {
+    "mtime": 1793441237.8031187,
+    "seen": 1793708806.0341132,
+    "ast_hash": "a57af2b2b695a5398f0440fd8de36ad2",
+    "semantic_hash": "a57af2b2b695a5398f0440fd8de36ad2"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/05_filter_timing/FILTER_DELAY_AUDIT.md": {
+    "mtime": 1793441348.7793393,
+    "seen": 1793708806.0341158,
+    "ast_hash": "a19ad243a9454bb6577d04a8a33dfc35",
+    "semantic_hash": "a19ad243a9454bb6577d04a8a33dfc35"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/06_calibration_update/CALIBRATION_WINDOW_FINAL.md": {
+    "mtime": 1793441387.9429991,
+    "seen": 1793708806.0341182,
+    "ast_hash": "b08020590c82c9368f6c9e97a2e88a2f",
+    "semantic_hash": "b08020590c82c9368f6c9e97a2e88a2f"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/06_calibration_update/WEIGHT_UPDATE_SPEC_FINAL.md": {
+    "mtime": 1793441400.4736779,
+    "seen": 1793708806.0341208,
+    "ast_hash": "869b718872fd614890a25b1ec1629044",
+    "semantic_hash": "869b718872fd614890a25b1ec1629044"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/07_uart/CALIBRATION_PROTOCOL_SPEC_FINAL.md": {
+    "mtime": 1793441445.146174,
+    "seen": 1793708806.034123,
+    "ast_hash": "65e318f39a5982de0b292759d1bb28ea",
+    "semantic_hash": "65e318f39a5982de0b292759d1bb28ea"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/07_uart/UART_PROTOCOL_SPEC_FINAL.md": {
+    "mtime": 1793441436.5270035,
+    "seen": 1793708806.0341256,
+    "ast_hash": "68a9caf46a1f4de06a14803c2a5c23ca",
+    "semantic_hash": "68a9caf46a1f4de06a14803c2a5c23ca"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/07_uart/UART_STATUS_BYTE_FINAL.md": {
+    "mtime": 1793441422.3479,
+    "seen": 1793708806.034128,
+    "ast_hash": "9b968bcec2a1b95eba55444aa4299ee8",
+    "semantic_hash": "9b968bcec2a1b95eba55444aa4299ee8"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/08_benchmark_coverage/BENCHMARK_COVERAGE_FINAL.md": {
+    "mtime": 1793441473.8722079,
+    "seen": 1793708806.0341303,
+    "ast_hash": "ae858b8295aca74bb940f022b53afe80",
+    "semantic_hash": "ae858b8295aca74bb940f022b53afe80"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/09_final_specification/CROSS_DOCUMENT_CONSISTENCY_AUDIT.md": {
+    "mtime": 1793441529.7401044,
+    "seen": 1793708806.034133,
+    "ast_hash": "6644a4f6d2eb742f3ffa4050b7ba8513",
+    "semantic_hash": "6644a4f6d2eb742f3ffa4050b7ba8513"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/09_final_specification/FINAL_ALGORITHM_SPEC.md": {
+    "mtime": 1793441548.033412,
+    "seen": 1793708806.0341356,
+    "ast_hash": "c3be432cd78097cff7f807c49cc14f99",
+    "semantic_hash": "c3be432cd78097cff7f807c49cc14f99"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/09_final_specification/FINAL_FIXED_POINT_SPEC.md": {
+    "mtime": 1793441560.4900365,
+    "seen": 1793708806.0341382,
+    "ast_hash": "4bb3a922eb8f286a0ddbaaada4c8178b",
+    "semantic_hash": "4bb3a922eb8f286a0ddbaaada4c8178b"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/09_final_specification/FINAL_FPGA_ARCHITECTURE_SPEC.md": {
+    "mtime": 1793441575.2424371,
+    "seen": 1793708806.0341406,
+    "ast_hash": "7d1510896bb7e3c4594d8ab7bc3ac1df",
+    "semantic_hash": "7d1510896bb7e3c4594d8ab7bc3ac1df"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/TEST_EXECUTION_REPORT.md": {
+    "mtime": 1793442164.0313199,
+    "seen": 1793708806.034143,
+    "ast_hash": "129748aebc1f6854ebcfa049e992fd3d",
+    "semantic_hash": "129748aebc1f6854ebcfa049e992fd3d"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/12_execution_logs/failures_and_retries.md": {
+    "mtime": 1793442221.256828,
+    "seen": 1793708806.0341454,
+    "ast_hash": "c1a1014498785609fdb0ed20ff947523",
+    "semantic_hash": "c1a1014498785609fdb0ed20ff947523"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/CHANGELOG.md": {
+    "mtime": 1793442332.2198737,
+    "seen": 1793708806.0341477,
+    "ast_hash": "fb8bed29c43fb406fd76b87e5a025d24",
+    "semantic_hash": "fb8bed29c43fb406fd76b87e5a025d24"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/COMPLETION_STATUS.md": {
+    "mtime": 1793442316.7478366,
+    "seen": 1793708806.0341504,
+    "ast_hash": "3c66ffa7442c8dd913fe5eede84986ff",
+    "semantic_hash": "3c66ffa7442c8dd913fe5eede84986ff"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/EXECUTIVE_SUMMARY.md": {
+    "mtime": 1793442295.073952,
+    "seen": 1793708806.0341527,
+    "ast_hash": "8e2f085a874c59dfe8f2dc0f45689765",
+    "semantic_hash": "8e2f085a874c59dfe8f2dc0f45689765"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/MANIFEST.md": {
+    "mtime": 1793442357.5798366,
+    "seen": 1793708806.034155,
+    "ast_hash": "9550455f2d6f77caafa57024a943b6c0",
+    "semantic_hash": "9550455f2d6f77caafa57024a943b6c0"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/README.md": {
+    "mtime": 1793442278.0987844,
+    "seen": 1793708806.0341578,
+    "ast_hash": "6bae6ea4e30939cf68ab2c29ddb98023",
+    "semantic_hash": "6bae6ea4e30939cf68ab2c29ddb98023"
+  },
+  "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/REPRODUCE_ALL.md": {
+    "mtime": 1793442345.1481292,
+    "seen": 1793708806.0341601,
+    "ast_hash": "a1cd454904d112fa0c1300c414b8101f",
+    "semantic_hash": "a1cd454904d112fa0c1300c414b8101f"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/01_metric_reconciliation/QRS_METRIC_RECONCILIATION.md": {
+    "mtime": 1793438832.6469195,
+    "seen": 1793708806.0341628,
+    "ast_hash": "ae550c2ab2d33d75ee08ba31fcc0ddde",
+    "semantic_hash": "ae550c2ab2d33d75ee08ba31fcc0ddde"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/02_calibration_correction/CALIBRATION_FALLBACK_AUDIT.md": {
+    "mtime": 1793438832.6504405,
+    "seen": 1793708806.0341704,
+    "ast_hash": "4fe1322f4cffc17d00c817cc8f852d22",
+    "semantic_hash": "4fe1322f4cffc17d00c817cc8f852d22"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/03_fixed_point_correction/FILTER_COEFFICIENT_SPEC.md": {
+    "mtime": 1793438832.6604438,
+    "seen": 1793708806.0341733,
+    "ast_hash": "206afa22ed7c97c8298a12288cc1451a",
+    "semantic_hash": "206afa22ed7c97c8298a12288cc1451a"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/03_fixed_point_correction/FIXED_POINT_AUDIT_CORRECTED.md": {
+    "mtime": 1793438832.6554444,
+    "seen": 1793708806.034176,
+    "ast_hash": "a748e52a71f2692972f0f44f5ec6e055",
+    "semantic_hash": "a748e52a71f2692972f0f44f5ec6e055"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/03_fixed_point_correction/FIXED_POINT_SPECIFICATION_FINAL.md": {
+    "mtime": 1793438832.6564493,
+    "seen": 1793708806.0341787,
+    "ast_hash": "ff6ff4e80863834db4d53395fd47fd1f",
+    "semantic_hash": "ff6ff4e80863834db4d53395fd47fd1f"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/03_fixed_point_correction/RANGE_AND_OVERFLOW_ANALYSIS.md": {
+    "mtime": 1793438832.6609473,
+    "seen": 1793708806.0341814,
+    "ast_hash": "e48612caa2a07f4ea32089809a02fb25",
+    "semantic_hash": "e48612caa2a07f4ea32089809a02fb25"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/04_fhr_correction/FHR_IMPLEMENTATION_AUDIT.md": {
+    "mtime": 1793438832.6639497,
+    "seen": 1793708806.0341837,
+    "ast_hash": "d983f9da78a4508785758d4a992109d6",
+    "semantic_hash": "d983f9da78a4508785758d4a992109d6"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/05_fhr_range/FHR_RANGE_CONSISTENCY_AUDIT.md": {
+    "mtime": 1793438832.6710167,
+    "seen": 1793708806.0341866,
+    "ast_hash": "64cd46a1f98c0af7517f55aba977fcad",
+    "semantic_hash": "64cd46a1f98c0af7517f55aba977fcad"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/05_fhr_range/FHR_RANGE_SPECIFICATION_FINAL.md": {
+    "mtime": 1793438832.6720216,
+    "seen": 1793708806.034189,
+    "ast_hash": "40c34f83f5b91ef14b55bb46429ba790",
+    "semantic_hash": "40c34f83f5b91ef14b55bb46429ba790"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/06_benchmark_correction/BENCHMARK_COVERAGE_AUDIT.md": {
+    "mtime": 1793438832.6740127,
+    "seen": 1793708806.0341918,
+    "ast_hash": "5d303d56a96a0398e70e1c3810f0a258",
+    "semantic_hash": "5d303d56a96a0398e70e1c3810f0a258"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/06_benchmark_correction/TWIN_CONDITION_ANALYSIS.md": {
+    "mtime": 1793438832.6770258,
+    "seen": 1793708806.0341947,
+    "ast_hash": "265660a77d61e94fef2fdc2a4a376da9",
+    "semantic_hash": "265660a77d61e94fef2fdc2a4a376da9"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/07_filter_specification/FILTER_DESIGN_FINAL.md": {
+    "mtime": 1793438832.6790173,
+    "seen": 1793708806.034197,
+    "ast_hash": "206afa22ed7c97c8298a12288cc1451a",
+    "semantic_hash": "206afa22ed7c97c8298a12288cc1451a"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/CALIBRATION_PROTOCOL_SPEC_FINAL.md": {
+    "mtime": 1793438832.684598,
+    "seen": 1793708806.0341997,
+    "ast_hash": "d4576ca07d047647fda0adc30dcac2d8",
+    "semantic_hash": "d4576ca07d047647fda0adc30dcac2d8"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/UART_PROTOCOL_AUDIT.md": {
+    "mtime": 1793438832.6836083,
+    "seen": 1793708806.0342023,
+    "ast_hash": "f79640ec644fa08947cdbf4fbe76657d",
+    "semantic_hash": "f79640ec644fa08947cdbf4fbe76657d"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/UART_PROTOCOL_SPEC_FINAL.md": {
+    "mtime": 1793438832.6836083,
+    "seen": 1793708806.0342047,
+    "ast_hash": "af87b2c78a709d5e9bfeaf34d381eef4",
+    "semantic_hash": "af87b2c78a709d5e9bfeaf34d381eef4"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/09_final_decisions/ALGORITHM_FREEZE_DECISION.md": {
+    "mtime": 1793438832.6885755,
+    "seen": 1793708806.0342069,
+    "ast_hash": "eb49b653a3ea52647a3f59beb3edb69e",
+    "semantic_hash": "eb49b653a3ea52647a3f59beb3edb69e"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/09_final_decisions/FINAL_ALGORITHM_SPEC.md": {
+    "mtime": 1793438832.6875825,
+    "seen": 1793708806.0342095,
+    "ast_hash": "c48c20ce36550d06ac1121194f9fa3e9",
+    "semantic_hash": "c48c20ce36550d06ac1121194f9fa3e9"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/09_final_decisions/REMAINING_RISKS.md": {
+    "mtime": 1793438832.6900957,
+    "seen": 1793708806.034212,
+    "ast_hash": "56ad513f2c8c9d393e28d4c37950b51e",
+    "semantic_hash": "56ad513f2c8c9d393e28d4c37950b51e"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/TEST_EXECUTION_REPORT.md": {
+    "mtime": 1793438833.6959062,
+    "seen": 1793708806.0342147,
+    "ast_hash": "2f4a2a7ed708e8c41de4336e09c9039b",
+    "semantic_hash": "2f4a2a7ed708e8c41de4336e09c9039b"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/12_execution_logs/failures_and_retries.md": {
+    "mtime": 1793438832.7142146,
+    "seen": 1793708806.0342171,
+    "ast_hash": "9f54799bec770dd69c2e1906d1810156",
+    "semantic_hash": "9f54799bec770dd69c2e1906d1810156"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/AUDIT_SUMMARY.md": {
+    "mtime": 1793438832.7132156,
+    "seen": 1793708806.0342197,
+    "ast_hash": "22d2e7f6c50103619845c851d080ec44",
+    "semantic_hash": "22d2e7f6c50103619845c851d080ec44"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/CHANGELOG.md": {
+    "mtime": 1793438832.7122114,
+    "seen": 1793708806.0342221,
+    "ast_hash": "ba7794b21fffdac05e2abab1bcdb05b1",
+    "semantic_hash": "ba7794b21fffdac05e2abab1bcdb05b1"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/COMPLETION_STATUS.md": {
+    "mtime": 1793438832.7132156,
+    "seen": 1793708806.0342243,
+    "ast_hash": "a81e76baa1328c7816170853a129506e",
+    "semantic_hash": "a81e76baa1328c7816170853a129506e"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/EXECUTIVE_SUMMARY.md": {
+    "mtime": 1793438832.7132156,
+    "seen": 1793708806.0342271,
+    "ast_hash": "22d2e7f6c50103619845c851d080ec44",
+    "semantic_hash": "22d2e7f6c50103619845c851d080ec44"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/MANIFEST.md": {
+    "mtime": 1793438833.7182305,
+    "seen": 1793708806.0342295,
+    "ast_hash": "70e81be79f34b01de92f2cd0dd2e9224",
+    "semantic_hash": "70e81be79f34b01de92f2cd0dd2e9224"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/README.md": {
+    "mtime": 1793438832.7132156,
+    "seen": 1793708806.034232,
+    "ast_hash": "2f5b28ce68a63722d8d3731825c03273",
+    "semantic_hash": "2f5b28ce68a63722d8d3731825c03273"
+  },
+  "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/REPRODUCE_ALL.md": {
+    "mtime": 1793438832.7132156,
+    "seen": 1793708806.034234,
+    "ast_hash": "98701a46ce73f3aa063863243b4169eb",
+    "semantic_hash": "98701a46ce73f3aa063863243b4169eb"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/01_repository_audit/BASELINE_PRESERVATION.md": {
+    "mtime": 1793435982.50153,
+    "seen": 1793708806.0342367,
+    "ast_hash": "08fdde6b9bffb53b331f5fbd8d392a39",
+    "semantic_hash": "08fdde6b9bffb53b331f5fbd8d392a39"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/01_repository_audit/FILE_CHANGE_LOG.md": {
+    "mtime": 1793435982.50153,
+    "seen": 1793708806.034239,
+    "ast_hash": "4c326f57bebe270e83bfcd288d8b1c72",
+    "semantic_hash": "4c326f57bebe270e83bfcd288d8b1c72"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/01_repository_audit/REPOSITORY_STRUCTURE.md": {
+    "mtime": 1793435982.50153,
+    "seen": 1793708806.0342414,
+    "ast_hash": "51a31408185595b851df05cbd33f441e",
+    "semantic_hash": "51a31408185595b851df05cbd33f441e"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/02_full_layout_validation/FULL_LAYOUT_AUDIT.md": {
+    "mtime": 1793435982.4670124,
+    "seen": 1793708806.0342438,
+    "ast_hash": "96cc5101c537d4d555f9fcf098508652",
+    "semantic_hash": "96cc5101c537d4d555f9fcf098508652"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/03_spatial_calibration/AUTOCORRELATION_VALIDATION.md": {
+    "mtime": 1793435982.4720173,
+    "seen": 1793708806.0342464,
+    "ast_hash": "467cd7b9a16f09a59d66ea9235b07b4b",
+    "semantic_hash": "467cd7b9a16f09a59d66ea9235b07b4b"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/04_qrs_fhr_validation/QRS_RAW_VS_CORRECTED_REPORT.md": {
+    "mtime": 1793435982.4770193,
+    "seen": 1793708806.0342493,
+    "ast_hash": "64175fd59a84cbd5a8145bf15591036d",
+    "semantic_hash": "64175fd59a84cbd5a8145bf15591036d"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/05_detector_validation/DETECTOR_CONFIGURATION_AUDIT.md": {
+    "mtime": 1793435982.4810188,
+    "seen": 1793708806.0342517,
+    "ast_hash": "825c2207d386dfb6942e88bad427c246",
+    "semantic_hash": "825c2207d386dfb6942e88bad427c246"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/FIXED_POINT_AUDIT.md": {
+    "mtime": 1793435982.4835238,
+    "seen": 1793708806.0342543,
+    "ast_hash": "f175547d39548f3e41392f9524a671b0",
+    "semantic_hash": "f175547d39548f3e41392f9524a671b0"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/FIXED_POINT_SPECIFICATION.md": {
+    "mtime": 1793435982.4835238,
+    "seen": 1793708806.034257,
+    "ast_hash": "e96a32e0745b1ebf23b85d95787d7340",
+    "semantic_hash": "e96a32e0745b1ebf23b85d95787d7340"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/RANGE_AND_OVERFLOW_ANALYSIS.md": {
+    "mtime": 1793435982.48453,
+    "seen": 1793708806.0342596,
+    "ast_hash": "a970d2629d09cc86e33da26b746930e5",
+    "semantic_hash": "a970d2629d09cc86e33da26b746930e5"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/CALIBRATION_PROTOCOL_SPEC.md": {
+    "mtime": 1793435982.4885302,
+    "seen": 1793708806.034262,
+    "ast_hash": "01f76789fbb0b7b7d0310876a1547748",
+    "semantic_hash": "01f76789fbb0b7b7d0310876a1547748"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/FPGA_ARCHITECTURE_SPEC.md": {
+    "mtime": 1793435982.4865294,
+    "seen": 1793708806.0342643,
+    "ast_hash": "2fdaff699f034808f0c78b1f99727473",
+    "semantic_hash": "2fdaff699f034808f0c78b1f99727473"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/FPGA_FEASIBILITY_REPORT.md": {
+    "mtime": 1793435982.49053,
+    "seen": 1793708806.034267,
+    "ast_hash": "0c943e23a51ca25951c11d9741c0a989",
+    "semantic_hash": "0c943e23a51ca25951c11d9741c0a989"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/FPGA_MODULE_INTERFACE_SPEC.md": {
+    "mtime": 1793435982.4875295,
+    "seen": 1793708806.034269,
+    "ast_hash": "a9f1057b6537e2f390b215b0bd9dcf12",
+    "semantic_hash": "a9f1057b6537e2f390b215b0bd9dcf12"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/FPGA_TIMING_BUDGET.md": {
+    "mtime": 1793435982.4895296,
+    "seen": 1793708806.0342717,
+    "ast_hash": "120f0327ed16e1ad035993036d5c85da",
+    "semantic_hash": "120f0327ed16e1ad035993036d5c85da"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/UART_PROTOCOL_SPEC.md": {
+    "mtime": 1793435982.4885302,
+    "seen": 1793708806.034274,
+    "ast_hash": "53992b73bc9530e5e8c49f77e72b083d",
+    "semantic_hash": "53992b73bc9530e5e8c49f77e72b083d"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/08_nifea/NIFEA_VALIDATION_LIMITATIONS.md": {
+    "mtime": 1793435982.4915297,
+    "seen": 1793708806.0342762,
+    "ast_hash": "7701f05b7779cf976cc139fec15a5b9b",
+    "semantic_hash": "7701f05b7779cf976cc139fec15a5b9b"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/09_final_decisions/ALGORITHM_FREEZE_DECISION.md": {
+    "mtime": 1793435982.49253,
+    "seen": 1793708806.0342786,
+    "ast_hash": "3da888c33d7fbf0bc1bf111ffc8b06ff",
+    "semantic_hash": "3da888c33d7fbf0bc1bf111ffc8b06ff"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/09_final_decisions/FINAL_ALGORITHM_SPEC.md": {
+    "mtime": 1793435982.4915297,
+    "seen": 1793708806.0342813,
+    "ast_hash": "a77924e0ceac3769346a58ded971c19e",
+    "semantic_hash": "a77924e0ceac3769346a58ded971c19e"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/09_final_decisions/REMAINING_RISKS.md": {
+    "mtime": 1793435982.49253,
+    "seen": 1793708806.0342839,
+    "ast_hash": "6091ad327990a942a5c78930eef47f01",
+    "semantic_hash": "6091ad327990a942a5c78930eef47f01"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/TEST_COVERAGE.md": {
+    "mtime": 1793435982.49353,
+    "seen": 1793708806.0342863,
+    "ast_hash": "5ad70d6bfd3b0e888b9ac46dfa690f17",
+    "semantic_hash": "5ad70d6bfd3b0e888b9ac46dfa690f17"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/12_execution_logs/failures_and_retries.md": {
+    "mtime": 1793435982.5025299,
+    "seen": 1793708806.0342886,
+    "ast_hash": "0df9fca53ecb33423ba878b914919cdc",
+    "semantic_hash": "0df9fca53ecb33423ba878b914919cdc"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/COMPLETION_STATUS.md": {
+    "mtime": 1793435984.4081283,
+    "seen": 1793708806.0342913,
+    "ast_hash": "4a6474841b83ee97da40b46eb4d71351",
+    "semantic_hash": "4a6474841b83ee97da40b46eb4d71351"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/EXECUTIVE_SUMMARY.md": {
+    "mtime": 1793435984.4081283,
+    "seen": 1793708806.0342937,
+    "ast_hash": "fe5063981549fd2d905ac23f7450b5f5",
+    "semantic_hash": "fe5063981549fd2d905ac23f7450b5f5"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/MANIFEST.md": {
+    "mtime": 1793435984.4181523,
+    "seen": 1793708806.0342963,
+    "ast_hash": "9e737210dcde8d4db38584c01d467d3b",
+    "semantic_hash": "9e737210dcde8d4db38584c01d467d3b"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/README.md": {
+    "mtime": 1793435984.4081283,
+    "seen": 1793708806.0342991,
+    "ast_hash": "8a6c3ca225c24267348ada5773b56af4",
+    "semantic_hash": "8a6c3ca225c24267348ada5773b56af4"
+  },
+  "FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/REPRODUCE_ALL.md": {
+    "mtime": 1793435984.4081283,
+    "seen": 1793708806.034302,
+    "ast_hash": "55f723c482bee53b386319b34b535a82",
+    "semantic_hash": "55f723c482bee53b386319b34b535a82"
+  },
+  "FPGA_SPEC.md": {
+    "mtime": 1793424068.9885845,
+    "seen": 1793708806.0343046,
+    "ast_hash": "de8ed7149fa6ddc0c83d365612656f4a",
+    "semantic_hash": "de8ed7149fa6ddc0c83d365612656f4a"
+  },
+  "Fetal_ECG_Preliminary_Report_Missing_Sections.md": {
+    "mtime": 1790507531.1585274,
+    "seen": 1793708806.034307,
+    "ast_hash": "953c647346df40fad94d01dca0fd344f",
+    "semantic_hash": "953c647346df40fad94d01dca0fd344f"
+  },
+  "Fetal_ECG_Project_Context_and_Plan.md": {
+    "mtime": 1790224181.4485896,
+    "seen": 1793708806.0343096,
+    "ast_hash": "31223851e74c18b73ea9b68343808b2d",
+    "semantic_hash": "31223851e74c18b73ea9b68343808b2d"
+  },
+  "MASTER_ALGORITHM_SELECTION_AND_FPGA_DECISION.md": {
+    "mtime": 1792770697.0130699,
+    "seen": 1793708806.0343122,
+    "ast_hash": "5bbeeb9a41332a17ac6593f11aca698b",
+    "semantic_hash": "5bbeeb9a41332a17ac6593f11aca698b"
+  },
+  "MASTER_FPGA_IMPLEMENTATION_AND_FEASIBILITY_REPORT.md": {
+    "mtime": 1792824353.708875,
+    "seen": 1793708806.0343149,
+    "ast_hash": "4245b2e1c06a91023dd350cc2cda62ed",
+    "semantic_hash": "4245b2e1c06a91023dd350cc2cda62ed"
+  },
+  "QRS_RESIDUAL_TIMING_ANALYSIS/RESIDUAL_TIMING_INVESTIGATION.md": {
+    "mtime": 1793463817.9763882,
+    "seen": 1793708806.034317,
+    "ast_hash": "cc552a57c172bedd46c83b4c8d26e036",
+    "semantic_hash": "cc552a57c172bedd46c83b4c8d26e036"
+  },
+  "QRS_TIMING_CORRECTION/QRS_TIMING_INVESTIGATION.md": {
+    "mtime": 1793462899.6449063,
+    "seen": 1793708806.0343196,
+    "ast_hash": "39f00aa7f5747b77e5c22b3a1c249f57",
+    "semantic_hash": "39f00aa7f5747b77e5c22b3a1c249f57"
+  },
+  "QRS_TIMING_CORRECTION/TIMESTAMP_PIPELINE_EXPLANATION.md": {
+    "mtime": 1793462852.5547686,
+    "seen": 1793708806.0343223,
+    "ast_hash": "8ba2b4f9cc7d748588f4022488bae42b",
+    "semantic_hash": "8ba2b4f9cc7d748588f4022488bae42b"
+  },
+  "README.md": {
+    "mtime": 1793017609.8119116,
+    "seen": 1793708806.034325,
+    "ast_hash": "92590534cb50f33201271bb21751946b",
+    "semantic_hash": "92590534cb50f33201271bb21751946b"
+  },
+  "TEAM_TASKS_AND_WORK_TRACKER.md": {
+    "mtime": 1792824373.5762944,
+    "seen": 1793708806.0343273,
+    "ast_hash": "dde6b29af7de8142eea86cb77a05b129",
+    "semantic_hash": "dde6b29af7de8142eea86cb77a05b129"
+  },
+  "UNRESOLVED.md": {
+    "mtime": 1793085105.1420202,
+    "seen": 1793708806.0343297,
+    "ast_hash": "275d6b081d9402f2cdbf3cb3b55696d5",
+    "semantic_hash": "275d6b081d9402f2cdbf3cb3b55696d5"
+  },
+  "code/README.md": {
+    "mtime": 1792832248.446304,
+    "seen": 1793708806.0343318,
+    "ast_hash": "4e8207a49a30af6e2d0f8f499dfca81f",
+    "semantic_hash": "4e8207a49a30af6e2d0f8f499dfca81f"
+  },
+  "code/results/Deep_Learning_Model_Training_Guide.md": {
+    "mtime": 1792788232.3570209,
+    "seen": 1793708806.0343344,
+    "ast_hash": "42e7e247a46e2b5c7a7bb9b2d00eac33",
+    "semantic_hash": "42e7e247a46e2b5c7a7bb9b2d00eac33"
+  },
+  "code/results/README.md": {
+    "mtime": 1792788232.3573732,
+    "seen": 1793708806.034337,
+    "ast_hash": "acd617c74a2a71d412f5c5cd2eb3b1c5",
+    "semantic_hash": "acd617c74a2a71d412f5c5cd2eb3b1c5"
+  },
+  "code/results/fpga_test_vectors/README.md": {
+    "mtime": 1793083540.5190094,
+    "seen": 1793708806.0343394,
+    "ast_hash": "15644770342a40b062c1a5c23dbd36e5",
+    "semantic_hash": "15644770342a40b062c1a5c23dbd36e5"
+  },
+  "docs/archive/fpga_reports/FPGA_Feasibility_Report_Astitva.md": {
+    "mtime": 1792788232.3573732,
+    "seen": 1793708806.0343418,
+    "ast_hash": "f5f928255eac89cbc381cfad929e48ea",
+    "semantic_hash": "f5f928255eac89cbc381cfad929e48ea"
+  },
+  "docs/archive/fpga_reports/FPGA_Feasibility_Report_Naman.md": {
+    "mtime": 1792770581.184631,
+    "seen": 1793708806.0343442,
+    "ast_hash": "67e0943b490073a5874b17ede0075f86",
+    "semantic_hash": "67e0943b490073a5874b17ede0075f86"
+  },
+  "docs/archive/fpga_reports/Multi_Channel_Scaling_and_FPGA_Report_Anshu.md": {
+    "mtime": 1792788232.3573732,
+    "seen": 1793708806.0343547,
+    "ast_hash": "11c3484572bd603f0037ca18a50f1a5b",
+    "semantic_hash": "11c3484572bd603f0037ca18a50f1a5b"
+  },
+  "docs/archive/fpga_reports/NAMAN_SVD_FPGA_FEASIBILITY_REPORT.md": {
+    "mtime": 1792770549.1876216,
+    "seen": 1793708806.034357,
+    "ast_hash": "67e0943b490073a5874b17ede0075f86",
+    "semantic_hash": "67e0943b490073a5874b17ede0075f86"
+  },
+  "docs/archive/fpga_reports/VIVEK_FPGA_FEASIBILITY_AND_HARDWARE_REPORT.md": {
+    "mtime": 1792788232.355736,
+    "seen": 1793708806.0343595,
+    "ast_hash": "08ce94899927233add9a187a096fdb7c",
+    "semantic_hash": "08ce94899927233add9a187a096fdb7c"
+  },
+  "docs/archive/team_trackers/PROJECT_CONTEXT_AND_ANSHU_TRACKER.md": {
+    "mtime": 1792788232.3545473,
+    "seen": 1793708806.034362,
+    "ast_hash": "29811409970d3ed644991cdf771c5ba9",
+    "semantic_hash": "29811409970d3ed644991cdf771c5ba9"
+  },
+  "docs/archive/team_trackers/PROJECT_CONTEXT_AND_ASTITVA_TRACKER.md": {
+    "mtime": 1792788232.3545473,
+    "seen": 1793708806.0343645,
+    "ast_hash": "3cda1688c36fc185dfdfce514569c1b3",
+    "semantic_hash": "3cda1688c36fc185dfdfce514569c1b3"
+  },
+  "docs/archive/team_trackers/PROJECT_CONTEXT_AND_NAMAN_TRACKER.md": {
+    "mtime": 1792770646.3568444,
+    "seen": 1793708806.034367,
+    "ast_hash": "0396e95427146be33a9e3f787cccb246",
+    "semantic_hash": "0396e95427146be33a9e3f787cccb246"
+  },
+  "docs/archive/team_trackers/PROJECT_CONTEXT_AND_VIVEK_TRACKER.md": {
+    "mtime": 1792788232.355736,
+    "seen": 1793708806.0343695,
+    "ast_hash": "2fea4894fa289664894c0d8f2a270fcd",
+    "semantic_hash": "2fea4894fa289664894c0d8f2a270fcd"
+  },
+  "fecg_team_work_plan.md": {
+    "mtime": 1792524813.7368457,
+    "seen": 1793708806.0343719,
+    "ast_hash": "97a054e482bdbddbe933cfe588f32522",
+    "semantic_hash": "97a054e482bdbddbe933cfe588f32522"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/01_repository_audit/BASELINE_PRESERVATION.md": {
+    "mtime": 1793436801.6397977,
+    "seen": 1793708806.0343745,
+    "ast_hash": "08fdde6b9bffb53b331f5fbd8d392a39",
+    "semantic_hash": "08fdde6b9bffb53b331f5fbd8d392a39"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/01_repository_audit/FILE_CHANGE_LOG.md": {
+    "mtime": 1793436801.6397977,
+    "seen": 1793708806.034377,
+    "ast_hash": "4c326f57bebe270e83bfcd288d8b1c72",
+    "semantic_hash": "4c326f57bebe270e83bfcd288d8b1c72"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/01_repository_audit/REPOSITORY_STRUCTURE.md": {
+    "mtime": 1793436801.6407971,
+    "seen": 1793708806.0343797,
+    "ast_hash": "51a31408185595b851df05cbd33f441e",
+    "semantic_hash": "51a31408185595b851df05cbd33f441e"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/02_full_layout_validation/FULL_LAYOUT_AUDIT.md": {
+    "mtime": 1793436801.6407971,
+    "seen": 1793708806.0343826,
+    "ast_hash": "96cc5101c537d4d555f9fcf098508652",
+    "semantic_hash": "96cc5101c537d4d555f9fcf098508652"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/03_spatial_calibration/AUTOCORRELATION_VALIDATION.md": {
+    "mtime": 1793436801.6427996,
+    "seen": 1793708806.034385,
+    "ast_hash": "467cd7b9a16f09a59d66ea9235b07b4b",
+    "semantic_hash": "467cd7b9a16f09a59d66ea9235b07b4b"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/04_qrs_fhr_validation/QRS_RAW_VS_CORRECTED_REPORT.md": {
+    "mtime": 1793436801.6457953,
+    "seen": 1793708806.0343874,
+    "ast_hash": "64175fd59a84cbd5a8145bf15591036d",
+    "semantic_hash": "64175fd59a84cbd5a8145bf15591036d"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/05_detector_validation/DETECTOR_CONFIGURATION_AUDIT.md": {
+    "mtime": 1793436801.646795,
+    "seen": 1793708806.03439,
+    "ast_hash": "825c2207d386dfb6942e88bad427c246",
+    "semantic_hash": "825c2207d386dfb6942e88bad427c246"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/FIXED_POINT_AUDIT.md": {
+    "mtime": 1793436801.6478143,
+    "seen": 1793708806.0343924,
+    "ast_hash": "f175547d39548f3e41392f9524a671b0",
+    "semantic_hash": "f175547d39548f3e41392f9524a671b0"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/FIXED_POINT_SPECIFICATION.md": {
+    "mtime": 1793436801.6478143,
+    "seen": 1793708806.0343957,
+    "ast_hash": "e96a32e0745b1ebf23b85d95787d7340",
+    "semantic_hash": "e96a32e0745b1ebf23b85d95787d7340"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/RANGE_AND_OVERFLOW_ANALYSIS.md": {
+    "mtime": 1793436801.6488137,
+    "seen": 1793708806.0343983,
+    "ast_hash": "a970d2629d09cc86e33da26b746930e5",
+    "semantic_hash": "a970d2629d09cc86e33da26b746930e5"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/CALIBRATION_PROTOCOL_SPEC.md": {
+    "mtime": 1793436801.6488137,
+    "seen": 1793708806.0344007,
+    "ast_hash": "01f76789fbb0b7b7d0310876a1547748",
+    "semantic_hash": "01f76789fbb0b7b7d0310876a1547748"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/FPGA_ARCHITECTURE_SPEC.md": {
+    "mtime": 1793436801.6488137,
+    "seen": 1793708806.0344033,
+    "ast_hash": "2fdaff699f034808f0c78b1f99727473",
+    "semantic_hash": "2fdaff699f034808f0c78b1f99727473"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/FPGA_FEASIBILITY_REPORT.md": {
+    "mtime": 1793436801.6498137,
+    "seen": 1793708806.0344057,
+    "ast_hash": "0c943e23a51ca25951c11d9741c0a989",
+    "semantic_hash": "0c943e23a51ca25951c11d9741c0a989"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/FPGA_MODULE_INTERFACE_SPEC.md": {
+    "mtime": 1793436801.6498137,
+    "seen": 1793708806.034408,
+    "ast_hash": "a9f1057b6537e2f390b215b0bd9dcf12",
+    "semantic_hash": "a9f1057b6537e2f390b215b0bd9dcf12"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/FPGA_TIMING_BUDGET.md": {
+    "mtime": 1793436801.6498137,
+    "seen": 1793708806.0344107,
+    "ast_hash": "120f0327ed16e1ad035993036d5c85da",
+    "semantic_hash": "120f0327ed16e1ad035993036d5c85da"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/07_fpga_specification/UART_PROTOCOL_SPEC.md": {
+    "mtime": 1793436801.6498137,
+    "seen": 1793708806.0344133,
+    "ast_hash": "53992b73bc9530e5e8c49f77e72b083d",
+    "semantic_hash": "53992b73bc9530e5e8c49f77e72b083d"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/08_nifea/NIFEA_VALIDATION_LIMITATIONS.md": {
+    "mtime": 1793436801.6508145,
+    "seen": 1793708806.0344157,
+    "ast_hash": "7701f05b7779cf976cc139fec15a5b9b",
+    "semantic_hash": "7701f05b7779cf976cc139fec15a5b9b"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/09_final_decisions/ALGORITHM_FREEZE_DECISION.md": {
+    "mtime": 1793436801.6508145,
+    "seen": 1793708806.0344179,
+    "ast_hash": "3da888c33d7fbf0bc1bf111ffc8b06ff",
+    "semantic_hash": "3da888c33d7fbf0bc1bf111ffc8b06ff"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/09_final_decisions/FINAL_ALGORITHM_SPEC.md": {
+    "mtime": 1793436801.6508145,
+    "seen": 1793708806.0344205,
+    "ast_hash": "a77924e0ceac3769346a58ded971c19e",
+    "semantic_hash": "a77924e0ceac3769346a58ded971c19e"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/09_final_decisions/REMAINING_RISKS.md": {
+    "mtime": 1793436801.6508145,
+    "seen": 1793708806.034423,
+    "ast_hash": "6091ad327990a942a5c78930eef47f01",
+    "semantic_hash": "6091ad327990a942a5c78930eef47f01"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/TEST_COVERAGE.md": {
+    "mtime": 1793436801.651814,
+    "seen": 1793708806.0344253,
+    "ast_hash": "5ad70d6bfd3b0e888b9ac46dfa690f17",
+    "semantic_hash": "5ad70d6bfd3b0e888b9ac46dfa690f17"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/12_execution_logs/failures_and_retries.md": {
+    "mtime": 1793436801.6580331,
+    "seen": 1793708806.0344276,
+    "ast_hash": "0df9fca53ecb33423ba878b914919cdc",
+    "semantic_hash": "0df9fca53ecb33423ba878b914919cdc"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/COMPLETION_STATUS.md": {
+    "mtime": 1793436801.6388159,
+    "seen": 1793708806.0344303,
+    "ast_hash": "4a6474841b83ee97da40b46eb4d71351",
+    "semantic_hash": "4a6474841b83ee97da40b46eb4d71351"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/EXECUTIVE_SUMMARY.md": {
+    "mtime": 1793436801.6388159,
+    "seen": 1793708806.0344326,
+    "ast_hash": "fe5063981549fd2d905ac23f7450b5f5",
+    "semantic_hash": "fe5063981549fd2d905ac23f7450b5f5"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/MANIFEST.md": {
+    "mtime": 1793436801.6388159,
+    "seen": 1793708806.0344353,
+    "ast_hash": "9e737210dcde8d4db38584c01d467d3b",
+    "semantic_hash": "9e737210dcde8d4db38584c01d467d3b"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/README.md": {
+    "mtime": 1793436801.6397977,
+    "seen": 1793708806.034438,
+    "ast_hash": "8a6c3ca225c24267348ada5773b56af4",
+    "semantic_hash": "8a6c3ca225c24267348ada5773b56af4"
+  },
+  "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/REPRODUCE_ALL.md": {
+    "mtime": 1793436801.6397977,
+    "seen": 1793708806.0344405,
+    "ast_hash": "55f723c482bee53b386319b34b535a82",
+    "semantic_hash": "55f723c482bee53b386319b34b535a82"
+  },
+  "refs_audit.md": {
+    "mtime": 1793108063.4268072,
+    "seen": 1793708806.0344427,
+    "ast_hash": "c97d9c4486087607787a4363f1f10f99",
+    "semantic_hash": "c97d9c4486087607787a4363f1f10f99"
+  },
+  "report/mid_term/CHANGELOG_MTR8.md": {
+    "mtime": 1793016067.3933668,
+    "seen": 1793708806.0344453,
+    "ast_hash": "55cffb83b8adaa37c528464e918948a0",
+    "semantic_hash": "55cffb83b8adaa37c528464e918948a0"
+  },
+  "report/mid_term/MTR8_audit_and_fix_plan.md": {
+    "mtime": 1792942467.7149112,
+    "seen": 1793708806.034448,
+    "ast_hash": "59ef47adc85aa24bc4cce95b93a3eb3d",
+    "semantic_hash": "59ef47adc85aa24bc4cce95b93a3eb3d"
+  },
+  "report/mid_term/MTR8_v2_audit_python_theory.md": {
+    "mtime": 1793014694.6290214,
+    "seen": 1793708806.0344503,
+    "ast_hash": "b0f058ffc7767036692b06b4661c81f6",
+    "semantic_hash": "b0f058ffc7767036692b06b4661c81f6"
+  },
+  "report/mid_term/antigravity_prompt_mtr8_corrections.md": {
+    "mtime": 1793081797.2743468,
+    "seen": 1793708806.0344527,
+    "ast_hash": "12b980a5e6b825ff4ee7344445b288f0",
+    "semantic_hash": "12b980a5e6b825ff4ee7344445b288f0"
+  },
+  "report/mid_term/mtr8_improvement_breakdown.md": {
+    "mtime": 1792952200.10476,
+    "seen": 1793708806.0344553,
+    "ast_hash": "eae438ff2271285cc71420e104e7ef65",
+    "semantic_hash": "eae438ff2271285cc71420e104e7ef65"
+  },
+  "validation/ablation/ABLATION_STUDY.md": {
+    "mtime": 1793427688.6623092,
+    "seen": 1793708806.0344582,
+    "ast_hash": "a185187be3564adfb670c5c5c1750970",
+    "semantic_hash": "a185187be3564adfb670c5c5c1750970"
+  },
+  "validation/audit/ARCHITECTURE_DISCREPANCIES.md": {
+    "mtime": 1793426642.8613741,
+    "seen": 1793708806.0344603,
+    "ast_hash": "fb927af80c8a6a2446f13ee8fbc4256c",
+    "semantic_hash": "fb927af80c8a6a2446f13ee8fbc4256c"
+  },
+  "validation/audit/PIPELINE_ARCHITECTURE.md": {
+    "mtime": 1793426692.5706022,
+    "seen": 1793708806.0344627,
+    "ast_hash": "7110448ff92071d237753c96c619490e",
+    "semantic_hash": "7110448ff92071d237753c96c619490e"
+  },
+  "validation/audit/PROJECT_AUDIT.md": {
+    "mtime": 1793426712.8332255,
+    "seen": 1793708806.034465,
+    "ast_hash": "5d8255c1fa525664dc85907d17055010",
+    "semantic_hash": "5d8255c1fa525664dc85907d17055010"
+  },
+  "validation/baseline/REPRODUCIBILITY_REPORT.md": {
+    "mtime": 1793426896.515394,
+    "seen": 1793708806.0344677,
+    "ast_hash": "d6fc3d64d47f41dc386450300650ec88",
+    "semantic_hash": "d6fc3d64d47f41dc386450300650ec88"
+  },
+  "validation/channels/CHANNEL_ANALYSIS_REPORT.md": {
+    "mtime": 1793427435.8748202,
+    "seen": 1793708806.03447,
+    "ast_hash": "3d6ad09d8714f9d9fb806f714068227b",
+    "semantic_hash": "3d6ad09d8714f9d9fb806f714068227b"
+  },
+  "validation/clinical/NIFEA_DATASET_AUDIT.md": {
+    "mtime": 1793427813.1626647,
+    "seen": 1793708806.0344727,
+    "ast_hash": "b9cf4102075fb02ab9292ec2cc383681",
+    "semantic_hash": "b9cf4102075fb02ab9292ec2cc383681"
+  },
+  "validation/clinical/NIFEA_VALIDATION_REPORT.md": {
+    "mtime": 1793427824.419015,
+    "seen": 1793708806.0344753,
+    "ast_hash": "389a1a16dcff1f41938e441ad4cbf81f",
+    "semantic_hash": "389a1a16dcff1f41938e441ad4cbf81f"
+  },
+  "validation/detector/QRS_FHR_REPORT.md": {
+    "mtime": 1793427629.8061962,
+    "seen": 1793708806.0344777,
+    "ast_hash": "02fbc91fd9a3833041ecf3a3f311354c",
+    "semantic_hash": "02fbc91fd9a3833041ecf3a3f311354c"
+  },
+  "validation/extraction/EXTRACTION_QUALITY_REPORT.md": {
+    "mtime": 1793427510.5160618,
+    "seen": 1793708806.03448,
+    "ast_hash": "4ecec538a79f4954023db20091cc1f29",
+    "semantic_hash": "4ecec538a79f4954023db20091cc1f29"
+  },
+  "validation/failures/FAILURE_ANALYSIS.md": {
+    "mtime": 1793428091.288113,
+    "seen": 1793708806.0344825,
+    "ast_hash": "c37da932fea791b01808314a05922121",
+    "semantic_hash": "c37da932fea791b01808314a05922121"
+  },
+  "validation/fixed_point/NUMERICAL_VALIDATION_REPORT.md": {
+    "mtime": 1793427902.6284072,
+    "seen": 1793708806.034485,
+    "ast_hash": "6d50d027114c7094769a36e40ac21f93",
+    "semantic_hash": "6d50d027114c7094769a36e40ac21f93"
+  },
+  "validation/fpga/FPGA_READINESS_REPORT.md": {
+    "mtime": 1793428040.0887468,
+    "seen": 1793708806.0344872,
+    "ast_hash": "84beccaab82645c44d36703df520e5cc",
+    "semantic_hash": "84beccaab82645c44d36703df520e5cc"
+  },
+  "validation/improvements/ALGORITHM_RECOMMENDATION_REPORT.md": {
+    "mtime": 1793431306.5125544,
+    "seen": 1793708806.03449,
+    "ast_hash": "151c47419002e400de097d56fcd5bd2f",
+    "semantic_hash": "151c47419002e400de097d56fcd5bd2f"
+  },
+  "validation/improvements/DETECTOR_IMPROVEMENTS_REPORT.md": {
+    "mtime": 1793430561.2035599,
+    "seen": 1793708806.0344925,
+    "ast_hash": "2744e5ec3b68740ca832b06ee2540795",
+    "semantic_hash": "2744e5ec3b68740ca832b06ee2540795"
+  },
+  "validation/improvements/FHR_IMPROVEMENT_REPORT.md": {
+    "mtime": 1793430685.078387,
+    "seen": 1793708806.0344949,
+    "ast_hash": "003b25e221f2313b745b5b0f9393d08c",
+    "semantic_hash": "003b25e221f2313b745b5b0f9393d08c"
+  },
+  "validation/improvements/FIXED_POINT_DISCREPANCY_REPORT.md": {
+    "mtime": 1793431246.1977966,
+    "seen": 1793708806.0344975,
+    "ast_hash": "0afc4498bd419e44e015e11071c4827f",
+    "semantic_hash": "0afc4498bd419e44e015e11071c4827f"
+  },
+  "validation/improvements/FULL_LAYOUT_REPORT.md": {
+    "mtime": 1793429620.2316055,
+    "seen": 1793708806.0345001,
+    "ast_hash": "cfbb77300d019ec049af261580c41194",
+    "semantic_hash": "cfbb77300d019ec049af261580c41194"
+  },
+  "validation/improvements/IMPROVEMENT_REPORT.md": {
+    "mtime": 1793428149.810863,
+    "seen": 1793708806.0345025,
+    "ast_hash": "181ffafc8b40c38c1ba57dc5eadcdf17",
+    "semantic_hash": "181ffafc8b40c38c1ba57dc5eadcdf17"
+  },
+  "validation/improvements/NIFEA_INVESTIGATION_REPORT.md": {
+    "mtime": 1793430760.3389895,
+    "seen": 1793708806.034505,
+    "ast_hash": "cb88433be4639146eb42a01e6b2eb8e1",
+    "semantic_hash": "cb88433be4639146eb42a01e6b2eb8e1"
+  },
+  "validation/improvements/SPATIAL_CALIBRATION_REPORT.md": {
+    "mtime": 1793430454.7303362,
+    "seen": 1793708806.0345075,
+    "ast_hash": "dd54097b54a3a08928686aa88adbccf3",
+    "semantic_hash": "dd54097b54a3a08928686aa88adbccf3"
+  },
+  "validation/pre_fpga/01_executive_summary/EXECUTIVE_SUMMARY.md": {
+    "mtime": 1793435914.3961523,
+    "seen": 1793708806.03451,
+    "ast_hash": "7a692cb1badeedac3675d395b88115a0",
+    "semantic_hash": "7a692cb1badeedac3675d395b88115a0"
+  },
+  "validation/pre_fpga/02_full_layout_validation/FULL_LAYOUT_AUDIT.md": {
+    "mtime": 1793434352.4347384,
+    "seen": 1793708806.034512,
+    "ast_hash": "96cc5101c537d4d555f9fcf098508652",
+    "semantic_hash": "96cc5101c537d4d555f9fcf098508652"
+  },
+  "validation/pre_fpga/03_spatial_calibration/AUTOCORRELATION_VALIDATION.md": {
+    "mtime": 1793434769.846164,
+    "seen": 1793708806.0345147,
+    "ast_hash": "467cd7b9a16f09a59d66ea9235b07b4b",
+    "semantic_hash": "467cd7b9a16f09a59d66ea9235b07b4b"
+  },
+  "validation/pre_fpga/04_qrs_fhr_validation/QRS_RAW_VS_CORRECTED_REPORT.md": {
+    "mtime": 1793434882.1993754,
+    "seen": 1793708806.0345173,
+    "ast_hash": "64175fd59a84cbd5a8145bf15591036d",
+    "semantic_hash": "64175fd59a84cbd5a8145bf15591036d"
+  },
+  "validation/pre_fpga/05_detector_validation/DETECTOR_CONFIGURATION_AUDIT.md": {
+    "mtime": 1793435072.5068457,
+    "seen": 1793708806.03452,
+    "ast_hash": "825c2207d386dfb6942e88bad427c246",
+    "semantic_hash": "825c2207d386dfb6942e88bad427c246"
+  },
+  "validation/pre_fpga/06_fixed_point/FIXED_POINT_AUDIT.md": {
+    "mtime": 1793435308.24677,
+    "seen": 1793708806.034522,
+    "ast_hash": "f175547d39548f3e41392f9524a671b0",
+    "semantic_hash": "f175547d39548f3e41392f9524a671b0"
+  },
+  "validation/pre_fpga/06_fixed_point/FIXED_POINT_SPECIFICATION.md": {
+    "mtime": 1793435287.910492,
+    "seen": 1793708806.0345244,
+    "ast_hash": "e96a32e0745b1ebf23b85d95787d7340",
+    "semantic_hash": "e96a32e0745b1ebf23b85d95787d7340"
+  },
+  "validation/pre_fpga/06_fixed_point/RANGE_AND_OVERFLOW_ANALYSIS.md": {
+    "mtime": 1793435266.2287395,
+    "seen": 1793708806.0345268,
+    "ast_hash": "a970d2629d09cc86e33da26b746930e5",
+    "semantic_hash": "a970d2629d09cc86e33da26b746930e5"
+  },
+  "validation/pre_fpga/07_fpga_specification/CALIBRATION_PROTOCOL_SPEC.md": {
+    "mtime": 1793435433.8492122,
+    "seen": 1793708806.0345292,
+    "ast_hash": "01f76789fbb0b7b7d0310876a1547748",
+    "semantic_hash": "01f76789fbb0b7b7d0310876a1547748"
+  },
+  "validation/pre_fpga/07_fpga_specification/FPGA_ARCHITECTURE_SPEC.md": {
+    "mtime": 1793435373.1161234,
+    "seen": 1793708806.0345316,
+    "ast_hash": "2fdaff699f034808f0c78b1f99727473",
+    "semantic_hash": "2fdaff699f034808f0c78b1f99727473"
+  },
+  "validation/pre_fpga/07_fpga_specification/FPGA_FEASIBILITY_REPORT.md": {
+    "mtime": 1793435471.9759994,
+    "seen": 1793708806.034534,
+    "ast_hash": "0c943e23a51ca25951c11d9741c0a989",
+    "semantic_hash": "0c943e23a51ca25951c11d9741c0a989"
+  },
+  "validation/pre_fpga/07_fpga_specification/FPGA_MODULE_INTERFACE_SPEC.md": {
+    "mtime": 1793435393.170473,
+    "seen": 1793708806.0345361,
+    "ast_hash": "a9f1057b6537e2f390b215b0bd9dcf12",
+    "semantic_hash": "a9f1057b6537e2f390b215b0bd9dcf12"
+  },
+  "validation/pre_fpga/07_fpga_specification/FPGA_TIMING_BUDGET.md": {
+    "mtime": 1793435453.5623367,
+    "seen": 1793708806.0345385,
+    "ast_hash": "120f0327ed16e1ad035993036d5c85da",
+    "semantic_hash": "120f0327ed16e1ad035993036d5c85da"
+  },
+  "validation/pre_fpga/07_fpga_specification/UART_PROTOCOL_SPEC.md": {
+    "mtime": 1793435416.597425,
+    "seen": 1793708806.0345418,
+    "ast_hash": "53992b73bc9530e5e8c49f77e72b083d",
+    "semantic_hash": "53992b73bc9530e5e8c49f77e72b083d"
+  },
+  "validation/pre_fpga/08_nifea/NIFEA_VALIDATION_LIMITATIONS.md": {
+    "mtime": 1793435499.3987198,
+    "seen": 1793708806.0345442,
+    "ast_hash": "7701f05b7779cf976cc139fec15a5b9b",
+    "semantic_hash": "7701f05b7779cf976cc139fec15a5b9b"
+  },
+  "validation/pre_fpga/09_final_decisions/ALGORITHM_FREEZE_DECISION.md": {
+    "mtime": 1793435526.3097851,
+    "seen": 1793708806.0345466,
+    "ast_hash": "3da888c33d7fbf0bc1bf111ffc8b06ff",
+    "semantic_hash": "3da888c33d7fbf0bc1bf111ffc8b06ff"
+  },
+  "validation/pre_fpga/09_final_decisions/FINAL_ALGORITHM_SPEC.md": {
+    "mtime": 1793435540.0664232,
+    "seen": 1793708806.0345492,
+    "ast_hash": "a77924e0ceac3769346a58ded971c19e",
+    "semantic_hash": "a77924e0ceac3769346a58ded971c19e"
+  },
+  "validation/pre_fpga/09_final_decisions/REMAINING_RISKS.md": {
+    "mtime": 1793435553.8445325,
+    "seen": 1793708806.0345519,
+    "ast_hash": "6091ad327990a942a5c78930eef47f01",
+    "semantic_hash": "6091ad327990a942a5c78930eef47f01"
+  },
+  "validation/pre_fpga/10_regression_tests/TEST_COVERAGE.md": {
+    "mtime": 1793435670.092951,
+    "seen": 1793708806.034554,
+    "ast_hash": "5ad70d6bfd3b0e888b9ac46dfa690f17",
+    "semantic_hash": "5ad70d6bfd3b0e888b9ac46dfa690f17"
+  },
+  "validation/pre_fpga_corrected/01_metric_reconciliation/QRS_METRIC_RECONCILIATION.md": {
+    "mtime": 1793437226.9588475,
+    "seen": 1793708806.0345564,
+    "ast_hash": "ae550c2ab2d33d75ee08ba31fcc0ddde",
+    "semantic_hash": "ae550c2ab2d33d75ee08ba31fcc0ddde"
+  },
+  "validation/pre_fpga_corrected/02_calibration_correction/CALIBRATION_FALLBACK_AUDIT.md": {
+    "mtime": 1793437526.2055726,
+    "seen": 1793708806.0345588,
+    "ast_hash": "4fe1322f4cffc17d00c817cc8f852d22",
+    "semantic_hash": "4fe1322f4cffc17d00c817cc8f852d22"
+  },
+  "validation/pre_fpga_corrected/03_fixed_point_correction/FILTER_COEFFICIENT_SPEC.md": {
+    "mtime": 1793437521.8155992,
+    "seen": 1793708806.0345616,
+    "ast_hash": "206afa22ed7c97c8298a12288cc1451a",
+    "semantic_hash": "206afa22ed7c97c8298a12288cc1451a"
+  },
+  "validation/pre_fpga_corrected/03_fixed_point_correction/FIXED_POINT_AUDIT_CORRECTED.md": {
+    "mtime": 1793438052.6693447,
+    "seen": 1793708806.034564,
+    "ast_hash": "a748e52a71f2692972f0f44f5ec6e055",
+    "semantic_hash": "a748e52a71f2692972f0f44f5ec6e055"
+  },
+  "validation/pre_fpga_corrected/03_fixed_point_correction/FIXED_POINT_SPECIFICATION_FINAL.md": {
+    "mtime": 1793438052.6693447,
+    "seen": 1793708806.0345666,
+    "ast_hash": "ff6ff4e80863834db4d53395fd47fd1f",
+    "semantic_hash": "ff6ff4e80863834db4d53395fd47fd1f"
+  },
+  "validation/pre_fpga_corrected/03_fixed_point_correction/RANGE_AND_OVERFLOW_ANALYSIS.md": {
+    "mtime": 1793438052.6693447,
+    "seen": 1793708806.034569,
+    "ast_hash": "e48612caa2a07f4ea32089809a02fb25",
+    "semantic_hash": "e48612caa2a07f4ea32089809a02fb25"
+  },
+  "validation/pre_fpga_corrected/04_fhr_correction/FHR_IMPLEMENTATION_AUDIT.md": {
+    "mtime": 1793437790.1699789,
+    "seen": 1793708806.0345714,
+    "ast_hash": "d983f9da78a4508785758d4a992109d6",
+    "semantic_hash": "d983f9da78a4508785758d4a992109d6"
+  },
+  "validation/pre_fpga_corrected/05_fhr_range/FHR_RANGE_CONSISTENCY_AUDIT.md": {
+    "mtime": 1793437790.1699789,
+    "seen": 1793708806.0345743,
+    "ast_hash": "64cd46a1f98c0af7517f55aba977fcad",
+    "semantic_hash": "64cd46a1f98c0af7517f55aba977fcad"
+  },
+  "validation/pre_fpga_corrected/05_fhr_range/FHR_RANGE_SPECIFICATION_FINAL.md": {
+    "mtime": 1793437790.1709828,
+    "seen": 1793708806.0345778,
+    "ast_hash": "40c34f83f5b91ef14b55bb46429ba790",
+    "semantic_hash": "40c34f83f5b91ef14b55bb46429ba790"
+  },
+  "validation/pre_fpga_corrected/06_benchmark_correction/BENCHMARK_COVERAGE_AUDIT.md": {
+    "mtime": 1793438543.5554836,
+    "seen": 1793708806.0345805,
+    "ast_hash": "5d303d56a96a0398e70e1c3810f0a258",
+    "semantic_hash": "5d303d56a96a0398e70e1c3810f0a258"
+  },
+  "validation/pre_fpga_corrected/06_benchmark_correction/TWIN_CONDITION_ANALYSIS.md": {
+    "mtime": 1793438485.204506,
+    "seen": 1793708806.034583,
+    "ast_hash": "265660a77d61e94fef2fdc2a4a376da9",
+    "semantic_hash": "265660a77d61e94fef2fdc2a4a376da9"
+  },
+  "validation/pre_fpga_corrected/07_filter_specification/FILTER_DESIGN_FINAL.md": {
+    "mtime": 1793437521.8155992,
+    "seen": 1793708806.0345852,
+    "ast_hash": "206afa22ed7c97c8298a12288cc1451a",
+    "semantic_hash": "206afa22ed7c97c8298a12288cc1451a"
+  },
+  "validation/pre_fpga_corrected/08_protocol_correction/CALIBRATION_PROTOCOL_SPEC_FINAL.md": {
+    "mtime": 1793438260.9284036,
+    "seen": 1793708806.0345879,
+    "ast_hash": "d4576ca07d047647fda0adc30dcac2d8",
+    "semantic_hash": "d4576ca07d047647fda0adc30dcac2d8"
+  },
+  "validation/pre_fpga_corrected/08_protocol_correction/UART_PROTOCOL_AUDIT.md": {
+    "mtime": 1793438237.104752,
+    "seen": 1793708806.0345905,
+    "ast_hash": "f79640ec644fa08947cdbf4fbe76657d",
+    "semantic_hash": "f79640ec644fa08947cdbf4fbe76657d"
+  },
+  "validation/pre_fpga_corrected/08_protocol_correction/UART_PROTOCOL_SPEC_FINAL.md": {
+    "mtime": 1793438250.9429898,
+    "seen": 1793708806.0345929,
+    "ast_hash": "af87b2c78a709d5e9bfeaf34d381eef4",
+    "semantic_hash": "af87b2c78a709d5e9bfeaf34d381eef4"
+  },
+  "validation/pre_fpga_corrected/09_final_decisions/ALGORITHM_FREEZE_DECISION.md": {
+    "mtime": 1793438322.8091137,
+    "seen": 1793708806.0345953,
+    "ast_hash": "eb49b653a3ea52647a3f59beb3edb69e",
+    "semantic_hash": "eb49b653a3ea52647a3f59beb3edb69e"
+  },
+  "validation/pre_fpga_corrected/09_final_decisions/FINAL_ALGORITHM_SPEC.md": {
+    "mtime": 1793438308.9702153,
+    "seen": 1793708806.034598,
+    "ast_hash": "c48c20ce36550d06ac1121194f9fa3e9",
+    "semantic_hash": "c48c20ce36550d06ac1121194f9fa3e9"
+  },
+  "validation/pre_fpga_corrected/09_final_decisions/REMAINING_RISKS.md": {
+    "mtime": 1793438333.6144605,
+    "seen": 1793708806.0346007,
+    "ast_hash": "56ad513f2c8c9d393e28d4c37950b51e",
+    "semantic_hash": "56ad513f2c8c9d393e28d4c37950b51e"
+  },
+  "validation/pre_fpga_corrected/CHANGELOG.md": {
+    "mtime": 1793438576.7369158,
+    "seen": 1793708806.034603,
+    "ast_hash": "ba7794b21fffdac05e2abab1bcdb05b1",
+    "semantic_hash": "ba7794b21fffdac05e2abab1bcdb05b1"
+  },
+  "validation/streaming/LATENCY_ANALYSIS.md": {
+    "mtime": 1793427965.169329,
+    "seen": 1793708806.0346053,
+    "ast_hash": "6944c1ab884cd25d65deb7d567ec18c9",
+    "semantic_hash": "6944c1ab884cd25d65deb7d567ec18c9"
+  },
+  "validation/streaming/REAL_TIME_VALIDATION_REPORT.md": {
+    "mtime": 1793427978.0738418,
+    "seen": 1793708806.034608,
+    "ast_hash": "4493d67a682323fd4f92fbd5e52a58c7",
+    "semantic_hash": "4493d67a682323fd4f92fbd5e52a58c7"
+  },
+  "validation/synthetic/SYNTHETIC_VALIDATION_REPORT.md": {
+    "mtime": 1793427247.8576684,
+    "seen": 1793708806.0346103,
+    "ast_hash": "4716c13340452e9bdd0054aaed0f04f8",
+    "semantic_hash": "4716c13340452e9bdd0054aaed0f04f8"
+  }
+}

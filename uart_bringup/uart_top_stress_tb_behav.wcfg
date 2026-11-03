@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="uart_top_stress_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="uart_top_stress_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="793.173 ns"></ZoomEndTime>
+      <Cursor1Time time="21.084 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="256"></NameColumnWidth>
+      <ValueColumnWidth column_width="69"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="17" />
+   <wvobject fp_name="/uart_top_stress_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/rst_pin" type="logic">
+      <obj_property name="ElementShortName">rst_pin</obj_property>
+      <obj_property name="ObjectShortName">rst_pin</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/uart_rxd" type="logic">
+      <obj_property name="ElementShortName">uart_rxd</obj_property>
+      <obj_property name="ObjectShortName">uart_rxd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/uart_txd" type="logic">
+      <obj_property name="ElementShortName">uart_txd</obj_property>
+      <obj_property name="ObjectShortName">uart_txd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/led" type="array">
+      <obj_property name="ElementShortName">led[7:0]</obj_property>
+      <obj_property name="ObjectShortName">led[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/test_errors" type="array">
+      <obj_property name="ElementShortName">test_errors[31:0]</obj_property>
+      <obj_property name="ObjectShortName">test_errors[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/tests_passed" type="array">
+      <obj_property name="ElementShortName">tests_passed[31:0]</obj_property>
+      <obj_property name="ObjectShortName">tests_passed[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/rx_temp" type="array">
+      <obj_property name="ElementShortName">rx_temp[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_temp[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/rx_ok" type="logic">
+      <obj_property name="ElementShortName">rx_ok</obj_property>
+      <obj_property name="ObjectShortName">rx_ok</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/exp_byte" type="array">
+      <obj_property name="ElementShortName">exp_byte[7:0]</obj_property>
+      <obj_property name="ObjectShortName">exp_byte[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/err_cnt" type="array">
+      <obj_property name="ElementShortName">err_cnt[31:0]</obj_property>
+      <obj_property name="ObjectShortName">err_cnt[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/CLK_FREQ" type="array">
+      <obj_property name="ElementShortName">CLK_FREQ[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CLK_FREQ[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/BAUD_RATE" type="array">
+      <obj_property name="ElementShortName">BAUD_RATE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BAUD_RATE[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/CLK_PERIOD_NS" type="array">
+      <obj_property name="ElementShortName">CLK_PERIOD_NS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CLK_PERIOD_NS[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/CLKS_PER_BIT" type="array">
+      <obj_property name="ElementShortName">CLKS_PER_BIT[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CLKS_PER_BIT[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/BIT_PERIOD_NS" type="array">
+      <obj_property name="ElementShortName">BIT_PERIOD_NS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BIT_PERIOD_NS[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_top_stress_tb/FRAME_PERIOD_NS" type="array">
+      <obj_property name="ElementShortName">FRAME_PERIOD_NS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FRAME_PERIOD_NS[31:0]</obj_property>
+   </wvobject>
+</wave_config>
