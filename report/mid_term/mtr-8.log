@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.26)  27 OCT 2026 16:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.26)  27 OCT 2026 19:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -766,16 +766,17 @@ g>] [14 <D:\signal_project\report\mid_term/figures/multichannel_fpga_resource_s
 caling.png> <D:\signal_project\report\mid_term/figures/hw_accuracy_tradeoff.png
 > <D:\signal_project\report\mid_term/figures/method_radar_comparison.png> <D:\s
 ignal_project\report\mid_term/figures/runtime_comparison.png>] [15] [16] [17] [
-18] (D:\signal_project\report\mid_term/mtr-8.brf)
+18] [19]
+(D:\signal_project\report\mid_term/mtr-8.brf)
 \tf@brf=\write3
 \openout3 = `mtr-8.brf'.
 
-[19]
+ [20]
 
 Package caption Warning: Unused \captionsetup[sub] on input line 25.
 See the caption package documentation for explanation.
 
-[20
+[21
 
 ] (D:\signal_project\report\mid_term/mtr-8.aux)
  ***********
@@ -786,13 +787,13 @@ Package rerunfilecheck Info: File `mtr-8.brf' has not changed.
 (rerunfilecheck)             Checksum: E84CE890A40EA4DF2697696F75D0B773;2265.
  ) 
 Here is how much of TeX's memory you used:
- 19650 strings out of 467050
- 389341 string characters out of 5410549
+ 19657 strings out of 467050
+ 389390 string characters out of 5410549
  864402 words of memory out of 5000000
  48603 multiletter control sequences out of 15000+600000
  668276 words of font info for 119 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 89i,13n,93p,1746b,1244s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 89i,13n,93p,1746b,1239s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/tex
 live/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><c:/texlive/2026/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2026/texmf-dis
@@ -813,11 +814,11 @@ nts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/2026/texmf-dist/fonts/type1/urw/h
 elvetic/uhvr8a.pfb><c:/texlive/2026/texmf-dist/fonts/type1/urw/times/utmb8a.pfb
 ><c:/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><c:/texlive/2026/
 texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on D:\signal_project\report\mid_term/mtr-8.pdf (20 pages, 439608
-6 bytes).
+Output written on D:\signal_project\report\mid_term/mtr-8.pdf (21 pages, 439987
+7 bytes).
 PDF statistics:
- 679 PDF objects out of 1000 (max. 8388607)
- 559 compressed objects within 6 object streams
- 189 named destinations out of 1000 (max. 500000)
+ 678 PDF objects out of 1000 (max. 8388607)
+ 557 compressed objects within 6 object streams
+ 196 named destinations out of 1000 (max. 500000)
  106 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,0 +1,5 @@
+record,layout,subject,snr_db,condition,fecg_dat_exists,mecg_dat_exists,noise1_dat_exists,ann_exists,nan_count_noise1,exact_root_cause,action_taken,final_status
+sub03_snr12dB_l2_c3,l2,sub03,12,c3,True,True,True,True,18,18 IEEE NaNs in upstream PhysioNet noise1.dat,Documented and safely skipped,EXCLUDED_CORRUPT_UPSTREAM_DATA
+sub07_snr12dB_l5_c3,l5,sub07,12,c3,True,True,True,True,6,6 IEEE NaNs in upstream PhysioNet noise1.dat,Documented and safely skipped,EXCLUDED_CORRUPT_UPSTREAM_DATA
+sub09_snr00dB_l5_c0,l5,sub09,0,c0,False,False,False,True,0,Missing binary .dat files in PhysioNet FECGSD distribution,Documented and safely skipped,EXCLUDED_MISSING_UPSTREAM_DAT_FILE
+sub09_snr00dB_l5_c1,l5,sub09,0,c1,False,False,True,True,0,Missing fecg1.dat and mecg.dat files in PhysioNet FECGSD,Documented and safely skipped,EXCLUDED_MISSING_UPSTREAM_DAT_FILE

@@ -1,0 +1,11 @@
+record,sub_id,condition,fhr_mae_bpm,fhr_rmse_bpm,bland_altman_bias_bpm,loa_lower_bpm,loa_upper_bpm,mae_bradycardia,mae_normal_fhr,mae_tachycardia
+sub01_snr12dB_c0,sub01,c0,1.99,3.49,0.07,-4.95,5.1,,1.56,
+sub01_snr06dB_c0,sub01,c0,6.65,12.76,nan,nan,nan,,nan,
+sub01_snr00dB_c0,sub01,c0,1.0,1.75,0.0,-2.1,2.11,,0.68,
+sub01_snr06dB_c1,sub01,c1,5.49,13.06,nan,nan,nan,,nan,
+sub01_snr06dB_c2,sub01,c2,5.64,11.74,nan,nan,nan,,nan,
+sub01_snr06dB_c3,sub01,c3,1.85,6.75,nan,nan,nan,5.87,nan,0.98
+sub01_snr06dB_c4,sub01,c4,19.96,29.94,nan,nan,nan,,nan,
+sub06_snr06dB_c0,sub06,c0,13.44,23.6,nan,nan,nan,,nan,
+sub04_snr06dB_c0,sub04,c0,50.15,57.69,nan,nan,nan,nan,nan,
+sub10_snr06dB_c0,sub10,c0,6.26,13.9,nan,nan,nan,,nan,

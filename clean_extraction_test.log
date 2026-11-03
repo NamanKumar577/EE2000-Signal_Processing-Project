@@ -1,0 +1,42 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-9.2.0, pluggy-1.7.0 -- D:\signal_project\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: d:\signal_project\temp_clean_verification\FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE
+collecting ... collected 34 items
+
+10_regression/tests/test_calibration_confidence_and_recalibration.py::test_bpm_to_lag_conversion_at_250hz PASSED [  2%]
+10_regression/tests/test_calibration_confidence_and_recalibration.py::test_calibration_acceptance_gate PASSED [  5%]
+10_regression/tests/test_calibration_confidence_and_recalibration.py::test_cold_start_buffer_latency PASSED [  8%]
+10_regression/tests/test_end_to_end_pipeline_synthetic.py::test_pipeline_synthetic_execution_and_overflows PASSED [ 11%]
+10_regression/tests/test_end_to_end_pipeline_synthetic.py::test_pipeline_fetal_detection_and_fhr_tracking PASSED [ 14%]
+10_regression/tests/test_fhr_interval_fusion_and_median5.py::test_integer_median_5_various_lengths PASSED [ 17%]
+10_regression/tests/test_fhr_interval_fusion_and_median5.py::test_interval_fusion_eliminates_double_detections PASSED [ 20%]
+10_regression/tests/test_fhr_interval_fusion_and_median5.py::test_telemetry_status_flags_encoding PASSED [ 23%]
+10_regression/tests/test_fhr_interval_fusion_and_median5.py::test_fhr_lut_bounds_and_clamping PASSED [ 26%]
+10_regression/tests/test_filter_coefficients_exact.py::test_lp40_coefficients_table PASSED [ 29%]
+10_regression/tests/test_filter_coefficients_exact.py::test_detector_bp_coefficients_table PASSED [ 32%]
+10_regression/tests/test_filter_coefficients_exact.py::test_filter_pole_stability PASSED [ 35%]
+10_regression/tests/test_filter_delay_and_timing_compensation.py::test_config_c_group_delay_at_15hz PASSED [ 38%]
+10_regression/tests/test_filter_delay_and_timing_compensation.py::test_legacy_default_group_delay_at_15hz PASSED [ 41%]
+10_regression/tests/test_filter_delay_and_timing_compensation.py::test_latency_rewind_subtractor PASSED [ 44%]
+10_regression/tests/test_fixed_point_scaling_exact.py::test_mathematical_scaling_derivation PASSED [ 47%]
+10_regression/tests/test_fixed_point_scaling_exact.py::test_physical_millivolt_reconstruction PASSED [ 50%]
+10_regression/tests/test_fixed_point_scaling_exact.py::test_prior_scaling_bug_mathematical_proof PASSED [ 52%]
+10_regression/tests/test_hardware_arithmetic_exact.py::test_projection_accumulator_32bit_clamping PASSED [ 55%]
+10_regression/tests/test_hardware_arithmetic_exact.py::test_mwi_accumulator_36bit_clamping PASSED [ 58%]
+10_regression/tests/test_hardware_arithmetic_exact.py::test_pure_integer_median_all_counts PASSED [ 61%]
+10_regression/tests/test_hardware_arithmetic_exact.py::test_frozen_integer_fhr_lut_completeness PASSED [ 64%]
+10_regression/tests/test_qrs_matching_strict.py::test_matching_invariants_random_scenarios PASSED [ 67%]
+10_regression/tests/test_qrs_matching_strict.py::test_duplicate_detections_within_tolerance PASSED [ 70%]
+10_regression/tests/test_qrs_matching_strict.py::test_boundary_tolerance_threshold PASSED [ 73%]
+10_regression/tests/test_qrs_matching_strict.py::test_compute_beat_metrics_f1_score PASSED [ 76%]
+10_regression/tests/test_uart_protocol_final.py::test_crc8_ccitt_standard_vector PASSED [ 79%]
+10_regression/tests/test_uart_protocol_final.py::test_fecg_stream_packet_roundtrip PASSED [ 82%]
+10_regression/tests/test_uart_protocol_final.py::test_telemetry_packet_roundtrip PASSED [ 85%]
+10_regression/tests/test_uart_protocol_final.py::test_calibration_packet_roundtrip PASSED [ 88%]
+10_regression/tests/test_uart_protocol_final.py::test_framer_resynchronization PASSED [ 91%]
+10_regression/tests/test_weight_crossfade_slew.py::test_crossfade_terminal_convergence PASSED [ 94%]
+10_regression/tests/test_weight_crossfade_slew.py::test_crossfade_bounded_step_size PASSED [ 97%]
+10_regression/tests/test_weight_crossfade_slew.py::test_crossfade_interruption_continuity PASSED [100%]
+
+============================= 34 passed in 1.62s ==============================

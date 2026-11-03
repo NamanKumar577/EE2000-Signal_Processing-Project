@@ -1,0 +1,12 @@
+# Completion Status Matrix
+- Task A (Full-Layout Benchmark): PASS (1,493 complete records, 1,742 runs reproduced, 7 missing audited)
+- Task B (Autocorr Spatial Calibration): PASS (8 rules compared, lag window [83,136], confidence gate, 64-sample slew)
+- Task C (QRS vs FHR Separation): PASS (Raw QRS metrics isolated, 1.7-2.3 RR split rejected, 2-bit flags specified)
+- Task D (Detector Configuration): PASS (Config C frozen: 12-35 Hz, MWI 30, Ref 200 ms)
+- Task E (Fixed-Point Verification): PASS (Bit-accurate model verified, 96-sample discrepancy proven, formats locked)
+- Task F (FPGA Hardware Spec): PASS (14 modules specified, pin interfaces, UART & calibration protocols locked)
+- Task G (Hardware Feasibility): PASS (Analytical estimates classified; zero RTL confirmed in repo)
+- Task H (NIFEA Clinical Audit): PASS (Mains hum documented; zero public fetal annotations confirmed)
+- Task I (Algorithm Freeze Decision): PASS (Official freeze table; GO for RTL development)
+- Task J (Automated Regression Tests): PASS (26/26 tests passing, 171/171 overall codebase tests passing)
+- Task K (RTL Scope Boundary): PASS (No RTL started; hardware specifications finalized)

@@ -1,0 +1,9 @@
+# Dependencies for Pre-RTL Bit-Accurate Verification Suite
+# Real-Time Multi-Channel Fetal ECG Extraction and QRS/FHR Processor
+# Python 3.10+ / 3.11 / 3.12 / 3.13 compatible
+
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+wfdb>=4.1.0
+pytest>=8.0.0

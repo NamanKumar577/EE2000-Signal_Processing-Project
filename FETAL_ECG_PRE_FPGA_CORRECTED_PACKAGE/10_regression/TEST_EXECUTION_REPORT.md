@@ -1,0 +1,47 @@
+# Test Execution Report
+
+## Execution Summary
+- Exit Code: 0
+- Total Tests: 27
+- Passed: 27
+- Failed: 0
+- Skipped: 0
+
+```text
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-9.2.0, pluggy-1.7.0 -- D:\signal_project\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\signal_project\FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE
+collecting ... collected 27 items
+
+10_regression/tests/test_calibration_confidence_fallback.py::test_autocorr_lag_window PASSED [  3%]
+10_regression/tests/test_calibration_confidence_fallback.py::test_confidence_calculation PASSED [  7%]
+10_regression/tests/test_calibration_confidence_fallback.py::test_pc3_fallback_rejection PASSED [ 11%]
+10_regression/tests/test_end_to_end_pipeline_synthetic.py::test_synthetic_end_to_end_pipeline PASSED [ 14%]
+10_regression/tests/test_fhr_interval_fusion_and_median5.py::test_interval_fusion_split_peaks PASSED [ 18%]
+10_regression/tests/test_fhr_interval_fusion_and_median5.py::test_causal_median5_hand_calculated PASSED [ 22%]
+10_regression/tests/test_fhr_interval_fusion_and_median5.py::test_invalid_rr_held PASSED [ 25%]
+10_regression/tests/test_fhr_range_boundaries.py::test_mathematical_range_mapping PASSED [ 29%]
+10_regression/tests/test_fhr_range_boundaries.py::test_constants_consistency PASSED [ 33%]
+10_regression/tests/test_fhr_range_boundaries.py::test_lut_dimensions PASSED [ 37%]
+10_regression/tests/test_filter_coefficients_exact.py::test_lp40_coefficients_table PASSED [ 40%]
+10_regression/tests/test_filter_coefficients_exact.py::test_detector_bp_coefficients_table PASSED [ 44%]
+10_regression/tests/test_filter_coefficients_exact.py::test_filter_pole_stability PASSED [ 48%]
+10_regression/tests/test_fixed_point_arithmetic_exact.py::test_convergent_rounding_positive PASSED [ 51%]
+10_regression/tests/test_fixed_point_arithmetic_exact.py::test_convergent_rounding_negative PASSED [ 55%]
+10_regression/tests/test_fixed_point_arithmetic_exact.py::test_rounding_above_below_halfway PASSED [ 59%]
+10_regression/tests/test_fixed_point_arithmetic_exact.py::test_zero_and_extremes PASSED [ 62%]
+10_regression/tests/test_fixed_point_arithmetic_exact.py::test_biquad_state_width_enforcement PASSED [ 66%]
+10_regression/tests/test_qrs_matching_strict.py::test_single_detection_multiple_reference_candidates PASSED [ 70%]
+10_regression/tests/test_qrs_matching_strict.py::test_multiple_detections_single_reference_candidate PASSED [ 74%]
+10_regression/tests/test_qrs_matching_strict.py::test_tolerance_boundary PASSED [ 77%]
+10_regression/tests/test_qrs_matching_strict.py::test_mathematical_conservation PASSED [ 81%]
+10_regression/tests/test_qrs_matching_strict.py::test_micro_vs_macro_averaging PASSED [ 85%]
+10_regression/tests/test_uart_protocol.py::test_crc8_standard_test_vector PASSED [ 88%]
+10_regression/tests/test_uart_protocol.py::test_calibration_packet_round_trip PASSED [ 92%]
+10_regression/tests/test_uart_protocol.py::test_calibration_crc_corruption PASSED [ 96%]
+10_regression/tests/test_uart_protocol.py::test_fhr_telemetry_packet_round_trip PASSED [100%]
+
+============================= 27 passed in 0.40s ==============================
+
+```

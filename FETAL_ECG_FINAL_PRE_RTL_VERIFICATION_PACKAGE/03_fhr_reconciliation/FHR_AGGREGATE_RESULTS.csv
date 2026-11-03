@@ -1,0 +1,5 @@
+Stage,Description,Macro_MAE_bpm,Micro_MAE_bpm,Macro_RMSE_bpm,Pct_within_5bpm,Pct_within_10bpm
+M1: Raw Instantaneous,"No fusion, no median filtering",24.87,24.87,40.34,53.33,61.29
+M2: Median-5 Only,Causal Median-of-5 on raw peaks,19.96,19.96,31.66,60.32,69.38
+M3: Interval Fusion Only,Merge split peaks (RR < 50 samples),19.17,19.17,34.36,59.3,67.9
+M4: Corrected Reference,Interval Fusion + Causal Median-of-5,13.42,13.42,23.97,68.34,77.87

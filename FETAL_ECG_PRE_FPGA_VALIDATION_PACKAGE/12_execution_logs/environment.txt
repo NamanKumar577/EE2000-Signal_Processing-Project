@@ -1,0 +1,5 @@
+# Software Environment
+- Operating System: Windows (AMD64)
+- Python Version: 3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]
+- Dependencies: numpy, scipy, wfdb, pytest
+- Target FPGA: AMD/Xilinx Spartan-7 XC7S50-1CSGA324C

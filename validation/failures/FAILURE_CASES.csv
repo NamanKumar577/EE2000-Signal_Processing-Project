@@ -1,0 +1,120 @@
+sub_id,snr_db,condition,f1,fhr_mae_bpm,sensitivity,ppv,tp,fp,fn,severity,symptom,root_cause
+sub01,0,c4,86.65,17.23,0.7804,0.9738,558,15,157,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub01,3,c4,79.28,19.83,0.7385,0.8558,528,89,187,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub01,6,c4,76.56,19.96,0.7346,0.7994,526,132,190,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub02,0,c2,58.99,42.72,0.794,0.4693,474,536,123,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub02,0,c5,55.02,48.93,0.7508,0.4342,452,589,150,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub02,3,c4,69.96,17.43,0.7512,0.6546,453,239,150,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub02,6,c0,70.31,15.47,0.8754,0.5875,527,370,75,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub02,6,c1,69.53,17.6,0.8605,0.5833,518,370,84,Major,Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub02,6,c2,63.32,29.12,0.82,0.5157,492,462,108,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub02,6,c4,52.89,47.18,0.728,0.4153,439,618,164,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub02,6,c5,65.52,28.26,0.8491,0.5333,512,448,91,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub02,9,c2,62.51,40.46,0.8547,0.4927,506,521,86,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub02,9,c4,58.76,42.28,0.7857,0.4692,473,535,129,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub02,9,c5,60.41,42.36,0.8123,0.4808,489,528,113,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub02,12,c2,66.94,26.61,0.8305,0.5607,485,380,99,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub02,12,c4,67.29,22.98,0.8355,0.5633,503,390,99,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub02,12,c5,63.47,33.46,0.814,0.5202,490,452,112,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub03,0,c2,61.57,32.63,0.8,0.5005,540,539,135,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub03,0,c3,72.65,19.98,0.8621,0.6278,619,367,99,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub03,0,c4,66.48,21.01,0.863,0.5406,592,503,94,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub03,0,c5,65.55,25.98,0.854,0.5318,585,515,100,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub03,3,c1,71.48,15.26,0.8586,0.6123,589,373,97,Minor (FHR error),Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub03,3,c2,69.25,20.27,0.8328,0.5926,563,387,113,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub03,3,c4,70.47,19.71,0.8832,0.5862,605,427,80,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub03,6,c0,39.34,53.17,0.5255,0.3144,360,785,325,Critical,Massive false positive triggers,Maternal QRS spatial leakage (PC3 contaminated with residual maternal dipole)
+sub03,6,c4,71.69,17.49,0.9036,0.594,619,423,66,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub03,9,c2,72.85,19.79,0.8949,0.6142,613,385,72,Minor (FHR error),FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub04,0,c0,61.45,63.99,0.8918,0.4688,503,570,61,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub04,0,c1,57.89,34.87,0.7092,0.489,400,418,164,Major,Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub04,0,c2,64.45,36.0,0.9081,0.4995,504,505,51,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub04,0,c3,65.09,38.5,0.9275,0.5014,550,547,43,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub04,0,c4,69.57,21.04,0.9486,0.5493,535,439,29,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub04,0,c5,62.58,45.63,0.906,0.478,511,558,53,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub04,3,c3,66.45,29.2,0.8451,0.5474,502,415,92,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub04,3,c4,72.85,16.13,0.7858,0.6789,444,210,121,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub04,3,c5,67.91,22.62,0.9044,0.5436,511,429,54,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub04,6,c0,56.67,50.15,0.828,0.4308,467,617,97,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub04,6,c1,67.07,23.33,0.8938,0.5367,505,436,60,Major,Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub04,6,c2,62.5,43.04,0.8977,0.4794,500,543,57,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub04,6,c4,65.08,29.74,0.8938,0.5117,505,482,60,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub04,6,c5,64.25,33.54,0.908,0.4971,513,519,52,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub04,9,c2,65.15,38.18,0.8865,0.5149,500,471,64,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub04,9,c4,66.32,33.24,0.8954,0.5266,505,454,59,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub04,9,c5,64.64,36.46,0.8655,0.5158,489,459,76,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub04,12,c1,76.88,16.73,0.8708,0.6881,492,223,73,Minor (FHR error),Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub04,12,c4,71.73,18.39,0.7434,0.6931,420,186,145,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub04,12,c5,77.66,15.69,0.8599,0.708,485,200,79,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub05,0,c0,40.43,41.72,0.5237,0.3293,298,607,271,Critical,Massive false positive triggers,Maternal QRS spatial leakage (PC3 contaminated with residual maternal dipole)
+sub05,0,c3,72.89,20.06,0.8161,0.6586,488,253,110,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub05,0,c4,72.3,18.97,0.8418,0.6336,479,277,90,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub05,3,c0,53.72,57.91,0.7817,0.4092,444,641,124,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub05,3,c1,68.77,19.89,0.8629,0.5716,491,368,78,Major,Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub05,3,c3,63.69,28.77,0.7833,0.5365,470,406,130,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub05,6,c0,59.75,44.85,0.8453,0.4621,481,560,88,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub05,6,c4,81.55,15.77,0.7042,0.9685,400,13,168,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub05,9,c0,37.99,69.53,0.5571,0.2882,317,783,252,Critical,Massive false positive triggers,Maternal QRS spatial leakage (PC3 contaminated with residual maternal dipole)
+sub05,12,c0,70.25,17.88,0.9772,0.5483,556,458,13,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub05,12,c2,67.43,25.17,0.9841,0.5129,556,528,9,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub05,12,c4,58.92,45.34,0.8486,0.4513,482,586,86,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub05,12,c5,67.1,17.8,0.9895,0.5077,563,546,6,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub06,0,c4,83.66,15.89,0.7629,0.9261,489,39,152,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub06,3,c4,76.94,20.45,0.6817,0.8828,437,58,204,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub06,6,c0,52.33,13.44,0.5959,0.4664,382,437,259,Major,Missed fetal beats (low sensitivity),Sub-threshold fetal amplitude / orthogonal dipole orientation
+sub06,6,c4,78.08,18.49,0.7484,0.816,479,108,161,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub07,3,c2,66.71,25.85,0.9325,0.5193,539,499,39,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub07,3,c3,71.69,17.02,0.9704,0.5684,590,448,18,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub07,3,c5,68.87,16.81,0.9584,0.5374,553,476,24,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub07,6,c0,42.45,71.88,0.6246,0.3215,361,762,217,Critical,Massive false positive triggers,Maternal QRS spatial leakage (PC3 contaminated with residual maternal dipole)
+sub07,9,c5,71.77,19.42,0.9255,0.5862,534,377,43,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub07,12,c0,57.43,53.67,0.8426,0.4356,487,631,91,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub07,12,c1,70.75,20.95,0.8685,0.5969,502,339,76,Minor (FHR error),Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub07,12,c2,68.22,19.29,0.9721,0.5254,558,504,16,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub07,12,c4,62.04,40.03,0.8839,0.478,510,557,67,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub07,12,c5,62.35,46.41,0.9083,0.4747,525,581,53,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub08,0,c1,75.0,24.77,0.8994,0.6432,420,233,47,Minor (FHR error),Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub08,0,c2,65.65,37.85,0.8891,0.5204,409,377,51,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub08,0,c5,61.92,49.83,0.8651,0.4821,404,434,63,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub08,3,c0,63.02,44.9,0.8501,0.5006,397,396,70,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub08,3,c1,72.84,17.3,0.8483,0.6383,397,225,71,Minor (FHR error),Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub08,3,c2,59.01,37.22,0.8093,0.4644,365,421,86,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub08,3,c3,63.27,31.52,0.8316,0.5106,410,393,83,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub08,3,c4,64.42,25.58,0.7949,0.5415,372,315,96,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub08,3,c5,57.23,65.01,0.8394,0.4341,392,511,75,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub08,6,c1,56.22,33.84,0.7259,0.4587,339,400,128,Major,Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub08,6,c2,42.73,89.78,0.7091,0.3058,329,747,135,Critical,Massive false positive triggers,Maternal QRS spatial leakage (PC3 contaminated with residual maternal dipole)
+sub08,6,c4,40.61,69.08,0.6517,0.295,305,729,163,Critical,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub08,6,c5,43.82,82.56,0.7051,0.3179,330,708,138,Critical,Massive false positive triggers,Maternal QRS spatial leakage (PC3 contaminated with residual maternal dipole)
+sub08,9,c1,75.16,20.41,0.8587,0.6683,401,199,66,Minor (FHR error),Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub08,9,c2,65.4,46.02,0.8593,0.5279,397,355,65,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub08,9,c3,66.94,33.17,0.8381,0.5572,414,329,80,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub08,9,c4,63.84,34.08,0.8376,0.5158,392,368,76,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub08,9,c5,69.24,39.81,0.8803,0.5706,412,310,56,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub08,12,c2,55.74,52.68,0.744,0.4456,340,423,117,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub08,12,c4,61.76,34.53,0.8077,0.5,378,378,90,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub08,12,c5,64.75,54.66,0.8908,0.5086,416,402,51,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,0,c1,53.87,21.65,0.6225,0.4747,498,551,302,Major,Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub09,0,c2,59.67,8.64,0.6325,0.5647,506,390,294,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub09,0,c3,45.03,30.7,0.5354,0.3885,446,702,387,Critical,Massive false positive triggers,Maternal QRS spatial leakage (PC3 contaminated with residual maternal dipole)
+sub09,0,c4,52.55,23.61,0.578,0.4818,463,498,338,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub09,0,c5,67.48,7.0,0.6929,0.6576,555,289,246,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,3,c1,55.29,28.89,0.6663,0.4725,533,595,267,Major,Intermittent signal drop during movement,Non-stationary dipole rotation due to maternal motion artifact
+sub09,3,c2,52.19,33.39,0.6445,0.4385,513,657,283,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub09,3,c3,71.4,16.52,0.7599,0.6734,633,307,200,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,3,c4,58.0,29.2,0.6966,0.4969,558,565,243,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub09,3,c5,52.02,36.71,0.6429,0.4368,515,664,286,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,6,c0,62.09,24.92,0.7228,0.5442,579,485,222,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,6,c4,58.97,17.37,0.6217,0.5608,498,390,303,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub09,6,c5,59.84,10.17,0.6454,0.5577,517,410,284,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,9,c0,54.88,31.01,0.6538,0.4729,523,583,277,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,9,c2,60.86,18.03,0.7174,0.5285,566,505,223,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub09,9,c3,68.8,17.54,0.7353,0.6463,614,336,221,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,9,c4,76.58,15.65,0.8265,0.7134,662,266,139,Minor (FHR error),Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub09,9,c5,64.95,19.37,0.7575,0.5685,606,460,194,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub09,12,c2,66.59,13.0,0.7306,0.6118,583,370,215,Major,FHR tracking lag during rapid acceleration,Dynamic FHR slew rate exceeding refractory / threshold adaptation speed
+sub09,12,c3,23.75,75.12,0.205,0.2822,171,435,663,Critical,Massive false positive triggers,Maternal QRS spatial leakage (PC3 contaminated with residual maternal dipole)
+sub09,12,c4,51.3,21.2,0.5668,0.4685,454,515,347,Major,Premature / ectopic beat timing violation,Ectopic arrhythmia (PVCs trigger refractory blanking or skew adaptive threshold)
+sub09,12,c5,63.63,10.33,0.6887,0.5912,551,381,249,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub10,0,c0,68.62,20.64,0.8637,0.5693,526,398,83,Major,MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry
+sub10,3,c0,73.5,23.52,0.6946,0.7804,423,119,186,Minor (FHR error),MECG breakthrough / elevated noise,Unfavorable subject lead-field geometry

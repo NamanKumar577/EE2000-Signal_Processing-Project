@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-23T15:57:48",
+  "timestamp": "2026-10-31T11:00:42",
   "test_cases": [
     "TC1",
     "TC2",
@@ -23,245 +23,245 @@
       "method": "svd_v1",
       "status": "completed",
       "f1": 0.7636363636363636,
-      "runtime_s": 0.02578016696497798
+      "runtime_s": 0.16334809999534627
     },
     {
       "tc": "TC1",
       "method": "svd_v2",
       "status": "completed",
       "f1": 0.5614783226723525,
-      "runtime_s": 0.4456765410141088
+      "runtime_s": 2.514982200002123
     },
     {
       "tc": "TC1",
       "method": "svd_v3",
       "status": "completed",
       "f1": 0.42857142857142855,
-      "runtime_s": 0.038982665981166065
+      "runtime_s": 0.11107930000434862
     },
     {
       "tc": "TC1",
       "method": "template_subtraction",
       "status": "completed",
       "f1": 0.679083094555874,
-      "runtime_s": 0.07821020804112777
+      "runtime_s": 0.2242065999962506
     },
     {
       "tc": "TC1",
       "method": "template_fixed",
       "status": "completed",
       "f1": 0.7636363636363636,
-      "runtime_s": 0.018404999980702996
+      "runtime_s": 0.2545685000004596
     },
     {
       "tc": "TC1",
       "method": "swt_lms_ssnf",
       "status": "completed",
       "f1": 0.15059687786960516,
-      "runtime_s": 1.7719159169937484
+      "runtime_s": 8.760539800001425
     },
     {
       "tc": "TC1",
       "method": "alternative",
       "status": "completed",
       "f1": 0.7728860936408106,
-      "runtime_s": 0.019644999993033707
+      "runtime_s": 0.18250099999568192
     },
     {
       "tc": "TC2",
       "method": "svd_v1",
       "status": "completed",
       "f1": 0.30980123372172724,
-      "runtime_s": 0.026817292033229023
+      "runtime_s": 0.14681969999946887
     },
     {
       "tc": "TC2",
       "method": "svd_v2",
       "status": "completed",
       "f1": 0.30980123372172724,
-      "runtime_s": 0.4348380420124158
+      "runtime_s": 2.5304585000048974
     },
     {
       "tc": "TC2",
       "method": "svd_v3",
       "status": "completed",
       "f1": 0.263489838822705,
-      "runtime_s": 0.03912612498970702
+      "runtime_s": 0.12891079999826616
     },
     {
       "tc": "TC2",
       "method": "template_subtraction",
       "status": "completed",
       "f1": 0.2698191933240612,
-      "runtime_s": 0.07938875001855195
+      "runtime_s": 0.3163351000039256
     },
     {
       "tc": "TC2",
       "method": "template_fixed",
       "status": "completed",
       "f1": 0.3084438241451501,
-      "runtime_s": 0.017984250036533922
+      "runtime_s": 0.1377208000048995
     },
     {
       "tc": "TC2",
       "method": "swt_lms_ssnf",
       "status": "completed",
       "f1": 0.17555938037865748,
-      "runtime_s": 1.8045076659764163
+      "runtime_s": 7.649983499999507
     },
     {
       "tc": "TC2",
       "method": "alternative",
       "status": "completed",
       "f1": 0.31399317406143346,
-      "runtime_s": 0.019666707958094776
+      "runtime_s": 0.18993739999859827
     },
     {
       "tc": "TC3",
       "method": "svd_v1",
       "status": "completed",
       "f1": 0.23721881390593047,
-      "runtime_s": 0.025844165997114033
+      "runtime_s": 0.25436199999967357
     },
     {
       "tc": "TC3",
       "method": "svd_v2",
       "status": "completed",
       "f1": 0.23721881390593047,
-      "runtime_s": 0.4349618330015801
+      "runtime_s": 2.84617459999572
     },
     {
       "tc": "TC3",
       "method": "svd_v3",
       "status": "completed",
       "f1": 0.24089635854341734,
-      "runtime_s": 0.038562624948099256
+      "runtime_s": 0.08797739999863552
     },
     {
       "tc": "TC3",
       "method": "template_subtraction",
       "status": "completed",
       "f1": 0.23489010989010992,
-      "runtime_s": 0.0767894999589771
+      "runtime_s": 0.23554860000149347
     },
     {
       "tc": "TC3",
       "method": "template_fixed",
       "status": "completed",
       "f1": 0.23878536922015184,
-      "runtime_s": 0.01856416603550315
+      "runtime_s": 0.17170960000657942
     },
     {
       "tc": "TC3",
       "method": "swt_lms_ssnf",
       "status": "completed",
       "f1": 0.1915085817524842,
-      "runtime_s": 1.7917562919901684
+      "runtime_s": 8.403393199994753
     },
     {
       "tc": "TC3",
       "method": "alternative",
       "status": "completed",
       "f1": 0.2464065708418891,
-      "runtime_s": 0.025695207994431257
+      "runtime_s": 0.13311830000020564
     },
     {
       "tc": "TC4",
       "method": "svd_v1",
       "status": "completed",
       "f1": 0.36024844720496896,
-      "runtime_s": 0.025609458971302956
+      "runtime_s": 0.28157549999741605
     },
     {
       "tc": "TC4",
       "method": "svd_v2",
       "status": "completed",
       "f1": 0.36024844720496896,
-      "runtime_s": 0.4345638749655336
+      "runtime_s": 2.8248991000000387
     },
     {
       "tc": "TC4",
       "method": "svd_v3",
       "status": "completed",
       "f1": 0.2772277227722772,
-      "runtime_s": 0.03840533405309543
+      "runtime_s": 0.10469559999910416
     },
     {
       "tc": "TC4",
       "method": "template_subtraction",
       "status": "completed",
       "f1": 0.33137829912023464,
-      "runtime_s": 0.07804087497061118
+      "runtime_s": 0.18155290000140667
     },
     {
       "tc": "TC4",
       "method": "template_fixed",
       "status": "completed",
       "f1": 0.3571934798015592,
-      "runtime_s": 0.01815254200482741
+      "runtime_s": 0.21289180000167107
     },
     {
       "tc": "TC4",
       "method": "swt_lms_ssnf",
       "status": "completed",
       "f1": 0.18502202643171808,
-      "runtime_s": 1.7667032920289785
+      "runtime_s": 8.228666000002704
     },
     {
       "tc": "TC4",
       "method": "alternative",
       "status": "completed",
       "f1": 0.36834924965893584,
-      "runtime_s": 0.02150162501493469
+      "runtime_s": 0.2049574999982724
     },
     {
       "tc": "TC5",
       "method": "svd_v1",
       "status": "completed",
       "f1": 0.27688172043010756,
-      "runtime_s": 0.02475066698389128
+      "runtime_s": 0.14315099999657832
     },
     {
       "tc": "TC5",
       "method": "svd_v2",
       "status": "completed",
       "f1": 0.27576974564926376,
-      "runtime_s": 0.4434131669695489
+      "runtime_s": 2.829530499999237
     },
     {
       "tc": "TC5",
       "method": "svd_v3",
       "status": "completed",
       "f1": 0.2505368647100931,
-      "runtime_s": 0.03397120803128928
+      "runtime_s": 0.10377140000491636
     },
     {
       "tc": "TC5",
       "method": "template_subtraction",
       "status": "completed",
       "f1": 0.2707482993197279,
-      "runtime_s": 0.0616198749630712
+      "runtime_s": 0.20117410000239033
     },
     {
       "tc": "TC5",
       "method": "template_fixed",
       "status": "completed",
       "f1": 0.28475033738191635,
-      "runtime_s": 0.016521958983503282
+      "runtime_s": 0.1307858000000124
     },
     {
       "tc": "TC5",
       "method": "swt_lms_ssnf",
       "status": "completed",
       "f1": 0.14565826330532214,
-      "runtime_s": 1.8120896669570357
+      "runtime_s": 5.6264623000024585
     },
     {
       "tc": "TC5",
       "method": "alternative",
       "status": "completed",
       "f1": 0.2805369127516778,
-      "runtime_s": 0.01808454201091081
+      "runtime_s": 0.1293498000013642
     }
   ]
 }

@@ -1,0 +1,7 @@
+Metric,Required_Criterion,Observed_Result,Absolute_Counts,Status
+Exact Beat Timing Agreement (0 samples),>= 95.0%,96.75%,"18,662 / 19,288",PASS
+Beat Timing Agreement within 2 samples,>= 98.0%,97.8%,"18,863 / 19,288",FAIL
+Absolute Micro F1 Degradation,<= 0.50 pp,0.53 pp,"Float: 89.95%, FX: 89.42%",FAIL
+Mean Spatial Projection SQNR,>= 45.0 dB,52.66 dB,Min: 29.30 dB,PASS
+Mean Clean FECG Output SQNR,>= 45.0 dB,56.10 dB,Min: 31.97 dB,PASS
+Total Pipeline Overflows,0 Across Benchmark,0,All 15 internal registers,PASS

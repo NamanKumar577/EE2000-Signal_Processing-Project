@@ -1,0 +1,6 @@
+condition,description,n_records,mean_qrs_f1,m1_raw_mae_bpm,m2_med5_mae_bpm,m3_fusion_mae_bpm,m4_corrected_mae_bpm,m4_rmse_bpm,m4_pct_5bpm,m4_pct_10bpm,m4_coverage_pct,fused_events_per_rec
+c0,Normal Rhythm (Baseline),30,90.2,12.57,9.14,8.76,5.43,9.72,84.59,92.07,100.0,48.4
+c1,Maternal Movement Artifact,30,78.16,27.61,22.89,22.25,16.21,27.47,61.2,70.54,99.2,84.0
+c2,Acute Decelerations,30,89.55,15.84,11.67,12.22,7.66,14.6,78.14,87.4,99.99,50.3
+c3,Uterine Contractions / EMG Noise,30,70.57,44.19,42.58,30.42,26.79,47.55,54.79,63.13,99.99,169.3
+c4,Arrhythmias & Extrasystoles,30,74.81,24.12,13.51,22.19,11.02,20.54,62.99,76.22,96.25,39.8

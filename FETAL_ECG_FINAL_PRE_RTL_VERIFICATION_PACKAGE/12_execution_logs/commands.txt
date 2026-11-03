@@ -1,0 +1,29 @@
+# Pre-RTL Verification Execution Commands
+# System: Windows-11-AMD64 / Python 3.13.5 / Pytest 9.2.0
+
+# 1. Environment Verification
+.\venv\Scripts\python --version
+.\venv\Scripts\python -m pip list
+
+# 2. Priority A & B: Fixed-Point Scaling & Hardware Arithmetic Audit
+.\venv\Scripts\python tools/final_verification/run_fixed_point_scaling_audit.py
+
+# 3. Priority C: FHR Metric Reconciliation & Causal Evaluation
+.\venv\Scripts\python tools/final_verification/run_fhr_reconciliation_audit.py
+
+# 4. Priority D & F: Spatial Calibration Metric Disentanglement & Recalibration
+.\venv\Scripts\python tools/final_verification/run_calibration_audit.py
+
+# 5. Priority E: Filter Group Delay & Latency Rewind Compensation
+.\venv\Scripts\python tools/final_verification/run_filter_delay_audit.py
+
+# 6. Priority K: Full Pre-RTL Regression Test Suite
+.\venv\Scripts\python -m pytest FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests -v
+
+# 7. Shell Script Runners (Unix LF Line Endings)
+bash FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/run_all_tests.sh
+bash FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/run_all_experiments.sh
+
+# 8. Clean Standalone Extraction Verification
+Expand-Archive -Path FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE.zip -DestinationPath clean_extraction_test -Force
+.\venv\Scripts\python -m pytest clean_extraction_test/10_regression/tests -v

@@ -86,6 +86,11 @@ def stage_files():
     if os.path.exists(os.path.join(CODE_DIR, "configs")):
         shutil.copytree(os.path.join(CODE_DIR, "configs"), os.path.join(code_stage, "configs"))
 
+    # Copy visualization
+    if os.path.exists(os.path.join(CODE_DIR, "visualization")):
+        shutil.copytree(os.path.join(CODE_DIR, "visualization"), os.path.join(code_stage, "visualization"),
+                        ignore=shutil.ignore_patterns("__pycache__"))
+
     # Copy tools into code/tools
     shutil.copytree(os.path.join(MID_TERM_DIR, "tools"), os.path.join(code_stage, "tools"), 
                     ignore=shutil.ignore_patterns("__pycache__", "*audit*"))

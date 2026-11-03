@@ -1014,22 +1014,37 @@ This mid-term report has documented the mathematical foundation, empirical evalu
 \section{AI Usage Disclosure}
 \label{sec:ai_disclosure}
 
-\newcontent{In strict compliance with the EE2000 course policy, the team discloses the following generative AI assistance during the preparation of this mid-term project and report:
+\newcontent{In strict compliance with the EE2000 course policy, the team provides full, transparent disclosure of all generative AI assistance utilized across the dataset discovery, algorithmic formulation, implementation, and verification phases of this mid-term project:
 \begin{itemize}
     \item \textbf{Generative Tools Employed:} Anthropic Claude (Claude 3.5 Sonnet)~\cite{anthropic2024}, OpenAI ChatGPT (GPT-4o)~\cite{openai2024}, and Google DeepMind Antigravity (Gemini models).
-    \item \textbf{Specific Areas of Assistance:}
+    \item \textbf{Testing Data Sourcing and Dataset Pipeline:}
     \begin{enumerate}
-        \item \textit{Code Development:} Assisting with boilerplate syntax for PyTorch 1D U-Net DataLoader pipelines, automated CSV parsing scripts for the 250-record mega-benchmark, and Matplotlib plotting routines.
-        \item \textit{Mathematical \& Architectural Review:} Reviewing fixed-point rounding mechanisms, evaluating the theoretical null depth quantization formula ($R_{\text{null}} \approx 20 \log_{10}[\sqrt{12} \cdot 2^{B-1}/\sqrt{C}]$), and deriving the 148-cycle DSP48E1 time-multiplexed schedule.
-        \item \textit{Verification Scripts:} Developing automated number generation and consistency checking routines (\texttt{tools/make\_numbers\_tex.py}, \texttt{tools/check\_consistency.py}).
-        \item \textit{LaTeX Formatting:} Assisting with LaTeX table formatting, organizing section flow, and drafting bibtex entries.
+        \item \textit{Dataset Discovery:} AI tools were consulted during the literature survey to identify open-access, ground-truth-annotated physiological databases for non-invasive fetal electrocardiography. This guided our adoption of the 34-channel PhysioNet FECGSYNDB benchmark (250 records, 10 subjects, SNR tiers from $0$ to $12\,\text{dB}$, diverse noise pathologies) and the PhysioNet/Computing in Cardiology Challenge 2013 clinical dataset.
+        \item \textit{Data Engineering Pipeline:} AI assisted in generating WFDB record loading scripts, automated channel extraction routines, and implementing our strict subject-disjoint data split (70\% Train: \texttt{sub01}--\texttt{sub07}, 10\% Val: \texttt{sub08}, 20\% Test: \texttt{sub09}--\texttt{sub10}).
     \end{enumerate}
-    \item \textbf{Human Verification and Independent Validation:}
+    \item \textbf{Algorithmic Decision-Making and Multi-Channel Paradigm Shift:}
+    \begin{enumerate}
+        \item \textit{Method Selection and Trade-Off Analysis:} AI was queried to catalog and compare candidate algorithm families across the literature, contrasting classical temporal cancellation (Hankel SVD, Template Subtraction, Wavelet Denoising, Adaptive LMS/SSNF), modern deep learning (1D Convolutional U-Net), and linear spatial subspace beamforming (Spatial PCA). AI discussions helped analyze trade-offs between extraction accuracy, latency, and FPGA resource overhead.
+        \item \textit{Multi-Channel vs.\ Single-Channel Rationale:} Initial single-channel baseline evaluations revealed an empirical ceiling ($F_1 \le 39.64\%$, $\text{MAE} \approx 30\,\text{bpm}$) caused by maternal-fetal QRS collisions occurring with $17.5\%$ probability, where maternal amplitude dominates by $10$--$250\times$ and spectra overlap completely ($0.5$--$40\,\text{Hz}$). Mathematical analysis guided by AI prompts underscored that single-channel temporal separation is fundamentally ill-posed during overlap. AI suggested exploring spatial array signal processing, which inspired the team to formulate our multi-channel spatial subspace beamformer: exploiting distinct lead vectors from maternal and fetal cardiac dipoles on the maternal abdomen. This led to our 34-lead fetal-to-maternal ratio (FMR) topography study, identifying the optimal 4-lead suprapubic configuration ($[27, 26, 28, 25]$) for maternal cancellation via spatial null-steering.
+    \end{enumerate}
+    \item \textbf{Continuous Accuracy Verification and Automated Audit Harness:}
+    \begin{enumerate}
+        \item \textit{Frozen Benchmark Pipeline:} AI assisted in standardizing the evaluation harnesses (\texttt{src/run\_benchmark.py} for 35 Subject 1 runs and \texttt{src/run\_mega\_benchmark.py} for 2,250 runs across all 250 records), computing clinical performance metrics ($\text{PPV}$, $\text{Se}$, $F_1$-score, FHR MAE, and Bland-Altman limits).
+        \item \textit{Automated Consistency Audit:} AI helped author the automated checking scripts (\texttt{tools/check\_consistency.py}, \texttt{tools/make\_numbers\_tex.py}, and \texttt{tools/audit\_mtr8.py}) that execute an exhaustive 15-check audit (Table internal arithmetic, unweighted partition aggregations, 95\% clustered confidence intervals with $df=9$, eigen-spectrum preservation, and text-versus-table equality) directly against raw CSV outputs, eliminating manual transcription errors.
+        \item \textit{Fixed-Point Precision Tracking:} AI assisted in reviewing bit-true Q1.15 fixed-point software modeling in \texttt{src/fixed\_point\_model.py}, tracking signal-to-quantization-noise ratio ($+74.52\,\text{dB}$ SQNR) across 5,000 golden test vectors and deriving the theoretical null depth formula ($R_{\text{null}} \approx 20 \log_{10}[\sqrt{12} \cdot 2^{B-1}/\sqrt{C}]$).
+    \end{enumerate}
+    \item \textbf{Code Development, Mathematical Review, and Formatting:}
+    \begin{enumerate}
+        \item \textit{Code Refactoring:} Assisting with boilerplate syntax for PyTorch 1D U-Net DataLoader pipelines, Matplotlib publication figure formatting (18 figures at 300 DPI), and packaging automation scripts.
+        \item \textit{Hardware Schedule Derivation:} Reviewing pipelining constraints and deriving the 148-cycle DSP48E1 time-multiplexed schedule for the Spartan-7 XC7S50 FPGA.
+        \item \textit{LaTeX Typesetting:} Formatting two-column CVPR/IEEE style tables, math expressions, and bibtex reference entries.
+    \end{enumerate}
+    \item \textbf{Human Verification, Intellectual Ownership, and Viva Defense:}
     \begin{enumerate}
         \item All simulation runs, benchmark executions, and fixed-point calculations were executed locally on our physical hardware and verified against actual CSV output logs (\texttt{mega\_benchmark\_results.csv}, \texttt{metrics.csv}).
-        \item Every numerical value in Tab.~\ref{tab:clinical_specs}, Tab.~\ref{tab:master_benchmark}, Tab.~\ref{tab:executive_summary}, Tab.~\ref{tab:mega_benchmark}, Tab.~\ref{tab:partition_breakdown}, Tab.~\ref{tab:subject_consistency}, and Tab.~\ref{tab:condition_breakdown} was programmatically generated from CSV logs via \texttt{tools/make\_numbers\_tex.py} and verified via automated consistency checkers.
-        \item Literature citations were independently retrieved and verified for existence (DOIs, venues, and publication years), with unconfirmed entries removed.
-        \item The entire team is fully prepared to explain, defend, and re-derive any equation, algorithm, or circuit block during the oral viva.
+        \item All technical design choices---including the transition to multi-channel spatial beamforming, lead selection geometry, fixed-point wordlength allocation, and selecting Spatial PCA over U-Net for Spartan-7 single-DSP implementation---were decided, scrutinized, and finalized by the student team.
+        \item Literature citations were independently retrieved and audited against IEEE Xplore, SpringerLink, and Wiley repositories to ensure existence and verified DOIs.
+        \item The entire team retains full intellectual ownership and is thoroughly prepared to explain, defend, and derive every equation, algorithm, and hardware schedule during the oral viva.
     \end{enumerate}
 \end{itemize}
 }
@@ -1097,17 +1112,17 @@ G.~D. Clifford, I.~Silva, J.~Behar, and G.~Moody.
 \bibitem{behar2014}
 J.~Behar, A.~Johnson, G.~D. Clifford, and J.~Oster.
 \newblock A comparison of single-channel fetal ECG extraction methods.
-\newblock {\em Annals of Biomedical Engineering}, 42(6):1340--1353, 2014. \url{https://doi.org/10.1007/s10439-014-1011-9}
+\newblock {\em Annals of Biomedical Engineering}, 42(6):1340--1353, 2014. \url{https://doi.org/10.1007/s10439-014-0993-9}
 
 \bibitem{abel2023}
 J.~D.~K. Abel, S.~Dhanalakshmi, and R.~Kumar.
 \newblock A comprehensive survey on signal processing and machine learning techniques for non-invasive fetal ECG extraction.
-\newblock {\em Multimedia Tools and Applications}, 82:1373--1400, 2023. \url{https://doi.org/10.1007/s11042-022-13233-9}
+\newblock {\em Multimedia Tools and Applications}, 82:1373--1400, 2023. \url{https://doi.org/10.1007/s11042-022-13391-0}
 
 \bibitem{sornmo_ecg}
 L.~S{\"o}rnmo and P.~Laguna.
 \newblock Electrocardiogram (ECG) signal processing.
-\newblock In {\em Wiley Encyclopedia of Biomedical Engineering}, 2006. \url{https://doi.org/10.1002/9780471740360.ebs0410}
+\newblock In {\em Wiley Encyclopedia of Biomedical Engineering}, 2006. \url{https://doi.org/10.1002/9780471740360.ebs1482}
 
 \bibitem{widrow1975}
 B.~Widrow, J.~R. Glover, J.~M. McCool, {\em et al.}
@@ -1190,7 +1205,7 @@ J.~Pan and W.~J. Tompkins.
 \bibitem{silva2013}
 I.~Silva, J.~Behar, R.~Sameni, T.~Zhu, J.~Oster, G.~D. Clifford, and G.~B. Moody.
 \newblock Noninvasive fetal ECG: the PhysioNet/Computing in Cardiology Challenge 2013.
-\newblock {\em Computing in Cardiology}, 40:149--152, 2013. \url{https://doi.org/10.1109/CIC.2013.6948512}
+\newblock {\em Computing in Cardiology}, 40:149--152, 2013. \url{https://www.cinc.org/archives/2013/pdf/0149.pdf}
 
 \bibitem{realdigital_boolean}
 RealDigital.

@@ -1,0 +1,6 @@
+# Operating Environment
+OS: Windows AMD64
+Python: 3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]
+Target Device: AMD/Xilinx Spartan-7 XC7S50-1CSGA324C
+Board: RealDigital Boolean Board
+Clock: 100 MHz, Sample Rate: 250 Hz

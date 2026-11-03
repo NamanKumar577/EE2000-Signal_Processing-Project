@@ -1,0 +1,5 @@
+partition,records,acceptance_rate_pct,rejection_rate_pct,autocorr_correct_selection_rate,pc3_correct_selection_rate,false_confidence_rate_pct,uncertain_rate_pct,f1_strategy_1_standard,f1_strategy_2_pc3_fallback,f1_strategy_3_rejection_only_confident,f1_strategy_4_retain_prev,mae_strategy_1_standard,mae_strategy_2_pc3_fallback,mae_strategy_4_retain_prev
+train,209,51.2,48.8,92.82,99.04,4.67,48.8,76.3,76.21,79.36,74.64,14.59,16.35,25.46
+validation,30,0.0,100.0,90.0,93.33,0.0,100.0,64.06,66.18,,64.06,38.31,33.07,38.31
+test,60,43.33,56.67,98.33,98.33,0.0,56.67,77.5,71.19,77.63,71.7,11.2,12.79,16.57
+ALL,299,44.48,55.52,93.65,98.33,3.76,55.52,75.31,74.19,79.02,72.99,16.29,17.31,24.97

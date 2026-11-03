@@ -1,0 +1,12 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-9.2.0, pluggy-1.7.0 -- D:\signal_project\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\signal_project
+collecting ... collected 4 items
+
+QRS_RESIDUAL_TIMING_ANALYSIS/tests/test_residual_timing_analysis.py::test_fixed_association_mathematical_invariants PASSED [ 25%]
+QRS_RESIDUAL_TIMING_ANALYSIS/tests/test_residual_timing_analysis.py::test_sub05_r_peak_cancellation_forensic PASSED [ 50%]
+QRS_RESIDUAL_TIMING_ANALYSIS/tests/test_residual_timing_analysis.py::test_sub08_biphasic_bimodal_lobe_proof PASSED [ 75%]
+QRS_RESIDUAL_TIMING_ANALYSIS/tests/test_residual_timing_analysis.py::test_fixed_association_12_sample_global_optimality PASSED [100%]
+
+============================== 4 passed in 3.80s ==============================

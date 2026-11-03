@@ -1,0 +1,6 @@
+test_id,input_peaks,output_peaks,n_in,n_out,n_fused,passed,description
+T1_SPLIT_PEAK_10_SAMPLES,"[100, 110, 200]","[100, 200]",3,2,1,1,10 samples apart (40 ms) must merge into single beat
+T2_SPLIT_PEAK_45_SAMPLES,"[100, 145, 250]","[100, 250]",3,2,1,1,45 samples apart (180 ms = 333 bpm) must merge
+T3_TACHYCARDIA_52_SAMPLES,"[100, 152, 204]","[100, 152, 204]",3,3,0,1,52 samples apart (208 ms = 288 bpm) is genuine tachycardia; must NOT fuse
+T4_NORMAL_100_SAMPLES,"[100, 200, 300]","[100, 200, 300]",3,3,0,1,100 samples (400 ms = 150 bpm) must NOT fuse
+T5_TRIPLE_BURST_PEAKS,"[100, 115, 130, 250]","[100, 250]",4,2,2,1,Triple burst inside 30 samples merges into single beat

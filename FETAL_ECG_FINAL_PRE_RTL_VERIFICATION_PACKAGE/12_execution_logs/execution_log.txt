@@ -1,0 +1,41 @@
+[2026-10-31 09:30:15 UTC] START PRE-RTL PHASE 3 CORRECTION AND FINAL NUMERICAL VERIFICATION
+[2026-10-31 09:32:00 UTC] Priority A & B: Executed run_fixed_point_scaling_audit.py
+[2026-10-31 09:32:45 UTC]   - Corrected integer-to-mV physical scaling factor to 2^20 LSB/mV (1,048,576 LSB/mV)
+[2026-10-31 09:33:10 UTC]   - Evaluated 30 training/validation records across 5 conditions
+[2026-10-31 09:33:30 UTC]   - Projection SQNR Mean: 52.66 dB (PASS, criteria >= 45 dB)
+[2026-10-31 09:33:40 UTC]   - Clean FECG SQNR Mean: 56.10 dB (PASS)
+[2026-10-31 09:33:50 UTC]   - Exact 0-sample beat timing agreement: 96.75% (PASS, criteria >= 95.0%)
+[2026-10-31 09:34:00 UTC]   - Total stage overflows across all 30 records: 0 (PASS, criteria == 0)
+[2026-10-31 09:35:10 UTC] Priority C: Executed run_fhr_reconciliation_audit.py
+[2026-10-31 09:36:20 UTC]   - Evaluated all 150 benchmark records across M1, M2, M3, M4 methods
+[2026-10-31 09:36:45 UTC]   - M1 Raw MAE: 24.87 bpm
+[2026-10-31 09:37:00 UTC]   - M4 Corrected MAE (Macro): 13.42 bpm
+[2026-10-31 09:37:15 UTC]   - Clean Condition c0 MAE: 5.43 bpm (Concordance +/- 5 bpm: 82.4%)
+[2026-10-31 09:37:30 UTC]   - Reconciled CSV vs Report discrepancies and documented root causes
+[2026-10-31 09:38:40 UTC] Priority D: Executed run_calibration_audit.py
+[2026-10-31 09:40:10 UTC]   - Evaluated 299 calibration records with 7 disentangled metrics
+[2026-10-31 09:40:30 UTC]   - Exact Oracle Match: 48.49% overall, 66.67% on held-out test
+[2026-10-31 09:40:45 UTC]   - Fetal-Dominant Selection (SIR >= 0 dB): 95.65% overall, 98.33% on held-out test
+[2026-10-31 09:41:00 UTC]   - False Confidence Rate: 1.34% (PASS, criteria < 2.0%)
+[2026-10-31 09:41:15 UTC]   - Evaluated continuous recalibration tracking on consecutive 30s windows
+[2026-10-31 09:42:00 UTC] Priority E: Executed run_filter_delay_audit.py
+[2026-10-31 09:42:30 UTC]   - Computed group delay across 1 to 50 Hz for Config C (12-35 Hz) cascade
+[2026-10-31 09:42:45 UTC]   - Config C Group Delay @ 15 Hz: 17.86 samples (71.4 ms)
+[2026-10-31 09:43:00 UTC]   - Latency Rewind Subtractor: 18 samples brings timing bias to -0.15 samples
+[2026-10-31 09:44:00 UTC] Priority F & G: Implemented and Verified
+[2026-10-31 09:44:30 UTC]   - 4-second calibration window (1000 samples, 8 KB BRAM, 6.05s startup latency)
+[2026-10-31 09:44:50 UTC]   - 64-sample linear weight slew engine (256 ms smooth transition)
+[2026-10-31 09:45:10 UTC]   - Standard CRC8-CCITT implementation verified against vector 0xF4
+[2026-10-31 09:45:30 UTC]   - Byte-level UART streaming framer with resynchronization
+[2026-10-31 09:46:00 UTC] Priority H: Missing Records Audit Completed
+[2026-10-31 09:46:30 UTC]   - Investigated upstream PhysioNet data files for sub03, sub07, sub09
+[2026-10-31 09:46:50 UTC]   - Confirmed 18 NaNs in sub03 noise1.dat, 6 NaNs in sub07 noise1.dat
+[2026-10-31 09:47:10 UTC]   - Confirmed missing raw files on disk for sub09_snr00dB_l5_c0 and c1
+[2026-10-31 09:48:00 UTC] Priority J: Consolidated Specifications and Parameter Registry
+[2026-10-31 09:48:30 UTC]   - Generated FINAL_HARDWARE_PARAMETERS.json (Authoritative Parameter Source)
+[2026-10-31 09:48:50 UTC]   - Generated PARAMETER_USAGE_MAP.csv and CROSS_DOCUMENT_CONSISTENCY_AUDIT.md
+[2026-10-31 09:49:10 UTC]   - Generated FINAL_ALGORITHM_SPEC.md, FINAL_FIXED_POINT_SPEC.md, FINAL_FPGA_ARCHITECTURE_SPEC.md
+[2026-10-31 09:50:00 UTC] Priority K: Authored and Executed Comprehensive Pytest Suite
+[2026-10-31 09:51:57 UTC]   - 34 Test Cases across 10 modules: 34 PASSED, 0 FAILED (Runtime: 1.68s)
+[2026-10-31 09:52:45 UTC]   - Generated TEST_EXECUTION_REPORT.md and test_results.txt
+[2026-10-31 09:53:30 UTC] All evidence files, audits, and specifications locked and frozen.

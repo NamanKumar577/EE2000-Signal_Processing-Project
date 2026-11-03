@@ -1,0 +1,13 @@
+# Execution Commands
+1. Full Layout Benchmark:
+   python tools/pre_fpga/run_full_layout_reproduction.py
+2. Spatial Calibration Audit:
+   python tools/pre_fpga/run_autocorr_rigorous_validation.py
+3. QRS vs FHR Study:
+   python tools/pre_fpga/run_raw_qrs_vs_fhr_study.py
+4. Detector Configuration Audit:
+   python tools/pre_fpga/run_detector_rigorous_audit.py
+5. Fixed-Point Verification:
+   python tools/pre_fpga/run_fixed_point_audit.py
+6. Complete Regression Test Suite:
+   python -m pytest code/tests/test_pre_fpga_regression.py -v

@@ -1,0 +1,34 @@
+record,subject,snr_db,condition,selected_pc,true_pc,selected_sir_db,max_sir_db,autocorr_score,confidence,f1,failure_mode
+sub01_snr06dB_l1_c1,sub01,6,c1,1,3,-5.76,9.85,0.8512,0.0856,74.87,Maternal false lock
+sub01_snr06dB_l1_c3,sub01,6,c3,4,3,-8.07,13.81,0.8387,0.0123,78.78,Maternal false lock
+sub01_snr06dB_l1_c4,sub01,6,c4,4,3,-10.24,14.8,0.7008,0.3094,82.18,Maternal false lock
+sub01_snr12dB_l1_c0,sub01,12,c0,1,3,-12.73,13.86,0.9053,0.0755,99.58,Maternal false lock
+sub01_snr12dB_l1_c1,sub01,12,c1,1,2,-9.0,3.76,0.816,0.1118,75.21,Maternal false lock
+sub01_snr12dB_l1_c2,sub01,12,c2,1,2,-7.67,6.78,0.8824,0.1867,80.19,Maternal false lock
+sub01_snr12dB_l1_c3,sub01,12,c3,1,2,-8.07,5.54,0.8793,0.1704,62.16,Maternal false lock
+sub02_snr06dB_l1_c0,sub02,6,c0,1,4,-21.4,8.2,0.8225,0.2359,95.63,Maternal false lock
+sub02_snr06dB_l1_c1,sub02,6,c1,1,4,-9.3,1.98,0.7676,0.0505,68.01,Maternal false lock
+sub02_snr06dB_l1_c2,sub02,6,c2,1,4,-9.14,7.05,0.837,0.189,70.62,Maternal false lock
+sub02_snr06dB_l1_c4,sub02,6,c4,1,4,-4.28,4.59,0.536,0.3906,67.46,Maternal false lock
+sub02_snr12dB_l1_c2,sub02,12,c2,1,3,-6.0,3.19,0.7315,0.0921,71.12,Maternal false lock
+sub02_snr12dB_l1_c3,sub02,12,c3,1,2,-7.21,2.15,0.7979,0.0919,56.5,Maternal false lock
+sub05_snr00dB_l1_c0,sub05,0,c0,1,3,-6.55,13.55,0.8102,0.0227,75.0,Maternal false lock
+sub05_snr00dB_l1_c2,sub05,0,c2,1,3,-6.14,15.75,0.8025,0.07,89.56,Maternal false lock
+sub05_snr00dB_l1_c3,sub05,0,c3,1,3,-6.61,13.3,0.8589,0.0175,61.1,Maternal false lock
+sub05_snr06dB_l1_c0,sub05,6,c0,1,2,-8.97,10.77,0.8416,0.0051,66.46,Maternal false lock
+sub05_snr06dB_l1_c3,sub05,6,c3,1,3,-10.48,17.4,0.8936,0.0621,68.41,Maternal false lock
+sub05_snr06dB_l1_c4,sub05,6,c4,1,3,-3.2,15.4,0.597,0.1432,81.19,Maternal false lock
+sub05_snr12dB_l1_c1,sub05,12,c1,1,3,-8.04,11.46,0.8229,0.0346,79.52,Maternal false lock
+sub05_snr12dB_l1_c3,sub05,12,c3,1,3,-8.71,14.68,0.8719,0.113,65.98,Maternal false lock
+sub01_snr00dB_l2_c0,sub01,0,c0,2,4,-5.11,14.34,0.4609,0.0898,93.46,Maternal false lock
+sub01_snr06dB_l2_c0,sub01,6,c0,1,3,-10.16,14.09,0.8971,0.3232,93.89,Maternal false lock
+sub01_snr06dB_l2_c2,sub01,6,c2,1,3,-8.88,15.51,0.8503,0.0096,97.04,Maternal false lock
+sub01_snr12dB_l2_c0,sub01,12,c0,1,2,-11.92,8.36,0.8155,0.2382,76.54,Maternal false lock
+sub01_snr12dB_l2_c3,sub01,12,c3,1,2,-6.63,7.91,0.8483,0.0687,61.57,Maternal false lock
+sub02_snr06dB_l2_c3,sub02,6,c3,1,3,-8.9,5.38,0.8804,0.0812,69.77,Maternal false lock
+sub03_snr12dB_l2_c3,sub03,12,c3,2,2,8.44,8.44,0.8137,0.1451,0.0,Weak SNR / threshold lag
+sub05_snr00dB_l2_c1,sub05,0,c1,1,3,-12.66,12.39,0.8133,0.0537,55.99,Maternal false lock
+sub05_snr00dB_l2_c3,sub05,0,c3,1,3,-14.35,15.99,0.8028,0.115,67.57,Maternal false lock
+sub05_snr00dB_l2_c4,sub05,0,c4,1,3,-6.48,18.64,0.6687,0.0533,81.51,Maternal false lock
+sub05_snr06dB_l2_c3,sub05,6,c3,1,3,-7.93,18.0,0.8536,0.1655,99.66,Maternal false lock
+sub05_snr12dB_l2_c4,sub05,12,c4,1,3,-5.81,15.63,0.784,0.3368,85.97,Maternal false lock

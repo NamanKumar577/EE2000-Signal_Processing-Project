@@ -1,0 +1,5 @@
+partition,n_records,exact_oracle_match_pct,fetal_dominant_pct,extraction_success_pct,accepted_pct,rejected_pct,false_confidence_pct
+train,209,44.98,94.74,74.64,47.85,52.15,1.91
+val,30,50.0,96.67,63.33,3.33,96.67,0.0
+test,60,60.0,98.33,73.33,46.67,53.33,0.0
+ALL,299,48.49,95.65,73.24,43.14,56.86,1.34
