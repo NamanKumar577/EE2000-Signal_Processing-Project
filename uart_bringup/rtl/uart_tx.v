@@ -83,7 +83,6 @@ module uart_tx #(
 
                 // Data bits transmission: hold each bit for CLKS_PER_BIT cycles
                 STATE_DATA: begin
-                    tx_serial <= tx_shift[bit_idx];
                     if (clk_cnt == CLKS_PER_BIT - 1) begin
                         clk_cnt <= 0;
                         if (bit_idx == 3'd7) begin
@@ -91,7 +90,8 @@ module uart_tx #(
                             tx_serial <= 1'b1; // Drive STOP bit
                             state     <= STATE_STOP;
                         end else begin
-                            bit_idx <= bit_idx + 1'b1;
+                            bit_idx   <= bit_idx + 1'b1;
+                            tx_serial <= tx_shift[bit_idx + 1'b1]; // Explicitly drive next bit on boundary
                         end
                     end else begin
                         clk_cnt <= clk_cnt + 1'b1;

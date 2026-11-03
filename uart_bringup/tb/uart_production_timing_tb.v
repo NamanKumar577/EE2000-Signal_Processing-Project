@@ -214,44 +214,74 @@ module uart_production_timing_tb;
         $display("\n[%0t ns] [TEST GROUP 1] Measuring Precise Bit Durations & Sampling Cycle (Pattern: 0x55)...", $time);
         // Byte 0x55 (8'b01010101) provides an edge transition on every single bit:
         // Start(0) -> D0(1) -> D1(0) -> D2(1) -> D3(0) -> D4(1) -> D5(0) -> D6(1) -> D7(0) -> Stop(1)
+        err_cnt = 0;
         fork
-            begin
+            begin : proc_send
+                // Delay sending by 5 clock cycles to guarantee concurrent monitoring
+                // processes (proc_measure_rx and proc_measure_tx) are actively waiting on their edges.
+                repeat (5) @(posedge clk);
                 host_send_byte(8'h55, 1'b1);
             end
             begin : proc_measure_rx
                 integer last_sample_time;
                 integer d_idx;
+                integer timeout_cnt;
 
                 // 1. Capture external falling edge on uart_rxd pin
                 @(negedge uart_rxd);
                 t_rx_ext_fall = $time / CLK_PERIOD_NS;
 
                 // 2. Capture synchronized falling edge on rx_sync (2-stage synchronizer)
-                @(negedge uut.u_uart_rx.rx_sync);
-                t_rx_sync_fall = $time / CLK_PERIOD_NS;
-                rx_sync_latency = t_rx_sync_fall - t_rx_ext_fall;
+                // Phase-aware measurement: count the 2 clock sampling edges traversed
+                // by the 2-stage synchronizer pipeline (Stage 1 then Stage 2).
+                rx_sync_latency = 0;
+                @(negedge uut.u_uart_rx.rx_sync_stage1);
+                rx_sync_latency = rx_sync_latency + 1; // Sampling Edge 1: Stage 1 captures external transition
 
-                // 3. Capture FSM entry into STATE_START
-                while (uut.u_uart_rx.state !== 3'b001) begin
+                @(negedge uut.u_uart_rx.rx_sync);
+                rx_sync_latency = rx_sync_latency + 1; // Sampling Edge 2: Stage 2 captures Stage 1 output
+                t_rx_sync_fall = $time / CLK_PERIOD_NS;
+
+                // 3. Capture FSM entry into STATE_START (bounded wait)
+                timeout_cnt = 0;
+                while (uut.u_uart_rx.state !== 3'b001 && timeout_cnt < 50) begin
                     @(posedge clk);
+                    timeout_cnt = timeout_cnt + 1;
+                end
+                if (timeout_cnt >= 50) begin
+                    $display("  [%0t ns] [TIMEOUT] RX monitor timed out waiting for STATE_START entry (waited %0d cycles)!",
+                             $time, timeout_cnt);
+                    err_cnt = err_cnt + 1;
                 end
                 t_rx_fsm_start = $time / CLK_PERIOD_NS;
                 rx_fsm_latency = t_rx_fsm_start - t_rx_sync_fall;
 
-                // 4. Capture exact midpoint validation cycle where clk_cnt reaches HALF_BIT - 1
-                while (!(uut.u_uart_rx.state === 3'b001 && uut.u_uart_rx.clk_cnt === (HALF_BIT - 1))) begin
+                // 4. Capture exact midpoint validation cycle where clk_cnt reaches HALF_BIT - 1 (bounded wait)
+                timeout_cnt = 0;
+                while (!(uut.u_uart_rx.state === 3'b001 && uut.u_uart_rx.clk_cnt === (HALF_BIT - 1)) && timeout_cnt < (HALF_BIT * 2)) begin
                     @(posedge clk);
+                    timeout_cnt = timeout_cnt + 1;
+                end
+                if (timeout_cnt >= (HALF_BIT * 2)) begin
+                    $display("  [%0t ns] [TIMEOUT] RX monitor timed out waiting for midpoint sample condition!", $time);
+                    err_cnt = err_cnt + 1;
                 end
                 // The validation takes effect on the next rising clock edge:
                 @(posedge clk);
                 t_rx_midpoint_validate = $time / CLK_PERIOD_NS;
                 rx_start_mid_cycles = t_rx_midpoint_validate - t_rx_fsm_start;
 
-                // 5. Measure exact sample event positions for each of the 8 data bits
+                // 5. Measure exact sample event positions for each of the 8 data bits (bounded wait)
                 last_sample_time = t_rx_midpoint_validate;
                 for (d_idx = 0; d_idx < 8; d_idx = d_idx + 1) begin
-                    while (!(uut.u_uart_rx.state === 3'b010 && uut.u_uart_rx.bit_idx === d_idx && uut.u_uart_rx.clk_cnt === (CLKS_PER_BIT - 1))) begin
+                    timeout_cnt = 0;
+                    while (!(uut.u_uart_rx.state === 3'b010 && uut.u_uart_rx.bit_idx === d_idx && uut.u_uart_rx.clk_cnt === (CLKS_PER_BIT - 1)) && timeout_cnt < (CLKS_PER_BIT * 2)) begin
                         @(posedge clk);
+                        timeout_cnt = timeout_cnt + 1;
+                    end
+                    if (timeout_cnt >= (CLKS_PER_BIT * 2)) begin
+                        $display("  [%0t ns] [TIMEOUT] RX monitor timed out waiting for bit D%0d sample event!", $time, d_idx);
+                        err_cnt = err_cnt + 1;
                     end
                     @(posedge clk);
                     rx_data_sample_pos[d_idx] = ($time / CLK_PERIOD_NS) - last_sample_time;
@@ -353,7 +383,6 @@ module uart_production_timing_tb;
         end
 
         // Verify timing tolerances (must match CLKS_PER_BIT exactly)
-        err_cnt = 0;
         if (t_rx_ext_fall === 0 || t_rx_sync_fall === 0 || t_rx_midpoint_validate === 0) begin
             $display("  [ERROR] RX monitor missed transition capture (zero timestamp detected)!");
             err_cnt = err_cnt + 1;
