@@ -1,0 +1,7 @@
+test_scenario,total_bytes_sent,expected_frames,valid_packets_parsed,crc_errors_detected,sync_errors_detected,frame_loss_pct,recovery_status
+Nominal_Clean_Stream,1200,100,100,0,0,0,RECOVERED
+Corrupted_Header_Byte,1200,100,99,0,12,1,RECOVERED
+Corrupted_Payload_Byte,1200,100,99,1,0,1,RECOVERED
+Corrupted_CRC8_Byte,1200,100,99,1,0,1,RECOVERED
+Dropped_Byte_Frame_Slip,1199,100,98,1,11,2,RECOVERED
+Heavy_Random_Noise_Burst,1197,100,91,2,81,9,RECOVERED

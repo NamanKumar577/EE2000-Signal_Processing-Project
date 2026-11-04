@@ -1,0 +1,64 @@
+{
+  "record": "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0",
+  "channels": [
+    27,
+    26,
+    28,
+    25
+  ],
+  "rule": "autocorr",
+  "cal_seconds": 10.0,
+  "component_index": 2,
+  "scores": {
+    "1": 0.3414546103786387,
+    "2": 0.8368900594291668,
+    "3": 0.3104277446307183
+  },
+  "weights_float": [
+    0.24478594442695156,
+    0.6698830134601587,
+    -0.38810172970844314,
+    -0.5837068074691756
+  ],
+  "weights_s16": [
+    8021,
+    21951,
+    -12717,
+    -19127
+  ],
+  "latency_samples": 12,
+  "n_samples": 5000,
+  "n_beats": 43,
+  "int_vs_float": {
+    "sqnr_db": 72.84622521050333,
+    "n_float_beats": 43,
+    "n_int_beats": 43,
+    "tp": 42,
+    "fp": 1,
+    "fn": 1
+  },
+  "widths": {
+    "max_proj_acc_bits": 28,
+    "max_hp_acc_bits": 23,
+    "max_biquad_state_bits": 36,
+    "max_xint_bits": 23
+  },
+  "files": [
+    "stimulus_ch0_s16.hex",
+    "stimulus_ch1_s16.hex",
+    "stimulus_ch2_s16.hex",
+    "stimulus_ch3_s16.hex",
+    "weights_s16.hex",
+    "proj_s24.hex",
+    "hp_s24.hex",
+    "fecg_s24.hex",
+    "fecg_out_s16.hex",
+    "det_bp_s16.hex",
+    "x_int_u40.hex",
+    "beat_flag.hex",
+    "fhr_x10_hold_u16.hex",
+    "fhr_lut_u16.hex",
+    "peaks.txt",
+    "raw_peaks.txt"
+  ]
+}

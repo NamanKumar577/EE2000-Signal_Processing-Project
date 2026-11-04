@@ -1,0 +1,113 @@
+# Repository Directory Structure Reference
+
+Generated: 2026-11-04
+
+## Top-Level Directories
+
+- **`CLAUDE.md`** (2.3 KB)
+- **`QRS_RESIDUAL_TIMING_ANALYSIS/`** → symlink to `archive/timing_bundles/QRS_RESIDUAL_TIMING_ANALYSIS`
+- **`QRS_TIMING_CORRECTION/`** → symlink to `archive/timing_bundles/QRS_TIMING_CORRECTION`
+- **`README.md`** (6.3 KB)
+- **`archive/`** (350 files)
+  - `README.md`
+  - `historical_code/` (6 files)
+  - `logs/` (4 files)
+  - `packages/` (317 files)
+  - `scratch/` (1 files)
+  - `submissions/` (2 files)
+  - `timing_bundles/` (19 files)
+- **`code/`** (140 files)
+  - `README.md`
+  - `configs/` (2 files)
+  - `requirements.txt`
+  - `results/` (79 files)
+  - `src/` (30 files)
+  - `tests/` (24 files)
+  - `visualization/` (2 files)
+- **`data/`** (52 files)
+  - `fecgsyndb/` (52 files)
+- **`docs/`** (39 files)
+  - `PROPOSED_STRUCTURE.md`
+  - `REPOSITORY_INVENTORY.md`
+  - `architecture/` (4 files)
+  - `archive/` (9 files)
+  - `audit/` (4 files)
+  - `literature/` (16 files)
+  - `trackers/` (3 files)
+- **`hardware/`** (3 files)
+  - `rtl_prep/` (0 files)
+  - `spec/` (3 files)
+  - `telemetry/` (0 files)
+- **`report/`** (70 files)
+  - `mid_term/` (66 files)
+  - `mtr-8.pdf`
+  - `mtr-8.zip`
+  - `preliminary/` (2 files)
+- **`requirements.txt`** (0.3 KB)
+- **`results/`** (213 files)
+  - `benchmarks/` (78 files)
+  - `figures/` (2 files)
+  - `validation_reports/` (133 files)
+- **`scripts/`** (10 files)
+  - `benchmarks/` (4 files)
+  - `validation/` (6 files)
+- **`src/`** (48 files)
+  - `__init__.py`
+  - `bit_accurate_reference_model.py`
+  - `bit_accurate_reference_model_corrected.py`
+  - `bit_accurate_reference_model_final.py`
+  - `causal_pipeline.py`
+  - `data_loader.py`
+  - `evaluation.py`
+  - `fecg/` (26 files)
+  - `fhr.py`
+  - `fhr_implementation_corrected.py`
+  - `fixed_point_model.py`
+  - `fpga_int_model.py`
+  - `methods/` (7 files)
+  - `mixture.py`
+  - `models/` (2 files)
+  - `multichannel_study.py`
+  - `preprocessing.py`
+  - `qrs_detector.py`
+  - `run_benchmark.py`
+  - `run_causal_benchmark.py`
+  - `run_mega_benchmark.py`
+  - `svd_fixed_point_model.py`
+  - `train_deep_model.py`
+  - `uart_protocol.py`
+  - `uart_protocol_final.py`
+- **`test/`** → symlink to `data/fecgsyndb`
+- **`tests/`** (33 files)
+  - `_synth.py`
+  - `conftest.py`
+  - `hardware/` (6 files)
+  - `integration/` (7 files)
+  - `regression/` (2 files)
+  - `results/` (3 files)
+  - `unit/` (13 files)
+- **`tools/`** (39 files)
+  - `audit_mtr8.py`
+  - `clean_anonymity.py`
+  - `final_verification/` (4 files)
+  - `improvements/` (6 files)
+  - `pre_fpga/` (6 files)
+  - `pre_fpga_corrected/` (7 files)
+  - `qrs_timing_correction/` (2 files)
+  - `validation/` (12 files)
+- **`validation/`** (133 files)
+  - `ablation/` (1 files)
+  - `audit/` (4 files)
+  - `baseline/` (2 files)
+  - `channels/` (3 files)
+  - `clinical/` (3 files)
+  - `detector/` (4 files)
+  - `extraction/` (5 files)
+  - `failures/` (3 files)
+  - `fixed_point/` (3 files)
+  - `fpga/` (1 files)
+  - `improvements/` (19 files)
+  - `pre_fpga/` (34 files)
+  - `pre_fpga_corrected/` (42 files)
+  - `streaming/` (4 files)
+  - `synthetic/` (5 files)

@@ -1,0 +1,20 @@
+record,subject,partition,snr_db,condition,selected_j,oracle_j,autocorr_score,confidence_margin,sir_selected_db,sir_oracle_db,f1_standard,f1_pc3,failure_mode
+sub01_snr06dB_l1_c1,sub01,train,6,c1,0,2,0.8146,0.0446,-5.76,9.85,23.58,74.87,Maternal Lock
+sub01_snr06dB_l1_c4,sub01,train,6,c4,3,2,0.6572,0.2637,-10.24,14.8,26.11,26.11,Maternal Lock
+sub01_snr12dB_l1_c0,sub01,train,12,c0,0,2,0.8614,0.0285,-12.68,13.88,20.3,99.58,Maternal Lock
+sub01_snr12dB_l1_c1,sub01,train,12,c1,0,1,0.7703,0.0591,-9.0,3.76,19.52,66.71,Maternal Lock
+sub01_snr12dB_l1_c2,sub01,train,12,c2,0,1,0.8315,0.137,-7.67,6.78,17.69,80.19,Maternal Lock
+sub01_snr12dB_l1_c3,sub01,train,12,c3,0,1,0.8543,0.1461,-8.07,5.54,26.41,62.16,Maternal Lock
+sub02_snr06dB_l1_c0,sub02,train,6,c0,0,3,0.658,0.0449,-21.4,8.21,18.97,67.23,Maternal Lock
+sub02_snr06dB_l1_c4,sub02,train,6,c4,0,3,0.4344,0.2481,-4.28,4.59,51.14,51.14,Maternal Lock
+sub08_snr06dB_l1_c2,sub08,validation,6,c2,2,3,-0.1266,7862.8215,-0.84,21.46,36.89,36.89,Low SNR / Contraction Artifact
+sub08_snr06dB_l1_c4,sub08,validation,6,c4,2,3,0.0152,1.0275,1.97,13.58,37.11,37.11,Low SNR / Contraction Artifact
+sub09_snr00dB_l1_c3,sub09,test,0,c3,2,2,0.7581,0.1365,15.74,15.74,38.57,38.57,Low SNR / Contraction Artifact
+sub01_snr06dB_l2_c0,sub01,train,6,c0,0,2,0.8386,0.3188,-10.16,14.09,21.6,21.6,Maternal Lock
+sub01_snr12dB_l2_c0,sub01,train,12,c0,0,1,0.7641,0.187,-11.92,8.36,19.36,73.53,Maternal Lock
+sub01_snr12dB_l2_c3,sub01,train,12,c3,0,1,0.8193,0.0358,-6.62,7.91,26.33,61.57,Maternal Lock
+sub08_snr00dB_l2_c1,sub08,validation,0,c1,3,2,-0.0457,35883.6268,3.24,19.38,36.15,87.99,Low SNR / Contraction Artifact
+sub08_snr00dB_l2_c3,sub08,validation,0,c3,3,2,0.0257,4.5469,3.37,17.75,34.22,52.87,Low SNR / Contraction Artifact
+sub08_snr00dB_l2_c4,sub08,validation,0,c4,3,2,0.0576,1.4095,-6.16,20.87,29.24,80.31,Maternal Lock
+sub08_snr06dB_l2_c2,sub08,validation,6,c2,3,2,-0.0305,77001.6927,-5.12,16.65,29.4,82.76,Maternal Lock
+sub09_snr06dB_l2_c4,sub09,test,6,c4,2,2,0.4942,0.4108,8.99,8.99,34.95,34.95,Low SNR / Contraction Artifact

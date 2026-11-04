@@ -1,0 +1,99 @@
+test_group,experiment,record,param_val,f1,mae,tp,fp,fn,sens,ppv
+weight_baseline,unperturbed_float,sub01_snr12dB_c0,16-bit float,99.58,1.99,710,0,6,99.16,100.0
+perturbation,noise_1pct,sub01_snr12dB_c0,1%,99.58,2.03,710,0,6,99.16,100.0
+perturbation,noise_5pct,sub01_snr12dB_c0,5%,99.3,2.03,708,2,8,98.88,99.72
+perturbation,noise_10pct,sub01_snr12dB_c0,10%,99.58,1.99,710,0,6,99.16,100.0
+perturbation,noise_20pct,sub01_snr12dB_c0,20%,99.44,2.3,709,1,7,99.02,99.86
+quantization,quant_16bit,sub01_snr12dB_c0,16 bits,99.58,1.99,710,0,6,99.16,100.0
+quantization,quant_12bit,sub01_snr12dB_c0,12 bits,99.58,1.99,710,0,6,99.16,100.0
+quantization,quant_8bit,sub01_snr12dB_c0,8 bits,99.58,2.04,710,0,6,99.16,100.0
+quantization,quant_4bit,sub01_snr12dB_c0,4 bits,99.58,2.05,710,0,6,99.16,100.0
+calibration_window,cal_3s,sub01_snr12dB_c0,3s,99.58,1.79,710,0,6,99.16,100.0
+calibration_window,cal_5s,sub01_snr12dB_c0,5s,99.58,2.36,710,0,6,99.16,100.0
+calibration_window,cal_10s,sub01_snr12dB_c0,10s,99.58,2.52,710,0,6,99.16,100.0
+calibration_window,cal_30s,sub01_snr12dB_c0,30s,99.58,2.35,710,0,6,99.16,100.0
+calibration_window,cal_60s,sub01_snr12dB_c0,60s,99.58,2.08,710,0,6,99.16,100.0
+calibration_window,cal_full_record,sub01_snr12dB_c0,300s,99.58,1.99,710,0,6,99.16,100.0
+weight_baseline,unperturbed_float,sub01_snr06dB_c0,16-bit float,87.58,6.65,652,121,64,91.06,84.35
+perturbation,noise_1pct,sub01_snr06dB_c0,1%,97.3,2.17,702,25,14,98.04,96.56
+perturbation,noise_5pct,sub01_snr06dB_c0,5%,93.38,3.7,684,65,32,95.53,91.32
+perturbation,noise_10pct,sub01_snr06dB_c0,10%,78.38,11.4,609,229,107,85.06,72.67
+perturbation,noise_20pct,sub01_snr06dB_c0,20%,98.19,1.25,704,14,12,98.32,98.05
+quantization,quant_16bit,sub01_snr06dB_c0,16 bits,87.58,6.65,652,121,64,91.06,84.35
+quantization,quant_12bit,sub01_snr06dB_c0,12 bits,87.44,6.72,651,122,65,90.92,84.22
+quantization,quant_8bit,sub01_snr06dB_c0,8 bits,92.71,4.18,680,71,36,94.97,90.55
+quantization,quant_4bit,sub01_snr06dB_c0,4 bits,84.95,7.7,638,148,78,89.11,81.17
+calibration_window,cal_3s,sub01_snr06dB_c0,3s,84.4,8.76,633,151,83,88.41,80.74
+calibration_window,cal_5s,sub01_snr06dB_c0,5s,78.7,12.43,606,218,110,84.64,73.54
+calibration_window,cal_10s,sub01_snr06dB_c0,10s,86.96,6.84,650,129,66,90.78,83.44
+calibration_window,cal_30s,sub01_snr06dB_c0,30s,90.51,5.27,668,92,48,93.3,87.89
+calibration_window,cal_60s,sub01_snr06dB_c0,60s,90.92,5.1,671,89,45,93.72,88.29
+calibration_window,cal_full_record,sub01_snr06dB_c0,300s,87.58,6.65,652,121,64,91.06,84.35
+weight_baseline,unperturbed_float,sub01_snr00dB_c0,16-bit float,99.65,1.0,710,0,5,99.3,100.0
+perturbation,noise_1pct,sub01_snr00dB_c0,1%,99.65,0.78,710,0,5,99.3,100.0
+perturbation,noise_5pct,sub01_snr00dB_c0,5%,99.65,1.02,710,0,5,99.3,100.0
+perturbation,noise_10pct,sub01_snr00dB_c0,10%,99.65,1.22,710,0,5,99.3,100.0
+perturbation,noise_20pct,sub01_snr00dB_c0,20%,92.33,6.36,668,64,47,93.43,91.26
+quantization,quant_16bit,sub01_snr00dB_c0,16 bits,99.65,1.0,710,0,5,99.3,100.0
+quantization,quant_12bit,sub01_snr00dB_c0,12 bits,99.65,1.0,710,0,5,99.3,100.0
+quantization,quant_8bit,sub01_snr00dB_c0,8 bits,99.65,1.05,710,0,5,99.3,100.0
+quantization,quant_4bit,sub01_snr00dB_c0,4 bits,65.59,21.14,546,404,169,76.36,57.47
+calibration_window,cal_3s,sub01_snr00dB_c0,3s,99.65,1.78,710,0,5,99.3,100.0
+calibration_window,cal_5s,sub01_snr00dB_c0,5s,99.65,1.94,710,0,5,99.3,100.0
+calibration_window,cal_10s,sub01_snr00dB_c0,10s,99.65,1.9,710,0,5,99.3,100.0
+calibration_window,cal_30s,sub01_snr00dB_c0,30s,99.65,1.39,710,0,5,99.3,100.0
+calibration_window,cal_60s,sub01_snr00dB_c0,60s,99.65,1.48,710,0,5,99.3,100.0
+calibration_window,cal_full_record,sub01_snr00dB_c0,300s,99.65,1.0,710,0,5,99.3,100.0
+weight_baseline,unperturbed_float,sub01_snr06dB_c1,16-bit float,90.27,5.49,663,90,53,92.6,88.05
+perturbation,noise_1pct,sub01_snr06dB_c1,1%,91.97,3.29,676,78,40,94.41,89.66
+perturbation,noise_5pct,sub01_snr06dB_c1,5%,87.05,7.31,642,117,74,89.66,84.58
+perturbation,noise_10pct,sub01_snr06dB_c1,10%,99.37,1.19,709,2,7,99.02,99.72
+perturbation,noise_20pct,sub01_snr06dB_c1,20%,54.97,24.9,390,313,326,54.47,55.48
+quantization,quant_16bit,sub01_snr06dB_c1,16 bits,90.27,5.49,663,90,53,92.6,88.05
+quantization,quant_12bit,sub01_snr06dB_c1,12 bits,90.27,5.46,663,90,53,92.6,88.05
+quantization,quant_8bit,sub01_snr06dB_c1,8 bits,89.31,5.63,656,97,60,91.62,87.12
+quantization,quant_4bit,sub01_snr06dB_c1,4 bits,84.19,7.74,639,163,77,89.25,79.68
+calibration_window,cal_3s,sub01_snr06dB_c1,3s,73.46,16.71,562,252,154,78.49,69.04
+calibration_window,cal_5s,sub01_snr06dB_c1,5s,73.59,16.08,563,251,153,78.63,69.16
+calibration_window,cal_10s,sub01_snr06dB_c1,10s,74.87,15.47,572,240,144,79.89,70.44
+calibration_window,cal_30s,sub01_snr06dB_c1,30s,78.75,10.96,604,214,112,84.36,73.84
+calibration_window,cal_60s,sub01_snr06dB_c1,60s,81.58,9.85,618,181,98,86.31,77.35
+calibration_window,cal_full_record,sub01_snr06dB_c1,300s,90.27,5.49,663,90,53,92.6,88.05
+weight_baseline,unperturbed_float,sub06_snr06dB_c0,16-bit float,52.33,13.44,382,437,259,59.59,46.64
+perturbation,noise_1pct,sub06_snr06dB_c0,1%,47.96,19.16,365,516,276,56.94,41.43
+perturbation,noise_5pct,sub06_snr06dB_c0,5%,51.71,17.6,386,466,255,60.22,45.31
+perturbation,noise_10pct,sub06_snr06dB_c0,10%,99.61,0.39,636,0,5,99.22,100.0
+perturbation,noise_20pct,sub06_snr06dB_c0,20%,59.83,21.36,464,446,177,72.39,50.99
+quantization,quant_16bit,sub06_snr06dB_c0,16 bits,52.33,13.45,382,437,259,59.59,46.64
+quantization,quant_12bit,sub06_snr06dB_c0,12 bits,51.37,13.46,375,444,266,58.5,45.79
+quantization,quant_8bit,sub06_snr06dB_c0,8 bits,50.57,15.15,374,464,267,58.35,44.63
+quantization,quant_4bit,sub06_snr06dB_c0,4 bits,52.79,22.98,402,480,239,62.71,45.58
+calibration_window,cal_3s,sub06_snr06dB_c0,3s,48.88,12.97,360,472,281,56.16,43.27
+calibration_window,cal_5s,sub06_snr06dB_c0,5s,46.09,12.78,345,511,296,53.82,40.3
+calibration_window,cal_10s,sub06_snr06dB_c0,10s,46.46,14.27,348,509,293,54.29,40.61
+calibration_window,cal_30s,sub06_snr06dB_c0,30s,49.4,14.65,368,481,273,57.41,43.35
+calibration_window,cal_60s,sub06_snr06dB_c0,60s,53.4,13.12,389,427,252,60.69,47.67
+calibration_window,cal_full_record,sub06_snr06dB_c0,300s,52.33,13.44,382,437,259,59.59,46.64
+weight_baseline,unperturbed_float,sub04_snr06dB_c0,16-bit float,56.67,50.15,467,617,97,82.8,43.08
+perturbation,noise_1pct,sub04_snr06dB_c0,1%,57.32,48.19,474,616,90,84.04,43.49
+perturbation,noise_5pct,sub04_snr06dB_c0,5%,57.07,48.29,470,613,94,83.33,43.4
+perturbation,noise_10pct,sub04_snr06dB_c0,10%,58.59,43.48,474,580,90,84.04,44.97
+perturbation,noise_20pct,sub04_snr06dB_c0,20%,55.96,57.74,465,633,99,82.45,42.35
+quantization,quant_16bit,sub04_snr06dB_c0,16 bits,56.67,50.15,467,617,97,82.8,43.08
+quantization,quant_12bit,sub04_snr06dB_c0,12 bits,56.64,50.07,467,618,97,82.8,43.04
+quantization,quant_8bit,sub04_snr06dB_c0,8 bits,57.49,47.94,474,611,90,84.04,43.69
+quantization,quant_4bit,sub04_snr06dB_c0,4 bits,58.04,45.47,480,610,84,85.11,44.04
+calibration_window,cal_3s,sub04_snr06dB_c0,3s,57.63,47.89,476,612,88,84.4,43.75
+calibration_window,cal_5s,sub04_snr06dB_c0,5s,57.94,47.13,480,613,84,85.11,43.92
+calibration_window,cal_10s,sub04_snr06dB_c0,10s,57.33,50.55,475,618,89,84.22,43.46
+calibration_window,cal_30s,sub04_snr06dB_c0,30s,57.59,47.44,476,613,88,84.4,43.71
+calibration_window,cal_60s,sub04_snr06dB_c0,60s,57.82,49.98,479,614,85,84.93,43.82
+calibration_window,cal_full_record,sub04_snr06dB_c0,300s,56.67,50.15,467,617,97,82.8,43.08
+cross_subject,sub01_weights_on_sub02,sub02_snr06dB_c0,Native F1: 70.31%,28.61,26.33,207,638,395,34.39,24.5
+cross_subject,sub01_weights_on_sub03,sub03_snr06dB_c0,Native F1: 39.34%,60.16,31.06,404,254,281,58.98,61.4
+cross_subject,sub01_weights_on_sub04,sub04_snr06dB_c0,Native F1: 56.67%,62.27,34.94,481,500,83,85.28,49.03
+cross_subject,sub01_weights_on_sub06,sub06_snr06dB_c0,Native F1: 52.33%,83.69,7.9,580,165,61,90.48,77.85
+cross_subject,sub01_weights_on_sub08,sub08_snr06dB_c0,Native F1: 97.46%,68.79,34.09,399,293,69,85.26,57.66
+cross_subject,sub01_weights_on_sub10,sub10_snr06dB_c0,Native F1: 89.37%,15.95,35.01,65,141,544,10.67,31.55
+motion_drift,first10s_cal_on_full_c1,sub01_snr06dB_c1,"cos_mid=0.875, cos_end=0.908",74.87,15.47,572,240,144,79.89,70.44
+motion_drift,first10s_cal_on_full_c1,sub06_snr06dB_c1,"cos_mid=0.989, cos_end=0.990",94.19,3.54,616,51,25,96.1,92.35
