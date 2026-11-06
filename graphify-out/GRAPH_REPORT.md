@@ -1,17 +1,17 @@
 # Graph Report - signal_project  (2026-11-04)
 
 ## Corpus Check
-- 638 files · ~663,251 words
+- 804 files · ~851,968 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 252 file(s) not represented in the graph (top: .csv 186, .hex 28, (none) 8)
+- Unclassified: 509 file(s) not represented in the graph (top: .csv 188, .log 48, .hex 29)
 
 ## Summary
-- 6831 nodes · 13638 edges · 538 communities (451 shown, 87 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 318 edges (avg confidence: 0.93)
+- 8408 nodes · 15585 edges · 690 communities (538 shown, 152 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 388 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7986bc34`
+- Built from commit: `01af3675`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,7 +19,7 @@
 - CalibrationBank
 - src/fpga_int_model.py
 - regression/test_pre_fpga_regression.py
-- corrected/src/evaluation.py
+- reference_model/evaluation.py
 - packages/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/tests/test_pre_fpga_regression.py
 - corrected/src/causal_pipeline.py
 - rshift_round_nearest_even
@@ -27,7 +27,7 @@
 - reference_model/causal_pipeline.py
 - det_sos
 - src/fpga_int_model.py
-- build_mixture
+- dataclasses
 - pytest
 - FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/baseline/causal_pipeline.py
 - packages/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/causal_pipeline.py
@@ -43,10 +43,10 @@
 - packages/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/fpga_int_model.py
 - code/tests/test_bit_accurate_reference.py
 - svd_phase2.py
-- subprocess
-- compare_fhr
+- shutil
+- run_fhr_improvements.py
 - swt_lms_ssnf.py
-- test_method_interface.py
+- build_mixture
 - previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/fpga_int_model.py
 - svd.py
 - historical_code/svd_fixed_point_model.py
@@ -60,13 +60,12 @@
 - Spartan-7 FPGA Feasibility, Full Benchmark Matrix & Hardware Roadmap
 - matplotlib_pyplot
 - code/src/bit_accurate_reference_model_final.py
-- BaseExtractor
 - detection/fhr.py
 - UART_PACKET_IMPLEMENTATION_FINAL.py
 - corrected/src/bit_accurate_reference_model_final.py
 - corrected/src/uart_protocol_final.py
 - reference_model/bit_accurate_reference_model_final.py
-- sys
+- code/tests/test_bit_accurate_reference.py
 - dataclasses
 - typing
 - code/src/uart_protocol_final.py
@@ -76,15 +75,16 @@
 - 2. P0 items (fix today)
 - 2. Definitive Specification of All 14 Subsystem Modules
 - telemetry/uart_protocol.py
-- TestQRSDetectorConfig
-- src/uart_protocol_final.py
-- TemplatSubtractionExtractor
+- bandpass_config_c
+- detect_fetal_qrs
+- SWTLMSSNFExtractor
 - Fetal ECG Extraction & FPGA Project — Context & Anshu's Master Tracker
+- Comprehensive Survey Report: UART Infrastructure, Watchdog Remediation, Telemetry Packet Protocol & Spartan-7 Hardware Architecture
 - 2. Definitive Specification of All 14 Subsystem Modules
 - 2. Definitive Specification of All 14 Subsystem Modules
 - 3. NUMERICAL ERRORS (Phase B)
 - 5. SCIENTIFIC / CLAIM ITEMS (Phase D)
-- tests/test_preprocessing.py
+- sys
 - os
 - 2. Definitive Specification of All 14 Subsystem Modules
 - 2. Numerical Errors (`N-*`)
@@ -112,15 +112,15 @@
 - validation_reports/pre_fpga_corrected/03_fixed_point_correction/reference_model/bit_accurate_reference_model_corrected.py
 - fecg/methods/template_subtraction.py
 - Deep Learning (1D U-Net) Fetal ECG Extraction & GPU Training Guide
-- code/tests/test_qrs_matching_strict.py
-- src/run_causal_benchmark.py
+- validate_real_datasets.py
+- 3. Mathematical Difference Equations, State Registers & Pipelining
 - Restructuring Audit Report
 - core/data_loader.py
 - BaseExtractor
 - 2. Stage-by-Stage Specifications
 - Spartan-7 FPGA Feasibility & Hardware Roadmap for SWT–LMS–SSNF
 - Multi-Channel Fetal ECG Extraction Scaling & Spartan-7 FPGA Hardware Report
-- test_uart_protocol_final.py
+- 2. Synthesizable Hardware Structures by Stage
 - fhr_baseline.py
 - historical_code/fixed_point_model.py
 - reference_model/fhr.py
@@ -130,21 +130,21 @@
 - Final Algorithm Recommendation Report: Master System Configuration
 - Priority 6: Fixed-Point Discrepancy and SQNR Investigation Report
 - 2. Module-by-Module Signal Interface Tables
-- numpy
+- Phase 5: Hardware Performance Benchmarking & Expanded Clinical Dataset Validation Signoff Report
 - Fetal ECG Extraction & FPGA Project — Context & Astitva's Master Tracker
 - previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/fixed_point/fixed_point_model.py
 - 2. Answers to the 7 Critical Engineering Questions
 - 2. Test Suite Classification in `code/tests/`
 - 2. Priority-by-Priority Technical Requirements
-- FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_qrs_matching_strict.py
-- packages/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/reference_model/bit_accurate_reference_model.py
+- test_fecg_uart_client.py
+- verify_single_channel_pipeline.py
 - Fetal_ECG_Project_Context_and_Plan.md
 - Deep Learning (1D U-Net) Fetal ECG Extraction & GPU Training Guide
 - 2. Stage-by-Stage Specifications
 - UART Communication and Telemetry Protocol Specification
 - pre_fpga_corrected/08_protocol_correction/protocol_implementation/uart_protocol.py
 - test_fixed_point_verification.py
-- unit/test_qrs_matching_strict.py
+- time
 - 2. Module-by-Module Signal Interface Tables
 - 2. Module-by-Module Signal Interface Tables
 - 2. Sample-Index Step-by-Step Trace Example
@@ -153,15 +153,15 @@
 - FPGA Implementation Spec (v0.2)
 - 3. Detailed Hardware Subsystem Profiles
 - Final Algorithm Recommendation Report: Master System Configuration
-- code/src/fhr_implementation_corrected.py
-- code/src/qrs_detector.py
-- uart_loopback_tb
+- apply_interval_fusion
+- pipelines/causal_pipeline.py
+- uart_top
 - compute_waveform_metrics
 - Priority 6: Fixed-Point Discrepancy and SQNR Investigation Report
 - 2. Module-by-Module Signal Interface Tables
 - 2. Mathematical Definition of Pipeline Stages
 - test_calibration_confidence_and_recalibration.py
-- FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/protocol_implementation/uart_protocol.py
+- hardware/fpga_int_model.py
 - UART Communication and Telemetry Protocol Specification
 - UART Communication and Telemetry Protocol Specification
 - Investigation and Resolution of QRS Detection Timing Compensation
@@ -169,7 +169,7 @@
 - 2. Categorization of Documentation
 - Python Source Code Audit Report
 - UART Communication and Telemetry Protocol Specification
-- validation_reports/pre_fpga_corrected/08_protocol_correction/protocol_implementation/uart_protocol.py
+- 2. Authoritative Non-ML Pipeline Execution Path
 - AlternativeExtractor
 - FHR Performance Metric Reconciliation & Difficult Condition Audit
 - 6. WRITING, STRUCTURE AND FIGURE ITEMS (Phase E)
@@ -185,7 +185,7 @@
 - corrected/src/qrs_detector.py
 - FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_end_to_end_pipeline_synthetic.py
 - reference_model/fhr_implementation_corrected.py
-- glob
+- Non-Invasive Fetal ECG Extraction: Phase 2 & Phase 3 Hardware Verification and Signoff Report
 - reference_model/qrs_detector.py
 - [Phase 3] — Final Numerical Verification and Pre-RTL Sign-off (2026-10-31)
 - FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/04_fhr_correction/FHR_IMPLEMENTATION_CORRECTED.py
@@ -204,7 +204,7 @@
 - Task C: Separation of Raw QRS Performance from FHR Post-Processing
 - 3. Detailed Arithmetic Equations for RTL Construction
 - Clinical NIFEA Database Audit: Real-World Biopotential Validation & Limitations
-- code/tests/test_fhr_interval_fusion_and_median5.py
+- Spartan-7 Hardware Architecture, Resource Budget & UART Diagnostic Audit
 - Data, Results and Experiments Audit Report
 - FECG Architecture Discrepancy Analysis: PCA/SVD vs. Spatial Beamforming
 - Task B: Rigorous Validation of Autocorrelation-Based Spatial Calibration
@@ -214,14 +214,14 @@
 - common
 - fecg1
 - 2. Quickstart Guide
+- run_causal
 - compute_beat_metrics
-- match_beats
 - core/mixture.py
-- detection/qrs_detector.py
-- TestSVDInterface
+- Target 1: `d:\signal_project\fpga_implementation\docs\python_reference_baseline.md`
+- 4. Stage-by-Stage Bit Growth & Sizing Analysis
 - test_hardware_arithmetic_exact.py
 - test_weight_crossfade_slew.py
-- causal_median5_rr
+- 2. Authoritative 8-Stage Pipeline Specifications
 - Task C: Separation of Raw QRS Performance from FHR Post-Processing
 - 3. Detailed Arithmetic Equations for RTL Construction
 - Clinical NIFEA Database Audit: Real-World Biopotential Validation & Limitations
@@ -231,18 +231,18 @@
 - Full-Layout Benchmark Audit & Reproduction Report
 - 1. Executive Summary & Protocol Inconsistencies Corrected
 - 3. Detailed Arithmetic Equations for RTL Construction
-- shutil
+- Phase 1 Single-Channel Processing RTL Verification & Implementation Report
 - Clinical NIFEA Database Audit: Real-World Biopotential Validation & Limitations
-- compute_beat_metrics
+- PCA Spatial Beamformer & Dynamic Weight Slew Engine Specification
 - UART Bringup Verification & Test Results Report
 - uart_rx_tb.v
-- CalibrationBank
+- FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/tools/reconcile_qrs_metrics.py
 - 51. Recommended Development Sequence
 - 3. Individual Member Deliverables & Technical Contributions
 - 6. PhysioNet FECGSYNDB Data Sheet (`data/FECGSD/DESTINATION`)
 - Quick Start
 - 3. Cross-Reference and Consistency Items (`X-*`)
-- code/tests/test_calibration_confidence_fallback.py
+- verify_pca_fixed_point.py
 - code/src/bit_accurate_reference_model_corrected.py
 - 2. In-Depth Analysis of Individual Stages
 - 3. Spatial Weight Robustness & Quantization
@@ -271,7 +271,7 @@
 - QRS Metric Reconciliation and One-to-One Matching Audit
 - Final UART Communication Protocol Specification
 - Phase 2: Full Synthetic Dataset Validation Report
-- hardware/fpga_int_model.py
+- pipelines/multichannel_study.py
 - Proposed Clean Repository Structure & Migration Mapping
 - PART A: HARDWARE DATA SHEETS & SILICON SPECIFICATIONS
 - 2. Module-by-Module Technical Audit
@@ -279,26 +279,26 @@
 - Full-Layout Benchmark Audit & Reproduction Report
 - 1. Executive Summary & Protocol Inconsistencies Corrected
 - run_streaming_uart_tests.py
-- code/src/preprocessing.py
-- core/preprocessing.py
+- load_record
+- Phase 4: Algorithmic Correctness Audit & Real Dataset Validation Signoff Report
 - TC1
 - TC2
 - TC3
 - TC4
 - TC5
-- os
+- tests/test_loader.py
 - 1. Executive Summary & Flaw Investigation
 - 2. Complete Packet Definitions
 - FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_filter_coefficients_exact.py
 - test_fixed_point_scaling_exact.py
 - Real-Time Multi-Channel Fetal ECG Extraction and QRS/FHR Processor
 - QRS Metric Reconciliation and One-to-One Matching Audit
-- 05_fhr_range/tests/test_fhr_range_boundaries.py
+- 4. Drop-In Replacement Sections for `fpga_implementation/docs/fixed_point_specification.md`
 - Final UART Communication Protocol Specification
-- 10_regression/tests/test_calibration_confidence_fallback.py
-- FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_fhr_interval_fusion_and_median5.py
-- 10_regression/tests/test_fhr_range_boundaries.py
-- FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_filter_coefficients_exact.py
+- code/src/qrs_detector.py
+- test_adversarial_empirical_challenge.py
+- test_uart_protocol_final.py
+- detect_causal
 - 2. Investigation of Key Architectural Questions
 - ANTIGRAVITY TASK — Correct EE2000 Mid-Term Report #0008 (MTR-8)
 - 2. Investigation of Key Architectural Questions
@@ -314,7 +314,7 @@
 - Twin Pregnancy Condition Analysis & Architectural Boundaries
 - Digital Filter Specifications & Quantization Audit (Final Frozen Design)
 - Phase 9: Real-Time Streaming and UART Latency Validation Report
-- previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_raw_qrs_vs_fhr_study.py
+- CalibrationBank
 - 11. Performance Evaluation
 - CLAUDE.md
 - 20. Important Technical Risks
@@ -330,14 +330,14 @@
 - QRS Metric Reconciliation and One-to-One Matching Audit
 - Final UART Communication Protocol Specification
 - Phase 2: Full Synthetic Dataset Validation Report
-- .run
-- hardware/test_filter_coefficients_exact.py
-- unit/test_calibration_confidence_fallback.py
-- unit/test_fhr_interval_fusion_and_median5.py
-- unit/test_fhr_range_boundaries.py
+- FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/protocol_implementation/uart_protocol.py
+- BaseExtractor
+- FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_qrs_matching_strict.py
+- TemplatSubtractionExtractor
+- fecg_multichannel_top
 - 1. Resolution of the 12.4 vs 18 Samples Contradiction
 - Failures, Diagnostics, and Retries Log
-- compute_fhr_series
+- Handoff Report: Adversarial Stress & Protocol Verification
 - Phase 11: Comprehensive Failure Mode Analysis Report
 - Task E: Dynamic Range and Accumulator Overflow Analysis
 - Spatial Calibration and Weight Update Protocol Specification
@@ -385,7 +385,7 @@
 - FHR Post-Processing Implementation & Clinical Safety Audit
 - 1. Mathematical Analysis of the 250 Hz Discrepancy
 - 2. Final Proposed Configuration vs PC3 Baseline Across Layouts (l1–l5)
-- tools/assemble_corrected_package.py
+- src/uart_protocol_final.py
 - Task E: Dynamic Range and Accumulator Overflow Analysis
 - Spatial Calibration and Weight Update Protocol Specification
 - FPGA Timing Budget & Latency Decomposition Specification
@@ -413,10 +413,10 @@
 - FHR Post-Processing Implementation & Clinical Safety Audit
 - 1. Mathematical Analysis of the 250 Hz Discrepancy
 - 2. Final Proposed Configuration vs PC3 Baseline Across Layouts (l1–l5)
-- ECGWindowDataset
-- BiquadDF2TIntFinal
-- ECGWindowDataset
-- pre_fpga_corrected/assemble_corrected_package.py
+- hp1_baseline
+- src/run_causal_benchmark.py
+- Independent Verification Audit: `hp1_baseline.v`
+- Independent Verification Audit: `biquad_df2t.v`
 - Master Hardware Datapath Width Specification
 - FHR Reference Time Alignment & Resampling Methodology Audit
 - pre_fpga/10_regression_tests/run_all_tests.sh
@@ -453,7 +453,7 @@
 - Formal Algorithm Freeze Decision Table
 - Remaining Implementation Risks & Mitigation Strategies
 - Comprehensive Latency Analysis: Electrode to UART Output
-- TestComputeBeatMetrics
+- 5. Verification Method
 - Calibration Cold-Start and Recalibration Specification
 - Final Calibration Window Specification and Tradeoff Analysis
 - Final Weight Crossfade and Dynamic Update Specification
@@ -471,8 +471,8 @@
 - 23. Main takeaway from the three sources
 - 26. Blind Source Separation
 - 47. Metrics We Should Report
-- build_full_report.py
-- ECGWindowDataset
+- BiquadDF2TIntFinal
+- .run
 - 48. FPGA Implementation Considerations
 - uart_top_stress_tb.v
 - Executive Summary: Pre-FPGA Technical Readiness
@@ -505,7 +505,7 @@
 - Dynamic Range and Overflow Safety Analysis
 - Final Spatial Calibration Protocol Specification
 - Comprehensive Audit & Correction Change Log
-- TestQRSDetectorConfig
+- corrected/src/evaluation.py
 - run_all_experiments.sh
 - FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/run_all_tests.sh
 - FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/MANIFEST.md
@@ -538,55 +538,207 @@
 - 17. Power-Line Noise
 - 41. Approach B --- LMS/RLS-Type Adaptive Filtering
 - Fetal ECG Signal Processing for FPGA --- Literature Notes
+- fecg_single_channel_top
+- core/evaluation.py
+- Technical Analysis & Drop-In Remedy Strategy
+- test_silent_warmup_detector_lockout_vulnerability
+- 3. Precise Fix Strategy for `fpga_implementation/docs/architecture.md`
+- Drop-In 2: Section 2.6: Stage 6 Threshold FSM (Lines 187–234)
+- 4. 5-Component Handoff Protocol
+- corrected/src/fhr.py
+- 2. Packet Formats & Structural Layouts
+- 1. Observation
+- test_05_calibration_packet_crc
+- visualization/plot_fecgsyn_signals.py
+- 5. 5-Component Handoff Protocol
+- Handoff Report: Latency Compensation Synchronization Strategy for `architecture.md` and `implementation_status.md`
+- Acceptance Criteria
+- Acceptance Criteria
+- Project Specification: Real-Time Fetal ECG Extraction & QRS Processor on Spartan-7 FPGA
+- 1. Observation
+- BRIEFING — 2026-11-04T16:07:30Z
+- Implementation Status & Phase 1 Review Presentation
+- BRIEFING — 2026-11-04T10:05:00Z
+- 1.2 Adversarial Verification Findings
+- Acceptance Criteria
+- BRIEFING — 2026-11-04T10:15:00Z
+- BRIEFING — 2026-11-04T09:48:00Z
+- BRIEFING — 2026-11-04T10:15:00Z
+- corrected/src/uart_protocol.py
+- corrected/uart_protocol.py
+- BRIEFING — 2026-11-04T10:05:00Z
+- Empirical Challenge & Verification Report: Milestone M0/M1 Fixed-Point Baseline
+- BRIEFING — 2026-11-04T10:01:15Z
+- Handoff Report: Milestone M0/M1 Remedy Formulation for `algorithm_mapping.md` and `fixed_point_specification.md`
+- Handoff Report: Non-ML Python Signal Processing Pipeline Audit
+- BRIEFING — 2026-11-04T10:05:00Z
+- BRIEFING — 2026-11-04T10:05:00Z
+- 1. Observation
+- Review and Adversarial Audit Report: Milestone M0/M1 Deliverables
+- BRIEFING — 2026-11-04T10:48:00Z
+- BRIEFING — 2026-11-04T10:15:00Z
+- BRIEFING — 2026-11-04T10:14:00Z
+- BRIEFING — 2026-11-04T10:13:30Z
+- BRIEFING — 2026-11-04T09:38:00Z
+- BRIEFING — 2026-11-04T09:37:00Z
+- BRIEFING — 2026-11-04T09:37:00Z
+- BRIEFING — 2026-11-04T09:22:00Z
+- BRIEFING — 2026-11-04T10:46:00Z
+- BRIEFING — 2026-11-04T10:37:00Z
+- Handoff Report: Latency Compensation & Baseline Remediation Strategy
+- Handoff Report: Hardware Survey, Difference Equations & Fixed-Point Specification
+- code/src/fhr_implementation_corrected.py
+- Gate 2 Verification Handoff Report
+- Progress — challenger_baseline_1
+- Progress Log - explorer_survey_2
+- Orchestrator Progress
+- interval_fusion
+- uart_production_timing_tb
+- waveforms/plot_fecgsyn_signals.py
+- fhr_calculator
+- peak_localizer
+- Progress — auditor_baseline_1
+- Gate — Iteration 1 (Milestone M0 Baseline & Specifications)
+- Progress Log — worker_baseline_1
+- Progress Tracker — worker_remedy_1
+- Victory Audit Report & Handoff — FPGA Implementation Baseline
+- Synthesizable RTL Modules (`fpga_implementation/rtl/`)
+- Progress — challenger_baseline_2
+- Progress — explorer_remedy_3
+- explorer_survey_1/DISPATCH.md
+- Progress Tracker - explorer_survey_1
+- Progress Tracking - explorer_survey_3
+- Physical Constraints & Pin Mapping (`fpga_implementation/constraints/`)
+- Python Reference Models (`fpga_implementation/python_model/`)
+- FPGA Implementation Directory Structure
+- Hardware Implementation & Synthesis Reports (`fpga_implementation/reports/`)
+- Simulation Automation & Tool Harnesses (`fpga_implementation/simulation/`)
+- Hardware Test Vectors & Golden Reference Data (`fpga_implementation/test_data/`)
+- Verilog Simulation Testbenches (`fpga_implementation/testbenches/`)
+- MockSerialPort
+- auditor_baseline_1/context.md
+- auditor_baseline_1/DISPATCH.md
+- challenger_baseline_1/context.md
+- challenger_baseline_1/DISPATCH.md
+- challenger_baseline_2/context.md
+- challenger_baseline_2/DISPATCH.md
+- explorer_remedy_1/context.md
+- explorer_remedy_1/DISPATCH.md
+- explorer_remedy_1/progress.md
+- explorer_remedy_2/context.md
+- explorer_remedy_2/DISPATCH.md
+- explorer_remedy_2/progress.md
+- explorer_remedy_3/context.md
+- explorer_remedy_3/DISPATCH.md
+- explorer_survey_1/context.md
+- explorer_survey_2/context.md
+- explorer_survey_2/DISPATCH.md
+- explorer_survey_3/context.md
+- explorer_survey_3/DISPATCH.md
+- orchestrator/context.md
+- reviewer_baseline_1/context.md
+- reviewer_baseline_1/DISPATCH.md
+- reviewer_baseline_1/progress.md
+- reviewer_baseline_2/context.md
+- reviewer_baseline_2/DISPATCH.md
+- reviewer_baseline_2/progress.md
+- worker_baseline_1/context.md
+- worker_baseline_1/DISPATCH.md
+- worker_remedy_1/context.md
+- worker_remedy_1/DISPATCH.md
+- 4.2 Adversarial Challenges Evaluated
+- compute_beat_metrics
+- docs/README.md
+- run_vivado_golden_verification.py
+- CalibrationWeights
+- DownlinkSample
+- uart_tx
+- squarer_mwi
+- Orchestrator Handoff Report
+- Handoff Report — Sentinel Project Lifecycle & Victory Verification
+- Handoff Report: Milestone M0/M1 Documentation Remediation & Golden Vector Synchronization
+- FECGUartClient
+- Current Status: Audit Complete — Victory Confirmed
+- detection/qrs_detector.py
+- compute_maternal_metrics
+- FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/01_metric_reconciliation/scripts/reconcile_qrs_metrics.py
+- Progress Heartbeat — auditor_remedy_1
+- Progress — reviewer_remedy_2
+- auditor_remedy_1/context.md
+- auditor_remedy_1/DISPATCH.md
+- reviewer_remedy_1/context.md
+- reviewer_remedy_1/DISPATCH.md
+- reviewer_remedy_1/progress.md
+- reviewer_remedy_2/context.md
+- reviewer_remedy_2/DISPATCH.md
+- victory_auditor/context.md
+- victory_auditor/DISPATCH.md
+- previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/tests/test_pre_fpga_regression.py
+- verify_hp1_baseline.py
+- tb_fecg_single_channel_top.v
+- FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/tools/reconcile_qrs_metrics.py
+- core/preprocessing.py
+- test_05_calibration_packet_crc
+- preprocess
+- validation_reports/pre_fpga_corrected/01_metric_reconciliation/scripts/reconcile_qrs_metrics.py
+- hardware/_synth.py
+- integration/_synth.py
+- regression/_synth.py
+- unit/_synth.py
+- validation/pre_fpga_corrected/01_metric_reconciliation/scripts/reconcile_qrs_metrics.py
+- simulate_fhr_audit.py
+- TestQRSDetectorConfig
+- StageOverflowAccounting
+- TestQRSDetectorConfig
 
 ## God Nodes (most connected - your core abstractions)
-1. `CalibrationBank` - 218 edges
-2. `compute_beat_metrics()` - 197 edges
-3. `run_causal()` - 177 edges
-4. `CalibrationBank` - 144 edges
-5. `compute_fhr()` - 124 edges
-6. `det_sos()` - 123 edges
-7. `CausalConfig` - 122 edges
+1. `CalibrationBank` - 220 edges
+2. `compute_beat_metrics()` - 200 edges
+3. `run_causal()` - 178 edges
+4. `CalibrationBank` - 145 edges
+5. `det_sos()` - 124 edges
+6. `compute_fhr()` - 124 edges
+7. `CausalConfig` - 123 edges
 8. `compare_fhr()` - 113 edges
-9. `lp_sos()` - 111 edges
-10. `CausalConfig` - 71 edges
+9. `lp_sos()` - 112 edges
+10. `CausalConfig` - 73 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `test_fixed_point_vs_floating_point_on_tc1()` --uses--> `FixedPointAlternativeExtractor`  [INFERRED]
-  code/tests/test_fixed_point_verification.py → archive/historical_code/fixed_point_model.py
-- `test_fixed_point_vs_floating_point_on_tc1()` --uses--> `FixedPointAlternativeExtractor`  [INFERRED]
-  tests/hardware/test_fixed_point_verification.py → archive/historical_code/fixed_point_model.py
-- `compare_with_float()` --uses--> `CausalConfig`  [INFERRED]
-  code/src/fpga_int_model.py → archive/packages/FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/baseline/causal_pipeline.py
-- `run_int_pipeline()` --uses--> `CausalConfig`  [INFERRED]
-  code/src/fpga_int_model.py → archive/packages/FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/baseline/causal_pipeline.py
-- `process_record()` --uses--> `CausalConfig`  [INFERRED]
-  code/src/run_causal_benchmark.py → archive/packages/FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/baseline/causal_pipeline.py
+- `Finding C: Granular Deadband Limit Cycle in Biquad Section 1` --references--> `test_biquad_granular_limit_cycle_characterization()`  [INFERRED]
+  .agents/teamwork/challenger_baseline_1/handoff.md → tests/hardware/test_adversarial_empirical_challenge.py
+- `Finding A: Silent Warmup Permanently Locks Detector Off` --references--> `test_silent_warmup_detector_lockout_vulnerability()`  [INFERRED]
+  .agents/teamwork/challenger_baseline_1/handoff.md → tests/hardware/test_adversarial_empirical_challenge.py
+- `6. Fixes Made and Source Deliverables` --references--> `BitAccuratePipelineRunner`  [INFERRED]
+  fpga_implementation/reports/phase4_algorithmic_correctness_report.md → src/fecg/hardware/bit_accurate_reference.py
+- `1.3 Granular Limit Cycle in Biquad Section 1` --references--> `test_biquad_granular_limit_cycle_characterization()`  [INFERRED]
+  .agents/teamwork/explorer_remedy_2/handoff.md → tests/hardware/test_adversarial_empirical_challenge.py
+- `Finding 2 (Adversarial): Deadband Granular Limit Cycle in LP40 Section 1` --references--> `test_biquad_granular_limit_cycle_characterization()`  [INFERRED]
+  .agents/teamwork/reviewer_baseline_2/handoff.md → tests/hardware/test_adversarial_empirical_challenge.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (538 total, 87 thin omitted)
+## Communities (690 total, 152 thin omitted)
 
 ### Community 0 - "CalibrationBank"
 Cohesion: 0.04
-Nodes (87): calc_sqnr(), main(), evaluate_fhr_grid(), main(), main(), partition_of(), main(), CausalConfig (+79 more)
+Nodes (80): calc_sqnr(), main(), evaluate_autocorr(), main(), partition_of(), main(), CausalConfig, evaluate_autocorr() (+72 more)
 
 ### Community 1 - "src/fpga_int_model.py"
 Cohesion: 0.06
-Nodes (38): test_03_projection_weights(), test_03_projection_weights(), setup(), test_causal(), test_deterministic(), test_fhr_lut(), test_finds_the_fetal_beats(), test_helpers() (+30 more)
+Nodes (40): test_03_projection_weights(), test_03_projection_weights(), setup(), test_causal(), test_deterministic(), test_fhr_lut(), test_finds_the_fetal_beats(), test_helpers() (+32 more)
 
 ### Community 2 - "regression/test_pre_fpga_regression.py"
-Cohesion: 0.06
-Nodes (26): test_concordance_with_float(), test_fixed_point_integer_types(), test_helpers(), test_warmup_suppression(), test_06_projection_arithmetic(), test_concordance_with_float(), test_fixed_point_integer_types(), test_helpers() (+18 more)
+Cohesion: 0.08
+Nodes (22): test_concordance_with_float(), test_fixed_point_integer_types(), test_helpers(), test_warmup_suppression(), test_06_projection_arithmetic(), test_concordance_with_float(), test_fixed_point_integer_types(), test_helpers() (+14 more)
 
-### Community 3 - "corrected/src/evaluation.py"
-Cohesion: 0.05
-Nodes (20): BeatMetrics, compute_beat_metrics(), compute_waveform_metrics(), eval_result_to_row(), EvalResult, match_beats(), WaveformMetrics, compare_fhr() (+12 more)
+### Community 3 - "reference_model/evaluation.py"
+Cohesion: 0.20
+Nodes (5): BeatMetrics, compute_beat_metrics(), compute_waveform_metrics(), match_beats(), WaveformMetrics
 
 ### Community 4 - "packages/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/tests/test_pre_fpga_regression.py"
-Cohesion: 0.06
-Nodes (19): BiquadDF2TInt, test_04_invalid_calibration_rejection(), test_05_calibration_packet_crc(), test_07_filter_impulse_response(), test_08_filter_frequency_response(), test_15_rr_interval_calculation(), test_22_reset_behavior(), test_04_invalid_calibration_rejection() (+11 more)
+Cohesion: 0.11
+Nodes (17): BiquadDF2TInt, BitAccurateResult, quantize_biquad_sos(), rshift_round(), run_bit_accurate_pipeline(), sat(), sat_u(), test_07_filter_impulse_response() (+9 more)
 
 ### Community 5 - "corrected/src/causal_pipeline.py"
 Cohesion: 0.12
@@ -594,7 +746,7 @@ Nodes (17): CalibrationBank, CausalConfig, det_sos(), detect_causal(), Detection
 
 ### Community 6 - "rshift_round_nearest_even"
 Cohesion: 0.04
-Nodes (38): test_biquad_state_width_enforcement(), test_convergent_rounding_negative(), test_convergent_rounding_positive(), test_rounding_above_below_halfway(), test_zero_and_extremes(), test_biquad_state_width_enforcement(), test_convergent_rounding_negative(), test_convergent_rounding_positive() (+30 more)
+Nodes (40): BiquadDF2TIntCorrected, test_biquad_state_width_enforcement(), test_convergent_rounding_negative(), test_convergent_rounding_positive(), test_rounding_above_below_halfway(), test_zero_and_extremes(), test_synthetic_end_to_end_pipeline(), test_biquad_state_width_enforcement() (+32 more)
 
 ### Community 7 - "code/src/causal_pipeline.py"
 Cohesion: 0.06
@@ -605,20 +757,20 @@ Cohesion: 0.12
 Nodes (17): CalibrationBank, CausalConfig, det_sos(), detect_causal(), DetectionResult, _empty_detection(), fit_weights(), group_delay_samples() (+9 more)
 
 ### Community 9 - "det_sos"
-Cohesion: 0.09
-Nodes (59): setup_models(), test_09_filter_startup_behavior(), test_11_peak_detection(), test_12_refractory_timing(), test_13_duplicate_detection_suppression(), test_14_missed_beats_handling(), test_18_fixed_point_overflow_stress(), test_21_continuous_streaming_causality() (+51 more)
+Cohesion: 0.07
+Nodes (50): test_04_invalid_calibration_rejection(), test_09_filter_startup_behavior(), test_11_peak_detection(), test_12_refractory_timing(), test_13_duplicate_detection_suppression(), test_14_missed_beats_handling(), test_15_rr_interval_calculation(), test_18_fixed_point_overflow_stress() (+42 more)
 
 ### Community 10 - "src/fpga_int_model.py"
 Cohesion: 0.13
 Nodes (18): BiquadInt, compare_with_float(), dequantize_input(), dump_stages(), put(), fhr_lut(), IntResult, _load_mixture() (+10 more)
 
-### Community 11 - "build_mixture"
-Cohesion: 0.06
-Nodes (14): build_mixture(), check_mixture_snr(), MixtureResult, _power_ratio_db(), TestBuildMixture, TestCheckMixtureSNR, TestPowerRatioDb, build_mixture() (+6 more)
+### Community 11 - "dataclasses"
+Cohesion: 0.25
+Nodes (4): build_mixture(), check_mixture_snr(), MixtureResult, _power_ratio_db()
 
 ### Community 12 - "pytest"
 Cohesion: 0.05
-Nodes (32): test_telemetry_packet_roundtrip(), test_calibration_crc_corruption(), test_calibration_packet_round_trip(), test_crc8_standard_test_vector(), test_fhr_telemetry_packet_round_trip(), test_synthetic_end_to_end_pipeline(), test_calibration_crc_corruption(), test_calibration_packet_round_trip() (+24 more)
+Nodes (30): test_calibration_crc_corruption(), test_calibration_packet_round_trip(), test_crc8_standard_test_vector(), test_fhr_telemetry_packet_round_trip(), test_calibration_crc_corruption(), test_calibration_packet_round_trip(), test_crc8_standard_test_vector(), test_fhr_telemetry_packet_round_trip() (+22 more)
 
 ### Community 13 - "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/baseline/causal_pipeline.py"
 Cohesion: 0.12
@@ -673,24 +825,24 @@ Cohesion: 0.18
 Nodes (7): BiquadDF2TInt, BitAccurateResult, quantize_biquad_sos(), rshift_round(), run_bit_accurate_pipeline(), sat(), sat_u()
 
 ### Community 26 - "svd_phase2.py"
-Cohesion: 0.12
+Cohesion: 0.13
 Nodes (11): _build_matrix_fixed_period(), _build_matrix_resampled(), _detect_rpeaks(), _matrix_to_signal(), _moving_window_svd_subtract(), _svd_extract(), _svd_subtract(), SVDExtractorV1 (+3 more)
 
-### Community 27 - "subprocess"
-Cohesion: 0.27
-Nodes (4): main(), sha256_file(), main(), sha256_file()
+### Community 27 - "shutil"
+Cohesion: 0.12
+Nodes (11): main(), sha256_file(), main(), sha256_file(), main(), sha256_file(), make_zip(), main() (+3 more)
 
-### Community 28 - "compare_fhr"
-Cohesion: 0.03
-Nodes (68): FixedTemplateSubtractionExtractor, FECGUNet1D, calculate_fpga_metrics(), _generate_scaling_plots(), run_study(), main(), run_one(), generate_summary_reports() (+60 more)
+### Community 28 - "run_fhr_improvements.py"
+Cohesion: 0.36
+Nodes (4): fhr_from_rr(), filter_fhr_median5(), filter_fhr_repaired(), main()
 
 ### Community 29 - "swt_lms_ssnf.py"
 Cohesion: 0.12
-Nodes (7): _apply_soft_threshold_only(), _apply_ssnf(), _lms_filter(), _mad_std(), _next_swt_length(), _pad_signal(), SWTLMSSNFExtractor
+Nodes (6): _apply_soft_threshold_only(), _apply_ssnf(), _lms_filter(), _mad_std(), _next_swt_length(), _pad_signal()
 
-### Community 30 - "test_method_interface.py"
-Cohesion: 0.13
-Nodes (3): _make_synthetic_mixture(), TestBaseExtractorInheritance, TestSVDInterface
+### Community 30 - "build_mixture"
+Cohesion: 0.08
+Nodes (9): TestBuildMixture, TestCheckMixtureSNR, TestPowerRatioDb, build_mixture(), MixtureResult, _power_ratio_db(), TestBuildMixture, TestCheckMixtureSNR (+1 more)
 
 ### Community 31 - "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/fpga_int_model.py"
 Cohesion: 0.13
@@ -705,7 +857,7 @@ Cohesion: 0.07
 Nodes (9): fixed_point_power_iteration_rank1(), fixed_point_rank_k_svd_subtraction(), FixedPointQuantizer, fixed_point_power_iteration_rank1(), fixed_point_rank_k_svd_subtraction(), FixedPointQuantizer, fixed_point_power_iteration_rank1(), fixed_point_rank_k_svd_subtraction() (+1 more)
 
 ### Community 34 - "fecg/methods/svd_phase2.py"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (11): _build_matrix_fixed_period(), _build_matrix_resampled(), _detect_rpeaks(), _matrix_to_signal(), _moving_window_svd_subtract(), _svd_extract(), _svd_subtract(), SVDExtractorV1 (+3 more)
 
 ### Community 35 - "fecg/methods/swt_lms_ssnf.py"
@@ -726,7 +878,7 @@ Nodes (22): enabled, filter_type, highcut_hz, lowcut_hz, order, phase, cutoff_hz
 
 ### Community 39 - "src/models/fecg_unet.py"
 Cohesion: 0.06
-Nodes (9): CompositeECGLoss, DoubleConv1D, DownBlock1D, UpBlock1D, CompositeECGLoss, DoubleConv1D, DownBlock1D, FECGUNet1D (+1 more)
+Nodes (8): DoubleConv1D, DownBlock1D, UpBlock1D, CompositeECGLoss, DoubleConv1D, DownBlock1D, FECGUNet1D, UpBlock1D
 
 ### Community 40 - "Investigation of Residual QRS Timing Errors Across Recordings"
 Cohesion: 0.08
@@ -737,16 +889,12 @@ Cohesion: 0.09
 Nodes (21): 1. Executive Summary, 2.1 Complete Performance Table for Vivek's Alternative Extractor, 2.2 Comparative Analysis Across All Team Methods, 2.3 Failure Mode & Robustness Analysis, 2. Full Benchmark Matrix Results (TC1–TC5), 3.1 Quantization Design, 3.2 TC1 Precision Degradation Results, 3. Fixed-Point Software-to-Hardware Verification (+13 more)
 
 ### Community 42 - "matplotlib_pyplot"
-Cohesion: 0.06
-Nodes (27): make_fig16_eigenvalue_subspace(), make_fig17_dsp_schedule(), make_fig18_resource_scaling(), make_fig19_hw_accuracy_tradeoff(), make_fig1_amplitude_disparity(), make_fig20_radar_chart(), make_fig21_runtime_comparison(), make_fig2_system_pipeline() (+19 more)
+Cohesion: 0.23
+Nodes (16): make_fig16_eigenvalue_subspace(), make_fig17_dsp_schedule(), make_fig18_resource_scaling(), make_fig19_hw_accuracy_tradeoff(), make_fig1_amplitude_disparity(), make_fig20_radar_chart(), make_fig21_runtime_comparison(), make_fig2_system_pipeline() (+8 more)
 
 ### Community 43 - "code/src/bit_accurate_reference_model_final.py"
 Cohesion: 0.14
 Nodes (8): BiquadDF2TIntFinal, BitAccurateFinalResult, integer_median(), rshift_round_nearest_even(), run_bit_accurate_pipeline_final(), sat(), sat_u(), StageOverflowAccounting
-
-### Community 44 - "BaseExtractor"
-Cohesion: 0.13
-Nodes (6): BaseExtractor, SVDExtractorV1, SVDExtractorV2, SVDExtractorV3, TestValidateOutput, TestValidateOutput
 
 ### Community 45 - "detection/fhr.py"
 Cohesion: 0.13
@@ -768,9 +916,9 @@ Nodes (8): crc8_ccitt(), decode_calibration_packet(), decode_fecg_stream_packet(
 Cohesion: 0.14
 Nodes (8): BiquadDF2TIntFinal, BitAccurateFinalResult, integer_median(), rshift_round_nearest_even(), run_bit_accurate_pipeline_final(), sat(), sat_u(), StageOverflowAccounting
 
-### Community 50 - "sys"
-Cohesion: 0.04
-Nodes (45): main(), test_hp1_matches_shift_recursion(), test_hp1_removes_dc(), test_latency_compensation_centres_the_beats(), test_latency_is_computed_from_filters(), test_oracle_needs_labels(), test_pca_sorted_and_unit_norm(), test_preprocess_is_causal() (+37 more)
+### Community 50 - "code/tests/test_bit_accurate_reference.py"
+Cohesion: 0.14
+Nodes (8): setup_models(), make_mixture(), ricker_train(), setup_models(), test_concordance_with_float(), test_fixed_point_integer_types(), test_warmup_suppression(), dequantize_input()
 
 ### Community 51 - "dataclasses"
 Cohesion: 0.18
@@ -789,12 +937,12 @@ Cohesion: 0.13
 Nodes (8): crc8_ccitt(), decode_calibration_packet(), decode_fecg_stream_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fecg_stream_packet(), encode_fhr_telemetry_packet(), UARTStreamFramer
 
 ### Community 55 - "bit_accurate_reference.py"
-Cohesion: 0.14
-Nodes (8): BiquadDF2TIntFinal, BitAccurateFinalResult, integer_median(), rshift_round_nearest_even(), run_bit_accurate_pipeline_final(), sat(), sat_u(), StageOverflowAccounting
+Cohesion: 0.10
+Nodes (9): BiquadDF2TIntFinal, BitAccurateFinalResult, BitAccuratePipelineRunner, integer_median(), rshift_round_nearest_even(), run_bit_accurate_pipeline_final(), sat(), sat_u() (+1 more)
 
 ### Community 56 - "uart_test.py"
-Cohesion: 0.09
-Nodes (11): interactive_terminal(), main(), print_available_ports(), run_comprehensive_tests(), scan_ports(), UartTester, run_adversarial_stress_checks(), step_with_zero_sync_init() (+3 more)
+Cohesion: 0.06
+Nodes (17): interactive_terminal(), main(), print_available_ports(), run_comprehensive_tests(), scan_ports(), UartTester, run_adversarial_stress_checks(), step_with_zero_sync_init() (+9 more)
 
 ### Community 57 - "2. P0 items (fix today)"
 Cohesion: 0.11
@@ -806,19 +954,27 @@ Nodes (18): 1. System Architecture Overview & Top-Level Diagram, 2. Definitive S
 
 ### Community 59 - "telemetry/uart_protocol.py"
 Cohesion: 0.13
-Nodes (8): crc8_ccitt(), decode_calibration_packet(), decode_fecg_stream_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fecg_stream_packet(), encode_fhr_telemetry_packet(), UARTStreamFramer
+Nodes (10): crc8_ccitt(), decode_calibration_packet(), decode_fecg_stream_packet(), decode_fhr_telemetry_packet(), decode_sample_packet(), encode_calibration_packet(), encode_fecg_stream_packet(), encode_fhr_telemetry_packet() (+2 more)
 
-### Community 61 - "src/uart_protocol_final.py"
-Cohesion: 0.13
-Nodes (8): crc8_ccitt(), decode_calibration_packet(), decode_fecg_stream_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fecg_stream_packet(), encode_fhr_telemetry_packet(), UARTStreamFramer
+### Community 60 - "bandpass_config_c"
+Cohesion: 0.20
+Nodes (5): bandpass_config_c, biquad_df2t, lp40_filter, tb_bandpass_config_c, tb_lp40_filter
 
-### Community 62 - "TemplatSubtractionExtractor"
-Cohesion: 0.16
-Nodes (3): TemplatSubtractionExtractor, _make_synthetic_mixture(), TestBaseExtractorInheritance
+### Community 61 - "detect_fetal_qrs"
+Cohesion: 0.02
+Nodes (53): FixedPointAlternativeExtractor, FixedTemplateSubtractionExtractor, CompositeECGLoss, FECGUNet1D, calculate_fpga_metrics(), _generate_scaling_plots(), run_study(), get_config_summary() (+45 more)
+
+### Community 62 - "SWTLMSSNFExtractor"
+Cohesion: 0.12
+Nodes (4): SWTLMSSNFExtractor, _make_synthetic_mixture(), TestBaseExtractorInheritance, TestSVDInterface
 
 ### Community 63 - "Fetal ECG Extraction & FPGA Project — Context & Anshu's Master Tracker"
 Cohesion: 0.11
 Nodes (17): 1.1 The Clinical & Engineering Problem, 1.2 Primary Objective, 1.3 Core Evaluation Rules, 1. Project Overview & Combined Goals, 2. Team Division of Responsibilities, 3. Anshu's Specific Roles & Workstreams, 4. Phase Completion Progress, 5. TC1 Comparative Benchmark Summary (12 dB Baseline, c0) (+9 more)
+
+### Community 64 - "Comprehensive Survey Report: UART Infrastructure, Watchdog Remediation, Telemetry Packet Protocol & Spartan-7 Hardware Architecture"
+Cohesion: 0.04
+Nodes (47): 1. Executive Summary, 2.1 RTL Source Modules (`uart_bringup/rtl/`), 2.2 Simulation Testbenches (`uart_bringup/tb/`), 2.3 Verification Engines & Automation Scripts (`uart_bringup/sim/`), 2.4 Software Telemetry Driver (`src/fecg/telemetry/uart_protocol.py`), 2. Audit of Existing UART Infrastructure, 3.1 Bug 1: `uart_tx.v` Data Bit Boundary Phase Lag / Stuck Signal, 3.2 Bug 2: Testbench Fork/Join Race Condition & Unbounded While Loops (+39 more)
 
 ### Community 65 - "2. Definitive Specification of All 14 Subsystem Modules"
 Cohesion: 0.11
@@ -836,13 +992,13 @@ Nodes (18): 3. NUMERICAL ERRORS (Phase B), N-01 [ARITH] Table 6, Spatial PCA, Tr
 Cohesion: 0.11
 Nodes (18): 5. SCIENTIFIC / CLAIM ITEMS (Phase D), S-01 [WRITE] The "rank-3 maternal subspace" theory contradicts using v2 (Sec. 3, 5.1, 9.1), S-02 [CHECK] Lead selection vs Fig. 3, S-03 [WRITE/CHECK] Fixed-point model: filter-coefficient and state formats are unspecified, and Q1.15 cannot hold biquad a1/a2, S-04 [WRITE] SQNR claims need a precise definition, S-05 [WRITE] "55 dB required" is unjustified, S-06 [WRITE] The "real-time" claim depends on the host: be explicit, S-07 [WRITE] Table 9 is analytical; two rows are not credible as written (+10 more)
 
-### Community 69 - "tests/test_preprocessing.py"
-Cohesion: 0.06
-Nodes (15): test_config_summary_string(), test_dc_rejection(), test_high_frequency_suppression(), test_passband_preservation(), test_preprocess_output_shape_and_type(), test_slow_baseline_wander_suppression(), test_zero_phase_no_delay(), get_config_summary() (+7 more)
+### Community 69 - "sys"
+Cohesion: 0.01
+Nodes (65): test_constants_consistency(), test_lut_dimensions(), test_mathematical_range_mapping(), test_autocorr_lag_window(), test_confidence_calculation(), test_pc3_fallback_rejection(), test_constants_consistency(), test_lut_dimensions() (+57 more)
 
 ### Community 70 - "os"
-Cohesion: 0.15
-Nodes (5): run_audit(), audit_fecgsd(), audit_nifea(), main(), parse_header_comments()
+Cohesion: 0.13
+Nodes (7): run_audit(), sanitize_content(), stage_files(), audit_fecgsd(), audit_nifea(), main(), parse_header_comments()
 
 ### Community 71 - "2. Definitive Specification of All 14 Subsystem Modules"
 Cohesion: 0.11
@@ -893,20 +1049,20 @@ Cohesion: 0.12
 Nodes (15): 1.1 The Clinical & Engineering Problem, 1.2 Primary Objective, 1.3 Core Evaluation Rules, 1. Project Overview & Combined Goals, 2. Team Division of Responsibilities, 3. Vivek's Master Phase Completion Tracker, 4. Full Benchmark Matrix Results Summary (TC1–TC5), 5. Key Deliverables & Artifacts Map (+7 more)
 
 ### Community 83 - "dataclasses"
-Cohesion: 0.17
+Cohesion: 0.18
 Nodes (6): load_annotations(), load_record(), load_test_case(), RecordMetadata, TestCaseData, validate_record()
 
 ### Community 84 - "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/03_fixed_point_correction/reference_model/bit_accurate_reference_model_corrected.py"
-Cohesion: 0.16
-Nodes (7): BiquadDF2TIntCorrected, BitAccurateCorrectedResult, rshift_round_nearest_even(), rshift_round_symmetric(), run_bit_accurate_pipeline_corrected(), sat(), sat_u()
+Cohesion: 0.19
+Nodes (6): BitAccurateCorrectedResult, rshift_round_nearest_even(), rshift_round_symmetric(), run_bit_accurate_pipeline_corrected(), sat(), sat_u()
 
 ### Community 85 - "code/src/fhr.py"
 Cohesion: 0.18
 Nodes (4): compare_fhr(), compute_fhr(), FHRComparison, FHRResult
 
 ### Community 87 - "struct"
-Cohesion: 0.08
-Nodes (15): crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fhr_telemetry_packet(), crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet() (+7 more)
+Cohesion: 0.12
+Nodes (10): crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fhr_telemetry_packet(), crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet() (+2 more)
 
 ### Community 88 - "corrected/bit_accurate_reference_model_corrected.py"
 Cohesion: 0.16
@@ -940,13 +1096,13 @@ Nodes (7): BiquadDF2TIntCorrected, BitAccurateCorrectedResult, rshift_round_near
 Cohesion: 0.14
 Nodes (13): 1.1 The Model (`FECGUNet1D`), 1.2 Input and Target Data, 1.3 The Loss Function (`CompositeECGLoss`), 1. What We Are Training, 2. Step-by-Step Guide: How to Train on ASUS TUF Laptop, 3. How to Evaluate an Existing Checkpoint (No Re-Training), 4. Benchmark Evaluation & Metrics Produced, 5. How to Frame This in the Midterm / Final Report (+5 more)
 
-### Community 97 - "code/tests/test_qrs_matching_strict.py"
-Cohesion: 0.19
-Nodes (6): match_beats_strict_pairs(), test_mathematical_conservation(), test_micro_vs_macro_averaging(), test_multiple_detections_single_reference_candidate(), test_single_detection_multiple_reference_candidates(), test_tolerance_boundary()
+### Community 97 - "validate_real_datasets.py"
+Cohesion: 0.11
+Nodes (13): 6. Fixes Made and Source Deliverables, evaluate_case(), generate_synthetic_benchmark(), HostSpatialCalibrator, load_fecgsyndb_case(), main(), match_beats_detailed(), read_wfdb_qrs() (+5 more)
 
-### Community 98 - "src/run_causal_benchmark.py"
-Cohesion: 0.20
-Nodes (8): legacy_zero_phase_oracle(), _load_record(), main(), print_summary(), process_record(), _row(), _write_csv(), run_causal_sub01_sweep()
+### Community 98 - "3. Mathematical Difference Equations, State Registers & Pipelining"
+Cohesion: 0.04
+Nodes (44): 1. Downlink Ingestion Packet (Host $\rightarrow$ FPGA, 10 Bytes, Header `0xA5`), 1. Executive Summary, 2. Definitive Hardware Subsystem Architecture (Modules 1 to 14), 2. Downlink Calibration Packet (Host $\rightarrow$ FPGA, 10 Bytes, Header `0xC3`), 3.10 Stage 10: RR Calculation, Split-Peak Interval Fusion & Median-5 FHR, 3.1 Stage 1: Spatial Beamforming (Projection), 3.2 Stage 2: Dynamic Calibration Weight Slew Engine, 3.3 Stage 3: HP1 Recursive Baseline Remover (+36 more)
 
 ### Community 99 - "Restructuring Audit Report"
 Cohesion: 0.12
@@ -968,17 +1124,17 @@ Nodes (12): 1. Executive Summary & Hardware Feasibility Verdict, 2.1 Operation C
 Cohesion: 0.15
 Nodes (12): 1. Executive Summary, 2. Spatial Anatomy & Lead Characterization (PhysioNet FECGSYNDB), 3. Systematic Multi-Channel Scaling Results ($N = 1$ to $34$), 4.1 System Topology, 4.2 UART Bandwidth Budget ($f_s = 250\text{ Hz}$, 8N1 Protocol), 4. Hardware-in-the-Loop (HIL) Architecture & UART Bandwidth, 5. Xilinx Spartan-7 XC7S50 Resource Utilization & Timing, 6. Engineering Observations for the Midterm Report (+4 more)
 
-### Community 105 - "test_uart_protocol_final.py"
-Cohesion: 0.18
-Nodes (4): test_calibration_packet_roundtrip(), test_crc8_ccitt_standard_vector(), test_fecg_stream_packet_roundtrip(), test_framer_resynchronization()
+### Community 105 - "2. Synthesizable Hardware Structures by Stage"
+Cohesion: 0.05
+Nodes (39): 1. Executive Summary & Mapping Philosophy, 251-Word Reciprocal FHR ROM Lookup Table & RR=96 Halfway Rounding Nuance:, 2.1 Stage 1: Spatial PCA Beamformer & Dynamic Weight Slew Engine, 2.2 Stage 2: HP1 Baseline Wander Remover, 2.3 Stage 3: LP40 4th-Order Lowpass Filter (2 DF2T Biquads), 2.4 Stage 4: Config C 8th-Order Bandpass Filter (4 DF2T Biquads), 2.5 Stage 5: Energy Squarer & Moving Window Integrator (MWI), 2.6 Stage 6: Causal Adaptive Dual-Threshold Tracking FSM & Silent Warmup Defense (+31 more)
 
 ### Community 106 - "fhr_baseline.py"
 Cohesion: 0.18
 Nodes (4): compare_fhr(), compute_fhr(), FHRComparison, FHRResult
 
 ### Community 107 - "historical_code/fixed_point_model.py"
-Cohesion: 0.20
-Nodes (4): fixed_point_sos_filter(), FixedPointAlternativeExtractor, from_fixed(), to_fixed()
+Cohesion: 0.24
+Nodes (3): fixed_point_sos_filter(), from_fixed(), to_fixed()
 
 ### Community 108 - "reference_model/fhr.py"
 Cohesion: 0.18
@@ -989,7 +1145,7 @@ Cohesion: 0.13
 Nodes (14): 1. Environment Setup, 2. Executing the Pre-RTL Regression Test Suite, 3. Reproducing Complete Numerical Verification Audits, 4. Standalone Clean Extraction Verification, Complete Pre-RTL Verification Reproduction Guide, Expected Output:, Installation, Step 3.1: Priority A & B (Scaling, SQNR & Hardware Arithmetic) (+6 more)
 
 ### Community 110 - "packages/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/fixed_point/fixed_point_model.py"
-Cohesion: 0.20
+Cohesion: 0.21
 Nodes (4): fixed_point_sos_filter(), FixedPointAlternativeExtractor, from_fixed(), to_fixed()
 
 ### Community 111 - "3. P1 theory and concept items"
@@ -1008,9 +1164,9 @@ Nodes (12): 1. Executive Summary & Verification Findings, 2. Stage-by-Stage SQNR
 Cohesion: 0.15
 Nodes (12): 1. Top-Level External Pin Interface (`fecg_top.v`), 2. Module-by-Module Signal Interface Tables, FPGA Module Interface and Pin-Level Signal Specification, Module 11: Adaptive Threshold FSM (`threshold_fsm.v`), Module 13: FHR Engine (`fhr_engine.v`), Module 1: UART Receiver (`uart_rx.v`), Module 2: Packet Parser (`packet_parser.v`), Module 4: Weight Storage & Slew Engine (`weight_storage.v`) (+4 more)
 
-### Community 115 - "numpy"
-Cohesion: 0.03
-Nodes (42): test_boundary_tolerance_threshold(), test_compute_beat_metrics_f1_score(), test_duplicate_detections_within_tolerance(), test_matching_invariants_random_scenarios(), apply_beat_repair(), causal_median5(), evaluate_fhr_series(), compute_sqnr() (+34 more)
+### Community 115 - "Phase 5: Hardware Performance Benchmarking & Expanded Clinical Dataset Validation Signoff Report"
+Cohesion: 0.07
+Nodes (27): 1. Executive Summary, 2.1 Post-Route Resource Utilization, 2.2 Timing Analysis & Slack Margins, 2.3 Throughput & Real-Time Ingestion Proof, 2.4 Latency & UART Telemetry Performance, 2. Phase 5 Hardware Performance Metrics, 3. Separation of Validation Datasets, 4. Class 1: Controlled Pure Synthetic Benchmark Results (+19 more)
 
 ### Community 116 - "Fetal ECG Extraction & FPGA Project — Context & Astitva's Master Tracker"
 Cohesion: 0.11
@@ -1032,13 +1188,13 @@ Nodes (14): 1. Executive Summary, 2. Test Suite Classification in `code/tests/`,
 Cohesion: 0.14
 Nodes (13): 1. Mandatory Rules Compliance, 2. Priority-by-Priority Technical Requirements, Phase 3 Requirement Completion Status Matrix, Priority A: Fixed-Point Projection Scaling and SQNR, Priority B: Exact Hardware Arithmetic, Priority C: FHR Metric Reconciliation, Priority D: Spatial Calibration Availability, Priority E: Filter Group Delay and Timing (+5 more)
 
-### Community 121 - "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_qrs_matching_strict.py"
-Cohesion: 0.19
-Nodes (6): match_beats_strict_pairs(), test_mathematical_conservation(), test_micro_vs_macro_averaging(), test_multiple_detections_single_reference_candidate(), test_single_detection_multiple_reference_candidates(), test_tolerance_boundary()
+### Community 121 - "test_fecg_uart_client.py"
+Cohesion: 0.06
+Nodes (31): CleanFECGSample, crc8_ccitt(), decode_calibration_packet(), decode_diagnostic_packet(), decode_fecg_stream_packet(), decode_fhr_telemetry_packet(), decode_sample_packet(), DiagnosticEvent (+23 more)
 
-### Community 122 - "packages/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/06_fixed_point/reference_model/bit_accurate_reference_model.py"
-Cohesion: 0.22
-Nodes (6): BitAccurateResult, quantize_biquad_sos(), rshift_round(), run_bit_accurate_pipeline(), sat(), sat_u()
+### Community 122 - "verify_single_channel_pipeline.py"
+Cohesion: 0.10
+Nodes (11): RTL_AdaptiveDetector, RTL_BandpassConfigC, RTL_BiquadDF2T, RTL_IntervalFusion, RTL_LP40Filter, RTL_PeakLocalizer, RTL_SquarerMWI, verify_all_submodules() (+3 more)
 
 ### Community 123 - "Fetal_ECG_Project_Context_and_Plan.md"
 Cohesion: 0.14
@@ -1061,12 +1217,12 @@ Cohesion: 0.23
 Nodes (5): crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fhr_telemetry_packet()
 
 ### Community 128 - "test_fixed_point_verification.py"
-Cohesion: 0.20
+Cohesion: 0.21
 Nodes (4): fixed_point_sos_filter(), FixedPointAlternativeExtractor, from_fixed(), to_fixed()
 
-### Community 129 - "unit/test_qrs_matching_strict.py"
-Cohesion: 0.19
-Nodes (6): match_beats_strict_pairs(), test_mathematical_conservation(), test_micro_vs_macro_averaging(), test_multiple_detections_single_reference_candidate(), test_single_detection_multiple_reference_candidates(), test_tolerance_boundary()
+### Community 129 - "time"
+Cohesion: 0.06
+Nodes (16): EvalResult, main(), run_one(), _save_plots(), main(), run_one(), _save_plots(), load_test_case() (+8 more)
 
 ### Community 130 - "2. Module-by-Module Signal Interface Tables"
 Cohesion: 0.15
@@ -1100,21 +1256,21 @@ Nodes (12): 1.1 The Engineering Challenge, 1. Executive Summary & Master Hardwar
 Cohesion: 0.15
 Nodes (12): 1. Executive Summary & Recommended System Architecture, 2. Quantitative Performance Comparison: Baseline vs. Recommended, 3.1 Spatial Calibration: Why `autocorr` Outperformed All Alternatives, 3.2 Detector Spectral Tuning: Why $12\text{--}35\text{ Hz}$ and $120\text{ ms}$ MWI, 3.3 Post-Processing Engine: Why M4 (Repair + Median5) is Mandatory, 3. Justification of Component Improvements, 4. Hardware Implementation Budget on Spartan-7 XC7S50, 5. Pre-Clinical Clinical Trial Guidelines (NIFEA Lessons) (+4 more)
 
-### Community 138 - "code/src/fhr_implementation_corrected.py"
-Cohesion: 0.27
-Nodes (4): apply_interval_fusion(), causal_median5_rr(), compute_fhr_series(), evaluate_fhr_against_ref()
+### Community 138 - "apply_interval_fusion"
+Cohesion: 0.04
+Nodes (32): evaluate_fhr_grid(), main(), evaluate_fhr_grid(), main(), test_causal_median5_hand_calculated(), test_interval_fusion_split_peaks(), test_invalid_rr_held(), test_causal_median5_hand_calculated() (+24 more)
 
-### Community 139 - "code/src/qrs_detector.py"
-Cohesion: 0.29
-Nodes (5): _apply_refractory(), _bandpass_sos(), detect_fetal_qrs(), _moving_average(), QRSDetectorConfig
+### Community 139 - "pipelines/causal_pipeline.py"
+Cohesion: 0.16
+Nodes (13): CausalConfig, det_sos(), fit_weights(), group_delay_samples(), hp1_coeffs(), hp1_filter(), lp_sos(), moving_sum_trailing() (+5 more)
 
-### Community 140 - "uart_loopback_tb"
-Cohesion: 0.10
-Nodes (12): uart_rx, uart_top, uart_tx, uart_loopback_tb, host_receive_byte, host_send_byte, test_single_echo, uart_production_timing_tb (+4 more)
+### Community 140 - "uart_top"
+Cohesion: 0.22
+Nodes (6): uart_rx, uart_top, uart_loopback_tb, host_receive_byte, host_send_byte, test_single_echo
 
 ### Community 141 - "compute_waveform_metrics"
-Cohesion: 0.10
-Nodes (4): TestComputeWaveformMetrics, compute_waveform_metrics(), WaveformMetrics, TestComputeWaveformMetrics
+Cohesion: 0.07
+Nodes (13): evaluate_and_record(), TestComputeWaveformMetrics, compute_waveform_metrics(), WaveformMetrics, generate_summary_reports(), load_deep_models(), main(), run_deep_unet() (+5 more)
 
 ### Community 142 - "Priority 6: Fixed-Point Discrepancy and SQNR Investigation Report"
 Cohesion: 0.15
@@ -1132,9 +1288,9 @@ Nodes (11): 1. System Processing Pipeline Architecture, 2. Mathematical Definiti
 Cohesion: 0.20
 Nodes (5): bpm_to_samples(), compute_mock_calibration_metrics(), test_bpm_to_lag_conversion_at_250hz(), test_calibration_acceptance_gate(), test_cold_start_buffer_latency()
 
-### Community 146 - "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/protocol_implementation/uart_protocol.py"
-Cohesion: 0.23
-Nodes (5): crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fhr_telemetry_packet()
+### Community 146 - "hardware/fpga_int_model.py"
+Cohesion: 0.13
+Nodes (18): BiquadInt, compare_with_float(), dequantize_input(), dump_stages(), put(), fhr_lut(), IntResult, _load_mixture() (+10 more)
 
 ### Community 147 - "UART Communication and Telemetry Protocol Specification"
 Cohesion: 0.17
@@ -1164,9 +1320,9 @@ Nodes (11): 1. Executive Summary, 2. Inventory of Source Modules in `code/src/`,
 Cohesion: 0.17
 Nodes (11): 1. Bandwidth Utilization & Margin Analysis, 2.1 ECG Sample Ingestion Packet (`0xA5`), 2.2 Calibration Weights Packet (`0xC3`), 2. Downlink Packet Definitions (Host to FPGA), 3.1 Streaming FECG Waveform Packet (`0x5A`), 3.2 QRS Event & FHR Telemetry Packet (`0xAA`), 3.3 Diagnostic / Error Packet (`0xEE`), 3. Uplink Packet Definitions (FPGA to Host) (+3 more)
 
-### Community 154 - "validation_reports/pre_fpga_corrected/08_protocol_correction/protocol_implementation/uart_protocol.py"
-Cohesion: 0.23
-Nodes (5): crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fhr_telemetry_packet()
+### Community 154 - "2. Authoritative Non-ML Pipeline Execution Path"
+Cohesion: 0.06
+Nodes (30): 1. Executive Summary & Problem Boundary, 2.1 Stage 1: Spatial Beamformer & Crossfade Slew Engine, 2.2 Stage 2: HP1 Baseline Wander Remover, 2.3 Stage 3: LP40 FECG Clean Filter, 2.4 Stage 4: Config C Detector Bandpass Filter, 2.5 Stage 5: Energy Squarer & Moving Window Integration (MWI), 2.6 Stage 6: Causal Adaptive Dual-Threshold Detector, 2.7 Stage 7: Interval Fusion & Latency Compensation (+22 more)
 
 ### Community 156 - "FHR Performance Metric Reconciliation & Difficult Condition Audit"
 Cohesion: 0.18
@@ -1217,16 +1373,16 @@ Cohesion: 0.29
 Nodes (5): _apply_refractory(), _bandpass_sos(), detect_fetal_qrs(), _moving_average(), QRSDetectorConfig
 
 ### Community 168 - "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_end_to_end_pipeline_synthetic.py"
-Cohesion: 0.24
+Cohesion: 0.28
 Nodes (3): generate_synthetic_4ch_recording(), test_pipeline_fetal_detection_and_fhr_tracking(), test_pipeline_synthetic_execution_and_overflows()
 
 ### Community 169 - "reference_model/fhr_implementation_corrected.py"
 Cohesion: 0.27
 Nodes (4): apply_interval_fusion(), causal_median5_rr(), compute_fhr_series(), evaluate_fhr_against_ref()
 
-### Community 170 - "glob"
-Cohesion: 0.15
-Nodes (5): find_record(), read_signal(), run_diagnostics(), find_record(), read_signal()
+### Community 170 - "Non-Invasive Fetal ECG Extraction: Phase 2 & Phase 3 Hardware Verification and Signoff Report"
+Cohesion: 0.11
+Nodes (17): 1. Executive Summary, 2.1 Clock Architecture Decision: 25.0 MHz via PLLE2_BASE, 2.2 Distributed RAM Elastic TX FIFO, 2.3 4-Channel Spatial Beamformer & Weight Crossfade, 2. System Architecture & Engineering Solutions, 3.1 Vivado Toolchain Execution, 3.2 Post-Route Static Timing Summary, 3.3 Hardware Resource Utilization (AMD Spartan-7 XC7S50-1CSGA324C) (+9 more)
 
 ### Community 171 - "reference_model/qrs_detector.py"
 Cohesion: 0.29
@@ -1300,9 +1456,9 @@ Nodes (9): 1. Complete Numerical Specification for All 11 Stages, 2. Definitive 
 Cohesion: 0.20
 Nodes (9): 1. Executive Summary & Ground Truth Audit, 2. Inventory and Lead Configurations Tested, 3.1 Massive 50 Hz Powerline Contamination, 3.2 Extreme Maternal Dominance ($>40\text{ dB}$), 3. Real Clinical Biopotential Characteristics, 4. Legitimate Scope of Validation Using NIFEA, 5. Mandatory Engineering Prerequisites for Clinical Trials, Clinical NIFEA Database Audit: Real-World Biopotential Validation & Limitations (+1 more)
 
-### Community 189 - "code/tests/test_fhr_interval_fusion_and_median5.py"
-Cohesion: 0.25
-Nodes (3): test_causal_median5_hand_calculated(), test_interval_fusion_split_peaks(), test_invalid_rr_held()
+### Community 189 - "Spartan-7 Hardware Architecture, Resource Budget & UART Diagnostic Audit"
+Cohesion: 0.08
+Nodes (25): 1. Executive Summary & Device Profile, 1. Register Specification: `LATENCY_COMP_REG[4:0]`, 2. Datapath Mathematical Formulation & Saturating Subtractor, 2. Resource Utilization Estimates: Multi-Channel vs Single-Channel, 3.1 Clock Domains & Generation Strategy, 3.2 Elastic Buffering & Rate Decoupling, 3.3 Programmable Configuration Registers & Latency Compensation Engine, 3. Alignment Rationale & Verification Impact (+17 more)
 
 ### Community 190 - "Data, Results and Experiments Audit Report"
 Cohesion: 0.18
@@ -1340,21 +1496,25 @@ Nodes (9): fecg1, mecg, noise1, noise2, records, records, records, records (+1 m
 Cohesion: 0.29
 Nodes (6): 1. Directory Structure, 2. Quickstart Guide, Standalone UART Bringup for AMD/Xilinx Spartan-7 XC7S50, Step 1: Run RTL Simulation, Step 2: Synthesize & Program Bitstream in Vivado, Step 3: Hardware Verification with Laptop
 
-### Community 199 - "compute_beat_metrics"
-Cohesion: 0.03
-Nodes (62): audit_record(), main(), main(), evaluate_record_configs(), main(), partition_of(), evaluate_record_configs(), main() (+54 more)
+### Community 199 - "run_causal"
+Cohesion: 0.04
+Nodes (55): evaluate_autocorr_score_and_conf(), main(), partition_of(), evaluate_autocorr_score_and_conf(), main(), partition_of(), audit_record(), main() (+47 more)
 
-### Community 200 - "match_beats"
-Cohesion: 0.15
-Nodes (3): TestMatchBeats, match_beats(), TestMatchBeats
+### Community 200 - "compute_beat_metrics"
+Cohesion: 0.05
+Nodes (26): apply_beat_repair(), causal_median5(), evaluate_fhr_series(), main(), apply_beat_repair(), causal_median5(), evaluate_fhr_series(), main() (+18 more)
 
 ### Community 201 - "core/mixture.py"
 Cohesion: 0.25
 Nodes (4): build_mixture(), check_mixture_snr(), MixtureResult, _power_ratio_db()
 
-### Community 202 - "detection/qrs_detector.py"
-Cohesion: 0.29
-Nodes (5): _apply_refractory(), _bandpass_sos(), detect_fetal_qrs(), _moving_average(), QRSDetectorConfig
+### Community 202 - "Target 1: `d:\signal_project\fpga_implementation\docs\python_reference_baseline.md`"
+Cohesion: 0.08
+Nodes (23): 1.1 The Gate Failure, 1.2 Ground Truth Physics and Empirical Evidence, 1. Executive Summary & Problem Root Cause, 2. Comprehensive Remediation Scope, 3.1 `fpga_implementation/docs/algorithm_mapping.md`, 3.2 `fpga_implementation/docs/uart_protocol.md`, 3.3 `fpga_implementation/docs/architecture.md`, 3.4 `fpga_implementation/docs/implementation_status.md` (+15 more)
+
+### Community 203 - "4. Stage-by-Stage Bit Growth & Sizing Analysis"
+Cohesion: 0.08
+Nodes (23): 1. Executive Summary & Sizing Strategy, 2. Master Fixed-Point Parameter Matrix, 3.1 Rule 1: Symmetric Signed Saturation Clamping (`sat_s`), 3.2 Rule 2: Unsigned Saturation Clamping (`sat_u`), 3.3 Rule 3: Convergent Round-to-Nearest-Even (`rshift_round_nearest_even`), 3.4 Rule 4: Round-Half-Up (`rshift_round`), 3.5 Rule 5: Halfway Rounding Discrepancy & Frozen ROM Table Mandate, 3. Arithmetic Operation Rules & Rounding Formulations (+15 more)
 
 ### Community 204 - "test_hardware_arithmetic_exact.py"
 Cohesion: 0.20
@@ -1364,9 +1524,9 @@ Nodes (4): test_frozen_integer_fhr_lut_completeness(), test_mwi_accumulator_36bi
 Cohesion: 0.27
 Nodes (4): simulate_crossfade(), test_crossfade_bounded_step_size(), test_crossfade_interruption_continuity(), test_crossfade_terminal_convergence()
 
-### Community 206 - "causal_median5_rr"
-Cohesion: 0.24
-Nodes (4): test_causal_median5_hand_calculated(), test_interval_fusion_split_peaks(), test_invalid_rr_held(), causal_median5_rr()
+### Community 206 - "2. Authoritative 8-Stage Pipeline Specifications"
+Cohesion: 0.08
+Nodes (23): 1. Executive Summary & Baseline Objectives, 2.1 Stage 1: Spatial PCA Beamformer & Dynamic Weight Slew Engine, 2.2 Stage 2: HP1 Baseline Wander Remover, 2.3 Stage 3: LP40 FECG Clean Filter, 2.4 Stage 4: Config C Detector Bandpass Filter, 2.5 Stage 5: Energy Squarer & Moving Window Integrator (MWI), 2.6 Stage 6: Causal Adaptive Dual-Threshold Peak Detector, 2.7 Stage 7: Interval Fusion & Latency Compensation (+15 more)
 
 ### Community 207 - "Task C: Separation of Raw QRS Performance from FHR Post-Processing"
 Cohesion: 0.20
@@ -1404,25 +1564,21 @@ Nodes (8): 1. Executive Summary & Protocol Inconsistencies Corrected, 2. Real-Ti
 Cohesion: 0.20
 Nodes (9): 1. Complete Numerical Specification for All 11 Stages, 2. Definitive Stage-by-Stage Format Table, 3. Detailed Arithmetic Equations for RTL Construction, Fixed-Point Numerical Specification: Golden RTL Implementation Format, Stage 2: Spatial Beamformer, Stage 3: HP1 Baseline Remover (Must use 32-bit Accumulator), Stage 7: Moving Window Integrator, Stage 8: Adaptive Dual-Threshold FSM (+1 more)
 
-### Community 216 - "shutil"
-Cohesion: 0.29
-Nodes (5): main(), sha256_file(), make_zip(), sanitize_content(), stage_files()
+### Community 216 - "Phase 1 Single-Channel Processing RTL Verification & Implementation Report"
+Cohesion: 0.08
+Nodes (24): 1. Executive Summary & Verification Overview, 1. Physical Device Discovery & JTAG Enumeration, 1. Post-Route Resource Utilization Table, 1. Registered Datapath Latency (Cycle Breakdown), 2. Complete Architecture & Signal Flow, 2. Filter Group Delay, 2. Physical USB-to-UART Bridge Discovery, 2. Post-Route Timing Analysis & Maximum Frequency (+16 more)
 
 ### Community 217 - "Clinical NIFEA Database Audit: Real-World Biopotential Validation & Limitations"
 Cohesion: 0.20
 Nodes (9): 1. Executive Summary & Ground Truth Audit, 2. Inventory and Lead Configurations Tested, 3.1 Massive 50 Hz Powerline Contamination, 3.2 Extreme Maternal Dominance ($>40\text{ dB}$), 3. Real Clinical Biopotential Characteristics, 4. Legitimate Scope of Validation Using NIFEA, 5. Mandatory Engineering Prerequisites for Clinical Trials, Clinical NIFEA Database Audit: Real-World Biopotential Validation & Limitations (+1 more)
 
-### Community 218 - "compute_beat_metrics"
-Cohesion: 0.20
-Nodes (5): BeatMetrics, compute_beat_metrics(), compute_waveform_metrics(), match_beats(), WaveformMetrics
+### Community 218 - "PCA Spatial Beamformer & Dynamic Weight Slew Engine Specification"
+Cohesion: 0.07
+Nodes (27): 1. Executive Summary & Algorithmic Background, 2.1 Calibration Window & Pre-Conditioning, 2.2 Sample Covariance & Eigen-Decomposition, 2.3 Deterministic Sign Normalization, 2.4 Label-Free Component Selection, 2.5 Quantization to Signed 16-bit Q1.15, 2. Host PCA Weight Calculation & Normalization, 3.1 Frame Layout (10 Bytes) (+19 more)
 
 ### Community 219 - "UART Bringup Verification & Test Results Report"
 Cohesion: 0.33
 Nodes (5): 1. Simulation Verification Summary, 2. Waveform & Timing Observations, 3. Host Environment Discovery & Hardware Status, 4. Physical Testing Checklist, UART Bringup Verification & Test Results Report
-
-### Community 221 - "CalibrationBank"
-Cohesion: 0.05
-Nodes (49): evaluate_autocorr(), CalibrationBank, evaluate_autocorr(), evaluate_autocorr_score_and_conf(), main(), partition_of(), evaluate_autocorr_score_and_conf(), main() (+41 more)
 
 ### Community 222 - "51. Recommended Development Sequence"
 Cohesion: 0.20
@@ -1444,13 +1600,13 @@ Nodes (7): 1. Install Dependencies, 2. Run Benchmarks, 3. Run Bit-Accurate Fixed
 Cohesion: 0.20
 Nodes (10): 3. Cross-Reference and Consistency Items (`X-*`), X-01: Method Inventory Consistency (9 Methods vs 10), X-02: U-Net Configuration Labelling (1-Ch vs 4-Ch), X-03: Table 4 vs Table 9 FPGA Viability, X-04: L3 Status Alignment with Roadmap, X-05: Deep U-Net On-Chip FPGA Feasibility, X-06: Elimination of Orphan "PPR-8" Detector Labels, X-07: Dual Notch Filter & Baseline Maternal Detector in Fig. 2 (+2 more)
 
-### Community 227 - "code/tests/test_calibration_confidence_fallback.py"
-Cohesion: 0.25
-Nodes (3): test_autocorr_lag_window(), test_confidence_calculation(), test_pc3_fallback_rejection()
+### Community 227 - "verify_pca_fixed_point.py"
+Cohesion: 0.13
+Nodes (8): main(), RTL_SpatialBeamformer, RTL_WeightCrossfadeSlewEngine, run_suite_1_unity_weights(), run_suite_2_multichannel_dataset_pca(), run_suite_3_dynamic_weight_slew_engine(), run_suite_4_stress_and_corner_cases(), run_suite_5_uart_calibration_protocol()
 
 ### Community 228 - "code/src/bit_accurate_reference_model_corrected.py"
-Cohesion: 0.07
-Nodes (13): BiquadDF2TIntCorrected, BitAccurateCorrectedResult, rshift_round_nearest_even(), rshift_round_symmetric(), run_bit_accurate_pipeline_corrected(), sat(), sat_u(), test_constants_consistency() (+5 more)
+Cohesion: 0.16
+Nodes (7): BiquadDF2TIntCorrected, BitAccurateCorrectedResult, rshift_round_nearest_even(), rshift_round_symmetric(), run_bit_accurate_pipeline_corrected(), sat(), sat_u()
 
 ### Community 229 - "2. In-Depth Analysis of Individual Stages"
 Cohesion: 0.20
@@ -1560,9 +1716,9 @@ Nodes (7): 1. Frame Architecture Overview, 2.1 Calibration Weights Packet (`0xC3
 Cohesion: 0.25
 Nodes (7): 1. Executive Summary & Key Statistical Metrics, 2. In-Depth SNR Robustness Analysis, 3. Physiological Condition Breakdown, 4. Subject Anatomical Generalization Analysis, 5. Twin Pregnancy (`c5`) Evaluation Findings, Core Conclusion:, Phase 2: Full Synthetic Dataset Validation Report
 
-### Community 256 - "hardware/fpga_int_model.py"
-Cohesion: 0.06
-Nodes (35): BiquadInt, compare_with_float(), dequantize_input(), dump_stages(), put(), fhr_lut(), IntResult, _load_mixture() (+27 more)
+### Community 256 - "pipelines/multichannel_study.py"
+Cohesion: 0.16
+Nodes (3): calculate_fpga_metrics(), _generate_scaling_plots(), run_study()
 
 ### Community 257 - "Proposed Clean Repository Structure & Migration Mapping"
 Cohesion: 0.22
@@ -1589,16 +1745,16 @@ Cohesion: 0.22
 Nodes (8): 1. Executive Summary & Protocol Inconsistencies Corrected, 2. Real-Time Link Budget and Latency Breakdown, Detailed Bandwidth Consumption Table, Inconsistency 1: Impossible Bit-Packing in FHR Telemetry Packet, Inconsistency 2: Calibration Packet Sync Header Discrepancy, Inconsistency 3: CRC8-CCITT Polynomial and Test Vector Definition, Latency Budget Hierarchy, UART Communication & Hardware Telemetry Protocol Audit
 
 ### Community 263 - "run_streaming_uart_tests.py"
-Cohesion: 0.47
+Cohesion: 0.39
 Nodes (3): crc8(), main(), UARTRxStateMachine
 
-### Community 264 - "code/src/preprocessing.py"
-Cohesion: 0.33
-Nodes (4): _bandpass_sos(), get_config_summary(), _highpass_sos(), preprocess()
+### Community 264 - "load_record"
+Cohesion: 0.18
+Nodes (4): TestLoadRecord, load_record(), RecordMetadata, TestLoadRecord
 
-### Community 265 - "core/preprocessing.py"
-Cohesion: 0.33
-Nodes (4): _bandpass_sos(), get_config_summary(), _highpass_sos(), preprocess()
+### Community 265 - "Phase 4: Algorithmic Correctness Audit & Real Dataset Validation Signoff Report"
+Cohesion: 0.14
+Nodes (13): 1. Executive Summary, 2.1 Traceability of PCA Calculations in Python, 2.2 Host vs FPGA Execution Boundary Justification, 2. Agent 1: PCA Algorithm & Architecture Audit, 3.1 Trace of the Flawed Test (Step 1341 / Case A), 3.2 Comparison of Signal Paths: Flawed Unity vs Active PCA Cancellation, 3. Agent 2: Root Cause Analysis of the 75 bpm Result, 4. Agent 3: Python Software vs Physical FPGA Comparison (+5 more)
 
 ### Community 266 - "TC1"
 Cohesion: 0.29
@@ -1620,9 +1776,9 @@ Nodes (7): case, description, folder, id, snr_db, status, TC4
 Cohesion: 0.29
 Nodes (7): case, description, folder, id, snr_db, status, TC5
 
-### Community 271 - "os"
-Cohesion: 0.06
-Nodes (13): TestLoadAnnotations, TestLoadRecord, TestLoadTestCase, TestValidateRecord, load_annotations(), load_record(), RecordMetadata, TestCaseData (+5 more)
+### Community 271 - "tests/test_loader.py"
+Cohesion: 0.10
+Nodes (7): TestLoadAnnotations, TestLoadTestCase, TestValidateRecord, load_annotations(), validate_record(), TestLoadAnnotations, TestValidateRecord
 
 ### Community 272 - "1. Executive Summary & Flaw Investigation"
 Cohesion: 0.25
@@ -1637,7 +1793,7 @@ Cohesion: 0.25
 Nodes (3): test_detector_bp_coefficients_table(), test_filter_pole_stability(), test_lp40_coefficients_table()
 
 ### Community 275 - "test_fixed_point_scaling_exact.py"
-Cohesion: 0.25
+Cohesion: 0.22
 Nodes (3): test_mathematical_scaling_derivation(), test_physical_millivolt_reconstruction(), test_prior_scaling_bug_mathematical_proof()
 
 ### Community 276 - "Real-Time Multi-Channel Fetal ECG Extraction and QRS/FHR Processor"
@@ -1648,29 +1804,29 @@ Nodes (7): 1. Directory Structure, 2. Quickstart: Running Regression Tests, 3. K
 Cohesion: 0.25
 Nodes (7): 1. Executive Summary & Root Cause of Previous Discrepancy, 2. Micro-Averaged vs Macro-Averaged Performance, 3. Strict One-to-One Matching Audit, Corrected Stratified Performance Table, Discrepancy Table, Exact Root Cause, QRS Metric Reconciliation and One-to-One Matching Audit
 
-### Community 278 - "05_fhr_range/tests/test_fhr_range_boundaries.py"
-Cohesion: 0.25
-Nodes (3): test_constants_consistency(), test_lut_dimensions(), test_mathematical_range_mapping()
+### Community 278 - "4. Drop-In Replacement Sections for `fpga_implementation/docs/fixed_point_specification.md`"
+Cohesion: 0.10
+Nodes (21): 4. Drop-In Replacement Sections for `fpga_implementation/docs/fixed_point_specification.md`, Drop-In 1: Section 1 Key Fixed-Point Design Choices (Lines 28–32), Drop-In 2: Section 2 Master Parameter Matrix (Lines 54–58), Drop-In 3: Section 3.4 & 3.5 Halfway Rounding Nuance Rule (Lines 147–154), Drop-In 4: Section 4 Submodule Sizing (Lines 214–230), Drop-In 5: Section 5 Numerical Accuracy & Limit Cycle Characterization (Lines 247–251), Existing Content:, Existing Content: (+13 more)
 
 ### Community 279 - "Final UART Communication Protocol Specification"
 Cohesion: 0.25
 Nodes (7): 1. Frame Architecture Overview, 2.1 Calibration Weights Packet (`0xC3` — Host $\to$ FPGA), 2.2 QRS Event & FHR Telemetry Packet (`0xAA` — FPGA $\to$ Host), 2. Packet Definitions, 3. CRC-8-CCITT Implementation, Final UART Communication Protocol Specification, Packet Summary Table
 
-### Community 280 - "10_regression/tests/test_calibration_confidence_fallback.py"
-Cohesion: 0.25
-Nodes (3): test_autocorr_lag_window(), test_confidence_calculation(), test_pc3_fallback_rejection()
+### Community 280 - "code/src/qrs_detector.py"
+Cohesion: 0.29
+Nodes (5): _apply_refractory(), _bandpass_sos(), detect_fetal_qrs(), _moving_average(), QRSDetectorConfig
 
-### Community 281 - "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_fhr_interval_fusion_and_median5.py"
-Cohesion: 0.25
-Nodes (3): test_causal_median5_hand_calculated(), test_interval_fusion_split_peaks(), test_invalid_rr_held()
+### Community 281 - "test_adversarial_empirical_challenge.py"
+Cohesion: 0.10
+Nodes (9): test_accumulator_33bit_growth_under_unnormalized_weights(), test_all_zero_inputs(), test_convergent_rounding_zero_dc_drift(), test_dropout_bradycardia_fhr_hold(), test_exhaustive_fhr_rom_table(), test_full_scale_rail_inputs(), test_severe_tachycardia_interval_fusion(), test_sudden_large_step_inputs() (+1 more)
 
-### Community 282 - "10_regression/tests/test_fhr_range_boundaries.py"
-Cohesion: 0.25
-Nodes (3): test_constants_consistency(), test_lut_dimensions(), test_mathematical_range_mapping()
+### Community 282 - "test_uart_protocol_final.py"
+Cohesion: 0.15
+Nodes (5): test_calibration_packet_roundtrip(), test_crc8_ccitt_standard_vector(), test_fecg_stream_packet_roundtrip(), test_framer_resynchronization(), test_telemetry_packet_roundtrip()
 
-### Community 283 - "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/10_regression/tests/test_filter_coefficients_exact.py"
-Cohesion: 0.25
-Nodes (3): test_detector_bp_coefficients_table(), test_filter_pole_stability(), test_lp40_coefficients_table()
+### Community 283 - "detect_causal"
+Cohesion: 0.23
+Nodes (4): CalibrationBank, detect_causal(), DetectionResult, _empty_detection()
 
 ### Community 284 - "2. Investigation of Key Architectural Questions"
 Cohesion: 0.25
@@ -1732,9 +1888,9 @@ Nodes (6): 1. Disambiguation of Filter Order and Topology, 2. Frozen Integer Coe
 Cohesion: 0.29
 Nodes (6): 1. Executive Summary, 2.1 Packet Definition (12 Bytes Total), 2.2 Fault Injection Stress Test Results, 2. UART Telemetry Protocol & Framing Robustness, 3. Real-Time Streaming Performance Verdict, Phase 9: Real-Time Streaming and UART Latency Validation Report
 
-### Community 299 - "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_raw_qrs_vs_fhr_study.py"
-Cohesion: 0.43
-Nodes (4): apply_beat_repair(), causal_median5(), evaluate_fhr_series(), main()
+### Community 299 - "CalibrationBank"
+Cohesion: 0.03
+Nodes (90): CalibrationBank, main(), evaluate_autocorr_with_range(), main(), partition_of(), select_by_kurtosis(), select_by_spectral_ratio(), evaluate_autocorr_with_range() (+82 more)
 
 ### Community 300 - "11. Performance Evaluation"
 Cohesion: 0.25
@@ -1796,21 +1952,25 @@ Nodes (7): 1. Frame Architecture Overview, 2.1 Calibration Weights Packet (`0xC3
 Cohesion: 0.25
 Nodes (7): 1. Executive Summary & Key Statistical Metrics, 2. In-Depth SNR Robustness Analysis, 3. Physiological Condition Breakdown, 4. Subject Anatomical Generalization Analysis, 5. Twin Pregnancy (`c5`) Evaluation Findings, Core Conclusion:, Phase 2: Full Synthetic Dataset Validation Report
 
-### Community 316 - "hardware/test_filter_coefficients_exact.py"
-Cohesion: 0.25
-Nodes (3): test_detector_bp_coefficients_table(), test_filter_pole_stability(), test_lp40_coefficients_table()
+### Community 315 - "FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/08_protocol_correction/protocol_implementation/uart_protocol.py"
+Cohesion: 0.23
+Nodes (5): crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fhr_telemetry_packet()
 
-### Community 317 - "unit/test_calibration_confidence_fallback.py"
-Cohesion: 0.25
-Nodes (3): test_autocorr_lag_window(), test_confidence_calculation(), test_pc3_fallback_rejection()
+### Community 316 - "BaseExtractor"
+Cohesion: 0.13
+Nodes (6): BaseExtractor, SVDExtractorV1, SVDExtractorV2, SVDExtractorV3, TestValidateOutput, TestValidateOutput
 
-### Community 318 - "unit/test_fhr_interval_fusion_and_median5.py"
-Cohesion: 0.25
-Nodes (3): test_causal_median5_hand_calculated(), test_interval_fusion_split_peaks(), test_invalid_rr_held()
+### Community 317 - "FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/10_regression/tests/test_qrs_matching_strict.py"
+Cohesion: 0.18
+Nodes (4): test_boundary_tolerance_threshold(), test_compute_beat_metrics_f1_score(), test_duplicate_detections_within_tolerance(), test_matching_invariants_random_scenarios()
 
-### Community 319 - "unit/test_fhr_range_boundaries.py"
-Cohesion: 0.25
-Nodes (3): test_constants_consistency(), test_lut_dimensions(), test_mathematical_range_mapping()
+### Community 318 - "TemplatSubtractionExtractor"
+Cohesion: 0.10
+Nodes (4): TemplatSubtractionExtractor, _make_synthetic_mixture(), TestBaseExtractorInheritance, TestSVDInterface
+
+### Community 319 - "fecg_multichannel_top"
+Cohesion: 0.20
+Nodes (3): fecg_multichannel_top, spatial_beamformer, weight_slew_engine
 
 ### Community 320 - "1. Resolution of the 12.4 vs 18 Samples Contradiction"
 Cohesion: 0.29
@@ -1820,9 +1980,9 @@ Nodes (6): 1.1 The Previous Conflict, 1.2 Mathematical & Architectural Root Caus
 Cohesion: 0.29
 Nodes (6): 1. Priority A: Fixed-Point Projection Scaling Factor-of-128 Bug, 2. Priority D: Validation Subject `sub08` Cold-Start Failure, 3. Priority E: Filter Group Delay Contradiction (12.4 vs 18 Samples), 4. Priority C: Cherry-Picked FHR Performance Claims, 5. Test Suite Collection and Syntax Errors, Failures, Diagnostics, and Retries Log
 
-### Community 322 - "compute_fhr_series"
-Cohesion: 0.22
-Nodes (4): evaluate_fhr_grid(), evaluate_fhr_grid(), compute_fhr_series(), evaluate_fhr_grid()
+### Community 322 - "Handoff Report: Adversarial Stress & Protocol Verification"
+Cohesion: 0.11
+Nodes (18): 1.1 Direct RTL Code Observations, 1.2 Verification Commands Executed & Verbatim Outputs, 1. Observation, 2. Logic Chain, 3. Caveats, 4. Adversarial Challenge Report, 5. Conclusion, 6. Verification Method (+10 more)
 
 ### Community 323 - "Phase 11: Comprehensive Failure Mode Analysis Report"
 Cohesion: 0.33
@@ -2012,6 +2172,10 @@ Nodes (5): 1. Mathematical Analysis of the 250 Hz Discrepancy, 2. Reconciled Ran
 Cohesion: 0.33
 Nodes (5): 1. Audit of Missing Record in 450-Case Detector Grid, 2. Final Proposed Configuration vs PC3 Baseline Across Layouts (l1–l5), Benchmark Coverage Reconciliation & Full-Layout Audit, Key Conclusions, Layout Comparison Table
 
+### Community 370 - "src/uart_protocol_final.py"
+Cohesion: 0.13
+Nodes (8): crc8_ccitt(), decode_calibration_packet(), decode_fecg_stream_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fecg_stream_packet(), encode_fhr_telemetry_packet(), UARTStreamFramer
+
 ### Community 371 - "Task E: Dynamic Range and Accumulator Overflow Analysis"
 Cohesion: 0.33
 Nodes (5): 1. Executive Summary & Critical Accumulator Discovery, 2. Stage-by-Stage Accumulator Headroom Table, 3. Quantization Noise Propagation & Saturation Guarantees, Key Discovery: The HP1 Baseline Accumulator Overflow Risk, Task E: Dynamic Range and Accumulator Overflow Analysis
@@ -2119,6 +2283,22 @@ Nodes (5): 1. Mathematical Analysis of the 250 Hz Discrepancy, 2. Reconciled Ran
 ### Community 397 - "2. Final Proposed Configuration vs PC3 Baseline Across Layouts (l1–l5)"
 Cohesion: 0.33
 Nodes (5): 1. Audit of Missing Record in 450-Case Detector Grid, 2. Final Proposed Configuration vs PC3 Baseline Across Layouts (l1–l5), Benchmark Coverage Reconciliation & Full-Layout Audit, Key Conclusions, Layout Comparison Table
+
+### Community 398 - "hp1_baseline"
+Cohesion: 0.22
+Nodes (5): hp1_baseline, tb_biquad_df2t, apply_and_check, tb_hp1_baseline, apply_and_check
+
+### Community 399 - "src/run_causal_benchmark.py"
+Cohesion: 0.20
+Nodes (8): legacy_zero_phase_oracle(), _load_record(), main(), print_summary(), process_record(), _row(), _write_csv(), run_causal_sub01_sweep()
+
+### Community 400 - "Independent Verification Audit: `hp1_baseline.v`"
+Cohesion: 0.11
+Nodes (17): 1. Executive Summary & Audit Overview, 2. Mathematical Recurrence & Signal Flow, 3. Signal Sizing, Signedness & Headroom Proofs, 4. Rounding, Truncation & Saturation Semantics, 5. Sequential Timing & Latency, 6. Verification Reporting (4 Levels), 7. Final Audit Verdict, Arithmetic Headroom Proofs: (+9 more)
+
+### Community 401 - "Independent Verification Audit: `biquad_df2t.v`"
+Cohesion: 0.12
+Nodes (16): 1. Executive Summary & Audit Overview, 2. Task A: Detailed Verilog Expression Sizing Audit, 3.1 Convergent Rounding (Round-to-Nearest-Even), 3.2 Output Saturation Clamping, 3.3 State Saturation Clamping, 3.4 Sticky Flags, 3. Task B: Saturation and Rounding RTL Verification, 4.1 Simulator Environment Audit (+8 more)
 
 ### Community 402 - "Master Hardware Datapath Width Specification"
 Cohesion: 0.40
@@ -2244,6 +2424,10 @@ Nodes (4): 1. Physical Front-End & ADC Risks, 2. Physiological & Clinical Operat
 Cohesion: 0.40
 Nodes (4): 1. High-Level Latency Budget Summary, 2. Stage-by-Stage Latency Breakdown, 3. Clinical Compliance & Real-Time Monitoring Standard, Comprehensive Latency Analysis: Electrode to UART Output
 
+### Community 440 - "5. Verification Method"
+Cohesion: 0.11
+Nodes (18): 1.1 Source Code and Baseline Exploration, 1.2 Verification Commands & Verbatim Execution Logs, 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Command 1: Hardware Test Suite (+10 more)
+
 ### Community 441 - "Calibration Cold-Start and Recalibration Specification"
 Cohesion: 0.50
 Nodes (3): 1. Cold-Start Initialization Policy, 2. Continuous Recalibration Policy (Consecutive Windows), Calibration Cold-Start and Recalibration Specification
@@ -2312,6 +2496,10 @@ Nodes (4): 26. Blind Source Separation, FPGA implication, ICA, PCA
 Cohesion: 0.50
 Nodes (4): 47. Metrics We Should Report, Heart-rate level, Peak-level, Signal-level
 
+### Community 459 - "BiquadDF2TIntFinal"
+Cohesion: 0.25
+Nodes (3): BiquadDF2TIntFinal, rshift_round_nearest_even(), sat()
+
 ### Community 461 - "48. FPGA Implementation Considerations"
 Cohesion: 0.50
 Nodes (4): 48.1 Streaming architecture, 48.2 Fixed-point arithmetic, 48.3 Quantization, 48. FPGA Implementation Considerations
@@ -2372,25 +2560,337 @@ Nodes (3): 7. What We Should Take From Paper 1, Directly useful, Important limit
 Cohesion: 0.67
 Nodes (3): 8.1 Purpose of the paper, 8. Paper 2 --- Sörnmo & Laguna, Electrocardiogram (ECG) Signal Processing
 
+### Community 493 - "corrected/src/evaluation.py"
+Cohesion: 0.18
+Nodes (6): BeatMetrics, compute_beat_metrics(), compute_waveform_metrics(), eval_result_to_row(), match_beats(), WaveformMetrics
+
+### Community 537 - "fecg_single_channel_top"
+Cohesion: 0.25
+Nodes (4): adaptive_detector, fecg_single_channel_top, tb_adaptive_detector, tb_fecg_single_channel_verifier
+
+### Community 538 - "core/evaluation.py"
+Cohesion: 0.15
+Nodes (7): BeatMetrics, compute_beat_metrics(), compute_waveform_metrics(), eval_result_to_row(), EvalResult, match_beats(), WaveformMetrics
+
+### Community 539 - "Technical Analysis & Drop-In Remedy Strategy"
+Cohesion: 0.12
+Nodes (16): 1. Executive Summary, 2.1 Finding 1: Stage 7 Latency Compensation & Register Parameterization, 2.2 Finding 2: Halfway Rounding Nuance in FHR ROM Table at RR=96, 2.3 Finding 3: Granular Limit Cycles in Biquad Section 1, 2. Technical Analysis of the Four Findings, 5. Summary Matrix of Required Document Modifications, For `algorithm_mapping.md` and `fixed_point_specification.md`, Physical and Physiological Origin: (+8 more)
+
+### Community 540 - "test_silent_warmup_detector_lockout_vulnerability"
+Cohesion: 0.12
+Nodes (15): 2.4 Finding 4: Silent Warmup Detector-Lockout Defense in Threshold FSM, Required Solution:, The Problem:, 1.1 Golden Test Vector Latency Discrepancy, 1.2 FHR ROM Rounding Nuance at RR = 96, 1.3 Granular Limit Cycle in Biquad Section 1, 1.4 Silent Warmup Detector-Lockout Vulnerability, 1. Observation (+7 more)
+
+### Community 541 - "3. Precise Fix Strategy for `fpga_implementation/docs/architecture.md`"
+Cohesion: 0.12
+Nodes (16): 1. Executive Summary & Gate Failure Context, 2.1 Authoritative Golden Reference Vectors (`code/results/fpga_golden/sub01_snr12_c0/`), 2.2 Verified Empirical Timing Statistics Across 30 PhysioNet Records, 2.3 Physical and Algorithmic Explanation, 2. Forensic Evidence & Verified Empirical Data, 3.1 Item 1: Subsystem Resource Breakdown Table Update, 3.2 Item 2: New Subsection 3.3 for Programmable Register & Latency Architecture, 3. Alignment Rationale & Verification Impact (+8 more)
+
+### Community 542 - "Drop-In 2: Section 2.6: Stage 6 Threshold FSM (Lines 187–234)"
+Cohesion: 0.12
+Nodes (16): 3. Drop-In Replacement Sections for `fpga_implementation/docs/algorithm_mapping.md`, Drop-In 1: Section 2 Pipeline Diagram (Lines 46–50), Drop-In 2: Section 2.6: Stage 6 Threshold FSM (Lines 187–234), Drop-In 5: Section 4 Resource Summary Table (Lines 336–337), Existing Content:, Existing Content:, Existing Content:, Multiplier-Free Threshold Logic: (+8 more)
+
+### Community 543 - "4. 5-Component Handoff Protocol"
+Cohesion: 0.12
+Nodes (15): 1. Review Summary & High-Level Assessment, 2. Findings Detail, 3. Verified Claims & Strengths, 4.1 Observation, 4.2 Logic Chain, 4.3 Caveats, 4.4 Conclusion, 4. 5-Component Handoff Protocol (+7 more)
+
+### Community 544 - "corrected/src/fhr.py"
+Cohesion: 0.11
+Nodes (8): compare_fhr(), compute_fhr(), FHRComparison, FHRResult, eval_result_to_row(), EvalResult, eval_result_to_row(), EvalResult
+
+### Community 545 - "2. Packet Formats & Structural Layouts"
+Cohesion: 0.12
+Nodes (15): 1. Executive Summary & Communication Architecture, 2.1 Packet 1: Downlink Sample Ingestion Packet (`0xA5`), 2.2 Packet 2: Downlink Spatial Calibration Weights Packet (`0xC3`), 2.3 Packet 3: Uplink Clean FECG Stream Packet (`0x5A`), 2.4 Packet 4: Uplink QRS Event & FHR Telemetry Packet (`0xAA`), 2.5 Packet 5: Uplink Diagnostic & Anomaly Packet (`0xEE`), 2. Packet Formats & Structural Layouts, 3.1 Synthesizable Hardware Verilog Engine (`crc8_step`) (+7 more)
+
+### Community 546 - "1. Observation"
+Cohesion: 0.13
+Nodes (14): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report — Explorer Survey 3: UART Infrastructure, Watchdog Remediation, Telemetry Protocol & Spartan-7 Constraints, O1: Standalone UART RTL Modules and Top-Level Loopback, O2: Historical Watchdog Timeouts in Testbenches (+6 more)
+
+### Community 549 - "5. 5-Component Handoff Protocol"
+Cohesion: 0.15
+Nodes (12): 1. Review Summary & High-Level Assessment, 2. Review Findings, 3. Verified Claims, 5.1 Observation, 5.2 Logic Chain, 5.3 Caveats, 5.4 Conclusion, 5. 5-Component Handoff Protocol (+4 more)
+
+### Community 550 - "Handoff Report: Latency Compensation Synchronization Strategy for `architecture.md` and `implementation_status.md`"
+Cohesion: 0.14
+Nodes (13): 1.1 Inconsistencies in Target Documents, 1.2 Authoritative Golden Vectors (`code/results/fpga_golden/sub01_snr12_c0/`), 1.3 Verified Empirical Data Across 30 Benchmark Records, 1.4 Architectural Pause Boundary, 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion (+5 more)
+
+### Community 551 - "Acceptance Criteria"
+Cohesion: 0.14
+Nodes (13): 2026-11-04T09:22:36Z, Acceptance Criteria, Directory Structure and Constraints, Dispatch Log, Hardware Architecture and UART Assessment, Hardware Mapping and Fixed-Point Specifications, Pipeline Audit and Baseline Documentation, R1. Non-ML Python Pipeline Audit and Baseline Freeze (Milestone M0) (+5 more)
+
+### Community 552 - "Acceptance Criteria"
+Cohesion: 0.14
+Nodes (13): Acceptance Criteria, Directory Structure and Constraints, Hardware Architecture and UART Assessment, Hardware Mapping and Fixed-Point Specifications, Initial Request — 2026-11-04T09:21:07Z, Original User Request, Pipeline Audit and Baseline Documentation, R1. Non-ML Python Pipeline Audit and Baseline Freeze (Milestone M0) (+5 more)
+
+### Community 553 - "Project Specification: Real-Time Fetal ECG Extraction & QRS Processor on Spartan-7 FPGA"
+Cohesion: 0.14
+Nodes (13): 1.1 End-to-End System Block Diagram, 1.2 Processing Schedule and Clock Margins, 1. System Architecture & Module Dataflow, 2. Feature Inventory & Mapping to Milestones, 3. Milestones Table, 4.1 Host-to-FPGA Physical & Framing Contract, 4.2 Telemetry Packet Protocol Data Units (PDUs), 4.3 Master Fixed-Point Numeric Sizing Matrix (+5 more)
+
+### Community 554 - "1. Observation"
+Cohesion: 0.15
+Nodes (12): 1.1 Protected Directories & Workspace Integrity, 1.2 RTL Freeze Invariant, 1.3 Machine Learning Exclusion Invariant, 1.4 Deliverable Verification, 1.5 Independent Test Execution, 1.6 Forensic Inspection for Facades & Pre-Populated Outputs, 1. Observation, 2. Logic Chain (+4 more)
+
+### Community 555 - "BRIEFING — 2026-11-04T16:07:30Z"
+Cohesion: 0.17
+Nodes (11): Artifact Index, Attack Surface, Audit Progress, Audit Scope, BRIEFING — 2026-11-04T16:07:30Z, Current Parent, 🔒 Key Constraints, Key Decisions Made (+3 more)
+
+### Community 556 - "Implementation Status & Phase 1 Review Presentation"
+Cohesion: 0.15
+Nodes (12): 1. Executive Summary & Review Presentation, 2.1 The Two Processing Domains, 2.2 Feasibility Findings:, 2. Proposed System Architecture: Single-Channel Feasibility vs Spatial Beamforming, 3. Fixed-Point Sizing & Arithmetic Decision Matrix, 4. Hardware Infrastructure & UART Remediation Plan, 5. Spartan-7 Resource Budget & Timing Closure Margin, 6. Implementation Roadmap & Next Milestones (+4 more)
+
+### Community 557 - "BRIEFING — 2026-11-04T10:05:00Z"
+Cohesion: 0.17
+Nodes (11): Artifact Index, Attack Surface, Audit Progress, Audit Scope, BRIEFING — 2026-11-04T10:05:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made (+3 more)
+
+### Community 558 - "1.2 Adversarial Verification Findings"
+Cohesion: 0.22
+Nodes (9): 1.1 Empirical Verification Commands and Verbatim Results, 1.2 Adversarial Verification Findings, 1. Observation, Command 1: Complete Hardware Test Suite (including new adversarial stress tests), Command 2: Regression Test Suite, Command 3: UART Cycle-Accurate Simulation & Adversarial Stress Suites, Finding A: Silent Warmup Permanently Locks Detector Off, Finding C: Granular Deadband Limit Cycle in Biquad Section 1 (+1 more)
+
+### Community 559 - "Acceptance Criteria"
+Cohesion: 0.17
+Nodes (11): Acceptance Criteria, Directory Structure and Constraints, Hardware Architecture and UART Assessment, Hardware Mapping and Fixed-Point Specifications, Pipeline Audit and Baseline Documentation, R1. Non-ML Python Pipeline Audit and Baseline Freeze (Milestone M0), R2. Algorithm-to-Hardware Mapping and Fixed-Point Specification (Milestone M1), R3. Hardware Infrastructure and UART Protocol Audit (+3 more)
+
+### Community 560 - "BRIEFING — 2026-11-04T10:15:00Z"
+Cohesion: 0.17
+Nodes (11): Active Timers, Artifact Index, BRIEFING — 2026-11-04T10:40:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+3 more)
+
+### Community 561 - "BRIEFING — 2026-11-04T09:48:00Z"
+Cohesion: 0.17
+Nodes (11): Artifact Index, BRIEFING — 2026-11-04T09:48:00Z, Change Tracker, Current Parent, 🔒 Key Constraints, Key Decisions Made, Loaded Skills, Mission (+3 more)
+
+### Community 562 - "BRIEFING — 2026-11-04T10:15:00Z"
+Cohesion: 0.17
+Nodes (11): Artifact Index, BRIEFING — 2026-11-04T10:30:00Z, Change Tracker, Current Parent, 🔒 Key Constraints, Key Decisions Made, Loaded Skills, Mission (+3 more)
+
+### Community 563 - "corrected/src/uart_protocol.py"
+Cohesion: 0.23
+Nodes (5): crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fhr_telemetry_packet()
+
+### Community 564 - "corrected/uart_protocol.py"
+Cohesion: 0.23
+Nodes (5): crc8_ccitt(), decode_calibration_packet(), decode_fhr_telemetry_packet(), encode_calibration_packet(), encode_fhr_telemetry_packet()
+
+### Community 565 - "BRIEFING — 2026-11-04T10:05:00Z"
+Cohesion: 0.18
+Nodes (10): Artifact Index, Attack Surface, BRIEFING — 2026-11-04T10:05:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Loaded Skills, Mission (+2 more)
+
+### Community 566 - "Empirical Challenge & Verification Report: Milestone M0/M1 Fixed-Point Baseline"
+Cohesion: 0.18
+Nodes (10): 1. Run Complete Hardware Test Suite (38 tests), 2. Logic Chain, 2. Run Adversarial Stress Test Suite Directly (12 tests), 3. Caveats, 3. Run Pre-FPGA Regression Suite (26 tests), 4. Conclusion, 5. Verification Method, Empirical Challenge & Verification Report: Milestone M0/M1 Fixed-Point Baseline (+2 more)
+
+### Community 567 - "BRIEFING — 2026-11-04T10:01:15Z"
+Cohesion: 0.18
+Nodes (10): Artifact Index, Attack Surface, BRIEFING — 2026-11-04T10:01:15Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Loaded Skills, Mission (+2 more)
+
+### Community 568 - "Handoff Report: Milestone M0/M1 Remedy Formulation for `algorithm_mapping.md` and `fixed_point_specification.md`"
+Cohesion: 0.18
+Nodes (10): 2. Logic Chain, 3. Caveats, 4. Conclusion, 5.1 Run Complete Hardware Test Suite (38 tests), 5.2 Verify Golden Test Vector 12-Sample Compensation, 5.3 Verify Timing Correction Empirical Optimality, 5.4 Invalidation Conditions:, 5. Verification Method (+2 more)
+
+### Community 569 - "Handoff Report: Non-ML Python Signal Processing Pipeline Audit"
+Cohesion: 0.18
+Nodes (10): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report: Non-ML Python Signal Processing Pipeline Audit, O1: Authoritative Causal Signal Processing Pipeline in `src/fecg/`, O2: Isolation of Machine Learning Modules (+2 more)
+
+### Community 570 - "BRIEFING — 2026-11-04T10:05:00Z"
+Cohesion: 0.18
+Nodes (10): Artifact Index, Attack Surface, BRIEFING — 2026-11-04T10:05:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+2 more)
+
+### Community 571 - "BRIEFING — 2026-11-04T10:05:00Z"
+Cohesion: 0.18
+Nodes (10): Artifact Index, Attack Surface, BRIEFING — 2026-11-04T10:05:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+2 more)
+
+### Community 572 - "1. Observation"
+Cohesion: 0.17
+Nodes (11): 1.1 Workspace Integrity & Protected Directories, 1.2 RTL Freeze Invariant, 1.3 Machine Learning Exclusion Invariant, 1.4 Deliverable Verification & 12-Sample Latency Lock, 1.5 Independent Test Execution, 1. Observation, 2. Logic Chain, 3. Caveats (+3 more)
+
+### Community 573 - "Review and Adversarial Audit Report: Milestone M0/M1 Deliverables"
+Cohesion: 0.20
+Nodes (9): 1.1 Fixed-Point Specification (`fpga_implementation/docs/fixed_point_specification.md`), 1.2 UART Protocol & Hardware Architecture (`uart_protocol.md` & `architecture.md`), 1.3 Tool Verification Commands & Verbatim Outputs, 1.4 Integrity Audit Findings, 1. Observation, 2. Logic Chain, 4. Conclusion, 5. Verification Method (+1 more)
+
+### Community 574 - "BRIEFING — 2026-11-04T10:48:00Z"
+Cohesion: 0.17
+Nodes (11): Artifact Index, Attack Surface, Audit Progress, Audit Scope, BRIEFING — 2026-11-04T10:48:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made (+3 more)
+
+### Community 575 - "BRIEFING — 2026-11-04T10:15:00Z"
+Cohesion: 0.22
+Nodes (8): Artifact Index, BRIEFING — 2026-11-04T10:15:00Z, Current Parent, Investigation State, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity
+
+### Community 576 - "BRIEFING — 2026-11-04T10:14:00Z"
+Cohesion: 0.22
+Nodes (8): Artifact Index, BRIEFING — 2026-11-04T10:14:00Z, Current Parent, Investigation State, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity
+
+### Community 577 - "BRIEFING — 2026-11-04T10:13:30Z"
+Cohesion: 0.22
+Nodes (8): Artifact Index, BRIEFING — 2026-11-04T10:13:30Z, Current Parent, Investigation State, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity
+
+### Community 578 - "BRIEFING — 2026-11-04T09:38:00Z"
+Cohesion: 0.22
+Nodes (8): Artifact Index, BRIEFING — 2026-11-04T09:38:00Z, Current Parent, Investigation State, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity
+
+### Community 579 - "BRIEFING — 2026-11-04T09:37:00Z"
+Cohesion: 0.22
+Nodes (8): Artifact Index, BRIEFING — 2026-11-04T09:37:00Z, Current Parent, Investigation State, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity
+
+### Community 580 - "BRIEFING — 2026-11-04T09:37:00Z"
+Cohesion: 0.22
+Nodes (8): Artifact Index, BRIEFING — 2026-11-04T09:37:00Z, Current Parent, Investigation State, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity
+
+### Community 581 - "BRIEFING — 2026-11-04T09:22:00Z"
+Cohesion: 0.22
+Nodes (8): Artifact Index, BRIEFING — 2026-11-04T10:50:00Z, 🔒 Key Constraints, Mission, 🔒 My Identity, Project Status, User Context, Victory Audit Status
+
+### Community 582 - "BRIEFING — 2026-11-04T10:46:00Z"
+Cohesion: 0.18
+Nodes (10): Artifact Index, Attack Surface, BRIEFING — 2026-11-04T10:46:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+2 more)
+
+### Community 583 - "BRIEFING — 2026-11-04T10:37:00Z"
+Cohesion: 0.18
+Nodes (10): Artifact Index, Attack Surface, BRIEFING — 2026-11-04T10:37:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+2 more)
+
+### Community 584 - "Handoff Report: Latency Compensation & Baseline Remediation Strategy"
+Cohesion: 0.29
+Nodes (6): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report: Latency Compensation & Baseline Remediation Strategy
+
+### Community 585 - "Handoff Report: Hardware Survey, Difference Equations & Fixed-Point Specification"
+Cohesion: 0.29
+Nodes (6): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report: Hardware Survey, Difference Equations & Fixed-Point Specification
+
+### Community 586 - "code/src/fhr_implementation_corrected.py"
+Cohesion: 0.27
+Nodes (4): apply_interval_fusion(), causal_median5_rr(), compute_fhr_series(), evaluate_fhr_against_ref()
+
+### Community 587 - "Gate 2 Verification Handoff Report"
+Cohesion: 0.20
+Nodes (9): 1.1 Hardware Specifications & Register Definitions, 1.2 Implementation Status & Pause Boundary, 1.3 Execution of Verification Commands, 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method (+1 more)
+
+### Community 588 - "Progress — challenger_baseline_1"
+Cohesion: 0.40
+Nodes (4): Completed Tasks, In Progress, Progress — challenger_baseline_1, Status
+
+### Community 589 - "Progress Log - explorer_survey_2"
+Cohesion: 0.40
+Nodes (4): 2026-11-04T09:27:00Z - Initialization, 2026-11-04T09:35:00Z - Deep Codebase Survey, 2026-11-04T09:40:00Z - Deliverables & Verification, Progress Log - explorer_survey_2
+
+### Community 590 - "Orchestrator Progress"
+Cohesion: 0.25
+Nodes (7): Current Status, Iteration Status, Milestones & Tasks, Orchestrator Progress, Retrospective Notes & Lessons Learned, What Didn't / Areas for Process Improvement:, What Worked Well:
+
+### Community 591 - "interval_fusion"
+Cohesion: 0.33
+Nodes (3): interval_fusion, tb_interval_fusion, send_peak
+
+### Community 592 - "uart_production_timing_tb"
+Cohesion: 0.33
+Nodes (3): uart_production_timing_tb, host_receive_byte, host_send_byte
+
+### Community 594 - "fhr_calculator"
+Cohesion: 0.40
+Nodes (3): fhr_calculator, tb_fhr_calculator, check_fhr
+
+### Community 596 - "Progress — auditor_baseline_1"
+Cohesion: 0.50
+Nodes (3): Plan & Progress, Progress — auditor_baseline_1, Status
+
+### Community 597 - "Gate — Iteration 1 (Milestone M0 Baseline & Specifications)"
+Cohesion: 0.50
+Nodes (3): Gate — Iteration 1 (Milestone M0 Baseline & Specifications), Gate — Iteration 2 (Remediation & Harmonization), Gate Status
+
+### Community 598 - "Progress Log — worker_baseline_1"
+Cohesion: 0.50
+Nodes (3): Milestone Checklist, Progress Log — worker_baseline_1, Status Overview
+
+### Community 599 - "Progress Tracker — worker_remedy_1"
+Cohesion: 0.50
+Nodes (3): Completed Steps, Current Status, Progress Tracker — worker_remedy_1
+
+### Community 600 - "Victory Audit Report & Handoff — FPGA Implementation Baseline"
+Cohesion: 0.20
+Nodes (9): 1.1 Timeline & Provenance (Phase A), 1.2 Integrity Forensics & Invariants (Phase B), 1.3 Independent Test Execution (Phase C), 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method (+1 more)
+
+### Community 601 - "Synthesizable RTL Modules (`fpga_implementation/rtl/`)"
+Cohesion: 0.50
+Nodes (3): Planned RTL Module Architecture (Milestone M1), STATUS: HALTED FOR ARCHITECTURAL REVIEW (MILESTONE M0), Synthesizable RTL Modules (`fpga_implementation/rtl/`)
+
+### Community 614 - "MockSerialPort"
+Cohesion: 0.15
+Nodes (5): MockSerialPort, Core Driver & Streaming Engine, `fecg_uart_client.py`, Host PC UART Communication Suite (`fpga_implementation/uart_host/`), Usage:
+
+### Community 645 - "4.2 Adversarial Challenges Evaluated"
+Cohesion: 0.22
+Nodes (8): Finding B: Discrepancy at RR=96 between Floating-Point round() and Integer Division, 4.1 Challenge Summary, 4.2 Adversarial Challenges Evaluated, 4. Adversarial Challenge & Stress-Test Report, Challenge 1: Filter Group Delay Variation vs Broadband Fetal QRS Centroid, Challenge 2: Detector Silent Warmup Lockout Vulnerability, Challenge 3: Halfway Rounding Discrepancy at RR = 96, test_fhr_halfway_rounding_discrepancy_at_rr_96()
+
+### Community 646 - "compute_beat_metrics"
+Cohesion: 0.20
+Nodes (5): BeatMetrics, compute_beat_metrics(), compute_waveform_metrics(), match_beats(), WaveformMetrics
+
+### Community 648 - "run_vivado_golden_verification.py"
+Cohesion: 0.14
+Nodes (5): compile_vivado_verifier(), main(), run_vivado_dataset(), RTL_BiquadDF2T, run_verification()
+
+### Community 651 - "uart_tx"
+Cohesion: 0.40
+Nodes (3): uart_tx, uart_tx_tb, capture_byte
+
+### Community 653 - "Orchestrator Handoff Report"
+Cohesion: 0.29
+Nodes (6): 1. Milestone State, 2. Active Subagents, 3. Pending Decisions & Review Points, 4. Remaining Work (Next Steps for Milestone M1), 5. Key Artifacts, Orchestrator Handoff Report
+
+### Community 654 - "Handoff Report — Sentinel Project Lifecycle & Victory Verification"
+Cohesion: 0.29
+Nodes (6): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report — Sentinel Project Lifecycle & Victory Verification
+
+### Community 655 - "Handoff Report: Milestone M0/M1 Documentation Remediation & Golden Vector Synchronization"
+Cohesion: 0.29
+Nodes (6): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report: Milestone M0/M1 Documentation Remediation & Golden Vector Synchronization
+
+### Community 656 - "FECGUartClient"
+Cohesion: 0.07
+Nodes (6): FECGUartClient, _worker(), main(), generate_synthetic_4ch_ecg(), run_hardware_suite(), test_client_mock_loopback_and_background_listener()
+
+### Community 657 - "Current Status: Audit Complete — Victory Confirmed"
+Cohesion: 0.40
+Nodes (4): Completed, Current Status: Audit Complete — Victory Confirmed, Final Verdict: VICTORY CONFIRMED, Progress Log — Victory Auditor
+
+### Community 658 - "detection/qrs_detector.py"
+Cohesion: 0.29
+Nodes (5): _apply_refractory(), _bandpass_sos(), detect_fetal_qrs(), _moving_average(), QRSDetectorConfig
+
+### Community 672 - "previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/10_regression_tests/tests/test_pre_fpga_regression.py"
+Cohesion: 0.08
+Nodes (9): test_04_invalid_calibration_rejection(), test_05_calibration_packet_crc(), test_15_rr_interval_calculation(), test_18_fixed_point_overflow_stress(), test_23_edge_case_all_zero_input(), test_24_edge_case_saturated_square_wave(), test_25_edge_case_abrupt_signal_step(), mix() (+1 more)
+
+### Community 673 - "verify_hp1_baseline.py"
+Cohesion: 0.23
+Nodes (3): Python_HP1Canonical, RTL_HP1Baseline, run_verification()
+
+### Community 676 - "core/preprocessing.py"
+Cohesion: 0.33
+Nodes (4): _bandpass_sos(), get_config_summary(), _highpass_sos(), preprocess()
+
+### Community 678 - "preprocess"
+Cohesion: 0.60
+Nodes (3): _bandpass_sos(), _highpass_sos(), preprocess()
+
+### Community 685 - "simulate_fhr_audit.py"
+Cohesion: 0.38
+Nodes (3): analyze_and_plot(), simulate_case_a(), simulate_case_b()
+
 ## Knowledge Gaps
-- **6 isolated node(s):** `PYTHONPATH`, `PYTHONPATH`, `PYTHONPATH`, `test_single_echo`, `capture_byte` (+1 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3738 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **87 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **8 isolated node(s):** `PYTHONPATH`, `PYTHONPATH`, `check_fhr`, `send_peak`, `PYTHONPATH` (+3 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 4845 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **152 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `compute_beat_metrics()` connect `compute_beat_metrics` to `CalibrationBank`, `src/fpga_int_model.py`, `corrected/src/causal_pipeline.py`, `code/src/causal_pipeline.py`, `reference_model/causal_pipeline.py`, `det_sos`, `FETAL_ECG_PRE_FPGA_CORRECTED_PACKAGE/11_source_code/baseline/causal_pipeline.py`, `packages/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/causal_pipeline.py`, `previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/baseline/causal_pipeline.py`, `compute_waveform_metrics`, `FETAL_ECG_FINAL_PRE_RTL_VERIFICATION_PACKAGE/11_source_code/baseline/causal_pipeline.py`, `compare_fhr`, `previous_package_extracted/FETAL_ECG_PRE_FPGA_VALIDATION_PACKAGE/11_source_code/tools/run_raw_qrs_vs_fhr_study.py`, `sys`, `TestComputeBeatMetrics`, `match_beats`, `benchmarks/run_causal_benchmark.py`, `code/src/run_causal_benchmark.py`, `CalibrationBank`, `src/run_causal_benchmark.py`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **What connects `PYTHONPATH`, `PYTHONPATH`, `PYTHONPATH` to the rest of the system?**
-  _6 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `CalibrationBank` be split into smaller, more focused modules?**
-  _Cohesion score 0.03694440788030363 - nodes in this community are weakly interconnected._
-- **Why does `_pad_signal()` connect `fecg/methods/swt_lms_ssnf.py` to `numpy`?**
+- **Why does `test_silent_warmup_detector_lockout_vulnerability()` connect `test_silent_warmup_detector_lockout_vulnerability` to `CalibrationBank`, `test_adversarial_empirical_challenge.py`, `Gate 2 Verification Handoff Report`, `1.2 Adversarial Verification Findings`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **What connects `PYTHONPATH`, `PYTHONPATH`, `check_fhr` to the rest of the system?**
+  _8 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `CalibrationBank` be split into smaller, more focused modules?**
+  _Cohesion score 0.039598697760946114 - nodes in this community are weakly interconnected._
+- **Why does `preprocess()` connect `detect_fetal_qrs` to `CalibrationBank`, `time`, `sys`, `benchmarks/run_causal_benchmark.py`, `compute_waveform_metrics`, `src/run_causal_benchmark.py`, `code/src/run_causal_benchmark.py`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Should `src/fpga_int_model.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.06189640035118525 - nodes in this community are weakly interconnected._
-- **Why does `load_test_case()` connect `compare_fhr` to `build_mixture`, `os`?**
+  _Cohesion score 0.06086956521739131 - nodes in this community are weakly interconnected._
+- **Why does `test_multiple_detections_single_reference_candidate()` connect `sys` to `CalibrationBank`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Should `regression/test_pre_fpga_regression.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.057912457912457915 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08461538461538462 - nodes in this community are weakly interconnected._

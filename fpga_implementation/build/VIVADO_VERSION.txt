@@ -1,0 +1,30 @@
+================================================================================
+AMD VIVADO DESIGN SUITE TOOLCHAIN VERSION & TARGET HARDWARE PLATFORM
+================================================================================
+
+Toolchain Information:
+  Vivado Version:       Vivado v2025.2 (64-bit)
+  Software Build:       6299465
+  Build Date:           Fri Nov 14 19:35:11 GMT 2025
+  IP Build:             6300035 on Fri Nov 14 10:48:45 MST 2025
+  SharedData Build:     6298862 on Thu Nov 13 04:50:51 MST 2025
+  Hardware Server:      Xilinx hw_server v2025.2 (Build date: Oct 28 2025 at 10:03:13)
+  Core Scope Server:    Xilinx cs_server v2025.2.0 (Build date: Nov 14 2025-04:46:52, Build 2025.2.1763075812)
+
+Target FPGA Hardware Platform:
+  Device Family:        AMD Spartan-7
+  Part Number:          XC7S50-1CSGA324C (xc7s50csga324-1)
+  Speed Grade:          -1
+  Package:              CSGA324
+  Development Board:    RealDigital Boolean Board (Rev B)
+  System Clock:         100.0 MHz on-board oscillator (Pin mclk / H4)
+  DSP Clock (Derived):  25.0 MHz synchronous pipeline clock (BUFG-divided from 100 MHz)
+  Host Interface:       FTDI USB-UART Bridge at 115,200 baud, 8-N-1 (COM5)
+  Programming Cable:    On-board JTAG via FTDI USB (JTAG ID: xc7s50_0, target: 887238250157A)
+
+Operating System:
+  OS:                   Microsoft Windows 11 Home / Pro (64-bit)
+  Shell:                PowerShell / CMD
+  Python Environment:   Python 3.13.0 (with NumPy, SciPy, PySerial)
+
+================================================================================

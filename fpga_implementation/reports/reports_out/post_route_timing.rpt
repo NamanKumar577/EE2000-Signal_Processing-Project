@@ -1,0 +1,2284 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Wed Nov  4 18:46:15 2026
+| Host         : LAPTOP-JP0HJTKD running 64-bit major release  (build 9200)
+| Command      : report_timing_summary -delay_type min_max -report_unconstrained -check_timing_verbose -max_paths 10 -input_pins -routable_nets -file D:/signal_project/fpga_implementation/reports/reports_out/post_route_timing.rpt
+| Design       : fecg_single_channel_top
+| Device       : 7s50-csga324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Summary Report
+
+------------------------------------------------------------------------------------------------
+| Timer Settings
+| --------------
+------------------------------------------------------------------------------------------------
+
+  Enable Multi Corner Analysis               :  Yes
+  Enable Pessimism Removal                   :  Yes
+  Pessimism Removal Resolution               :  Nearest Common Node
+  Enable Input Delay Default Clock           :  No
+  Enable Preset / Clear Arcs                 :  No
+  Disable Flight Delays                      :  No
+  Ignore I/O Paths                           :  No
+  Timing Early Launch at Borrowing Latches   :  No
+  Borrow Time for Max Delay Exceptions       :  Yes
+  Merge Timing Exceptions                    :  Yes
+  Inter-SLR Compensation                     :  Conservative
+
+  Corner  Analyze    Analyze    
+  Name    Max Paths  Min Paths  
+  ------  ---------  ---------  
+  Slow    Yes        Yes        
+  Fast    Yes        Yes        
+
+
+------------------------------------------------------------------------------------------------
+| Report Methodology
+| ------------------
+------------------------------------------------------------------------------------------------
+
+No report available as report_methodology has not been run prior. Run report_methodology on the current design for the summary of methodology violations.
+
+
+
+check_timing report
+
+Table of Contents
+-----------------
+1. checking no_clock (0)
+2. checking constant_clock (0)
+3. checking pulse_width_clock (0)
+4. checking unconstrained_internal_endpoints (0)
+5. checking no_input_delay (0)
+6. checking no_output_delay (0)
+7. checking multiple_clock (0)
+8. checking generated_clocks (0)
+9. checking loops (0)
+10. checking partial_input_delay (0)
+11. checking partial_output_delay (0)
+12. checking latch_loops (0)
+
+1. checking no_clock (0)
+------------------------
+ There are 0 register/latch pins with no clock.
+
+
+2. checking constant_clock (0)
+------------------------------
+ There are 0 register/latch pins with constant_clock.
+
+
+3. checking pulse_width_clock (0)
+---------------------------------
+ There are 0 register/latch pins which need pulse_width check
+
+
+4. checking unconstrained_internal_endpoints (0)
+------------------------------------------------
+ There are 0 pins that are not constrained for maximum delay.
+
+ There are 0 pins that are not constrained for maximum delay due to constant clock.
+
+
+5. checking no_input_delay (0)
+------------------------------
+ There are 0 input ports with no input delay specified.
+
+ There are 0 input ports with no input delay but user has a false path constraint.
+
+
+6. checking no_output_delay (0)
+-------------------------------
+ There are 0 ports with no output delay specified.
+
+ There are 0 ports with no output delay but user has a false path constraint
+
+ There are 0 ports with no output delay but with a timing clock defined on it or propagating through it
+
+
+7. checking multiple_clock (0)
+------------------------------
+ There are 0 register/latch pins with multiple clocks.
+
+
+8. checking generated_clocks (0)
+--------------------------------
+ There are 0 generated clocks that are not connected to a clock source.
+
+
+9. checking loops (0)
+---------------------
+ There are 0 combinational loops in the design.
+
+
+10. checking partial_input_delay (0)
+------------------------------------
+ There are 0 input ports with partial input delay specified.
+
+
+11. checking partial_output_delay (0)
+-------------------------------------
+ There are 0 ports with partial output delay specified.
+
+
+12. checking latch_loops (0)
+----------------------------
+ There are 0 combinational latch loops in the design through latch input
+
+
+
+------------------------------------------------------------------------------------------------
+| Design Timing Summary
+| ---------------------
+------------------------------------------------------------------------------------------------
+
+    WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+    -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+    -12.926    -8348.904                   1422                 8830        0.173        0.000                      0                 8830        4.500        0.000                       0                  2675  
+
+
+Timing constraints are not met.
+
+
+------------------------------------------------------------------------------------------------
+| Clock Summary
+| -------------
+------------------------------------------------------------------------------------------------
+
+Clock  Waveform(ns)       Period(ns)      Frequency(MHz)
+-----  ------------       ----------      --------------
+clk    {0.000 5.000}      10.000          100.000         
+
+
+------------------------------------------------------------------------------------------------
+| Intra Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+-----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+clk               -12.926    -8348.904                   1422                 8830        0.173        0.000                      0                 8830        4.500        0.000                       0                  2675  
+
+
+------------------------------------------------------------------------------------------------
+| Inter Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Other Path Groups Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    ----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| User Ignored Path Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock    
+----------    ----------    --------    
+
+
+------------------------------------------------------------------------------------------------
+| Unconstrained Path Table
+| ------------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock    
+----------    ----------    --------    
+
+
+------------------------------------------------------------------------------------------------
+| Timing Details
+| --------------
+------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk
+  To Clock:  clk
+
+Setup :         1422  Failing Endpoints,  Worst Slack      -12.926ns,  Total Violation    -8348.904ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.173ns,  Total Violation        0.000ns
+PW    :            0  Failing Endpoints,  Worst Slack        4.500ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (VIOLATED) :        -12.926ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[11]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.873ns  (logic 8.126ns (35.526%)  route 14.747ns (64.474%))
+  Logic Levels:           33  (CARRY4=16 LUT2=2 LUT3=2 LUT4=5 LUT5=4 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.230    20.978    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X29Y92                                                      r  u_fusion/med_rr_out[2]_i_29/I1
+    SLICE_X29Y92         LUT3 (Prop_lut3_I1_O)        0.150    21.128 r  u_fusion/med_rr_out[2]_i_29/O
+                         net (fo=1, routed)           0.000    21.128    u_fusion/med_rr_out[2]_i_29_n_0
+    SLICE_X29Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_17/DI[1]
+    SLICE_X29Y92         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.470    21.598 r  u_fusion/med_rr_out_reg[2]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.598    u_fusion/med_rr_out_reg[2]_i_17_n_0
+    SLICE_X29Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_17/CI
+    SLICE_X29Y93         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.712 r  u_fusion/med_rr_out_reg[6]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.712    u_fusion/med_rr_out_reg[6]_i_17_n_0
+    SLICE_X29Y94                                                      r  u_fusion/med_rr_out_reg[10]_i_17/CI
+    SLICE_X29Y94         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.826 r  u_fusion/med_rr_out_reg[10]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.826    u_fusion/med_rr_out_reg[10]_i_17_n_0
+    SLICE_X29Y95                                                      r  u_fusion/med_rr_out_reg[14]_i_22/CI
+    SLICE_X29Y95         CARRY4 (Prop_carry4_CI_O[0])
+                                                      0.222    22.048 r  u_fusion/med_rr_out_reg[14]_i_22/O[0]
+                         net (fo=1, routed)           0.612    22.660    u_fusion/med_rr_out_reg[14]_i_22_n_7
+    SLICE_X28Y98                                                      r  u_fusion/med_rr_out[11]_i_7/I1
+    SLICE_X28Y98         LUT5 (Prop_lut5_I1_O)        0.299    22.959 r  u_fusion/med_rr_out[11]_i_7/O
+                         net (fo=1, routed)           0.291    23.251    u_fusion/med_rr_out[11]_i_7_n_0
+    SLICE_X29Y98                                                      r  u_fusion/med_rr_out[11]_i_3/I2
+    SLICE_X29Y98         LUT5 (Prop_lut5_I2_O)        0.124    23.375 r  u_fusion/med_rr_out[11]_i_3/O
+                         net (fo=1, routed)           0.348    23.722    u_fusion/med_rr_out[11]_i_3_n_0
+    SLICE_X28Y98                                                      r  u_fusion/med_rr_out[11]_i_1/I2
+    SLICE_X28Y98         LUT5 (Prop_lut5_I2_O)        0.124    23.846 r  u_fusion/med_rr_out[11]_i_1/O
+                         net (fo=1, routed)           0.000    23.846    u_fusion/comb_median[11]
+    SLICE_X28Y98         FDRE                                         r  u_fusion/med_rr_out_reg[11]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X28Y98         FDRE                                         r  u_fusion/med_rr_out_reg[11]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X28Y98         FDRE (Setup_fdre_C_D)        0.031    10.920    u_fusion/med_rr_out_reg[11]
+  -------------------------------------------------------------------
+                         required time                         10.920    
+                         arrival time                         -23.846    
+  -------------------------------------------------------------------
+                         slack                                -12.926    
+
+Slack (VIOLATED) :        -12.834ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[10]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.779ns  (logic 8.146ns (35.760%)  route 14.633ns (64.240%))
+  Logic Levels:           32  (CARRY4=15 LUT2=2 LUT3=1 LUT4=5 LUT5=5 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.073    20.821    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out[2]_i_26/I3
+    SLICE_X31Y92         LUT5 (Prop_lut5_I3_O)        0.124    20.945 r  u_fusion/med_rr_out[2]_i_26/O
+                         net (fo=1, routed)           0.000    20.945    u_fusion/med_rr_out[2]_i_26_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_16/S[0]
+    SLICE_X31Y92         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    21.477 r  u_fusion/med_rr_out_reg[2]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.477    u_fusion/med_rr_out_reg[2]_i_16_n_0
+    SLICE_X31Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_16/CI
+    SLICE_X31Y93         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.591 r  u_fusion/med_rr_out_reg[6]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.591    u_fusion/med_rr_out_reg[6]_i_16_n_0
+    SLICE_X31Y94                                                      r  u_fusion/med_rr_out_reg[10]_i_16/CI
+    SLICE_X31Y94         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313    21.904 r  u_fusion/med_rr_out_reg[10]_i_16/O[3]
+                         net (fo=1, routed)           0.711    22.614    u_fusion/comb_median1[11]
+    SLICE_X29Y96                                                      r  u_fusion/med_rr_out[10]_i_7/I0
+    SLICE_X29Y96         LUT5 (Prop_lut5_I0_O)        0.306    22.920 r  u_fusion/med_rr_out[10]_i_7/O
+                         net (fo=1, routed)           0.151    23.071    u_fusion/med_rr_out[10]_i_7_n_0
+    SLICE_X29Y96                                                      r  u_fusion/med_rr_out[10]_i_3/I2
+    SLICE_X29Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.195 r  u_fusion/med_rr_out[10]_i_3/O
+                         net (fo=1, routed)           0.433    23.628    u_fusion/med_rr_out[10]_i_3_n_0
+    SLICE_X29Y96                                                      r  u_fusion/med_rr_out[10]_i_1/I2
+    SLICE_X29Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.752 r  u_fusion/med_rr_out[10]_i_1/O
+                         net (fo=1, routed)           0.000    23.752    u_fusion/comb_median[10]
+    SLICE_X29Y96         FDRE                                         r  u_fusion/med_rr_out_reg[10]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X29Y96         FDRE                                         r  u_fusion/med_rr_out_reg[10]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X29Y96         FDRE (Setup_fdre_C_D)        0.029    10.918    u_fusion/med_rr_out_reg[10]
+  -------------------------------------------------------------------
+                         required time                         10.918    
+                         arrival time                         -23.752    
+  -------------------------------------------------------------------
+                         slack                                -12.834    
+
+Slack (VIOLATED) :        -12.780ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[14]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.725ns  (logic 8.260ns (36.347%)  route 14.465ns (63.653%))
+  Logic Levels:           33  (CARRY4=16 LUT2=2 LUT3=1 LUT4=5 LUT5=5 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.073    20.821    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out[2]_i_26/I3
+    SLICE_X31Y92         LUT5 (Prop_lut5_I3_O)        0.124    20.945 r  u_fusion/med_rr_out[2]_i_26/O
+                         net (fo=1, routed)           0.000    20.945    u_fusion/med_rr_out[2]_i_26_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_16/S[0]
+    SLICE_X31Y92         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    21.477 r  u_fusion/med_rr_out_reg[2]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.477    u_fusion/med_rr_out_reg[2]_i_16_n_0
+    SLICE_X31Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_16/CI
+    SLICE_X31Y93         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.591 r  u_fusion/med_rr_out_reg[6]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.591    u_fusion/med_rr_out_reg[6]_i_16_n_0
+    SLICE_X31Y94                                                      r  u_fusion/med_rr_out_reg[10]_i_16/CI
+    SLICE_X31Y94         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.705 r  u_fusion/med_rr_out_reg[10]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.705    u_fusion/med_rr_out_reg[10]_i_16_n_0
+    SLICE_X31Y95                                                      r  u_fusion/med_rr_out_reg[14]_i_21/CI
+    SLICE_X31Y95         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313    22.018 r  u_fusion/med_rr_out_reg[14]_i_21/O[3]
+                         net (fo=1, routed)           0.709    22.727    u_fusion/comb_median1[15]
+    SLICE_X29Y97                                                      r  u_fusion/med_rr_out[14]_i_9/I0
+    SLICE_X29Y97         LUT5 (Prop_lut5_I0_O)        0.306    23.033 r  u_fusion/med_rr_out[14]_i_9/O
+                         net (fo=1, routed)           0.263    23.296    u_fusion/med_rr_out[14]_i_9_n_0
+    SLICE_X29Y97                                                      r  u_fusion/med_rr_out[14]_i_4/I2
+    SLICE_X29Y97         LUT5 (Prop_lut5_I2_O)        0.124    23.420 r  u_fusion/med_rr_out[14]_i_4/O
+                         net (fo=1, routed)           0.154    23.574    u_fusion/med_rr_out[14]_i_4_n_0
+    SLICE_X29Y97                                                      r  u_fusion/med_rr_out[14]_i_1/I2
+    SLICE_X29Y97         LUT5 (Prop_lut5_I2_O)        0.124    23.698 r  u_fusion/med_rr_out[14]_i_1/O
+                         net (fo=1, routed)           0.000    23.698    u_fusion/comb_median[14]
+    SLICE_X29Y97         FDRE                                         r  u_fusion/med_rr_out_reg[14]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X29Y97         FDRE                                         r  u_fusion/med_rr_out_reg[14]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X29Y97         FDRE (Setup_fdre_C_D)        0.029    10.918    u_fusion/med_rr_out_reg[14]
+  -------------------------------------------------------------------
+                         required time                         10.918    
+                         arrival time                         -23.698    
+  -------------------------------------------------------------------
+                         slack                                -12.780    
+
+Slack (VIOLATED) :        -12.760ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[9]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.707ns  (logic 8.032ns (35.373%)  route 14.675ns (64.627%))
+  Logic Levels:           32  (CARRY4=15 LUT2=2 LUT3=2 LUT4=5 LUT5=4 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.230    20.978    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X29Y92                                                      r  u_fusion/med_rr_out[2]_i_29/I1
+    SLICE_X29Y92         LUT3 (Prop_lut3_I1_O)        0.150    21.128 r  u_fusion/med_rr_out[2]_i_29/O
+                         net (fo=1, routed)           0.000    21.128    u_fusion/med_rr_out[2]_i_29_n_0
+    SLICE_X29Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_17/DI[1]
+    SLICE_X29Y92         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.470    21.598 r  u_fusion/med_rr_out_reg[2]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.598    u_fusion/med_rr_out_reg[2]_i_17_n_0
+    SLICE_X29Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_17/CI
+    SLICE_X29Y93         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.712 r  u_fusion/med_rr_out_reg[6]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.712    u_fusion/med_rr_out_reg[6]_i_17_n_0
+    SLICE_X29Y94                                                      r  u_fusion/med_rr_out_reg[10]_i_17/CI
+    SLICE_X29Y94         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.239    21.951 r  u_fusion/med_rr_out_reg[10]_i_17/O[2]
+                         net (fo=1, routed)           0.578    22.529    u_fusion/med_rr_out_reg[10]_i_17_n_5
+    SLICE_X31Y96                                                      r  u_fusion/med_rr_out[9]_i_7/I1
+    SLICE_X31Y96         LUT5 (Prop_lut5_I1_O)        0.302    22.831 r  u_fusion/med_rr_out[9]_i_7/O
+                         net (fo=1, routed)           0.151    22.982    u_fusion/med_rr_out[9]_i_7_n_0
+    SLICE_X31Y96                                                      r  u_fusion/med_rr_out[9]_i_3/I2
+    SLICE_X31Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.106 r  u_fusion/med_rr_out[9]_i_3/O
+                         net (fo=1, routed)           0.449    23.556    u_fusion/med_rr_out[9]_i_3_n_0
+    SLICE_X37Y96                                                      r  u_fusion/med_rr_out[9]_i_1/I2
+    SLICE_X37Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.680 r  u_fusion/med_rr_out[9]_i_1/O
+                         net (fo=1, routed)           0.000    23.680    u_fusion/comb_median[9]
+    SLICE_X37Y96         FDRE                                         r  u_fusion/med_rr_out_reg[9]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X37Y96         FDRE                                         r  u_fusion/med_rr_out_reg[9]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X37Y96         FDRE (Setup_fdre_C_D)        0.031    10.920    u_fusion/med_rr_out_reg[9]
+  -------------------------------------------------------------------
+                         required time                         10.920    
+                         arrival time                         -23.680    
+  -------------------------------------------------------------------
+                         slack                                -12.760    
+
+Slack (VIOLATED) :        -12.745ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[12]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.690ns  (logic 8.242ns (36.324%)  route 14.448ns (63.676%))
+  Logic Levels:           33  (CARRY4=16 LUT2=2 LUT3=2 LUT4=5 LUT5=4 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.230    20.978    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X29Y92                                                      r  u_fusion/med_rr_out[2]_i_29/I1
+    SLICE_X29Y92         LUT3 (Prop_lut3_I1_O)        0.150    21.128 r  u_fusion/med_rr_out[2]_i_29/O
+                         net (fo=1, routed)           0.000    21.128    u_fusion/med_rr_out[2]_i_29_n_0
+    SLICE_X29Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_17/DI[1]
+    SLICE_X29Y92         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.470    21.598 r  u_fusion/med_rr_out_reg[2]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.598    u_fusion/med_rr_out_reg[2]_i_17_n_0
+    SLICE_X29Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_17/CI
+    SLICE_X29Y93         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.712 r  u_fusion/med_rr_out_reg[6]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.712    u_fusion/med_rr_out_reg[6]_i_17_n_0
+    SLICE_X29Y94                                                      r  u_fusion/med_rr_out_reg[10]_i_17/CI
+    SLICE_X29Y94         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.826 r  u_fusion/med_rr_out_reg[10]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.826    u_fusion/med_rr_out_reg[10]_i_17_n_0
+    SLICE_X29Y95                                                      r  u_fusion/med_rr_out_reg[14]_i_22/CI
+    SLICE_X29Y95         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.334    22.160 r  u_fusion/med_rr_out_reg[14]_i_22/O[1]
+                         net (fo=1, routed)           0.347    22.507    u_fusion/med_rr_out_reg[14]_i_22_n_6
+    SLICE_X29Y96                                                      r  u_fusion/med_rr_out[12]_i_7/I1
+    SLICE_X29Y96         LUT5 (Prop_lut5_I1_O)        0.303    22.810 r  u_fusion/med_rr_out[12]_i_7/O
+                         net (fo=1, routed)           0.302    23.112    u_fusion/med_rr_out[12]_i_7_n_0
+    SLICE_X28Y97                                                      r  u_fusion/med_rr_out[12]_i_3/I2
+    SLICE_X28Y97         LUT5 (Prop_lut5_I2_O)        0.124    23.236 r  u_fusion/med_rr_out[12]_i_3/O
+                         net (fo=1, routed)           0.303    23.539    u_fusion/med_rr_out[12]_i_3_n_0
+    SLICE_X28Y96                                                      r  u_fusion/med_rr_out[12]_i_1/I2
+    SLICE_X28Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.663 r  u_fusion/med_rr_out[12]_i_1/O
+                         net (fo=1, routed)           0.000    23.663    u_fusion/comb_median[12]
+    SLICE_X28Y96         FDRE                                         r  u_fusion/med_rr_out_reg[12]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X28Y96         FDRE                                         r  u_fusion/med_rr_out_reg[12]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X28Y96         FDRE (Setup_fdre_C_D)        0.029    10.918    u_fusion/med_rr_out_reg[12]
+  -------------------------------------------------------------------
+                         required time                         10.918    
+                         arrival time                         -23.663    
+  -------------------------------------------------------------------
+                         slack                                -12.745    
+
+Slack (VIOLATED) :        -12.622ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[4]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.567ns  (logic 8.050ns (35.672%)  route 14.517ns (64.328%))
+  Logic Levels:           31  (CARRY4=14 LUT2=2 LUT3=1 LUT4=5 LUT5=5 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.073    20.821    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out[2]_i_26/I3
+    SLICE_X31Y92         LUT5 (Prop_lut5_I3_O)        0.124    20.945 r  u_fusion/med_rr_out[2]_i_26/O
+                         net (fo=1, routed)           0.000    20.945    u_fusion/med_rr_out[2]_i_26_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_16/S[0]
+    SLICE_X31Y92         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    21.477 r  u_fusion/med_rr_out_reg[2]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.477    u_fusion/med_rr_out_reg[2]_i_16_n_0
+    SLICE_X31Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_16/CI
+    SLICE_X31Y93         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.334    21.811 r  u_fusion/med_rr_out_reg[6]_i_16/O[1]
+                         net (fo=1, routed)           0.575    22.386    u_fusion/comb_median1[5]
+    SLICE_X28Y95                                                      r  u_fusion/med_rr_out[4]_i_7/I0
+    SLICE_X28Y95         LUT5 (Prop_lut5_I0_O)        0.303    22.689 r  u_fusion/med_rr_out[4]_i_7/O
+                         net (fo=1, routed)           0.159    22.848    u_fusion/med_rr_out[4]_i_7_n_0
+    SLICE_X28Y95                                                      r  u_fusion/med_rr_out[4]_i_3/I2
+    SLICE_X28Y95         LUT5 (Prop_lut5_I2_O)        0.124    22.972 r  u_fusion/med_rr_out[4]_i_3/O
+                         net (fo=1, routed)           0.444    23.416    u_fusion/med_rr_out[4]_i_3_n_0
+    SLICE_X28Y95                                                      r  u_fusion/med_rr_out[4]_i_1/I2
+    SLICE_X28Y95         LUT5 (Prop_lut5_I2_O)        0.124    23.540 r  u_fusion/med_rr_out[4]_i_1/O
+                         net (fo=1, routed)           0.000    23.540    u_fusion/comb_median[4]
+    SLICE_X28Y95         FDRE                                         r  u_fusion/med_rr_out_reg[4]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X28Y95         FDRE                                         r  u_fusion/med_rr_out_reg[4]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X28Y95         FDRE (Setup_fdre_C_D)        0.029    10.918    u_fusion/med_rr_out_reg[4]
+  -------------------------------------------------------------------
+                         required time                         10.918    
+                         arrival time                         -23.540    
+  -------------------------------------------------------------------
+                         slack                                -12.622    
+
+Slack (VIOLATED) :        -12.615ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[6]/D
+                            (rising edge-triggered cell FDSE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.560ns  (logic 8.032ns (35.603%)  route 14.528ns (64.397%))
+  Logic Levels:           31  (CARRY4=14 LUT2=2 LUT3=1 LUT4=5 LUT5=5 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.073    20.821    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out[2]_i_26/I3
+    SLICE_X31Y92         LUT5 (Prop_lut5_I3_O)        0.124    20.945 r  u_fusion/med_rr_out[2]_i_26/O
+                         net (fo=1, routed)           0.000    20.945    u_fusion/med_rr_out[2]_i_26_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_16/S[0]
+    SLICE_X31Y92         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    21.477 r  u_fusion/med_rr_out_reg[2]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.477    u_fusion/med_rr_out_reg[2]_i_16_n_0
+    SLICE_X31Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_16/CI
+    SLICE_X31Y93         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313    21.790 r  u_fusion/med_rr_out_reg[6]_i_16/O[3]
+                         net (fo=1, routed)           0.586    22.376    u_fusion/comb_median1[7]
+    SLICE_X28Y94                                                      r  u_fusion/med_rr_out[6]_i_7/I0
+    SLICE_X28Y94         LUT5 (Prop_lut5_I0_O)        0.306    22.682 r  u_fusion/med_rr_out[6]_i_7/O
+                         net (fo=1, routed)           0.159    22.841    u_fusion/med_rr_out[6]_i_7_n_0
+    SLICE_X28Y94                                                      r  u_fusion/med_rr_out[6]_i_3/I2
+    SLICE_X28Y94         LUT5 (Prop_lut5_I2_O)        0.124    22.965 r  u_fusion/med_rr_out[6]_i_3/O
+                         net (fo=1, routed)           0.444    23.409    u_fusion/med_rr_out[6]_i_3_n_0
+    SLICE_X28Y94                                                      r  u_fusion/med_rr_out[6]_i_1/I2
+    SLICE_X28Y94         LUT5 (Prop_lut5_I2_O)        0.124    23.533 r  u_fusion/med_rr_out[6]_i_1/O
+                         net (fo=1, routed)           0.000    23.533    u_fusion/comb_median[6]
+    SLICE_X28Y94         FDSE                                         r  u_fusion/med_rr_out_reg[6]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X28Y94         FDSE                                         r  u_fusion/med_rr_out_reg[6]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X28Y94         FDSE (Setup_fdse_C_D)        0.029    10.918    u_fusion/med_rr_out_reg[6]
+  -------------------------------------------------------------------
+                         required time                         10.918    
+                         arrival time                         -23.533    
+  -------------------------------------------------------------------
+                         slack                                -12.615    
+
+Slack (VIOLATED) :        -12.600ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[7]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.547ns  (logic 8.048ns (35.695%)  route 14.499ns (64.305%))
+  Logic Levels:           32  (CARRY4=15 LUT2=2 LUT3=1 LUT4=5 LUT5=5 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.073    20.821    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out[2]_i_26/I3
+    SLICE_X31Y92         LUT5 (Prop_lut5_I3_O)        0.124    20.945 r  u_fusion/med_rr_out[2]_i_26/O
+                         net (fo=1, routed)           0.000    20.945    u_fusion/med_rr_out[2]_i_26_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_16/S[0]
+    SLICE_X31Y92         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    21.477 r  u_fusion/med_rr_out_reg[2]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.477    u_fusion/med_rr_out_reg[2]_i_16_n_0
+    SLICE_X31Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_16/CI
+    SLICE_X31Y93         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.591 r  u_fusion/med_rr_out_reg[6]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.591    u_fusion/med_rr_out_reg[6]_i_16_n_0
+    SLICE_X31Y94                                                      r  u_fusion/med_rr_out_reg[10]_i_16/CI
+    SLICE_X31Y94         CARRY4 (Prop_carry4_CI_O[0])
+                                                      0.222    21.813 r  u_fusion/med_rr_out_reg[10]_i_16/O[0]
+                         net (fo=1, routed)           0.722    22.534    u_fusion/comb_median1[8]
+    SLICE_X28Y96                                                      r  u_fusion/med_rr_out[7]_i_7/I0
+    SLICE_X28Y96         LUT5 (Prop_lut5_I0_O)        0.299    22.833 r  u_fusion/med_rr_out[7]_i_7/O
+                         net (fo=1, routed)           0.280    23.113    u_fusion/med_rr_out[7]_i_7_n_0
+    SLICE_X28Y96                                                      r  u_fusion/med_rr_out[7]_i_3/I2
+    SLICE_X28Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.237 r  u_fusion/med_rr_out[7]_i_3/O
+                         net (fo=1, routed)           0.159    23.396    u_fusion/med_rr_out[7]_i_3_n_0
+    SLICE_X28Y96                                                      r  u_fusion/med_rr_out[7]_i_1/I2
+    SLICE_X28Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.520 r  u_fusion/med_rr_out[7]_i_1/O
+                         net (fo=1, routed)           0.000    23.520    u_fusion/comb_median[7]
+    SLICE_X28Y96         FDRE                                         r  u_fusion/med_rr_out_reg[7]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X28Y96         FDRE                                         r  u_fusion/med_rr_out_reg[7]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X28Y96         FDRE (Setup_fdre_C_D)        0.031    10.920    u_fusion/med_rr_out_reg[7]
+  -------------------------------------------------------------------
+                         required time                         10.920    
+                         arrival time                         -23.520    
+  -------------------------------------------------------------------
+                         slack                                -12.600    
+
+Slack (VIOLATED) :        -12.551ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[5]/D
+                            (rising edge-triggered cell FDSE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.496ns  (logic 7.954ns (35.358%)  route 14.542ns (64.642%))
+  Logic Levels:           31  (CARRY4=14 LUT2=2 LUT3=1 LUT4=5 LUT5=5 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.073    20.821    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out[2]_i_26/I3
+    SLICE_X31Y92         LUT5 (Prop_lut5_I3_O)        0.124    20.945 r  u_fusion/med_rr_out[2]_i_26/O
+                         net (fo=1, routed)           0.000    20.945    u_fusion/med_rr_out[2]_i_26_n_0
+    SLICE_X31Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_16/S[0]
+    SLICE_X31Y92         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    21.477 r  u_fusion/med_rr_out_reg[2]_i_16/CO[3]
+                         net (fo=1, routed)           0.000    21.477    u_fusion/med_rr_out_reg[2]_i_16_n_0
+    SLICE_X31Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_16/CI
+    SLICE_X31Y93         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.239    21.716 r  u_fusion/med_rr_out_reg[6]_i_16/O[2]
+                         net (fo=1, routed)           0.619    22.335    u_fusion/comb_median1[6]
+    SLICE_X29Y91                                                      r  u_fusion/med_rr_out[5]_i_7/I0
+    SLICE_X29Y91         LUT5 (Prop_lut5_I0_O)        0.302    22.637 r  u_fusion/med_rr_out[5]_i_7/O
+                         net (fo=1, routed)           0.151    22.788    u_fusion/med_rr_out[5]_i_7_n_0
+    SLICE_X29Y91                                                      r  u_fusion/med_rr_out[5]_i_3/I2
+    SLICE_X29Y91         LUT5 (Prop_lut5_I2_O)        0.124    22.912 r  u_fusion/med_rr_out[5]_i_3/O
+                         net (fo=1, routed)           0.433    23.345    u_fusion/med_rr_out[5]_i_3_n_0
+    SLICE_X29Y91                                                      r  u_fusion/med_rr_out[5]_i_1/I2
+    SLICE_X29Y91         LUT5 (Prop_lut5_I2_O)        0.124    23.469 r  u_fusion/med_rr_out[5]_i_1/O
+                         net (fo=1, routed)           0.000    23.469    u_fusion/comb_median[5]
+    SLICE_X29Y91         FDSE                                         r  u_fusion/med_rr_out_reg[5]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X29Y91         FDSE                                         r  u_fusion/med_rr_out_reg[5]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X29Y91         FDSE (Setup_fdse_C_D)        0.029    10.918    u_fusion/med_rr_out_reg[5]
+  -------------------------------------------------------------------
+                         required time                         10.918    
+                         arrival time                         -23.469    
+  -------------------------------------------------------------------
+                         slack                                -12.551    
+
+Slack (VIOLATED) :        -12.541ns  (required time - arrival time)
+  Source:                 u_localizer/raw_peak_out_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_fusion/med_rr_out_reg[8]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        22.534ns  (logic 8.128ns (36.070%)  route 14.406ns (63.930%))
+  Logic Levels:           32  (CARRY4=15 LUT2=2 LUT3=2 LUT4=5 LUT5=4 LUT6=4)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 10.924 - 10.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.973     0.973    u_localizer/clk
+    SLICE_X38Y84         FDRE                                         r  u_localizer/raw_peak_out_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y84         FDRE (Prop_fdre_C_Q)         0.518     1.491 r  u_localizer/raw_peak_out_reg[1]/Q
+                         net (fo=4, routed)           0.602     2.093    u_localizer/Q[1]
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out[3]_i_4/I0
+    SLICE_X35Y86         LUT2 (Prop_lut2_I0_O)        0.124     2.217 r  u_localizer/raw_rr_out[3]_i_4/O
+                         net (fo=1, routed)           0.000     2.217    u_localizer/raw_rr_out[3]_i_4_n_0
+    SLICE_X35Y86                                                      r  u_localizer/raw_rr_out_reg[3]_i_1/S[1]
+    SLICE_X35Y86         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     2.767 r  u_localizer/raw_rr_out_reg[3]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.767    u_localizer/raw_rr_out_reg[3]_i_1_n_0
+    SLICE_X35Y87                                                      r  u_localizer/raw_rr_out_reg[7]_i_1/CI
+    SLICE_X35Y87         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.881 r  u_localizer/raw_rr_out_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.881    u_localizer/raw_rr_out_reg[7]_i_1_n_0
+    SLICE_X35Y88                                                      r  u_localizer/raw_rr_out_reg[11]_i_1/CI
+    SLICE_X35Y88         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     2.995 r  u_localizer/raw_rr_out_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     2.995    u_localizer/raw_rr_out_reg[11]_i_1_n_0
+    SLICE_X35Y89                                                      r  u_localizer/raw_rr_out_reg[15]_i_3/CI
+    SLICE_X35Y89         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.329     3.324 r  u_localizer/raw_rr_out_reg[15]_i_3/O[3]
+                         net (fo=15, routed)          0.513     3.837    u_localizer/calc_rr[15]
+    SLICE_X34Y89                                                      r  u_localizer/med_rr_out[15]_i_44/I0
+    SLICE_X34Y89         LUT2 (Prop_lut2_I0_O)        0.306     4.143 r  u_localizer/med_rr_out[15]_i_44/O
+                         net (fo=5, routed)           0.687     4.831    u_localizer/fifo_count_reg[2]_rep_0
+    SLICE_X33Y89                                                      r  u_localizer/med_rr_out[15]_i_105/I2
+    SLICE_X33Y89         LUT4 (Prop_lut4_I2_O)        0.124     4.955 r  u_localizer/med_rr_out[15]_i_105/O
+                         net (fo=1, routed)           0.693     5.648    u_localizer/med_rr_out[15]_i_105_n_0
+    SLICE_X39Y90                                                      r  u_localizer/med_rr_out_reg[15]_i_45/DI[3]
+    SLICE_X39Y90         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385     6.033 r  u_localizer/med_rr_out_reg[15]_i_45/CO[3]
+                         net (fo=66, routed)          1.205     7.239    u_fusion/CO[0]
+    SLICE_X39Y93                                                      r  u_fusion/med_rr_out[13]_i_16/I2
+    SLICE_X39Y93         LUT4 (Prop_lut4_I2_O)        0.124     7.363 r  u_fusion/med_rr_out[13]_i_16/O
+                         net (fo=5, routed)           0.652     8.015    u_fusion/y[13]
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out[15]_i_101/I1
+    SLICE_X39Y92         LUT4 (Prop_lut4_I1_O)        0.124     8.139 r  u_fusion/med_rr_out[15]_i_101/O
+                         net (fo=1, routed)           0.000     8.139    u_fusion/med_rr_out[15]_i_101_n_0
+    SLICE_X39Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_43/S[2]
+    SLICE_X39Y92         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     8.537 r  u_fusion/med_rr_out_reg[15]_i_43/CO[3]
+                         net (fo=72, routed)          0.824     9.361    u_fusion/med_rr_out_reg[15]_i_43_n_0
+    SLICE_X40Y91                                                      r  u_fusion/med_rr_out[15]_i_177/I1
+    SLICE_X40Y91         LUT3 (Prop_lut3_I1_O)        0.124     9.485 f  u_fusion/med_rr_out[15]_i_177/O
+                         net (fo=2, routed)           0.451     9.936    u_fusion/med_rr_out[15]_i_177_n_0
+    SLICE_X42Y90                                                      f  u_fusion/med_rr_out[15]_i_132/I5
+    SLICE_X42Y90         LUT6 (Prop_lut6_I5_O)        0.124    10.060 r  u_fusion/med_rr_out[15]_i_132/O
+                         net (fo=1, routed)           0.637    10.697    u_fusion/med_rr_out[15]_i_132_n_0
+    SLICE_X36Y90                                                      r  u_fusion/med_rr_out_reg[15]_i_86/DI[1]
+    SLICE_X36Y90         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    11.204 r  u_fusion/med_rr_out_reg[15]_i_86/CO[3]
+                         net (fo=1, routed)           0.000    11.204    u_fusion/med_rr_out_reg[15]_i_86_n_0
+    SLICE_X36Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_41/CI
+    SLICE_X36Y91         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    11.318 r  u_fusion/med_rr_out_reg[15]_i_41/CO[3]
+                         net (fo=33, routed)          1.007    12.325    u_fusion/med_rr_out_reg[15]_i_41_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[2]_i_15/I0
+    SLICE_X34Y90         LUT6 (Prop_lut6_I0_O)        0.124    12.449 r  u_fusion/med_rr_out[2]_i_15/O
+                         net (fo=4, routed)           0.476    12.925    u_fusion/med_rr_out[2]_i_15_n_0
+    SLICE_X34Y90                                                      r  u_fusion/med_rr_out[15]_i_80/I5
+    SLICE_X34Y90         LUT6 (Prop_lut6_I5_O)        0.124    13.049 r  u_fusion/med_rr_out[15]_i_80/O
+                         net (fo=1, routed)           0.472    13.521    u_fusion/med_rr_out[15]_i_80_n_0
+    SLICE_X35Y91                                                      r  u_fusion/med_rr_out_reg[15]_i_32/DI[1]
+    SLICE_X35Y91         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    14.028 r  u_fusion/med_rr_out_reg[15]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    14.028    u_fusion/med_rr_out_reg[15]_i_32_n_0
+    SLICE_X35Y92                                                      r  u_fusion/med_rr_out_reg[15]_i_13/CI
+    SLICE_X35Y92         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.142 r  u_fusion/med_rr_out_reg[15]_i_13/CO[3]
+                         net (fo=37, routed)          1.136    15.278    u_fusion/med_rr_out_reg[15]_i_13_n_0
+    SLICE_X35Y95                                                      r  u_fusion/med_rr_out[8]_i_8/I4
+    SLICE_X35Y95         LUT5 (Prop_lut5_I4_O)        0.124    15.402 r  u_fusion/med_rr_out[8]_i_8/O
+                         net (fo=5, routed)           0.738    16.140    u_fusion/med_rr_out[8]_i_8_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out[14]_i_50/I2
+    SLICE_X33Y93         LUT4 (Prop_lut4_I2_O)        0.124    16.264 r  u_fusion/med_rr_out[14]_i_50/O
+                         net (fo=1, routed)           0.000    16.264    u_fusion/med_rr_out[14]_i_50_n_0
+    SLICE_X33Y93                                                      r  u_fusion/med_rr_out_reg[14]_i_15/S[0]
+    SLICE_X33Y93         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532    16.796 r  u_fusion/med_rr_out_reg[14]_i_15/CO[3]
+                         net (fo=17, routed)          1.178    17.974    u_fusion/p_2_in
+    SLICE_X34Y95                                                      r  u_fusion/med_rr_out[10]_i_4/I5
+    SLICE_X34Y95         LUT6 (Prop_lut6_I5_O)        0.124    18.098 r  u_fusion/med_rr_out[10]_i_4/O
+                         net (fo=6, routed)           0.993    19.091    u_fusion/cs[10]
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out[15]_i_57/I0
+    SLICE_X30Y94         LUT4 (Prop_lut4_I0_O)        0.124    19.215 r  u_fusion/med_rr_out[15]_i_57/O
+                         net (fo=1, routed)           0.000    19.215    u_fusion/med_rr_out[15]_i_57_n_0
+    SLICE_X30Y94                                                      r  u_fusion/med_rr_out_reg[15]_i_16/S[1]
+    SLICE_X30Y94         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    19.748 r  u_fusion/med_rr_out_reg[15]_i_16/CO[3]
+                         net (fo=34, routed)          1.230    20.978    u_fusion/med_rr_out_reg[15]_i_16_n_0
+    SLICE_X29Y92                                                      r  u_fusion/med_rr_out[2]_i_29/I1
+    SLICE_X29Y92         LUT3 (Prop_lut3_I1_O)        0.150    21.128 r  u_fusion/med_rr_out[2]_i_29/O
+                         net (fo=1, routed)           0.000    21.128    u_fusion/med_rr_out[2]_i_29_n_0
+    SLICE_X29Y92                                                      r  u_fusion/med_rr_out_reg[2]_i_17/DI[1]
+    SLICE_X29Y92         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.470    21.598 r  u_fusion/med_rr_out_reg[2]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.598    u_fusion/med_rr_out_reg[2]_i_17_n_0
+    SLICE_X29Y93                                                      r  u_fusion/med_rr_out_reg[6]_i_17/CI
+    SLICE_X29Y93         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.712 r  u_fusion/med_rr_out_reg[6]_i_17/CO[3]
+                         net (fo=1, routed)           0.000    21.712    u_fusion/med_rr_out_reg[6]_i_17_n_0
+    SLICE_X29Y94                                                      r  u_fusion/med_rr_out_reg[10]_i_17/CI
+    SLICE_X29Y94         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.334    22.046 r  u_fusion/med_rr_out_reg[10]_i_17/O[1]
+                         net (fo=1, routed)           0.463    22.509    u_fusion/med_rr_out_reg[10]_i_17_n_6
+    SLICE_X30Y96                                                      r  u_fusion/med_rr_out[8]_i_7/I1
+    SLICE_X30Y96         LUT5 (Prop_lut5_I1_O)        0.303    22.812 r  u_fusion/med_rr_out[8]_i_7/O
+                         net (fo=1, routed)           0.282    23.094    u_fusion/med_rr_out[8]_i_7_n_0
+    SLICE_X30Y96                                                      r  u_fusion/med_rr_out[8]_i_3/I2
+    SLICE_X30Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.218 r  u_fusion/med_rr_out[8]_i_3/O
+                         net (fo=1, routed)           0.165    23.383    u_fusion/med_rr_out[8]_i_3_n_0
+    SLICE_X30Y96                                                      r  u_fusion/med_rr_out[8]_i_1/I2
+    SLICE_X30Y96         LUT5 (Prop_lut5_I2_O)        0.124    23.507 r  u_fusion/med_rr_out[8]_i_1/O
+                         net (fo=1, routed)           0.000    23.507    u_fusion/comb_median[8]
+    SLICE_X30Y96         FDRE                                         r  u_fusion/med_rr_out_reg[8]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=2693, unset)         0.924    10.924    u_fusion/clk
+    SLICE_X30Y96         FDRE                                         r  u_fusion/med_rr_out_reg[8]/C
+                         clock pessimism              0.000    10.924    
+                         clock uncertainty           -0.035    10.889    
+    SLICE_X30Y96         FDRE (Setup_fdre_C_D)        0.077    10.966    u_fusion/med_rr_out_reg[8]
+  -------------------------------------------------------------------
+                         required time                         10.966    
+                         arrival time                         -23.507    
+  -------------------------------------------------------------------
+                         slack                                -12.541    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.173ns  (arrival time - required time)
+  Source:                 u_bandpass/u_sec0/s2_reg[21]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_bandpass/u_sec0/s1_reg[22]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.328ns  (logic 0.251ns (76.445%)  route 0.077ns (23.555%))
+  Logic Levels:           2  (CARRY4=1 LUT6=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_bandpass/u_sec0/clk
+    SLICE_X13Y35         FDRE                                         r  u_bandpass/u_sec0/s2_reg[21]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X13Y35         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_bandpass/u_sec0/s2_reg[21]/Q
+                         net (fo=3, routed)           0.077     0.628    u_bandpass/u_sec0/s2_reg_n_0_[21]
+    SLICE_X12Y35                                                      r  u_bandpass/u_sec0/s1[23]_i_7/I1
+    SLICE_X12Y35         LUT6 (Prop_lut6_I1_O)        0.045     0.673 r  u_bandpass/u_sec0/s1[23]_i_7/O
+                         net (fo=1, routed)           0.000     0.673    u_bandpass/u_sec0/s1[23]_i_7_n_0
+    SLICE_X12Y35                                                      r  u_bandpass/u_sec0/s1_reg[23]_i_1/S[2]
+    SLICE_X12Y35         CARRY4 (Prop_carry4_S[2]_O[2])
+                                                      0.065     0.738 r  u_bandpass/u_sec0/s1_reg[23]_i_1/O[2]
+                         net (fo=1, routed)           0.000     0.738    u_bandpass/u_sec0/s1_reg[23]_i_1_n_5
+    SLICE_X12Y35         FDRE                                         r  u_bandpass/u_sec0/s1_reg[22]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_bandpass/u_sec0/clk
+    SLICE_X12Y35         FDRE                                         r  u_bandpass/u_sec0/s1_reg[22]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X12Y35         FDRE (Hold_fdre_C_D)         0.134     0.566    u_bandpass/u_sec0/s1_reg[22]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.738    
+  -------------------------------------------------------------------
+                         slack                                  0.173    
+
+Slack (MET) :             0.173ns  (arrival time - required time)
+  Source:                 u_bandpass/u_sec0/s2_reg[25]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_bandpass/u_sec0/s1_reg[26]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.328ns  (logic 0.251ns (76.445%)  route 0.077ns (23.555%))
+  Logic Levels:           2  (CARRY4=1 LUT6=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_bandpass/u_sec0/clk
+    SLICE_X13Y36         FDRE                                         r  u_bandpass/u_sec0/s2_reg[25]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X13Y36         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_bandpass/u_sec0/s2_reg[25]/Q
+                         net (fo=3, routed)           0.077     0.628    u_bandpass/u_sec0/s2_reg_n_0_[25]
+    SLICE_X12Y36                                                      r  u_bandpass/u_sec0/s1[27]_i_7/I1
+    SLICE_X12Y36         LUT6 (Prop_lut6_I1_O)        0.045     0.673 r  u_bandpass/u_sec0/s1[27]_i_7/O
+                         net (fo=1, routed)           0.000     0.673    u_bandpass/u_sec0/s1[27]_i_7_n_0
+    SLICE_X12Y36                                                      r  u_bandpass/u_sec0/s1_reg[27]_i_1/S[2]
+    SLICE_X12Y36         CARRY4 (Prop_carry4_S[2]_O[2])
+                                                      0.065     0.738 r  u_bandpass/u_sec0/s1_reg[27]_i_1/O[2]
+                         net (fo=1, routed)           0.000     0.738    u_bandpass/u_sec0/s1_reg[27]_i_1_n_5
+    SLICE_X12Y36         FDRE                                         r  u_bandpass/u_sec0/s1_reg[26]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_bandpass/u_sec0/clk
+    SLICE_X12Y36         FDRE                                         r  u_bandpass/u_sec0/s1_reg[26]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X12Y36         FDRE (Hold_fdre_C_D)         0.134     0.566    u_bandpass/u_sec0/s1_reg[26]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.738    
+  -------------------------------------------------------------------
+                         slack                                  0.173    
+
+Slack (MET) :             0.173ns  (arrival time - required time)
+  Source:                 u_bandpass/u_sec1/s2_reg[21]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_bandpass/u_sec1/s1_reg[22]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.328ns  (logic 0.251ns (76.445%)  route 0.077ns (23.555%))
+  Logic Levels:           2  (CARRY4=1 LUT6=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_bandpass/u_sec1/clk
+    SLICE_X51Y35         FDRE                                         r  u_bandpass/u_sec1/s2_reg[21]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y35         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_bandpass/u_sec1/s2_reg[21]/Q
+                         net (fo=3, routed)           0.077     0.628    u_bandpass/u_sec1/s2_reg_n_0_[21]
+    SLICE_X50Y35                                                      r  u_bandpass/u_sec1/s1[23]_i_7__0/I1
+    SLICE_X50Y35         LUT6 (Prop_lut6_I1_O)        0.045     0.673 r  u_bandpass/u_sec1/s1[23]_i_7__0/O
+                         net (fo=1, routed)           0.000     0.673    u_bandpass/u_sec1/s1[23]_i_7__0_n_0
+    SLICE_X50Y35                                                      r  u_bandpass/u_sec1/s1_reg[23]_i_1__0/S[2]
+    SLICE_X50Y35         CARRY4 (Prop_carry4_S[2]_O[2])
+                                                      0.065     0.738 r  u_bandpass/u_sec1/s1_reg[23]_i_1__0/O[2]
+                         net (fo=1, routed)           0.000     0.738    u_bandpass/u_sec1/s1_reg[23]_i_1__0_n_5
+    SLICE_X50Y35         FDRE                                         r  u_bandpass/u_sec1/s1_reg[22]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_bandpass/u_sec1/clk
+    SLICE_X50Y35         FDRE                                         r  u_bandpass/u_sec1/s1_reg[22]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X50Y35         FDRE (Hold_fdre_C_D)         0.134     0.566    u_bandpass/u_sec1/s1_reg[22]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.738    
+  -------------------------------------------------------------------
+                         slack                                  0.173    
+
+Slack (MET) :             0.173ns  (arrival time - required time)
+  Source:                 u_bandpass/u_sec0/s2_reg[29]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_bandpass/u_sec0/s1_reg[30]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.328ns  (logic 0.251ns (76.430%)  route 0.077ns (23.570%))
+  Logic Levels:           2  (CARRY4=1 LUT6=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_bandpass/u_sec0/clk
+    SLICE_X13Y37         FDRE                                         r  u_bandpass/u_sec0/s2_reg[29]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X13Y37         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_bandpass/u_sec0/s2_reg[29]/Q
+                         net (fo=3, routed)           0.077     0.629    u_bandpass/u_sec0/s2_reg_n_0_[29]
+    SLICE_X12Y37                                                      r  u_bandpass/u_sec0/s1[31]_i_7/I1
+    SLICE_X12Y37         LUT6 (Prop_lut6_I1_O)        0.045     0.674 r  u_bandpass/u_sec0/s1[31]_i_7/O
+                         net (fo=1, routed)           0.000     0.674    u_bandpass/u_sec0/s1[31]_i_7_n_0
+    SLICE_X12Y37                                                      r  u_bandpass/u_sec0/s1_reg[31]_i_1/S[2]
+    SLICE_X12Y37         CARRY4 (Prop_carry4_S[2]_O[2])
+                                                      0.065     0.739 r  u_bandpass/u_sec0/s1_reg[31]_i_1/O[2]
+                         net (fo=1, routed)           0.000     0.739    u_bandpass/u_sec0/s1_reg[31]_i_1_n_5
+    SLICE_X12Y37         FDRE                                         r  u_bandpass/u_sec0/s1_reg[30]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_bandpass/u_sec0/clk
+    SLICE_X12Y37         FDRE                                         r  u_bandpass/u_sec0/s1_reg[30]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X12Y37         FDRE (Hold_fdre_C_D)         0.134     0.566    u_bandpass/u_sec0/s1_reg[30]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.739    
+  -------------------------------------------------------------------
+                         slack                                  0.173    
+
+Slack (MET) :             0.174ns  (arrival time - required time)
+  Source:                 u_localizer/abs_window_reg[21][4]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_localizer/abs_window_reg[22][4]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.265ns  (logic 0.141ns (53.159%)  route 0.124ns (46.841%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_localizer/clk
+    SLICE_X51Y73         FDRE                                         r  u_localizer/abs_window_reg[21][4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y73         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_localizer/abs_window_reg[21][4]/Q
+                         net (fo=4, routed)           0.124     0.675    u_localizer/abs_window_reg[21]_21[4]
+    SLICE_X53Y73         FDRE                                         r  u_localizer/abs_window_reg[22][4]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_localizer/clk
+    SLICE_X53Y73         FDRE                                         r  u_localizer/abs_window_reg[22][4]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X53Y73         FDRE (Hold_fdre_C_D)         0.070     0.502    u_localizer/abs_window_reg[22][4]
+  -------------------------------------------------------------------
+                         required time                         -0.502    
+                         arrival time                           0.675    
+  -------------------------------------------------------------------
+                         slack                                  0.174    
+
+Slack (MET) :             0.174ns  (arrival time - required time)
+  Source:                 u_bandpass/u_sec1/s2_reg[29]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_bandpass/u_sec1/s1_reg[30]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.329ns  (logic 0.251ns (76.191%)  route 0.078ns (23.809%))
+  Logic Levels:           2  (CARRY4=1 LUT6=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_bandpass/u_sec1/clk
+    SLICE_X51Y37         FDRE                                         r  u_bandpass/u_sec1/s2_reg[29]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y37         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_bandpass/u_sec1/s2_reg[29]/Q
+                         net (fo=3, routed)           0.078     0.630    u_bandpass/u_sec1/s2_reg_n_0_[29]
+    SLICE_X50Y37                                                      r  u_bandpass/u_sec1/s1[31]_i_7__0/I1
+    SLICE_X50Y37         LUT6 (Prop_lut6_I1_O)        0.045     0.675 r  u_bandpass/u_sec1/s1[31]_i_7__0/O
+                         net (fo=1, routed)           0.000     0.675    u_bandpass/u_sec1/s1[31]_i_7__0_n_0
+    SLICE_X50Y37                                                      r  u_bandpass/u_sec1/s1_reg[31]_i_1__0/S[2]
+    SLICE_X50Y37         CARRY4 (Prop_carry4_S[2]_O[2])
+                                                      0.065     0.740 r  u_bandpass/u_sec1/s1_reg[31]_i_1__0/O[2]
+                         net (fo=1, routed)           0.000     0.740    u_bandpass/u_sec1/s1_reg[31]_i_1__0_n_5
+    SLICE_X50Y37         FDRE                                         r  u_bandpass/u_sec1/s1_reg[30]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_bandpass/u_sec1/clk
+    SLICE_X50Y37         FDRE                                         r  u_bandpass/u_sec1/s1_reg[30]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X50Y37         FDRE (Hold_fdre_C_D)         0.134     0.566    u_bandpass/u_sec1/s1_reg[30]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.740    
+  -------------------------------------------------------------------
+                         slack                                  0.174    
+
+Slack (MET) :             0.175ns  (arrival time - required time)
+  Source:                 u_bandpass/u_sec0/s2_reg[39]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_bandpass/u_sec0/s1_reg[39]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.330ns  (logic 0.250ns (75.734%)  route 0.080ns (24.266%))
+  Logic Levels:           2  (CARRY4=1 LUT4=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_bandpass/u_sec0/clk
+    SLICE_X13Y39         FDRE                                         r  u_bandpass/u_sec0/s2_reg[39]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X13Y39         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_bandpass/u_sec0/s2_reg[39]/Q
+                         net (fo=2, routed)           0.080     0.631    u_bandpass/u_sec0/s2_reg_n_0_[39]
+    SLICE_X12Y39                                                      r  u_bandpass/u_sec0/s1[39]_i_6/I1
+    SLICE_X12Y39         LUT4 (Prop_lut4_I1_O)        0.045     0.676 r  u_bandpass/u_sec0/s1[39]_i_6/O
+                         net (fo=1, routed)           0.000     0.676    u_bandpass/u_sec0/s1[39]_i_6_n_0
+    SLICE_X12Y39                                                      r  u_bandpass/u_sec0/s1_reg[39]_i_1/S[3]
+    SLICE_X12Y39         CARRY4 (Prop_carry4_S[3]_O[3])
+                                                      0.064     0.740 r  u_bandpass/u_sec0/s1_reg[39]_i_1/O[3]
+                         net (fo=1, routed)           0.000     0.740    u_bandpass/u_sec0/s1_reg[39]_i_1_n_4
+    SLICE_X12Y39         FDRE                                         r  u_bandpass/u_sec0/s1_reg[39]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_bandpass/u_sec0/clk
+    SLICE_X12Y39         FDRE                                         r  u_bandpass/u_sec0/s1_reg[39]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X12Y39         FDRE (Hold_fdre_C_D)         0.134     0.566    u_bandpass/u_sec0/s1_reg[39]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.740    
+  -------------------------------------------------------------------
+                         slack                                  0.175    
+
+Slack (MET) :             0.175ns  (arrival time - required time)
+  Source:                 u_bandpass/u_sec1/s2_reg[39]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_bandpass/u_sec1/s1_reg[39]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.330ns  (logic 0.250ns (75.734%)  route 0.080ns (24.266%))
+  Logic Levels:           2  (CARRY4=1 LUT4=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_bandpass/u_sec1/clk
+    SLICE_X51Y39         FDRE                                         r  u_bandpass/u_sec1/s2_reg[39]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y39         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_bandpass/u_sec1/s2_reg[39]/Q
+                         net (fo=2, routed)           0.080     0.631    u_bandpass/u_sec1/s2_reg_n_0_[39]
+    SLICE_X50Y39                                                      r  u_bandpass/u_sec1/s1[39]_i_6__0/I1
+    SLICE_X50Y39         LUT4 (Prop_lut4_I1_O)        0.045     0.676 r  u_bandpass/u_sec1/s1[39]_i_6__0/O
+                         net (fo=1, routed)           0.000     0.676    u_bandpass/u_sec1/s1[39]_i_6__0_n_0
+    SLICE_X50Y39                                                      r  u_bandpass/u_sec1/s1_reg[39]_i_1__0/S[3]
+    SLICE_X50Y39         CARRY4 (Prop_carry4_S[3]_O[3])
+                                                      0.064     0.740 r  u_bandpass/u_sec1/s1_reg[39]_i_1__0/O[3]
+                         net (fo=1, routed)           0.000     0.740    u_bandpass/u_sec1/s1_reg[39]_i_1__0_n_4
+    SLICE_X50Y39         FDRE                                         r  u_bandpass/u_sec1/s1_reg[39]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_bandpass/u_sec1/clk
+    SLICE_X50Y39         FDRE                                         r  u_bandpass/u_sec1/s1_reg[39]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X50Y39         FDRE (Hold_fdre_C_D)         0.134     0.566    u_bandpass/u_sec1/s1_reg[39]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.740    
+  -------------------------------------------------------------------
+                         slack                                  0.175    
+
+Slack (MET) :             0.175ns  (arrival time - required time)
+  Source:                 u_lp40/u_biquad_sec1/s2_reg[15]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_lp40/u_biquad_sec1/s1_reg[15]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.330ns  (logic 0.250ns (75.734%)  route 0.080ns (24.266%))
+  Logic Levels:           2  (CARRY4=1 LUT4=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_lp40/u_biquad_sec1/clk
+    SLICE_X13Y18         FDRE                                         r  u_lp40/u_biquad_sec1/s2_reg[15]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X13Y18         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_lp40/u_biquad_sec1/s2_reg[15]/Q
+                         net (fo=2, routed)           0.080     0.631    u_lp40/u_biquad_sec1/s2_reg_n_0_[15]
+    SLICE_X12Y18                                                      r  u_lp40/u_biquad_sec1/next_s1_raw__0_carry__2_i_5__0/I1
+    SLICE_X12Y18         LUT4 (Prop_lut4_I1_O)        0.045     0.676 r  u_lp40/u_biquad_sec1/next_s1_raw__0_carry__2_i_5__0/O
+                         net (fo=1, routed)           0.000     0.676    u_lp40/u_biquad_sec1/next_s1_raw__0_carry__2_i_5__0_n_0
+    SLICE_X12Y18                                                      r  u_lp40/u_biquad_sec1/next_s1_raw__0_carry__2/S[3]
+    SLICE_X12Y18         CARRY4 (Prop_carry4_S[3]_O[3])
+                                                      0.064     0.740 r  u_lp40/u_biquad_sec1/next_s1_raw__0_carry__2/O[3]
+                         net (fo=1, routed)           0.000     0.740    u_lp40/u_biquad_sec1/next_s1_raw__0_carry__2_n_4
+    SLICE_X12Y18         FDRE                                         r  u_lp40/u_biquad_sec1/s1_reg[15]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_lp40/u_biquad_sec1/clk
+    SLICE_X12Y18         FDRE                                         r  u_lp40/u_biquad_sec1/s1_reg[15]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X12Y18         FDRE (Hold_fdre_C_D)         0.134     0.566    u_lp40/u_biquad_sec1/s1_reg[15]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.740    
+  -------------------------------------------------------------------
+                         slack                                  0.175    
+
+Slack (MET) :             0.175ns  (arrival time - required time)
+  Source:                 u_lp40/u_biquad_sec1/s2_reg[19]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            u_lp40/u_biquad_sec1/s1_reg[19]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.330ns  (logic 0.250ns (75.734%)  route 0.080ns (24.266%))
+  Logic Levels:           2  (CARRY4=1 LUT4=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    0.432ns
+    Source Clock Delay      (SCD):    0.410ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.410     0.410    u_lp40/u_biquad_sec1/clk
+    SLICE_X13Y19         FDRE                                         r  u_lp40/u_biquad_sec1/s2_reg[19]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X13Y19         FDRE (Prop_fdre_C_Q)         0.141     0.551 r  u_lp40/u_biquad_sec1/s2_reg[19]/Q
+                         net (fo=2, routed)           0.080     0.631    u_lp40/u_biquad_sec1/s2_reg_n_0_[19]
+    SLICE_X12Y19                                                      r  u_lp40/u_biquad_sec1/next_s1_raw__0_carry__3_i_5__0/I1
+    SLICE_X12Y19         LUT4 (Prop_lut4_I1_O)        0.045     0.676 r  u_lp40/u_biquad_sec1/next_s1_raw__0_carry__3_i_5__0/O
+                         net (fo=1, routed)           0.000     0.676    u_lp40/u_biquad_sec1/next_s1_raw__0_carry__3_i_5__0_n_0
+    SLICE_X12Y19                                                      r  u_lp40/u_biquad_sec1/next_s1_raw__0_carry__3/S[3]
+    SLICE_X12Y19         CARRY4 (Prop_carry4_S[3]_O[3])
+                                                      0.064     0.740 r  u_lp40/u_biquad_sec1/next_s1_raw__0_carry__3/O[3]
+                         net (fo=1, routed)           0.000     0.740    u_lp40/u_biquad_sec1/next_s1_raw__0_carry__3_n_4
+    SLICE_X12Y19         FDRE                                         r  u_lp40/u_biquad_sec1/s1_reg[19]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=2693, unset)         0.432     0.432    u_lp40/u_biquad_sec1/clk
+    SLICE_X12Y19         FDRE                                         r  u_lp40/u_biquad_sec1/s1_reg[19]/C
+                         clock pessimism              0.000     0.432    
+    SLICE_X12Y19         FDRE (Hold_fdre_C_D)         0.134     0.566    u_lp40/u_biquad_sec1/s1_reg[19]
+  -------------------------------------------------------------------
+                         required time                         -0.566    
+                         arrival time                           0.740    
+  -------------------------------------------------------------------
+                         slack                                  0.175    
+
+
+
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         clk
+Waveform(ns):       { 0.000 5.000 }
+Period(ns):         10.000
+Sources:            { clk }
+
+Check Type        Corner  Lib Pin  Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location      Pin
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X45Y23  sticky_sat_reg/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X29Y66  u_bandpass/bp16_out_reg[0]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X28Y67  u_bandpass/bp16_out_reg[10]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X28Y67  u_bandpass/bp16_out_reg[11]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X28Y67  u_bandpass/bp16_out_reg[12]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X29Y68  u_bandpass/bp16_out_reg[13]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X29Y67  u_bandpass/bp16_out_reg[14]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X29Y66  u_bandpass/bp16_out_reg[15]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X29Y66  u_bandpass/bp16_out_reg[1]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000      SLICE_X29Y66  u_bandpass/bp16_out_reg[2]/C
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X45Y23  sticky_sat_reg/C
+Low Pulse Width   Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X45Y23  sticky_sat_reg/C
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X29Y66  u_bandpass/bp16_out_reg[0]/C
+Low Pulse Width   Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X29Y66  u_bandpass/bp16_out_reg[0]/C
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[10]/C
+Low Pulse Width   Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[10]/C
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[11]/C
+Low Pulse Width   Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[11]/C
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[12]/C
+Low Pulse Width   Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[12]/C
+High Pulse Width  Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X45Y23  sticky_sat_reg/C
+High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X45Y23  sticky_sat_reg/C
+High Pulse Width  Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X29Y66  u_bandpass/bp16_out_reg[0]/C
+High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X29Y66  u_bandpass/bp16_out_reg[0]/C
+High Pulse Width  Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[10]/C
+High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[10]/C
+High Pulse Width  Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[11]/C
+High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[11]/C
+High Pulse Width  Slow    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[12]/C
+High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500      SLICE_X28Y67  u_bandpass/bp16_out_reg[12]/C
+
+
+

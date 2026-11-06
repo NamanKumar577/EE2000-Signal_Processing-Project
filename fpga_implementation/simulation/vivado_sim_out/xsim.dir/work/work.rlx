@@ -1,0 +1,25 @@
+0.7
+2020.2
+Nov 14 2025
+19:37:27
+D:/signal_project/fpga_implementation/rtl/adaptive_detector.v,1793796430,verilog,,D:/signal_project/fpga_implementation/rtl/peak_localizer.v,,adaptive_detector,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/bandpass_config_c.v,1793792485,verilog,,D:/signal_project/fpga_implementation/rtl/squarer_mwi.v,,bandpass_config_c,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/biquad_df2t.v,1793792051,verilog,,D:/signal_project/fpga_implementation/rtl/hp1_baseline.v,,biquad_df2t,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/fecg_single_channel_top.v,1793796263,verilog,,D:/signal_project/fpga_implementation/testbenches/unit/tb_fecg_single_channel_verifier.v,,fecg_single_channel_top,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/fhr_calculator.v,1793796189,verilog,,D:/signal_project/fpga_implementation/rtl/fecg_single_channel_top.v,,fhr_calculator,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/hp1_baseline.v,1793792254,verilog,,D:/signal_project/fpga_implementation/rtl/lp40_filter.v,,hp1_baseline,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/interval_fusion.v,1793797642,systemVerilog,,D:/signal_project/fpga_implementation/rtl/fhr_calculator.v,,interval_fusion,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/lp40_filter.v,1793792458,verilog,,D:/signal_project/fpga_implementation/rtl/bandpass_config_c.v,,lp40_filter,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/peak_localizer.v,1793797673,verilog,,D:/signal_project/fpga_implementation/rtl/interval_fusion.v,,peak_localizer,,,,,,,,
+D:/signal_project/fpga_implementation/rtl/squarer_mwi.v,1793792511,verilog,,D:/signal_project/fpga_implementation/rtl/adaptive_detector.v,,squarer_mwi,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_adaptive_detector.v,1793792990,verilog,,,,tb_adaptive_detector,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_bandpass_config_c.v,1793792962,verilog,,,,tb_bandpass_config_c,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_biquad_df2t.v,1793794134,verilog,,,,tb_biquad_df2t,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_fecg_single_channel_top.v,1793793064,verilog,,,,tb_fecg_single_channel_top,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_fecg_single_channel_verifier.v,1793796381,verilog,,,,tb_fecg_single_channel_verifier,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_fhr_calculator.v,1793793041,verilog,,,,tb_fhr_calculator,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_hp1_baseline.v,1793793992,verilog,,,,tb_hp1_baseline,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_interval_fusion.v,1793794268,verilog,,,,tb_interval_fusion,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_lp40_filter.v,1793792946,verilog,,,,tb_lp40_filter,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_peak_localizer.v,1793793004,verilog,,,,tb_peak_localizer,,,,,,,,
+D:/signal_project/fpga_implementation/testbenches/unit/tb_squarer_mwi.v,1793792976,verilog,,,,tb_squarer_mwi,,,,,,,,

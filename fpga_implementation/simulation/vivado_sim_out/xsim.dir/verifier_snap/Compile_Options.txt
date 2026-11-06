@@ -1,0 +1,1 @@
+-top "tb_fecg_single_channel_verifier" -snapshot "verifier_snap" 

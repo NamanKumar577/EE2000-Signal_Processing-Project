@@ -1,0 +1,22 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/biquad_df2t.v" into library work
+INFO: [VRFC 10-311] analyzing module biquad_df2t
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/hp1_baseline.v" into library work
+INFO: [VRFC 10-311] analyzing module hp1_baseline
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/lp40_filter.v" into library work
+INFO: [VRFC 10-311] analyzing module lp40_filter
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/bandpass_config_c.v" into library work
+INFO: [VRFC 10-311] analyzing module bandpass_config_c
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/squarer_mwi.v" into library work
+INFO: [VRFC 10-311] analyzing module squarer_mwi
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/adaptive_detector.v" into library work
+INFO: [VRFC 10-311] analyzing module adaptive_detector
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/peak_localizer.v" into library work
+INFO: [VRFC 10-311] analyzing module peak_localizer
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/interval_fusion.v" into library work
+INFO: [VRFC 10-311] analyzing module interval_fusion
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/fhr_calculator.v" into library work
+INFO: [VRFC 10-311] analyzing module fhr_calculator
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/rtl/fecg_single_channel_top.v" into library work
+INFO: [VRFC 10-311] analyzing module fecg_single_channel_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/fpga_implementation/testbenches/unit/tb_fecg_single_channel_verifier.v" into library work
+INFO: [VRFC 10-311] analyzing module tb_fecg_single_channel_verifier

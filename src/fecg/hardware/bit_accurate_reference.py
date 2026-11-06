@@ -244,6 +244,337 @@ class BitAccurateFinalResult:
     max_ranges: Dict[str, int]
     n_fused_events: int
 
+class BitAccuratePipelineRunner:
+    """
+    Stateful Pre-RTL Bit-Accurate Execution Reference Model for Spartan-7.
+    
+    Preserves internal filter states (HP1, LP40, Bandpass biquads), slew engine
+    registers, MWI ring buffer, and adaptive threshold detector across sequential
+    recordings or streaming blocks to maintain 100% bit-exact parity with physical
+    FPGA hardware runtime semantics.
+    """
+    def __init__(
+        self,
+        w_initial: Optional[Sequence[int]] = None,
+        mwi_len: int = MWI_WINDOW_LEN,
+        refractory: int = REFRACTORY_SAMPLES,
+        warmup: int = 512,
+        loc_window: int = 26,
+        latency: int = LATENCY_COMPENSATION_SAMPLES
+    ):
+        self.mwi_len = mwi_len
+        self.refractory = refractory
+        self.warmup = warmup
+        self.loc_window = loc_window
+        self.latency = latency
+        self.reset(w_initial=w_initial)
+
+    def reset(self, w_initial: Optional[Sequence[int]] = None) -> None:
+        """Resets all pipeline registers to initial state (equivalent to FPGA hardware reset)."""
+        if w_initial is not None:
+            self.w_curr = [int(v) for v in w_initial]
+            self.w_old = list(self.w_curr)
+            self.w_target = list(self.w_curr)
+            self.crossfade_step = WEIGHT_CROSSFADE_STEPS
+        else:
+            self.w_curr = [32768, 0, 0, 0]  # Default hardware unity bypass
+            self.w_old = list(self.w_curr)
+            self.w_target = list(self.w_curr)
+            self.crossfade_step = WEIGHT_CROSSFADE_STEPS
+
+        self.lp_biquads = [BiquadDF2TIntFinal(c, out_bits=DATA_BITS) for c in LP40_COEFFS_Q15]
+        self.bp_biquads = [BiquadDF2TIntFinal(c, out_bits=DATA_BITS) for c in DET_BP_CONFIG_C_COEFFS_Q15]
+        self.acc_tracker = StageOverflowAccounting()
+
+        self.k_hp = 6  # HP1 shift (fc ~ 0.62 Hz)
+        self.hp_acc = 0
+
+        self.mwi_ring = [0] * self.mwi_len
+        self.mwi_sum = 0
+        self.abs_hist: List[int] = []
+
+        self.peak_level = 0
+        self.noise_level = 0
+        self.warm_max = 0
+        self.warm_sum = 0
+        self.detector_enabled = False
+        self.last_cand_m = -(10 ** 9)
+
+        self.raw_peaks_list: List[int] = []
+        self.comp_peaks_list: List[int] = []
+        self.rr_list: List[int] = []
+
+        self.median5_rr_buf: List[int] = []
+        self.fhr_current = 1400  # 140.0 bpm
+        self.current_flag_2bit = FLAG_INVALID_WARMUP
+        self.is_confident_flag = True
+        self.n_fused = 0
+
+        self.max_proj_acc = 0
+        self.max_hp_acc = 0
+        self.max_mwi_acc = 0
+
+        self.t_global = 0
+        self.prev_mwi = 0
+        self.prev_prev_mwi = 0
+
+    def process_block(
+        self,
+        x_q: np.ndarray,
+        new_weights: Optional[Sequence[int]] = None,
+        target_weights: Optional[Sequence[Tuple[int, Sequence[int]]]] = None
+    ) -> BitAccurateFinalResult:
+        """
+        Processes a block of signed 16-bit Q12 samples through the pipeline.
+        Maintains all filter accumulators, biquad delays, and detector thresholds.
+        """
+        x_q = np.asarray(x_q, dtype=np.int64)
+        n, n_ch = x_q.shape
+
+        update_dict: Dict[int, List[int]] = {}
+        if new_weights is not None:
+            update_dict[0] = [int(v) for v in new_weights]
+        if target_weights is not None:
+            for t_up, w_up in target_weights:
+                update_dict[int(t_up)] = [int(v) for v in w_up]
+
+        proj_arr = np.zeros(n, dtype=np.int64)
+        hp_arr = np.zeros(n, dtype=np.int64)
+        fecg_arr = np.zeros(n, dtype=np.int64)
+        det_bp_arr = np.zeros(n, dtype=np.int64)
+        xint_arr = np.zeros(n, dtype=np.int64)
+        fhr_stream = np.zeros(n, dtype=np.int64)
+        flags_arr = np.zeros(n, dtype=np.uint8)
+
+        block_raw_peaks: List[int] = []
+        block_comp_peaks: List[int] = []
+        block_rr: List[int] = []
+        t_block_start = self.t_global
+
+        for t_rel in range(n):
+            t = self.t_global
+
+            # ── 0. Dynamic Weight Slew Engine (64-Sample Crossfade) ───────────
+            if t_rel in update_dict:
+                self.w_old = list(self.w_curr)
+                self.w_target = list(update_dict[t_rel])
+                self.crossfade_step = 1
+            elif self.crossfade_step < WEIGHT_CROSSFADE_STEPS:
+                self.crossfade_step += 1
+                for c in range(n_ch):
+                    delta = self.w_target[c] - self.w_old[c]
+                    step = rshift_round_nearest_even(self.crossfade_step * delta, 6)
+                    self.w_curr[c] = sat(self.w_old[c] + step, WEIGHT_BITS)
+            elif self.crossfade_step == WEIGHT_CROSSFADE_STEPS:
+                self.w_curr = list(self.w_target)
+
+            # ── 1. Spatial Beamformer (Enforced 32-bit Accumulator) ───────────
+            raw_acc = 0
+            for c in range(n_ch):
+                prod = self.w_curr[c] * int(x_q[t_rel, c])
+                if prod >= (1 << 31) or prod < -(1 << 31):
+                    self.acc_tracker.proj_mult_overflow += 1
+                raw_acc += prod
+
+            acc_clamped = sat(raw_acc, PROJ_ACC_BITS)
+            if acc_clamped != raw_acc:
+                self.acc_tracker.proj_acc_overflow += 1
+
+            self.max_proj_acc = max(self.max_proj_acc, abs(acc_clamped))
+            proj_rounded = rshift_round_nearest_even(acc_clamped, PROJ_SHIFT)
+            proj_val = sat(proj_rounded, DATA_BITS)
+            if proj_val != proj_rounded:
+                self.acc_tracker.proj_sat_count += 1
+            proj_arr[t_rel] = proj_val
+
+            # ── 2. HP1 Baseline Remover (Signed 32-bit Accumulator) ──────────
+            base = self.hp_acc >> self.k_hp
+            hp_sub = proj_val - base
+            hp_val = sat(hp_sub, DATA_BITS)
+            if hp_val != hp_sub:
+                self.acc_tracker.hp_sat_count += 1
+
+            hp_acc_next = self.hp_acc + hp_sub
+            hp_acc_clamped = sat(hp_acc_next, 32)
+            if hp_acc_clamped != hp_acc_next:
+                self.acc_tracker.hp_acc_overflow += 1
+            self.hp_acc = hp_acc_clamped
+
+            self.max_hp_acc = max(self.max_hp_acc, abs(self.hp_acc))
+            hp_arr[t_rel] = hp_val
+
+            # ── 3. LP40 Filter (2 Biquads, 48-bit State Saturation) ──────────
+            fecg_val = hp_val
+            for s in self.lp_biquads:
+                fecg_val = s.step(fecg_val)
+            fecg_arr[t_rel] = fecg_val
+
+            # ── 4. Detector Bandpass Filter (4 Biquads, 48-bit States) ───────
+            bp_val = fecg_val
+            for s in self.bp_biquads:
+                bp_val = s.step(bp_val)
+            bp_rounded = rshift_round_nearest_even(bp_val, DET_SHIFT)
+            bp16 = sat(bp_rounded, DET_BITS)
+            if bp16 != bp_rounded:
+                self.acc_tracker.det_shift_sat_count += 1
+            det_bp_arr[t_rel] = bp16
+            self.abs_hist.append(abs(bp16))
+
+            # ── 5. Squaring & Moving Window Integration (36-bit Constrained) ─
+            sq = bp16 * bp16
+            if sq >= (1 << 32):
+                self.acc_tracker.squaring_overflow += 1
+
+            mwi_sub = self.mwi_sum + sq - self.mwi_ring[self.t_global % self.mwi_len]
+            mwi_clamped = sat_u(mwi_sub, MWI_ACC_BITS)
+            if mwi_clamped != mwi_sub:
+                self.acc_tracker.mwi_acc_overflow += 1
+            self.mwi_sum = mwi_clamped
+
+            self.mwi_ring[self.t_global % self.mwi_len] = sq
+            self.max_mwi_acc = max(self.max_mwi_acc, self.mwi_sum)
+            xint_arr[t_rel] = self.mwi_sum
+
+            # ── 6. Warm-up Initialization ────────────────────────────────────
+            if t < self.warmup:
+                self.current_flag_2bit = FLAG_INVALID_WARMUP
+                flags_arr[t_rel] = (self.current_flag_2bit & 0x03) | ((1 if self.is_confident_flag else 0) << 2)
+                fhr_stream[t_rel] = 0
+                self.warm_max = max(self.warm_max, self.mwi_sum)
+                self.warm_sum += self.mwi_sum
+                if t == self.warmup - 1:
+                    self.peak_level = self.warm_max
+                    self.noise_level = self.warm_sum >> 9  # Mean over 512 samples
+                    self.detector_enabled = (self.peak_level > self.noise_level)
+                self._advance_sample(xint_arr, t_rel)
+                continue
+
+            # ── 7. Adaptive Threshold & Local Peak Search at m = t - 1 ───────
+            if self.detector_enabled and t >= 2:
+                m = t - 1
+                v = int(xint_arr[t_rel - 1] if t_rel >= 1 else self.prev_mwi)
+                v_prev = int(xint_arr[t_rel - 2] if t_rel >= 2 else (self.prev_mwi if t_rel == 1 else self.prev_prev_mwi))
+                if v_prev < v and v >= self.mwi_sum and m >= self.warmup - 1:
+                    thr = (self.peak_level >> 2) + self.noise_level - (self.noise_level >> 2)
+                    if thr >= (1 << 36):
+                        self.acc_tracker.threshold_overflow += 1
+
+                    if v > thr:
+                        if (m - self.last_cand_m) >= self.refractory:
+                            lo = max(0, t - (self.loc_window - 1))
+                            best_idx = lo
+                            best_val = self.abs_hist[lo]
+                            for i in range(lo + 1, t + 1):
+                                if self.abs_hist[i] > best_val:
+                                    best_val = self.abs_hist[i]
+                                    best_idx = i
+
+                            # ── 8. Corrected Interval Fusion & Integer Median5
+                            comp_idx = max(0, best_idx - self.latency)
+                            rel_comp_idx = comp_idx - t_block_start
+                            rel_raw_idx = best_idx - t_block_start
+
+                            if self.raw_peaks_list:
+                                raw_rr = best_idx - self.raw_peaks_list[-1]
+                                if raw_rr < RR_MIN:
+                                    self.n_fused += 1
+                                    self.current_flag_2bit = FLAG_FUSED_BEAT
+                                    if best_val > self.abs_hist[self.raw_peaks_list[-1]]:
+                                        self.raw_peaks_list[-1] = best_idx
+                                        self.comp_peaks_list[-1] = comp_idx
+                                        if block_comp_peaks:
+                                            block_comp_peaks[-1] = rel_comp_idx
+                                            block_raw_peaks[-1] = rel_raw_idx
+                                elif raw_rr <= RR_MAX:
+                                    self.current_flag_2bit = FLAG_REAL_DETECTED
+                                    self.raw_peaks_list.append(best_idx)
+                                    self.comp_peaks_list.append(comp_idx)
+                                    self.rr_list.append(raw_rr)
+                                    block_comp_peaks.append(rel_comp_idx)
+                                    block_raw_peaks.append(rel_raw_idx)
+                                    block_rr.append(raw_rr)
+
+                                    self.median5_rr_buf.append(raw_rr)
+                                    if len(self.median5_rr_buf) > 5:
+                                        self.median5_rr_buf.pop(0)
+
+                                    med_rr = integer_median(self.median5_rr_buf)
+                                    lut_addr = min(max(med_rr - RR_MIN, 0), len(FHR_FROZEN_INTEGER_LUT) - 1)
+                                    if med_rr < RR_MIN or med_rr > RR_MAX:
+                                        self.acc_tracker.fhr_lut_overflow += 1
+                                    self.fhr_current = FHR_FROZEN_INTEGER_LUT[lut_addr]
+                                else:
+                                    self.current_flag_2bit = FLAG_HELD_FHR
+                                    self.raw_peaks_list.append(best_idx)
+                                    self.comp_peaks_list.append(comp_idx)
+                                    self.rr_list.append(raw_rr)
+                                    block_comp_peaks.append(rel_comp_idx)
+                                    block_raw_peaks.append(rel_raw_idx)
+                                    block_rr.append(raw_rr)
+                            else:
+                                self.current_flag_2bit = FLAG_REAL_DETECTED
+                                self.raw_peaks_list.append(best_idx)
+                                self.comp_peaks_list.append(comp_idx)
+                                self.rr_list.append(0)
+                                block_comp_peaks.append(rel_comp_idx)
+                                block_raw_peaks.append(rel_raw_idx)
+                                block_rr.append(0)
+
+                            self.last_cand_m = m
+                            self.peak_level += (v - self.peak_level) >> 3
+                    else:
+                        self.noise_level += (v - self.noise_level) >> 3
+
+            fhr_stream[t_rel] = self.fhr_current
+            has_sat = int(self.acc_tracker.total_saturations() > 0)
+            flags_arr[t_rel] = (self.current_flag_2bit & 0x03) | ((1 if self.is_confident_flag else 0) << 2) | (has_sat << 3)
+            self._advance_sample(xint_arr, t_rel)
+
+        total_lp_state_ovf = sum(s.state_overflow_count for s in self.lp_biquads) + self.acc_tracker.lp_biquad_state_overflow
+        total_lp_out_sat = sum(s.out_sat_count for s in self.lp_biquads) + self.acc_tracker.lp_biquad_out_sat
+        total_bp_state_ovf = sum(s.state_overflow_count for s in self.bp_biquads) + self.acc_tracker.bp_biquad_state_overflow
+        total_bp_out_sat = sum(s.out_sat_count for s in self.bp_biquads) + self.acc_tracker.bp_biquad_out_sat
+
+        max_ranges = {
+            "max_proj_acc_bits": int(self.max_proj_acc).bit_length() + 1,
+            "max_hp_acc_bits": int(self.max_hp_acc).bit_length() + 1,
+            "max_lp_biquad_state_bits": max(s.max_s1 for s in self.lp_biquads).bit_length() + 1,
+            "max_bp_biquad_state_bits": max(s.max_s1 for s in self.bp_biquads).bit_length() + 1,
+            "max_mwi_acc_bits": int(self.max_mwi_acc).bit_length(),
+            "total_state_overflows": self.acc_tracker.total_overflows(),
+            "total_saturations": self.acc_tracker.total_saturations()
+        }
+
+        return BitAccurateFinalResult(
+            proj=proj_arr,
+            hp=hp_arr,
+            fecg=fecg_arr,
+            det_bp=det_bp_arr,
+            x_int=xint_arr,
+            peaks=np.array(block_comp_peaks, dtype=np.int64),
+            raw_peaks=np.array(block_raw_peaks, dtype=np.int64),
+            fhr_hold=fhr_stream,
+            flags=flags_arr,
+            rr=np.array(block_rr, dtype=np.int64),
+            accounting=self.acc_tracker,
+            max_ranges=max_ranges,
+            n_fused_events=self.n_fused
+        )
+
+    def _advance_sample(self, xint_arr: np.ndarray, t_rel: int) -> None:
+        if t_rel >= 1:
+            self.prev_prev_mwi = int(xint_arr[t_rel - 1])
+        self.prev_mwi = self.mwi_sum
+        self.t_global += 1
+
+    def flush_zeros(self, n_zeros: int = 512, new_weights: Optional[Sequence[int]] = None) -> None:
+        """Streams n_zeros samples of [0, 0, 0, 0] to allow filter state decay."""
+        zeros = np.zeros((n_zeros, 4), dtype=np.int64)
+        self.process_block(zeros, new_weights=new_weights)
+
+
+
+
 def run_bit_accurate_pipeline_final(
     x_q: np.ndarray,                 # (N, 4) Signed 16-bit samples (Q12)
     w_q: np.ndarray,                 # (4,) Signed 16-bit weights (Q1.15)
@@ -264,265 +595,12 @@ def run_bit_accurate_pipeline_final(
       - 64-sample linear weight crossfade
       - Per-stage saturation and overflow instrumentation
     """
-    x_q = np.asarray(x_q, dtype=np.int64)
-    n, n_ch = x_q.shape
-    w_curr = [int(v) for v in w_q]
-    w_old = list(w_curr)
-    w_target = list(w_curr)
-    crossfade_step = WEIGHT_CROSSFADE_STEPS  # Start fully settled
-
-    # Parse scheduled weight updates if provided
-    update_dict: Dict[int, List[int]] = {}
-    if target_weights is not None:
-        for t_up, w_up in target_weights:
-            update_dict[int(t_up)] = [int(v) for v in w_up]
-
-    # Initialize Integer Biquads
-    lp_biquads = [BiquadDF2TIntFinal(c, out_bits=DATA_BITS) for c in LP40_COEFFS_Q15]
-    bp_biquads = [BiquadDF2TIntFinal(c, out_bits=DATA_BITS) for c in DET_BP_CONFIG_C_COEFFS_Q15]
-
-    acc_tracker = StageOverflowAccounting()
-
-    # State variables
-    k_hp = 6  # HP1 shift (fc ~ 0.62 Hz)
-    hp_acc = 0
-
-    mwi_ring = [0] * mwi_len
-    mwi_sum = 0
-    abs_hist: List[int] = []
-
-    peak_level = 0
-    noise_level = 0
-    warm_max = 0
-    warm_sum = 0
-    detector_enabled = False
-    last_cand_m = -(10 ** 9)
-
-    # Output arrays
-    proj_arr = np.zeros(n, dtype=np.int64)
-    hp_arr = np.zeros(n, dtype=np.int64)
-    fecg_arr = np.zeros(n, dtype=np.int64)
-    det_bp_arr = np.zeros(n, dtype=np.int64)
-    xint_arr = np.zeros(n, dtype=np.int64)
-    fhr_stream = np.zeros(n, dtype=np.int64)
-    flags_arr = np.zeros(n, dtype=np.uint8)
-
-    raw_peaks_list: List[int] = []
-    comp_peaks_list: List[int] = []
-    rr_list: List[int] = []
-
-    # Causal Median5 RR Buffer
-    median5_rr_buf: List[int] = []
-    fhr_current = 1400  # 140.0 bpm
-    current_flag_2bit = FLAG_INVALID_WARMUP
-    is_confident_flag = True
-    n_fused = 0
-
-    max_proj_acc = 0
-    max_hp_acc = 0
-    max_mwi_acc = 0
-
-    for t in range(n):
-        # ── 0. Dynamic Weight Slew Engine (64-Sample Crossfade) ───────────
-        if t in update_dict:
-            # New calibration packet arrived: latch current active weights as old base
-            w_old = list(w_curr)
-            w_target = list(update_dict[t])
-            crossfade_step = 1
-        elif crossfade_step < WEIGHT_CROSSFADE_STEPS:
-            crossfade_step += 1
-            for c in range(n_ch):
-                delta = w_target[c] - w_old[c]
-                step = rshift_round_nearest_even(crossfade_step * delta, 6) # Divide by 64
-                w_curr[c] = sat(w_old[c] + step, WEIGHT_BITS)
-        elif crossfade_step == WEIGHT_CROSSFADE_STEPS:
-            w_curr = list(w_target)
-
-        # ── 1. Spatial Beamformer (Enforced 32-bit Accumulator) ───────────
-        raw_acc = 0
-        for c in range(n_ch):
-            prod = w_curr[c] * int(x_q[t, c])
-            if prod >= (1 << 31) or prod < -(1 << 31):
-                acc_tracker.proj_mult_overflow += 1
-            raw_acc += prod
-
-        acc_clamped = sat(raw_acc, PROJ_ACC_BITS)
-        if acc_clamped != raw_acc:
-            acc_tracker.proj_acc_overflow += 1
-
-        max_proj_acc = max(max_proj_acc, abs(acc_clamped))
-        proj_rounded = rshift_round_nearest_even(acc_clamped, PROJ_SHIFT)
-        proj_val = sat(proj_rounded, DATA_BITS)
-        if proj_val != proj_rounded:
-            acc_tracker.proj_sat_count += 1
-        proj_arr[t] = proj_val
-
-        # ── 2. HP1 Baseline Remover (Signed 32-bit Accumulator) ──────────
-        base = hp_acc >> k_hp
-        hp_sub = proj_val - base
-        hp_val = sat(hp_sub, DATA_BITS)
-        if hp_val != hp_sub:
-            acc_tracker.hp_sat_count += 1
-
-        hp_acc_next = hp_acc + hp_sub
-        hp_acc_clamped = sat(hp_acc_next, 32)
-        if hp_acc_clamped != hp_acc_next:
-            acc_tracker.hp_acc_overflow += 1
-        hp_acc = hp_acc_clamped
-
-        max_hp_acc = max(max_hp_acc, abs(hp_acc))
-        hp_arr[t] = hp_val
-
-        # ── 3. LP40 Filter (2 Biquads, 48-bit State Saturation) ──────────
-        fecg_val = hp_val
-        for s in lp_biquads:
-            fecg_val = s.step(fecg_val)
-        fecg_arr[t] = fecg_val
-
-        # ── 4. Detector Bandpass Filter (4 Biquads, 48-bit States) ───────
-        bp_val = fecg_val
-        for s in bp_biquads:
-            bp_val = s.step(bp_val)
-        bp_rounded = rshift_round_nearest_even(bp_val, DET_SHIFT)
-        bp16 = sat(bp_rounded, DET_BITS)
-        if bp16 != bp_rounded:
-            acc_tracker.det_shift_sat_count += 1
-        det_bp_arr[t] = bp16
-        abs_hist.append(abs(bp16))
-
-        # ── 5. Squaring & Moving Window Integration (36-bit Constrained) ─
-        sq = bp16 * bp16  # Unsigned 32-bit product
-        if sq >= (1 << 32):
-            acc_tracker.squaring_overflow += 1
-
-        mwi_sub = mwi_sum + sq - mwi_ring[t % mwi_len]
-        mwi_clamped = sat_u(mwi_sub, MWI_ACC_BITS)
-        if mwi_clamped != mwi_sub:
-            acc_tracker.mwi_acc_overflow += 1
-        mwi_sum = mwi_clamped
-
-        mwi_ring[t % mwi_len] = sq
-        max_mwi_acc = max(max_mwi_acc, mwi_sum)
-        xint_arr[t] = mwi_sum
-
-        # ── 6. Warm-up Initialization ────────────────────────────────────
-        if t < warmup:
-            current_flag_2bit = FLAG_INVALID_WARMUP
-            flags_arr[t] = (current_flag_2bit & 0x03) | ((1 if is_confident_flag else 0) << 2)
-            fhr_stream[t] = 0
-            warm_max = max(warm_max, mwi_sum)
-            warm_sum += mwi_sum
-            if t == warmup - 1:
-                peak_level = warm_max
-                noise_level = warm_sum >> 9  # Mean over 512 samples
-                detector_enabled = (peak_level > noise_level)
-            continue
-
-        # ── 7. Adaptive Threshold & Local Peak Search at m = t - 1 ───────
-        if detector_enabled and t >= 2:
-            m = t - 1
-            v = int(xint_arr[m])
-            if int(xint_arr[m - 1]) < v and v >= mwi_sum and m >= warmup - 1:
-                thr = (peak_level >> 2) + noise_level - (noise_level >> 2)
-                if thr >= (1 << 36):
-                    acc_tracker.threshold_overflow += 1
-
-                if v > thr:
-                    if (m - last_cand_m) >= refractory:
-                        # Localize true R-peak in the trailing search window
-                        lo = max(0, t - (loc_window - 1))
-                        best_idx = lo
-                        best_val = abs_hist[lo]
-                        for i in range(lo + 1, t + 1):
-                            if abs_hist[i] > best_val:
-                                best_val = abs_hist[i]
-                                best_idx = i
-
-                        # ── 8. Corrected Interval Fusion & Integer Median5
-                        if raw_peaks_list:
-                            raw_rr = best_idx - raw_peaks_list[-1]
-
-                            if raw_rr < RR_MIN:
-                                # TRUE INTERVAL FUSION: Merge split peak into previous beat
-                                n_fused += 1
-                                current_flag_2bit = FLAG_FUSED_BEAT
-                                if best_val > abs_hist[raw_peaks_list[-1]]:
-                                    raw_peaks_list[-1] = best_idx
-                                    comp_peaks_list[-1] = max(0, best_idx - latency)
-                                # Do NOT append new beat!
-
-                            elif raw_rr <= RR_MAX:
-                                # Normal Physiological Beat: Push to Median5 FIFO
-                                current_flag_2bit = FLAG_REAL_DETECTED
-                                raw_peaks_list.append(best_idx)
-                                comp_peaks_list.append(max(0, best_idx - latency))
-                                rr_list.append(raw_rr)
-
-                                median5_rr_buf.append(raw_rr)
-                                if len(median5_rr_buf) > 5:
-                                    median5_rr_buf.pop(0)
-
-                                # PURE INTEGER MEDIAN (Zero float, zero np.median)
-                                med_rr = integer_median(median5_rr_buf)
-                                lut_addr = min(max(med_rr - RR_MIN, 0), len(FHR_FROZEN_INTEGER_LUT) - 1)
-                                if med_rr < RR_MIN or med_rr > RR_MAX:
-                                    acc_tracker.fhr_lut_overflow += 1
-                                fhr_current = FHR_FROZEN_INTEGER_LUT[lut_addr]
-
-                            else:
-                                # Isolated Dropout / Bradycardia (> 1.2 s)
-                                current_flag_2bit = FLAG_HELD_FHR
-                                raw_peaks_list.append(best_idx)
-                                comp_peaks_list.append(max(0, best_idx - latency))
-                                rr_list.append(raw_rr)
-                                # Hold previous valid FHR; do not corrupt median buffer
-                        else:
-                            # First detected beat
-                            current_flag_2bit = FLAG_REAL_DETECTED
-                            raw_peaks_list.append(best_idx)
-                            comp_peaks_list.append(max(0, best_idx - latency))
-                            rr_list.append(0)
-
-                        last_cand_m = m
-                        peak_level += (v - peak_level) >> 3  # EMA 1/8
-                else:
-                    noise_level += (v - noise_level) >> 3
-
-        fhr_stream[t] = fhr_current
-        # Telemetry Status Byte (Byte 6): bits 1:0 = class, bit 2 = conf, bit 3 = sat, bits 7:4 = 0
-        has_sat = int(acc_tracker.total_saturations() > 0)
-        flags_arr[t] = (current_flag_2bit & 0x03) | ((1 if is_confident_flag else 0) << 2) | (has_sat << 3)
-
-    # Accumulate biquad internal stats
-    for s in lp_biquads:
-        acc_tracker.lp_biquad_state_overflow += s.state_overflow_count
-        acc_tracker.lp_biquad_out_sat += s.out_sat_count
-    for s in bp_biquads:
-        acc_tracker.bp_biquad_state_overflow += s.state_overflow_count
-        acc_tracker.bp_biquad_out_sat += s.out_sat_count
-
-    max_ranges = {
-        "max_proj_acc_bits": int(max_proj_acc).bit_length() + 1,
-        "max_hp_acc_bits": int(max_hp_acc).bit_length() + 1,
-        "max_lp_biquad_state_bits": max(s.max_s1 for s in lp_biquads).bit_length() + 1,
-        "max_bp_biquad_state_bits": max(s.max_s1 for s in bp_biquads).bit_length() + 1,
-        "max_mwi_acc_bits": int(max_mwi_acc).bit_length(),
-        "total_state_overflows": acc_tracker.total_overflows(),
-        "total_saturations": acc_tracker.total_saturations()
-    }
-
-    return BitAccurateFinalResult(
-        proj=proj_arr,
-        hp=hp_arr,
-        fecg=fecg_arr,
-        det_bp=det_bp_arr,
-        x_int=xint_arr,
-        peaks=np.array(comp_peaks_list, dtype=np.int64),
-        raw_peaks=np.array(raw_peaks_list, dtype=np.int64),
-        fhr_hold=fhr_stream,
-        flags=flags_arr,
-        rr=np.array(rr_list, dtype=np.int64),
-        accounting=acc_tracker,
-        max_ranges=max_ranges,
-        n_fused_events=n_fused
+    runner = BitAccuratePipelineRunner(
+        w_initial=w_q,
+        mwi_len=mwi_len,
+        refractory=refractory,
+        warmup=warmup,
+        loc_window=loc_window,
+        latency=latency
     )
+    return runner.process_block(x_q, target_weights=target_weights)

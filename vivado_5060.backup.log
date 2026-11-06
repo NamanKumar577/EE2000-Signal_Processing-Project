@@ -1,0 +1,81 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Wed Nov  4 18:47:53 2026
+# Process ID         : 5060
+# Current directory  : D:/signal_project
+# Command line       : vivado.exe -mode batch -source fpga_implementation\reports\check_hw_device.tcl
+# Log file           : D:/signal_project/vivado.log
+# Journal file       : D:/signal_project\vivado.jou
+# Running On         : LAPTOP-JP0HJTKD
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26300
+# Processor Detail   : 13th Gen Intel(R) Core(TM) i7-13620H
+# CPU Frequency      : 2918 MHz
+# CPU Physical cores : 10
+# CPU Logical cores  : 16
+# Host memory        : 16786 MB
+# Swap memory        : 15032 MB
+# Total Virtual      : 31818 MB
+# Available Virtual  : 11591 MB
+#-----------------------------------------------------------
+source {fpga_implementation\reports\check_hw_device.tcl}
+# open_hw_manager
+# puts "CONNECTING TO HARDWARE SERVER..."
+CONNECTING TO HARDWARE SERVER...
+# if {[catch {connect_hw_server} err]} {
+#     puts "HW_SERVER_CONNECT_ERROR: $err"
+#     exit 0
+# }
+INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
+INFO: [Labtools 27-2222] Launching hw_server...
+INFO: [Labtools 27-2221] Launch Output:
+
+****** Xilinx hw_server v2025.2
+  **** Build date : Oct 28 2025 at 10:03:13
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+
+INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0
+INFO: [Labtools 27-3417] Launching cs_server...
+INFO: [Labtools 27-2221] Launch Output:
+
+
+******** Xilinx cs_server v2025.2.0
+  ****** Build date   : Nov 14 2025-04:46:52
+    **** Build number : 2025.2.1763075812
+      ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.
+      ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+
+
+connect_hw_server: Time (s): cpu = 00:00:00 ; elapsed = 00:00:06 . Memory (MB): peak = 535.164 ; gain = 3.973
+# puts "GETTING TARGETS..."
+GETTING TARGETS...
+# set targets [get_hw_targets]
+# puts "AVAILABLE_TARGETS: $targets"
+AVAILABLE_TARGETS: localhost:3121/xilinx_tcf/Xilinx/887238250157A
+# if {[llength $targets] > 0} {
+#     open_hw_target [lindex $targets 0]
+#     set devs [get_hw_devices]
+#     puts "DETECTED_DEVICES: $devs"
+#     foreach dev $devs {
+#         current_hw_device $dev
+#         refresh_hw_device $dev
+#         puts "DEV_NAME: [get_property NAME $dev]"
+#         puts "DEV_PART: [get_property PART $dev]"
+#         puts "IS_PROGRAMMED: [get_property IS_PROGRAMMED $dev]"
+#     }
+#     close_hw_target
+# } else {
+#     puts "NO_JTAG_TARGETS_FOUND"
+# }
+INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Xilinx/887238250157A
+DETECTED_DEVICES: xc7s50_0
+INFO: [Labtools 27-1434] Device xc7s50 (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it.
+DEV_NAME: xc7s50_0
+DEV_PART: xc7s50
+ERROR: [Labtoolstcl 44-56] hw_device [xc7s50_0] does not have a [IS_PROGRAMMED] property
+INFO: [Common 17-206] Exiting Vivado at Wed Nov  4 18:48:08 2026...

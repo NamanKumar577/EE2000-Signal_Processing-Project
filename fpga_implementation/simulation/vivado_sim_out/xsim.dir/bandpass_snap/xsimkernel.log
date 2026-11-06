@@ -1,0 +1,7 @@
+Running: xsim.dir/bandpass_snap/xsimk.exe -runall -simmode gui -wdb bandpass_snap.wdb -simrunnum 0 -socket 53382
+Design successfully loaded
+Design Loading Memory Usage: 10888 KB (Peak: 10888 KB)
+Design Loading CPU Usage: 15 ms
+Simulation completed
+Simulation Memory Usage: 11372 KB (Peak: 11372 KB)
+Simulation CPU Usage: 15 ms

@@ -1,0 +1,82 @@
+====================================================================================================
+RAW UART RX PACKET DATA & PACKET STRUCTURE PROOF: ALL 6 CASES
+Platform: Physical AMD Spartan-7 XC7S50-1CSGA324C on RealDigital Boolean Board via COM5
+Baud Rate: 115,200 baud, 8-N-1 | Uplink Packet Format: [0x5A][Seq 1B][FECG 3B signed Q20][CRC8 1B]
+Polynomial: CRC-8 CCITT (x^8 + x^2 + x + 1, Poly 0x07, Init 0x00)
+====================================================================================================
+
+Total Packets Ingested & Verified: 15,000 / 15,000
+Total CRC Errors: 0
+Total Dropped Bytes: 0
+Total Sequence Gaps: 0
+
+----------------------------------------------------------------------------------------------------
+CASE 1: SYNTHETIC_75M_140F (Samples 0 - 2499)
+PCA Weights: [7915, -5010, -21569, 22820] | Packets: 2500 FECG, 18 Telemetry
+----------------------------------------------------------------------------------------------------
+Sample 0000 | Seq: 0x00 (000) | FECG:         0 (0x000000) | Raw Bytes: 5A 00 00 00 00 27 | CRC: 0x27 (MATCH)
+Sample 0001 | Seq: 0x01 (001) | FECG:         0 (0x000000) | Raw Bytes: 5A 01 00 00 00 31 | CRC: 0x31 (MATCH)
+Sample 0002 | Seq: 0x02 (002) | FECG:         0 (0x000000) | Raw Bytes: 5A 02 00 00 00 0B | CRC: 0x0B (MATCH)
+...
+Sample 2498 | Seq: 0xC2 (194) | FECG:       799 (0x00031F) | Raw Bytes: 5A C2 00 03 1F 9E | CRC: 0x9E (MATCH)
+Sample 2499 | Seq: 0xC3 (195) | FECG:       788 (0x000314) | Raw Bytes: 5A C3 00 03 14 06 | CRC: 0x06 (MATCH)
+
+----------------------------------------------------------------------------------------------------
+CASE 2: sub01_snr12dB_c0 (Samples 2500 - 4999)
+PCA Weights: [8208, 21958, -12586, -19126] | Packets: 2500 FECG, 24 Telemetry
+----------------------------------------------------------------------------------------------------
+Sample 0000 | Seq: 0x00 (000) | FECG:      1552 (0x000610) | Raw Bytes: 5A 00 00 06 10 29 | CRC: 0x29 (MATCH)
+Sample 0001 | Seq: 0x01 (001) | FECG:      3015 (0x000BC7) | Raw Bytes: 5A 01 00 0B C7 FD | CRC: 0xFD (MATCH)
+Sample 0002 | Seq: 0x02 (002) | FECG:     -6671 (0xFFE5F1) | Raw Bytes: 5A 02 FF E5 F1 FB | CRC: 0xFB (MATCH)
+Sample 0003 | Seq: 0x03 (003) | FECG:    -52020 (0xFF34CC) | Raw Bytes: 5A 03 FF 34 CC 18 | CRC: 0x18 (MATCH)
+Sample 0004 | Seq: 0x04 (004) | FECG:   -136548 (0xFDE99C) | Raw Bytes: 5A 04 FD E9 9C B7 | CRC: 0xB7 (MATCH)
+Sample 0005 | Seq: 0x05 (005) | FECG:   -220503 (0xFCA2A9) | Raw Bytes: 5A 05 FC A2 A9 DA | CRC: 0xDA (MATCH)
+Sample 0006 | Seq: 0x06 (006) | FECG:   -258178 (0xFC0F7E) | Raw Bytes: 5A 06 FC 0F 7E DC | CRC: 0xDC (MATCH)
+...
+Sample 2498 | Seq: 0xC2 (194) | FECG:    -10499 (0xFFD6FD) | Raw Bytes: 5A C2 FF D6 FD 92 | CRC: 0x92 (MATCH)
+Sample 2499 | Seq: 0xC3 (195) | FECG:    -11910 (0xFFD17A) | Raw Bytes: 5A C3 FF D1 7A F8 | CRC: 0xF8 (MATCH)
+
+----------------------------------------------------------------------------------------------------
+CASE 3: sub01_snr06dB_c0 (Samples 5000 - 7499)
+PCA Weights: [22592, 4803, -17818, -14926] | Packets: 2500 FECG, 25 Telemetry
+----------------------------------------------------------------------------------------------------
+Sample 0000 | Seq: 0x00 (000) | FECG:    -12745 (0xFFCE37) | Raw Bytes: 5A 00 FF CE 37 B2 | CRC: 0xB2 (MATCH)
+Sample 0001 | Seq: 0x01 (001) | FECG:    -14887 (0xFFC5D9) | Raw Bytes: 5A 01 FF C5 D9 B7 | CRC: 0xB7 (MATCH)
+Sample 0002 | Seq: 0x02 (002) | FECG:    -14722 (0xFFC67E) | Raw Bytes: 5A 02 FF C6 7E CE | CRC: 0xCE (MATCH)
+...
+Sample 2498 | Seq: 0xC2 (194) | FECG:     24391 (0x005F47) | Raw Bytes: 5A C2 00 5F 47 B6 | CRC: 0xB6 (MATCH)
+Sample 2499 | Seq: 0xC3 (195) | FECG:     20412 (0x004FBC) | Raw Bytes: 5A C3 00 4F BC 7A | CRC: 0x7A (MATCH)
+
+----------------------------------------------------------------------------------------------------
+CASE 4: sub01_snr00dB_c0 (Samples 7500 - 9999)
+PCA Weights: [23385, 6119, -17006, -14151] | Packets: 2500 FECG, 23 Telemetry
+----------------------------------------------------------------------------------------------------
+Sample 0000 | Seq: 0x00 (000) | FECG:     19657 (0x004CC9) | Raw Bytes: 5A 00 00 4C C9 F1 | CRC: 0xF1 (MATCH)
+Sample 0001 | Seq: 0x01 (001) | FECG:      7778 (0x001E62) | Raw Bytes: 5A 01 00 1E 62 99 | CRC: 0x99 (MATCH)
+Sample 0002 | Seq: 0x02 (002) | FECG:    -10321 (0xFFD7AF) | Raw Bytes: 5A 02 FF D7 AF B5 | CRC: 0xB5 (MATCH)
+...
+Sample 2498 | Seq: 0xC2 (194) | FECG:     16672 (0x004120) | Raw Bytes: 5A C2 00 41 20 8E | CRC: 0x8E (MATCH)
+Sample 2499 | Seq: 0xC3 (195) | FECG:     16715 (0x00414B) | Raw Bytes: 5A C3 00 41 4B AA | CRC: 0xAA (MATCH)
+
+----------------------------------------------------------------------------------------------------
+CASE 5: sub04_snr06dB_c0 (Samples 10000 - 12499)
+PCA Weights: [-16192, -13479, 15628, 19638] | Packets: 2500 FECG, 19 Telemetry
+----------------------------------------------------------------------------------------------------
+Sample 0000 | Seq: 0x00 (000) | FECG:     17238 (0x004356) | Raw Bytes: 5A 00 00 43 56 E6 | CRC: 0xE6 (MATCH)
+Sample 0001 | Seq: 0x01 (001) | FECG:      9993 (0x002709) | Raw Bytes: 5A 01 00 27 09 CB | CRC: 0xCB (MATCH)
+Sample 0002 | Seq: 0x02 (002) | FECG:      3863 (0x000F17) | Raw Bytes: 5A 02 00 0F 17 AD | CRC: 0xAD (MATCH)
+...
+Sample 2498 | Seq: 0xC2 (194) | FECG:     -3829 (0xFFF10B) | Raw Bytes: 5A C2 FF F1 0B 7A | CRC: 0x7A (MATCH)
+Sample 2499 | Seq: 0xC3 (195) | FECG:     -4458 (0xFFEE96) | Raw Bytes: 5A C3 FF EE 96 CF | CRC: 0xCF (MATCH)
+
+----------------------------------------------------------------------------------------------------
+CASE 6: sub08_snr06dB_c0 (Samples 12500 - 14999)
+PCA Weights: [2095, -12688, 24124, -18066] | Packets: 2500 FECG, 18 Telemetry
+----------------------------------------------------------------------------------------------------
+Sample 0000 | Seq: 0x00 (000) | FECG:    153320 (0x0256E8) | Raw Bytes: 5A 00 02 56 E8 15 | CRC: 0x15 (MATCH)
+Sample 0001 | Seq: 0x01 (001) | FECG:     78734 (0x01338E) | Raw Bytes: 5A 01 01 33 8E 3F | CRC: 0x3F (MATCH)
+Sample 0002 | Seq: 0x02 (002) | FECG:    -10748 (0xFFD604) | Raw Bytes: 5A 02 FF D6 04 F8 | CRC: 0xF8 (MATCH)
+...
+Sample 2498 | Seq: 0xC2 (194) | FECG:     -1934 (0xFFF872) | Raw Bytes: 5A C2 FF F8 72 B9 | CRC: 0xB9 (MATCH)
+Sample 2499 | Seq: 0xC3 (195) | FECG:     -1891 (0xFFF89D) | Raw Bytes: 5A C3 FF F8 9D 5C | CRC: 0x5C (MATCH)
+====================================================================================================

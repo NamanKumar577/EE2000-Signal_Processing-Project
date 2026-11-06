@@ -1,0 +1,48 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Wed Nov  4 18:23:12 2026
+# Process ID         : 31280
+# Current directory  : D:/signal_project/fpga_implementation/reports
+# Command line       : vivado.exe -mode batch -source run_synth_impl.tcl
+# Log file           : D:/signal_project/fpga_implementation/reports/vivado.log
+# Journal file       : D:/signal_project/fpga_implementation/reports\vivado.jou
+# Running On         : LAPTOP-JP0HJTKD
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26300
+# Processor Detail   : 13th Gen Intel(R) Core(TM) i7-13620H
+# CPU Frequency      : 2918 MHz
+# CPU Physical cores : 10
+# CPU Logical cores  : 16
+# Host memory        : 16786 MB
+# Swap memory        : 15032 MB
+# Total Virtual      : 31818 MB
+# Available Virtual  : 11771 MB
+#-----------------------------------------------------------
+source run_synth_impl.tcl
+# set PART "xc7s50csga324-1"
+# set TOP  "fecg_single_channel_top"
+# puts "================================================================="
+=================================================================
+# puts "STARTING SYNTHESIS: $TOP on $PART"
+STARTING SYNTHESIS: fecg_single_channel_top on xc7s50csga324-1
+# puts "================================================================="
+=================================================================
+# create_project -in_memory -part $PART
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 527.430 ; gain = 221.152
+# read_verilog -verbose [list \
+#     ../../rtl/biquad_df2t.v \
+#     ../../rtl/hp1_baseline.v \
+#     ../../rtl/lp40_filter.v \
+#     ../../rtl/bandpass_config_c.v \
+#     ../../rtl/squarer_mwi.v \
+#     ../../rtl/adaptive_detector.v \
+#     ../../rtl/peak_localizer.v \
+#     ../../rtl/interval_fusion.v \
+#     ../../rtl/fhr_calculator.v \
+#     ../../rtl/fecg_single_channel_top.v \
+# ]
+ERROR: [Common 17-69] Command failed: File 'D:/signal_project/rtl/biquad_df2t.v' does not exist
+INFO: [Common 17-206] Exiting Vivado at Wed Nov  4 18:23:26 2026...

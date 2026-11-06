@@ -1,21 +1,30 @@
 """
-code/src/uart_protocol_final.py
+src/fecg/telemetry/uart_protocol.py
 ────────────────────────────────────────────────────────────────────────────
-Final Bit-Accurate UART Communication Protocol Implementation.
+Bit-Accurate UART Communication Protocol Implementation.
 
 Target Platform: RealDigital Boolean Board (AMD/Xilinx Spartan-7 XC7S50-1CSGA324C)
-Interface: FTDI USB-UART Bridge (FT2232H) @ 921,600 Baud (8-N-1)
+Interface: FTDI USB-UART Bridge (FT2232H) @ 921,600 Baud (Bringup: 115,200 Baud, 8-N-1)
 
 Locked Packet Structures:
-  1. Downlink Calibration Packet (10 Bytes, Header 0xC3):
+  1. Downlink Sample Packet (11 Bytes, Header 0xA5):
+     - Byte 0: 0xA5
+     - Byte 1: Sequence Counter (8-bit unsigned rolling counter)
+     - Bytes 2-3: CH0 sample (Signed 16-bit Q12, Big-Endian)
+     - Bytes 4-5: CH1 sample (Signed 16-bit Q12, Big-Endian)
+     - Bytes 6-7: CH2 sample (Signed 16-bit Q12, Big-Endian)
+     - Bytes 8-9: CH3 sample (Signed 16-bit Q12, Big-Endian)
+     - Byte 10: CRC8-CCITT over Bytes 0-9
+
+  2. Downlink Calibration Packet (10 Bytes, Header 0xC3):
      - Byte 0: 0xC3
      - Bytes 1-2: w0 (Signed 16-bit Q1.15, Big-Endian)
      - Bytes 3-4: w1 (Signed 16-bit Q1.15, Big-Endian)
      - Bytes 5-6: w2 (Signed 16-bit Q1.15, Big-Endian)
      - Bytes 7-8: w3 (Signed 16-bit Q1.15, Big-Endian)
      - Byte 9: CRC8-CCITT over Bytes 0-8
-  
-  2. Uplink QRS Event & FHR Telemetry Packet (8 Bytes, Header 0xAA):
+
+  3. Uplink QRS Event & FHR Telemetry Packet (8 Bytes, Header 0xAA):
      - Byte 0: 0xAA
      - Bytes 1-3: Timestamp (24-bit unsigned integer, Big-Endian, latency-compensated)
      - Bytes 4-5: FHR in units of 0.1 bpm (16-bit unsigned, Big-Endian: e.g. 1402 = 140.2 bpm)
@@ -26,7 +35,7 @@ Locked Packet Structures:
        * bits 7:4: Reserved (0000)
      - Byte 7: CRC8-CCITT over Bytes 0-6
 
-  3. Clean FECG Stream Packet (6 Bytes, Header 0x5A):
+  4. Clean FECG Stream Packet (6 Bytes, Header 0x5A):
      - Byte 0: 0x5A
      - Byte 1: Sequence Counter (8-bit unsigned rolling counter)
      - Bytes 2-4: Clean FECG sample (Signed 24-bit, Big-Endian, scale = 2^20 LSB/mV)
@@ -47,6 +56,7 @@ import struct
 CRC8_POLYNOMIAL = 0x07
 CRC8_INIT = 0x00
 
+HEADER_SAMPLE        = 0xA5
 HEADER_CALIBRATION   = 0xC3
 HEADER_FHR_TELEMETRY = 0xAA
 HEADER_FECG_STREAM   = 0x5A
@@ -55,6 +65,7 @@ FLAG_REAL_DETECTED    = 0b00
 FLAG_FUSED_BEAT       = 0b01
 FLAG_HELD_FHR         = 0b10
 FLAG_INVALID_WARMUP   = 0b11
+
 
 def crc8_ccitt(data: bytes) -> int:
     """Compute CRC-8-CCITT checksum over bytes with polynomial 0x07, init 0x00."""
@@ -68,7 +79,46 @@ def crc8_ccitt(data: bytes) -> int:
                 crc = (crc << 1) & 0xFF
     return crc
 
-# ── 1. Downlink Calibration Packet (10 Bytes) ────────────────────────────
+
+# ── 1. Downlink Sample Packet (11 Bytes) ──────────────────────────────────
+
+def encode_sample_packet(seq: int, ch0: int, ch1: int, ch2: int, ch3: int) -> bytes:
+    """
+    Encode 4-channel signed 16-bit Q12 samples into an 11-byte Downlink Sample Packet.
+    Format: [0xA5] [Seq# 1B] [CH0 2B] [CH1 2B] [CH2 2B] [CH3 2B] [CRC8 1B]
+    """
+    seq_u8 = int(seq) & 0xFF
+    channels = [int(ch0), int(ch1), int(ch2), int(ch3)]
+    for i, ch in enumerate(channels):
+        if ch < -32768 or ch > 32767:
+            raise ValueError(f"Channel CH{i} value {ch} out of signed 16-bit range [-32768, 32767]")
+
+    payload = bytearray([HEADER_SAMPLE, seq_u8])
+    for ch in channels:
+        payload.extend(struct.pack(">h", ch))
+    crc = crc8_ccitt(bytes(payload))
+    payload.append(crc)
+    return bytes(payload)
+
+
+def decode_sample_packet(packet: bytes) -> Tuple[int, int, int, int, int]:
+    """
+    Decode and verify 11-byte Downlink Sample Packet.
+    Returns: (seq, ch0, ch1, ch2, ch3)
+    """
+    if len(packet) != 11:
+        raise ValueError(f"Sample packet length must be 11, got {len(packet)}")
+    if packet[0] != HEADER_SAMPLE:
+        raise ValueError(f"Invalid sample header: 0x{packet[0]:02X}")
+    expected_crc = crc8_ccitt(packet[:10])
+    if packet[10] != expected_crc:
+        raise ValueError(f"CRC8 mismatch: expected 0x{expected_crc:02X}, got 0x{packet[10]:02X}")
+    seq = packet[1]
+    ch0, ch1, ch2, ch3 = struct.unpack(">hhhh", packet[2:10])
+    return seq, ch0, ch1, ch2, ch3
+
+
+# ── 2. Downlink Calibration Packet (10 Bytes) ────────────────────────────
 
 def encode_calibration_packet(weights: Sequence[int]) -> bytes:
     """Encode 4 signed 16-bit Q1.15 weights into 10-byte calibration packet."""
@@ -84,6 +134,7 @@ def encode_calibration_packet(weights: Sequence[int]) -> bytes:
     payload.append(crc)
     return bytes(payload)
 
+
 def decode_calibration_packet(packet: bytes) -> Tuple[int, int, int, int]:
     """Decode and verify 10-byte calibration packet. Returns (w0, w1, w2, w3)."""
     if len(packet) != 10:
@@ -96,7 +147,8 @@ def decode_calibration_packet(packet: bytes) -> Tuple[int, int, int, int]:
     w0, w1, w2, w3 = struct.unpack(">hhhh", packet[1:9])
     return w0, w1, w2, w3
 
-# ── 2. Uplink QRS Event & FHR Telemetry Packet (8 Bytes) ─────────────────
+
+# ── 3. Uplink QRS Event & FHR Telemetry Packet (8 Bytes) ─────────────────
 
 def encode_fhr_telemetry_packet(
     timestamp: int,
@@ -137,6 +189,7 @@ def encode_fhr_telemetry_packet(
     payload.append(crc)
     return bytes(payload)
 
+
 def decode_fhr_telemetry_packet(packet: bytes) -> Tuple[int, float, int, bool, bool]:
     """
     Decode and verify 8-byte FHR telemetry packet.
@@ -160,7 +213,8 @@ def decode_fhr_telemetry_packet(packet: bytes) -> Tuple[int, float, int, bool, b
 
     return timestamp, fhr_bpm, flag_2bit, is_confident, is_saturated
 
-# ── 3. Clean FECG Stream Packet (6 Bytes) ────────────────────────────────
+
+# ── 4. Clean FECG Stream Packet (6 Bytes) ────────────────────────────────
 
 def encode_fecg_stream_packet(seq: int, sample_s24: int) -> bytes:
     """
@@ -181,6 +235,7 @@ def encode_fecg_stream_packet(seq: int, sample_s24: int) -> bytes:
     crc = crc8_ccitt(bytes(payload))
     payload.append(crc)
     return bytes(payload)
+
 
 def decode_fecg_stream_packet(packet: bytes) -> Tuple[int, int]:
     """
@@ -203,7 +258,8 @@ def decode_fecg_stream_packet(packet: bytes) -> Tuple[int, int]:
         sample_s24 = raw_s24
     return seq, sample_s24
 
-# ── 4. Streaming Framing and Resynchronization Engine ─────────────────────
+
+# ── 5. Streaming Framing and Resynchronization Engine ─────────────────────
 
 class UARTStreamFramer:
     """
@@ -226,7 +282,12 @@ class UARTStreamFramer:
             packet_len = 0
 
             for i, b in enumerate(self.buffer):
-                if b == HEADER_CALIBRATION and len(self.buffer) - i >= 10:
+                if b == HEADER_SAMPLE and len(self.buffer) - i >= 11:
+                    header_idx = i
+                    packet_type = "SAMPLE"
+                    packet_len = 11
+                    break
+                elif b == HEADER_CALIBRATION and len(self.buffer) - i >= 10:
                     header_idx = i
                     packet_type = "CALIBRATION"
                     packet_len = 10
@@ -244,8 +305,8 @@ class UARTStreamFramer:
 
             if header_idx == -1:
                 # No complete packet header found; discard garbage up to last possible candidate
-                if len(self.buffer) > 10:
-                    self.buffer = self.buffer[-9:]
+                if len(self.buffer) > 11:
+                    self.buffer = self.buffer[-10:]
                 break
 
             # Discard any corrupted leading bytes before header

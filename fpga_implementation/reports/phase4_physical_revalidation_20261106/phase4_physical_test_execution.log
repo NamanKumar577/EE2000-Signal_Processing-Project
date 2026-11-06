@@ -1,0 +1,126 @@
+====================================================================================================
+PHASE 4: MANDATORY PHYSICAL FPGA REVALIDATION RUN
+Timestamp:          2026-11-06 07:47:41
+Target Board:       RealDigital Boolean Board (AMD Spartan-7 XC7S50-1CSGA324C)
+Serial Interface:   COM5 @ 115200 baud, 8-N-1
+Validation Script:  run_phase4_physical_revalidation.py (SHA-256: 29edc4e52fb374cb6b2bb8461d9df16c07dbe8713a85a588116a7c631fb596e5)
+Bitstream File:     fecg_multichannel_top.bit (SHA-256: 503abc132ee4614f8868f2aca74cca0b0a396f90607d6356f17ae537f753023f)
+Deliverables Dir:   D:\signal_project\fpga_implementation\reports\phase4_physical_revalidation_20261106
+====================================================================================================
+================================================================================
+REPROGRAMMING SPARTAN-7 FPGA VIA JTAG
+Bitstream: D:\signal_project\fpga_implementation\bitstream\fecg_multichannel_top.bit
+Programming TCL: D:\signal_project\fpga_implementation\reports\program_multichannel_hw.tcl
+Log Output: D:\signal_project\fpga_implementation\reports\phase4_physical_revalidation_20261106\jtag_programming.log
+================================================================================
+Vivado JTAG process exited with code 0 in 14.13s
+[SUCCESS] Physical FPGA reprogrammed successfully! Startup status: HIGH.
+
+Opening serial connection to physical FPGA on COM5...
+[OK] Connected to COM5 successfully.
+
+----------------------------------------------------------------------------------------------------
+CASE 1/6: SYNTHETIC_75M_140F
+  Samples: 2500 | PC Selected: PC2 | PCA Weights: [7915, -5010, -21569, 22820]
+  Maternal Suppression: 31.6 dB | True FHR: 140.0 bpm | True MHR: 75.0 bpm
+----------------------------------------------------------------------------------------------------
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Streaming Complete: 2500 sent, 2500 received in 10.02s
+  Timing Interval: Mean=4.001 ms (Effective Fs=249.94 Hz), Std=6.929 ms, Median=0.001 ms
+  Packet Accounting: FECG Packets=2500, Telemetry Packets=18, CRC Errors=0, Dropped Bytes=0, Missing=0
+  Waveform Accuracy: Max Error = 0 LSB | MAE = 0.0000 LSB | Exact Match = 100.00% (2500/2500)
+  Beat Accuracy:     Sensitivity = 100.0% | PPV = 100.0% | F1 = 100.0% | FHR Err = 0.2 bpm
+  Maternal Rejection: Coincidence = 11.1% | Maternal FAR = 0.0%
+
+----------------------------------------------------------------------------------------------------
+CASE 2/6: sub01_snr12dB_c0
+  Samples: 2500 | PC Selected: PC3 | PCA Weights: [8208, 21958, -12586, -19126]
+  Maternal Suppression: 31.0 dB | True FHR: 143.0 bpm | True MHR: 107.8 bpm
+----------------------------------------------------------------------------------------------------
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Streaming Complete: 2500 sent, 2500 received in 10.01s
+  Timing Interval: Mean=4.001 ms (Effective Fs=249.96 Hz), Std=6.928 ms, Median=0.001 ms
+  Packet Accounting: FECG Packets=2500, Telemetry Packets=24, CRC Errors=0, Dropped Bytes=0, Missing=0
+  Waveform Accuracy: Max Error = 0 LSB | MAE = 0.0000 LSB | Exact Match = 100.00% (2500/2500)
+  Beat Accuracy:     Sensitivity = 100.0% | PPV = 100.0% | F1 = 100.0% | FHR Err = 0.2 bpm
+  Maternal Rejection: Coincidence = 21.1% | Maternal FAR = 0.0%
+
+----------------------------------------------------------------------------------------------------
+CASE 3/6: sub01_snr06dB_c0
+  Samples: 2500 | PC Selected: PC3 | PCA Weights: [22592, 4803, -17818, -14926]
+  Maternal Suppression: 17.0 dB | True FHR: 143.0 bpm | True MHR: 107.8 bpm
+----------------------------------------------------------------------------------------------------
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Streaming Complete: 2500 sent, 2500 received in 10.01s
+  Timing Interval: Mean=4.002 ms (Effective Fs=249.87 Hz), Std=6.937 ms, Median=0.001 ms
+  Packet Accounting: FECG Packets=2500, Telemetry Packets=25, CRC Errors=0, Dropped Bytes=0, Missing=0
+  Waveform Accuracy: Max Error = 0 LSB | MAE = 0.0000 LSB | Exact Match = 100.00% (2500/2500)
+  Beat Accuracy:     Sensitivity = 78.9% | PPV = 78.9% | F1 = 78.9% | FHR Err = 1.2 bpm
+  Maternal Rejection: Coincidence = 26.3% | Maternal FAR = 21.1%
+
+----------------------------------------------------------------------------------------------------
+CASE 4/6: sub01_snr00dB_c0
+  Samples: 2500 | PC Selected: PC3 | PCA Weights: [23385, 6119, -17006, -14151]
+  Maternal Suppression: 30.5 dB | True FHR: 143.0 bpm | True MHR: 107.8 bpm
+----------------------------------------------------------------------------------------------------
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Streaming Complete: 2500 sent, 2500 received in 10.02s
+  Timing Interval: Mean=4.003 ms (Effective Fs=249.84 Hz), Std=6.931 ms, Median=0.001 ms
+  Packet Accounting: FECG Packets=2500, Telemetry Packets=23, CRC Errors=0, Dropped Bytes=0, Missing=0
+  Waveform Accuracy: Max Error = 0 LSB | MAE = 0.0000 LSB | Exact Match = 100.00% (2500/2500)
+  Beat Accuracy:     Sensitivity = 94.7% | PPV = 100.0% | F1 = 97.3% | FHR Err = 0.2 bpm
+  Maternal Rejection: Coincidence = 0.0% | Maternal FAR = 0.0%
+
+----------------------------------------------------------------------------------------------------
+CASE 5/6: sub04_snr06dB_c0
+  Samples: 2500 | PC Selected: PC3 | PCA Weights: [-16192, -13479, 15628, 19638]
+  Maternal Suppression: 17.1 dB | True FHR: 112.9 bpm | True MHR: 68.5 bpm
+----------------------------------------------------------------------------------------------------
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Streaming Complete: 2500 sent, 2500 received in 10.01s
+  Timing Interval: Mean=3.995 ms (Effective Fs=250.30 Hz), Std=6.926 ms, Median=0.001 ms
+  Packet Accounting: FECG Packets=2500, Telemetry Packets=19, CRC Errors=0, Dropped Bytes=0, Missing=0
+  Waveform Accuracy: Max Error = 0 LSB | MAE = 0.0000 LSB | Exact Match = 100.00% (2500/2500)
+  Beat Accuracy:     Sensitivity = 86.7% | PPV = 86.7% | F1 = 86.7% | FHR Err = 1.2 bpm
+  Maternal Rejection: Coincidence = 13.3% | Maternal FAR = 13.3%
+
+----------------------------------------------------------------------------------------------------
+CASE 6/6: sub08_snr06dB_c0
+  Samples: 2500 | PC Selected: PC2 | PCA Weights: [2095, -12688, 24124, -18066]
+  Maternal Suppression: 20.1 dB | True FHR: 93.5 bpm | True MHR: 83.3 bpm
+----------------------------------------------------------------------------------------------------
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Streaming Complete: 2500 sent, 2500 received in 10.01s
+  Timing Interval: Mean=4.000 ms (Effective Fs=249.98 Hz), Std=6.927 ms, Median=0.001 ms
+  Packet Accounting: FECG Packets=2500, Telemetry Packets=18, CRC Errors=0, Dropped Bytes=0, Missing=0
+  Waveform Accuracy: Max Error = 0 LSB | MAE = 0.0000 LSB | Exact Match = 100.00% (2500/2500)
+  Beat Accuracy:     Sensitivity = 100.0% | PPV = 85.7% | F1 = 92.3% | FHR Err = 4.6 bpm
+  Maternal Rejection: Coincidence = 0.0% | Maternal FAR = 14.3%
+
+Serial connection closed.
+
+Writing master waveform capture (15000 samples) to: D:\signal_project\fpga_implementation\reports\phase4_physical_revalidation_20261106\phase4_fpga_captured_waveforms.csv ...
+Writing comparison summary table to: D:\signal_project\fpga_implementation\reports\phase4_physical_revalidation_20261106\phase4_physical_comparison_results.csv ...
+
+=================================================================================================================================================
+PHASE 4 PHYSICAL FPGA REVALIDATION: COMPLETE SIX-CASE VERIFICATION TABLE
+=================================================================================================================================================
+Case ID                | Sent  | Rx FECG | CRC | Drop | Miss | Intv(ms) | Eff Fs  | Max LSB | MAE LSB  | Match %  | F1 %   | FAR % 
+-------------------------------------------------------------------------------------------------------------------------------------------------
+SYNTHETIC_75M_140F     | 2500  | 2500    | 0   | 0    | 0    |    4.001 | 249.94 |       0 |   0.0000 |  100.00% | 100.0% |   0.0%
+sub01_snr12dB_c0       | 2500  | 2500    | 0   | 0    | 0    |    4.001 | 249.96 |       0 |   0.0000 |  100.00% | 100.0% |   0.0%
+sub01_snr06dB_c0       | 2500  | 2500    | 0   | 0    | 0    |    4.002 | 249.87 |       0 |   0.0000 |  100.00% |  78.9% |  21.1%
+sub01_snr00dB_c0       | 2500  | 2500    | 0   | 0    | 0    |    4.003 | 249.84 |       0 |   0.0000 |  100.00% |  97.3% |   0.0%
+sub04_snr06dB_c0       | 2500  | 2500    | 0   | 0    | 0    |    3.995 | 250.30 |       0 |   0.0000 |  100.00% |  86.7% |  13.3%
+sub08_snr06dB_c0       | 2500  | 2500    | 0   | 0    | 0    |    4.000 | 249.98 |       0 |   0.0000 |  100.00% |  92.3% |  14.3%
+=================================================================================================================================================
+
+AGGREGATE REVALIDATION SUMMARY:
+  Total Ingested Samples:   15,000 / 15,000 (100.00% sent & accepted)
+  Total Output Packets:     15,000 / 15,000 (100.00% captured)
+  Total CRC Errors:         0 (0.00% error rate)
+  Overall Exact Match:      100.00% (15,000 / 15,000 samples)
+  Execution Log Saved:      D:\signal_project\fpga_implementation\reports\phase4_physical_revalidation_20261106\phase4_physical_test_execution.log
+  Master Waveforms Saved:   D:\signal_project\fpga_implementation\reports\phase4_physical_revalidation_20261106\phase4_fpga_captured_waveforms.csv
+  Comparison Table Saved:   D:\signal_project\fpga_implementation\reports\phase4_physical_revalidation_20261106\phase4_physical_comparison_results.csv
+====================================================================================================

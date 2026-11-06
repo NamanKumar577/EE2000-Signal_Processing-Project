@@ -1,0 +1,1 @@
+-debug "typical" "work.tb_interval_fusion" -s "tb_interval_fusion_snap" 

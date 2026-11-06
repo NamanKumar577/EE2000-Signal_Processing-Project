@@ -1,0 +1,1 @@
+-top "tb_squarer_mwi" -snapshot "squarer_snap" 

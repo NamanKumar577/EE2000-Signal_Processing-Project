@@ -244,7 +244,7 @@ Strict Clinical Safety Rules:
 """
 
 
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Optional, Sequence
 import numpy as np
 
 FS = 250
