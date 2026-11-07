@@ -1,0 +1,6 @@
+case_index,record_id,samples_sent,fecg_packets_rx,telemetry_packets_rx,missing_packets,crc_errors,framing_errors,max_abs_error_lsb,mean_abs_error_lsb,exact_match_pct,mean_interval_ms,median_interval_ms
+1,NR_01,2500,2500,0,0,0,0,75920,1302.2984,71.72,4.002,0.0005
+2,NR_02,2500,2500,16,0,0,0,0,0.0,100.0,4.0,0.0005
+3,ARR_02,2500,2500,0,0,0,0,0,0.0,100.0,4.0,0.0006
+4,ARR_06,2500,2500,8,0,0,0,0,0.0,100.0,4.0,0.0005
+5,ARR_10,2500,2500,1,0,0,0,0,0.0,100.0,4.003,0.0006

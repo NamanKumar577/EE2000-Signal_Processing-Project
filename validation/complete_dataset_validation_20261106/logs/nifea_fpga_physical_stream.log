@@ -1,0 +1,50 @@
+================================================================================
+NIFEA PHYSICAL SPARTAN-7 FPGA HARDWARE VALIDATION (COM5)
+Date: 2026-11-06 08:28:53
+Port: COM5 @ 115200 baud (8-N-1)
+Records to stream: ['NR_01', 'NR_02', 'ARR_02', 'ARR_06', 'ARR_10']
+Samples per record: 2500 (10.0 s continuous)
+================================================================================
+[OK] Successfully opened COM5.
+
+--- Case 1/5: NR_01 ---
+  Calibrated PC1, Weights: [-21426, -2932, 8122, 23240], Conf: 0.703
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Execution time: 10.02 s (249.6 samples/s)
+  Samples sent: 2500, Packets RX: 2500, Missing: 0, CRC err: 0
+  Waveform parity: Max Error = 75920 LSB, MAE = 1302.2984 LSB, Exact Match = 71.72%
+  Timing intervals: Mean = 4.002 ms, Median = 0.0005 ms
+
+--- Case 2/5: NR_02 ---
+  Calibrated PC1, Weights: [-858, 11377, 18631, 24422], Conf: 0.728
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Execution time: 10.01 s (249.9 samples/s)
+  Samples sent: 2500, Packets RX: 2500, Missing: 0, CRC err: 0
+  Waveform parity: Max Error = 0 LSB, MAE = 0.0000 LSB, Exact Match = 100.00%
+  Timing intervals: Mean = 4.000 ms, Median = 0.0005 ms
+
+--- Case 3/5: ARR_02 ---
+  Calibrated PC1, Weights: [22761, 2876, -12290, -19910], Conf: 0.572
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Execution time: 10.01 s (249.9 samples/s)
+  Samples sent: 2500, Packets RX: 2500, Missing: 0, CRC err: 0
+  Waveform parity: Max Error = 0 LSB, MAE = 0.0000 LSB, Exact Match = 100.00%
+  Timing intervals: Mean = 4.000 ms, Median = 0.0006 ms
+
+--- Case 4/5: ARR_06 ---
+  Calibrated PC2, Weights: [-17606, 15398, 17943, -14308], Conf: 0.201
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Execution time: 10.01 s (249.9 samples/s)
+  Samples sent: 2500, Packets RX: 2500, Missing: 0, CRC err: 0
+  Waveform parity: Max Error = 0 LSB, MAE = 0.0000 LSB, Exact Match = 100.00%
+  Timing intervals: Mean = 4.000 ms, Median = 0.0005 ms
+
+--- Case 5/5: ARR_10 ---
+  Calibrated PC3, Weights: [4335, -1936, 23341, -22504], Conf: 0.429
+  Streaming 2500 samples to Spartan-7 on COM5 at 250 Hz (4.0 ms interval)...
+  Execution time: 10.01 s (249.7 samples/s)
+  Samples sent: 2500, Packets RX: 2500, Missing: 0, CRC err: 0
+  Waveform parity: Max Error = 0 LSB, MAE = 0.0000 LSB, Exact Match = 100.00%
+  Timing intervals: Mean = 4.003 ms, Median = 0.0006 ms
+
+Saved hardware summary to: D:\signal_project\validation\complete_dataset_validation_20261106\NIFEA_FPGA_PHYSICAL_RESULTS.csv

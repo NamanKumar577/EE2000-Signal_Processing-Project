@@ -5970,8 +5970,8 @@
     "semantic_hash": ""
   },
   "dfx_runtime.txt": {
-    "mtime": 1793804804.5655694,
-    "seen": 1793805086.1230643,
+    "mtime": 1793931475.8209968,
+    "seen": 1793968955.7778456,
     "ast_hash": "1c82e7c400574e4177a91c572966819d",
     "semantic_hash": ""
   },
@@ -6192,9 +6192,9 @@
     "semantic_hash": ""
   },
   "scratch/test_filter_continuity.py": {
-    "mtime": 1793805902.2988918,
-    "seen": 1793807010.8921256,
-    "ast_hash": "3d85376911b94c951656467d196aafcb",
+    "mtime": 1793931591.5094154,
+    "seen": 1793968955.7770288,
+    "ast_hash": "1679bc6745c0e766dbcd4f3c5c42e656",
     "semantic_hash": ""
   },
   "scratch/test_maternal_metrics.py": {
@@ -6222,9 +6222,189 @@
     "semantic_hash": ""
   },
   "scratch/filter_continuity_proof.png": {
-    "mtime": 1793806444.0851436,
-    "seen": 1793807010.8932252,
-    "ast_hash": "5fbe1189804011976c66d0d77b2f937f",
+    "mtime": 1793931601.7347817,
+    "seen": 1793968955.7787025,
+    "ast_hash": "149da559276cf27c64bc412bff6fd422",
+    "semantic_hash": ""
+  },
+  "fpga_implementation/reports/phase4_physical_revalidation_20261106/phase4_timing_and_packet_metrics.json": {
+    "mtime": 1793931538.2788565,
+    "seen": 1793968955.776893,
+    "ast_hash": "75342e22e5f4427f3a6e02d0108bf9be",
+    "semantic_hash": ""
+  },
+  "fpga_implementation/uart_host/run_phase4_physical_revalidation.py": {
+    "mtime": 1793931456.8194313,
+    "seen": 1793968955.7769654,
+    "ast_hash": "a2bdf69bf8714757365ab423d6382000",
+    "semantic_hash": ""
+  },
+  "manifest.json": {
+    "mtime": 1793808312.317808,
+    "seen": 1793968955.7769694,
+    "ast_hash": "e86395fcb068c2dedb47eeaeff048c65",
+    "semantic_hash": ""
+  },
+  "revalidation_manifest.json": {
+    "mtime": 1793932175.890055,
+    "seen": 1793968955.7770107,
+    "ast_hash": "57e10b812fd6a6836f4e51749e53cdd0",
+    "semantic_hash": ""
+  },
+  "scratch/bundle_audit_package.py": {
+    "mtime": 1793808304.9891758,
+    "seen": 1793968955.7770133,
+    "ast_hash": "e3bc4124538b2f0b00fc0802fa370dbd",
+    "semantic_hash": ""
+  },
+  "scratch/bundle_revalidation_package.py": {
+    "mtime": 1793932127.0213456,
+    "seen": 1793968955.777015,
+    "ast_hash": "be2a7769d474080a8f9d77292b5584cc",
+    "semantic_hash": ""
+  },
+  "scratch/inspect_nifea.py": {
+    "mtime": 1793932847.0983644,
+    "seen": 1793968955.7770169,
+    "ast_hash": "0138348a10e5cbcf8a74079e203b8b0b",
+    "semantic_hash": ""
+  },
+  "scratch/run_complete_fecgsyndb_evaluation.py": {
+    "mtime": 1793933136.2610793,
+    "seen": 1793968955.7770183,
+    "ast_hash": "0dfe595594250c217f57c44e2381df41",
+    "semantic_hash": ""
+  },
+  "scratch/run_nifea_fpga_stream.py": {
+    "mtime": 1793933903.72824,
+    "seen": 1793968955.7770221,
+    "ast_hash": "3d1a8ddb10d39efa51954c17b8bce0a2",
+    "semantic_hash": ""
+  },
+  "scratch/run_nifea_validation.py": {
+    "mtime": 1793933215.8696756,
+    "seen": 1793968955.7770245,
+    "ast_hash": "50b00dd0a13f0dc057c055aa70e7bbd3",
+    "semantic_hash": ""
+  },
+  "scratch/test_live_com5.py": {
+    "mtime": 1793931337.0227714,
+    "seen": 1793968955.7770307,
+    "ast_hash": "1c2fe056efc692bb545e54a76faf7394",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/scripts/run_complete_fecgsyndb_evaluation.py": {
+    "mtime": 1793933136.2610793,
+    "seen": 1793968955.7773163,
+    "ast_hash": "0dfe595594250c217f57c44e2381df41",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/scripts/run_nifea_fpga_stream.py": {
+    "mtime": 1793933903.72824,
+    "seen": 1793968955.7773182,
+    "ast_hash": "3d1a8ddb10d39efa51954c17b8bce0a2",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/scripts/run_nifea_validation.py": {
+    "mtime": 1793933215.8696756,
+    "seen": 1793968955.7773201,
+    "ast_hash": "50b00dd0a13f0dc057c055aa70e7bbd3",
+    "semantic_hash": ""
+  },
+  "MANIFEST.md": {
+    "mtime": 1793808312.3168044,
+    "seen": 1793968955.7775438,
+    "ast_hash": "4a46cbc6e0d593f8ef7f4f248b2f6d40",
+    "semantic_hash": ""
+  },
+  "REVALIDATION_MANIFEST.md": {
+    "mtime": 1793932175.890055,
+    "seen": 1793968955.7775495,
+    "ast_hash": "80171ef6c8eabb18d71a2943250034c6",
+    "semantic_hash": ""
+  },
+  "docs/DATASET_PROVENANCE_AND_ANNOTATIONS.md": {
+    "mtime": 1793808244.5526214,
+    "seen": 1793968955.7778475,
+    "ast_hash": "26c387060a3aee93a7b6ba23dfb2d69d",
+    "semantic_hash": ""
+  },
+  "fpga_implementation/reports/phase4_physical_revalidation_20261106/phase4_raw_packet_hex_samples.txt": {
+    "mtime": 1793931966.636273,
+    "seen": 1793968955.7779415,
+    "ast_hash": "75ef1c1dc38b25f79d09036b6d9fbebe",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/FECGSYNDB_COVERAGE_AUDIT.md": {
+    "mtime": 1793934396.1648457,
+    "seen": 1793968955.778199,
+    "ast_hash": "eabdae99b6225ac39292181775647880",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/FPGA_HARDWARE_VALIDATION_SUMMARY.md": {
+    "mtime": 1793934476.9433796,
+    "seen": 1793968955.7782009,
+    "ast_hash": "ea265b9b4f66a78f753d2d6ab06e1ea9",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/MASTER_DATASET_VALIDATION_SUMMARY.md": {
+    "mtime": 1793934500.2646816,
+    "seen": 1793968955.7782025,
+    "ast_hash": "fe2c8b70e124ddacfa7ab9d230080bb6",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/NIFEA_VALIDATION_REPORT.md": {
+    "mtime": 1793934445.32946,
+    "seen": 1793968955.7782044,
+    "ast_hash": "78e150b685411d77f58bf870bc14ea1c",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/plots/nifea/ARR_01_diagnostic.png": {
+    "mtime": 1793933489.9961715,
+    "seen": 1793968955.778705,
+    "ast_hash": "813cd1a06ccca1b7e0d8491fc728c9a2",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/plots/nifea/ARR_02_diagnostic.png": {
+    "mtime": 1793933491.5945036,
+    "seen": 1793968955.778707,
+    "ast_hash": "313d95fc6601772bed64902e5b828df9",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/plots/nifea/ARR_06_diagnostic.png": {
+    "mtime": 1793933500.0355332,
+    "seen": 1793968955.7787092,
+    "ast_hash": "b73382de4514a663b55c7cb8696031c8",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/plots/nifea/ARR_10_diagnostic.png": {
+    "mtime": 1793933507.1129327,
+    "seen": 1793968955.7787113,
+    "ast_hash": "5f068382cee55d84b5455ff47c464514",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/plots/nifea/NR_01_diagnostic.png": {
+    "mtime": 1793933511.347464,
+    "seen": 1793968955.778713,
+    "ast_hash": "023f0fe2ac2a9342c4c339232f003f46",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/plots/nifea/NR_02_diagnostic.png": {
+    "mtime": 1793933512.9905832,
+    "seen": 1793968955.778715,
+    "ast_hash": "bc5ec5b8bf184ad00f989911fc6a832e",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/plots/nifea/NR_07_diagnostic.png": {
+    "mtime": 1793933519.7502947,
+    "seen": 1793968955.7787166,
+    "ast_hash": "935f5834cc18a2e999a695016a189211",
+    "semantic_hash": ""
+  },
+  "validation/complete_dataset_validation_20261106/plots/nifea/NR_10_diagnostic.png": {
+    "mtime": 1793933524.263045,
+    "seen": 1793968955.778719,
+    "ast_hash": "3c40da64a7ae1f3874d3e81e5952c953",
     "semantic_hash": ""
   }
 }

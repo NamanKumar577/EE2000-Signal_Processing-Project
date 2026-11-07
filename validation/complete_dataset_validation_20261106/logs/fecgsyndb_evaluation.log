@@ -1,0 +1,66 @@
+Loading historical evaluation databases...
+================================================================================
+STARTING FECGSYNDB COMPLETE COVERAGE AUDIT & EVALUATION
+================================================================================
+Total theoretical grid combinations: 1500
+  Evaluated 100 records... (Elapsed: 79.3s)
+  Evaluated 200 records... (Elapsed: 158.4s)
+  Evaluated 300 records... (Elapsed: 238.0s)
+  Evaluated 400 records... (Elapsed: 318.2s)
+  Evaluated 500 records... (Elapsed: 398.8s)
+  Evaluated 600 records... (Elapsed: 476.7s)
+  Evaluated 700 records... (Elapsed: 554.5s)
+  Evaluated 800 records... (Elapsed: 631.7s)
+  Evaluated 900 records... (Elapsed: 708.8s)
+  Evaluated 1000 records... (Elapsed: 785.9s)
+  Evaluated 1100 records... (Elapsed: 864.9s)
+  Evaluated 1200 records... (Elapsed: 939.2s)
+  Evaluated 1300 records... (Elapsed: 1020.1s)
+  Evaluated 1400 records... (Elapsed: 1100.2s)
+
+Coverage matrix generated: D:\signal_project\validation\complete_dataset_validation_20261106\FECGSYNDB_COVERAGE_MATRIX.csv
+Total combinations evaluated in bit-accurate model: 1493
+Total skipped/ineligible: 7
+Total rows in matrix: 1500
+Total runtime: 1172.9s
+
+--- Eligible Single-Fetus Performance Summary ---
+Records: 1244
+Mean F1: 79.41%
+Mean Sensitivity: 80.92%
+Mean PPV: 78.77%
+Mean Maternal Suppression: 25.64 dB
+Mean FHR MAE: 29.79 bpm
+
+--- Breakdown by Layout (l1 - l5) for Eligible Single-Fetus ---
+           f1_pct  sensitivity_pct  ...  fhr_mae_bpm  maternal_suppression_db
+layout                              ...                                      
+l1      78.969680        80.590120  ...    29.792640                24.680400
+l2      79.774718        80.892500  ...    28.892056                26.459113
+l3      78.933280        80.879200  ...    31.560280                25.064240
+l4      79.077470        80.591165  ...    29.670402                25.769639
+l5      80.287287        81.659595  ...    29.034251                26.217328
+
+[5 rows x 5 columns]
+
+--- Breakdown by Condition (c0 - c4) for Eligible Single-Fetus ---
+              f1_pct  sensitivity_pct  ...  fhr_mae_bpm  maternal_suppression_db
+condition                              ...                                      
+c0         86.697068        89.052169  ...    19.089759                28.930964
+c1         76.312129        79.095944  ...    31.684859                25.732610
+c2         89.555760        91.632560  ...    23.879880                27.192240
+c3         69.926829        75.016382  ...    44.250407                27.382642
+c4         74.403560        69.738960  ...    30.257600                18.979680
+
+[5 rows x 5 columns]
+
+--- Breakdown by SNR for Eligible Single-Fetus ---
+           f1_pct  sensitivity_pct  ...  fhr_mae_bpm  maternal_suppression_db
+snr_db                              ...                                      
+0       77.211653        79.625323  ...    33.200806                29.560484
+3       78.956613        80.661532  ...    30.897661                26.577177
+6       79.933520        81.234840  ...    29.347600                24.976160
+9       80.022680        81.122720  ...    28.045280                23.331000
+12      80.896532        81.956694  ...    27.492782                23.755685
+
+[5 rows x 5 columns]

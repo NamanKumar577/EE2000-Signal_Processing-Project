@@ -1,0 +1,66 @@
+================================================================================
+PROCESSING CLINICAL NIFEA DATABASE
+================================================================================
+Found 26 records.
+  Processed ARR_01 (Arrhythmia): FHR=  0.0 bpm, Beats=0    , Status=ZERO_DETECTIONS_WARMUP_REJECTION
+  Processed ARR_02 (Arrhythmia): FHR=120.0 bpm, Beats=1292 , Status=SUCCESSFUL_EXTRACTION
+  Processed ARR_03 (Arrhythmia): FHR=101.4 bpm, Beats=1277 , Status=SUCCESSFUL_EXTRACTION
+  Processed ARR_04 (Arrhythmia): FHR=138.9 bpm, Beats=1415 , Status=SUCCESSFUL_EXTRACTION
+  Processed ARR_05 (Arrhythmia): FHR=105.6 bpm, Beats=841  , Status=SUCCESSFUL_EXTRACTION
+  Processed ARR_06 (Arrhythmia): FHR= 75.4 bpm, Beats=58   , Status=POWERLINE_NOISE_OR_HIGH_OUTLIERS
+  Processed ARR_07 (Arrhythmia): FHR=136.4 bpm, Beats=16   , Status=POWERLINE_NOISE_OR_HIGH_OUTLIERS
+  Processed ARR_08 (Arrhythmia): FHR=161.3 bpm, Beats=255  , Status=SUCCESSFUL_EXTRACTION
+  Processed ARR_09 (Arrhythmia): FHR=124.0 bpm, Beats=1305 , Status=SUCCESSFUL_EXTRACTION
+  Processed ARR_10 (Arrhythmia): FHR=  0.0 bpm, Beats=2    , Status=POWERLINE_NOISE_OR_HIGH_OUTLIERS
+  Processed ARR_11 (Arrhythmia): FHR=  0.0 bpm, Beats=0    , Status=ZERO_DETECTIONS_WARMUP_REJECTION
+  Processed ARR_12 (Arrhythmia): FHR=185.2 bpm, Beats=1382 , Status=SUCCESSFUL_EXTRACTION
+  Processed NR_01  (Normal    ): FHR= 98.7 bpm, Beats=976  , Status=SUCCESSFUL_EXTRACTION
+  Processed NR_02  (Normal    ): FHR=102.0 bpm, Beats=1027 , Status=SUCCESSFUL_EXTRACTION
+  Processed NR_03  (Normal    ): FHR=  0.0 bpm, Beats=0    , Status=ZERO_DETECTIONS_WARMUP_REJECTION
+  Processed NR_04  (Normal    ): FHR=  0.0 bpm, Beats=1    , Status=POWERLINE_NOISE_OR_HIGH_OUTLIERS
+  Processed NR_05  (Normal    ): FHR=  0.0 bpm, Beats=0    , Status=ZERO_DETECTIONS_WARMUP_REJECTION
+  Processed NR_06  (Normal    ): FHR=  0.0 bpm, Beats=0    , Status=ZERO_DETECTIONS_WARMUP_REJECTION
+  Processed NR_07  (Normal    ): FHR=157.9 bpm, Beats=807  , Status=SUCCESSFUL_EXTRACTION
+  Processed NR_08  (Normal    ): FHR=159.6 bpm, Beats=284  , Status=SUCCESSFUL_EXTRACTION
+  Processed NR_09  (Normal    ): FHR=  0.0 bpm, Beats=0    , Status=ZERO_DETECTIONS_WARMUP_REJECTION
+  Processed NR_10  (Normal    ): FHR=  0.0 bpm, Beats=0    , Status=ZERO_DETECTIONS_WARMUP_REJECTION
+  Processed NR_11  (Normal    ): FHR=157.9 bpm, Beats=1660 , Status=SUCCESSFUL_EXTRACTION
+  Processed NR_12  (Normal    ): FHR=140.2 bpm, Beats=177  , Status=SUCCESSFUL_EXTRACTION
+  [DUPLICATE DETECTED] NR_13 has identical SHA-256 to ARR_02
+  Processed NR_13  (Normal    ): FHR=120.0 bpm, Beats=1292 , Status=SUCCESSFUL_EXTRACTION
+  [DUPLICATE DETECTED] NR_14 has identical SHA-256 to NR_07
+  Processed NR_14  (Normal    ): FHR=157.9 bpm, Beats=807  , Status=SUCCESSFUL_EXTRACTION
+
+Inventory saved to: D:\signal_project\validation\complete_dataset_validation_20261106\NIFEA_DATASET_INVENTORY.csv
+Results saved to: D:\signal_project\validation\complete_dataset_validation_20261106\NIFEA_VALIDATION_RESULTS.csv
+Total NIFEA processing elapsed: 41.1s
+
+================================================================================
+NIFEA COHORT SUMMARY BREAKDOWN
+================================================================================
+
+Cohort: Normal (N = 14 records)
+  Mean Detected Beats:       502.2
+  Mean Maternal HR:          85.9 bpm
+  Median Detected FHR:       149.1 bpm
+  Mean % Physiological FHR:  18.4%
+  Mean % Plausible FHR:      29.4%
+  Mean Maternal Leakage:     10.4%
+  Failure Mode Counts:
+failure_classification
+SUCCESSFUL_EXTRACTION               8
+ZERO_DETECTIONS_WARMUP_REJECTION    5
+POWERLINE_NOISE_OR_HIGH_OUTLIERS    1
+
+Cohort: Arrhythmia (N = 12 records)
+  Mean Detected Beats:       653.6
+  Mean Maternal HR:          86.6 bpm
+  Median Detected FHR:       124.0 bpm
+  Mean % Physiological FHR:  21.0%
+  Mean % Plausible FHR:      37.1%
+  Mean Maternal Leakage:     14.2%
+  Failure Mode Counts:
+failure_classification
+SUCCESSFUL_EXTRACTION               7
+POWERLINE_NOISE_OR_HIGH_OUTLIERS    3
+ZERO_DETECTIONS_WARMUP_REJECTION    2

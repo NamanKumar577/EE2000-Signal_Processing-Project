@@ -1,0 +1,27 @@
+record_id,cohort,duration_s,processed_samples_250hz,channels_used,pc_selected,weights_q15,maternal_hr_bpm,detected_beat_count,median_fhr_bpm,mean_fhr_bpm,min_fhr_bpm,max_fhr_bpm,std_fhr_bpm,rr_cv,pct_physiological_110_160,pct_plausible_100_180,pct_impossible_outliers,maternal_leakage_coincidence_pct,duplicate_of,failure_classification
+ARR_01,Arrhythmia,600.1,150013,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[20021, -19924, -11166, 12298]",78.1,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,ZERO_DETECTIONS_WARMUP_REJECTION
+ARR_02,Arrhythmia,604.0,151006,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[22761, 2876, -12290, -19910]",98.0,1292,120.0,150.7,31.6,300.0,64.0,0.3595,20.0,42.8,13.9,20.5,None,SUCCESSFUL_EXTRACTION
+ARR_03,Arrhythmia,757.9,189475,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[-10116, 5617, 16015, 26141]",101.4,1277,101.4,102.1,54.0,258.6,11.0,0.0712,4.2,61.9,0.2,28.8,None,SUCCESSFUL_EXTRACTION
+ARR_04,Arrhythmia,605.2,151302,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[-10672, 5709, 17179, 25143]",98.7,1415,138.9,162.0,70.8,300.0,62.6,0.3541,26.2,46.3,15.9,36.6,None,SUCCESSFUL_EXTRACTION
+ARR_05,Arrhythmia,481.7,120423,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[-1863, 10201, 18933, 24653]",102.0,841,105.6,109.9,16.8,294.1,28.0,0.2652,24.8,71.4,2.6,25.9,None,SUCCESSFUL_EXTRACTION
+ARR_06,Arrhythmia,1923.0,480761,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[-17606, 15398, 17943, -14308]",73.9,58,75.4,103.0,0.1,288.5,106.8,2.4839,14.0,19.3,68.4,13.8,None,POWERLINE_NOISE_OR_HIGH_OUTLIERS
+ARR_07,Arrhythmia,618.8,154712,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[26689, -15867, -9588, -4209]",90.4,16,136.4,131.5,0.2,294.1,97.5,2.36,26.7,40.0,53.3,12.5,None,POWERLINE_NOISE_OR_HIGH_OUTLIERS
+ARR_08,Arrhythmia,1321.6,330402,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",3,"[24974, -13297, 5544, -15573]",44.6,255,161.3,169.3,0.2,300.0,76.7,5.8642,33.9,43.3,32.3,7.1,None,SUCCESSFUL_EXTRACTION
+ARR_09,Arrhythmia,665.8,166450,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[10683, 21763, -20086, -9084]",127.1,1305,124.0,121.4,62.8,294.1,22.2,0.1655,72.0,78.1,0.8,17.9,None,SUCCESSFUL_EXTRACTION
+ARR_10,Arrhythmia,607.1,151780,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",3,"[4335, -1936, 23341, -22504]",68.2,2,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,POWERLINE_NOISE_OR_HIGH_OUTLIERS
+ARR_11,Arrhythmia,605.2,151295,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",3,"[-311, -10186, 26178, -16870]",70.8,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,ZERO_DETECTIONS_WARMUP_REJECTION
+ARR_12,Arrhythmia,605.2,151288,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[1577, -16457, 26010, -11131]",86.2,1382,185.2,192.4,1.3,300.0,64.0,3.2877,29.7,41.8,29.6,6.8,None,SUCCESSFUL_EXTRACTION
+NR_01,Normal,605.9,151476,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[-21426, -2932, 8122, 23240]",98.0,976,98.7,100.4,59.3,168.5,19.3,0.1858,12.2,44.4,0.1,34.8,None,SUCCESSFUL_EXTRACTION
+NR_02,Normal,605.0,151257,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[-858, 11377, 18631, 24422]",101.4,1027,102.0,102.6,82.9,129.3,6.6,0.0637,13.6,64.2,0.0,57.2,None,SUCCESSFUL_EXTRACTION
+NR_03,Normal,607.8,151949,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[-16754, 12984, 19786, -15263]",80.2,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,ZERO_DETECTIONS_WARMUP_REJECTION
+NR_04,Normal,620.0,155002,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[-17551, -640, 14281, 23693]",98.0,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,POWERLINE_NOISE_OR_HIGH_OUTLIERS
+NR_05,Normal,605.2,151288,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",3,"[-10178, 26260, -16638, 1929]",90.4,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,ZERO_DETECTIONS_WARMUP_REJECTION
+NR_06,Normal,627.7,156933,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",3,"[-15313, 27745, -4823, -6799]",72.1,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,ZERO_DETECTIONS_WARMUP_REJECTION
+NR_07,Normal,610.0,152509,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[11059, -11903, -19084, 21109]",89.3,807,157.9,179.8,1.6,300.0,67.5,3.065,42.2,50.6,28.8,7.9,None,SUCCESSFUL_EXTRACTION
+NR_08,Normal,600.2,150043,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[9846, -8551, -20985, 21524]",78.1,284,159.6,168.1,0.6,300.0,82.7,4.2499,27.6,38.5,34.6,6.7,None,SUCCESSFUL_EXTRACTION
+NR_09,Normal,754.6,188662,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[-2475, 6768, 15125, 28161]",93.2,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,ZERO_DETECTIONS_WARMUP_REJECTION
+NR_10,Normal,600.0,150000,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[-12908, 8859, 22117, -18424]",81.1,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,None,ZERO_DETECTIONS_WARMUP_REJECTION
+NR_11,Normal,602.5,150636,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[-15376, 27303, -3506, -8922]",71.8,1660,157.9,185.5,41.4,300.0,61.5,0.347,45.0,53.6,25.8,7.3,None,SUCCESSFUL_EXTRACTION
+NR_12,Normal,440.9,110213,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[-12853, 23123, 8069, -17571]",61.2,177,140.2,160.4,0.6,300.0,62.0,5.6343,55.1,67.6,19.9,3.4,None,SUCCESSFUL_EXTRACTION
+NR_13,Normal,604.0,151006,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",1,"[22761, 2876, -12290, -19910]",98.0,1292,120.0,150.7,31.6,300.0,64.0,0.3595,20.0,42.8,13.9,20.5,ARR_02,SUCCESSFUL_EXTRACTION
+NR_14,Normal,610.0,152509,"[Abdomen_1, Abdomen_2, Abdomen_3, Abdomen_4]",2,"[11059, -11903, -19084, 21109]",89.3,807,157.9,179.8,1.6,300.0,67.5,3.065,42.2,50.6,28.8,7.9,NR_07,SUCCESSFUL_EXTRACTION
