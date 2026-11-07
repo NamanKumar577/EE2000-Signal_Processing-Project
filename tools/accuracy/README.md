@@ -67,3 +67,27 @@ The FPGA is unchanged apart from the `0xC4` restart and latency 13.
   - Detections stay noisy (RR CV around 0.3). 50 Hz hum is *not* the cause: it carries about 0% of the power in the detection band.
   - An annotated real-data set is needed to make further progress: PhysioNet/CinC Challenge 2013 set-a, or ADFECGDB.
 - **Twins (c5)** are not supported (single beamformer).
+
+## Real clinical data with annotations: PhysioNet/CinC Challenge 2013, set-a (`eval_cinc2013.py`)
+**Data:**
+- 75 recordings (a01–a75), 60 s each, 4 abdominal leads, 1 kHz, reference `.fqrs` annotations.
+- Extracted to `data/noninvasive-fetal-ecg-the-physionet-computing-in-cardiology-challenge-2013-1.0.0/extracted/`.
+
+**Protocol:**
+- Downsampled with a causal anti-alias filter to 250 Hz and scaled to 3,000 LSB/mV.
+- Same device timeline as FECGSYNDB: `0xC4` at 12 s, then scoring from 20 s to 60 s (±50 ms).
+- Run on the bit-exact FPGA model.
+
+| | Old frozen design | **v2** |
+|---|---|---|
+| Mean F1 (75 records) | 19.8% | **41.6%** |
+| Pooled F1 | 25.1% | **43.8%** |
+| Mean F1 excluding the 7 records with unreliable reference (a33, a38, a47, a52, a54, a71, a74) | 20.7% | **43.5%** |
+| Records with F1 ≥ 95% | 2 | 4 |
+
+**Diagnostics** (`exp_cinc.py`, `exp_c3.py`, `exp_mts.py`; these use the true annotations and are *not* deployable):
+- **Ceiling of the architecture:** the best possible single 4-lead linear filter, chosen with the true annotations and run through the same detector, averages only **60%** F1 on CinC (62% median). On FECGSYNDB the same diagnostic gives 96%. On real recordings the architecture itself is the limit, not just how the filter is estimated.
+- **Template subtraction:** causal maternal template subtraction per lead (EMA template, alignment and amplitude matching) removes a median of only 8 dB of maternal energy. It raises that ceiling to 65%, but the label-free calibration does worse on its output (33%).
+- **"Fastest regular train" selection (FHR > MHR):** 32%. Rejected.
+
+**Conclusion:** v2 doubles real-data accuracy, but real-data F1 above 90% needs a stronger front end than one linear spatial filter. That is a redesign, not tuning.
