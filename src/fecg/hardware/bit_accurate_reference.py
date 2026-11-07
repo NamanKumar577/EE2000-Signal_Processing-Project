@@ -21,7 +21,8 @@ Strict Hardware Arithmetic Constraints:
      - Frozen Integer FHR LUT: Precomputed 251-word table in 0.1 bpm units.
      - 64-sample linear crossfade slew engine for dynamic weight transitions.
      - Per-stage saturation and overflow accounting.
-  3. Priority E: Empirically verified 18-sample group delay latency compensation.
+  3. Priority E: 13-sample group delay latency compensation (filter group delay at 20-30 Hz).
+  5. Detector warm-up restart on 0xC4 calibration packets (DET_RESTART_DELAY after the weights).
   4. Priority G: Telemetry status byte with bits 1:0 (class), bit 2 (conf), bit 3 (sat), bits 7:4 (res).
 """
 
@@ -64,7 +65,18 @@ FHR_MAX_BPM = 300.0
 
 WEIGHT_CROSSFADE_STEPS = 64   # 64-sample linear crossfade slew engine
 
-LATENCY_COMPENSATION_SAMPLES = 18  # Group delay compensation at 15 Hz for Config C
+# Group delay compensation.  The HP1+LP40+Config-C chain has a group delay of
+# 12.0 samples at 20 Hz, 11.2 at 25 Hz and 12.9 at 30 Hz (where the band-limited
+# fetal QRS energy lies) but 17.9 at 15 Hz.  The old value 18 was evaluated at
+# 15 Hz and left detections ~4.3 samples early on all 1,248 FECGSYNDB records.
+LATENCY_COMPENSATION_SAMPLES = 13
+
+# Detector warm-up restart: a 0xC4 calibration packet (weights + restart) re-runs
+# the 512-sample warm-up DET_RESTART_DELAY samples after the new weights arrive
+# (64-sample crossfade + filter settling).  Without it the detector keeps the
+# peak/noise levels learned on the power-up (unity) weights and can stay locked
+# out after the real calibration arrives.
+DET_RESTART_DELAY = 128
 
 # Telemetry Status Flags (Byte 6)
 FLAG_REAL_DETECTED    = 0b00
@@ -235,7 +247,7 @@ class BitAccurateFinalResult:
     fecg: np.ndarray             # Signed 24-bit (scale 2^20 LSB/mV)
     det_bp: np.ndarray           # Signed 16-bit (scale 2^12 LSB/mV)
     x_int: np.ndarray            # Unsigned 36-bit
-    peaks: np.ndarray            # 18-sample latency-compensated sample timestamps (fused)
+    peaks: np.ndarray            # latency-compensated sample timestamps (fused)
     raw_peaks: np.ndarray        # Uncompensated detector timestamps (fused)
     fhr_hold: np.ndarray         # Causal Median-5 FHR stream in 0.1 bpm units
     flags: np.ndarray            # 8-bit Telemetry Status Bytes
@@ -297,6 +309,9 @@ class BitAccuratePipelineRunner:
         self.noise_level = 0
         self.warm_max = 0
         self.warm_sum = 0
+        self.warm_cnt = 0              # samples seen in the current warm-up
+        self.warm_done_t = -1          # global t of the last warm-up sample
+        self.restart_countdown = 0     # >0: warm-up restart pending
         self.detector_enabled = False
         self.last_cand_m = -(10 ** 9)
 
@@ -322,7 +337,8 @@ class BitAccuratePipelineRunner:
         self,
         x_q: np.ndarray,
         new_weights: Optional[Sequence[int]] = None,
-        target_weights: Optional[Sequence[Tuple[int, Sequence[int]]]] = None
+        target_weights: Optional[Sequence[Tuple]] = None,
+        restart_detector: bool = False
     ) -> BitAccurateFinalResult:
         """
         Processes a block of signed 16-bit Q12 samples through the pipeline.
@@ -332,11 +348,17 @@ class BitAccuratePipelineRunner:
         n, n_ch = x_q.shape
 
         update_dict: Dict[int, List[int]] = {}
+        restart_set = set()
         if new_weights is not None:
             update_dict[0] = [int(v) for v in new_weights]
+            if restart_detector:
+                restart_set.add(0)
         if target_weights is not None:
-            for t_up, w_up in target_weights:
+            for entry in target_weights:
+                t_up, w_up = entry[0], entry[1]
                 update_dict[int(t_up)] = [int(v) for v in w_up]
+                if len(entry) > 2 and entry[2]:
+                    restart_set.add(int(t_up))
 
         proj_arr = np.zeros(n, dtype=np.int64)
         hp_arr = np.zeros(n, dtype=np.int64)
@@ -355,6 +377,17 @@ class BitAccuratePipelineRunner:
             t = self.t_global
 
             # ── 0. Dynamic Weight Slew Engine (64-Sample Crossfade) ───────────
+            if t_rel in restart_set:
+                self.restart_countdown = DET_RESTART_DELAY
+            if self.restart_countdown > 0:
+                self.restart_countdown -= 1
+                if self.restart_countdown == 0:
+                    # 0xC4: restart the detector warm-up (levels relearned on new weights)
+                    self.warm_cnt = 0
+                    self.warm_max = 0
+                    self.warm_sum = 0
+                    self.detector_enabled = False
+
             if t_rel in update_dict:
                 self.w_old = list(self.w_curr)
                 self.w_target = list(update_dict[t_rel])
@@ -435,17 +468,19 @@ class BitAccuratePipelineRunner:
             self.max_mwi_acc = max(self.max_mwi_acc, self.mwi_sum)
             xint_arr[t_rel] = self.mwi_sum
 
-            # ── 6. Warm-up Initialization ────────────────────────────────────
-            if t < self.warmup:
+            # ── 6. Warm-up Initialization (restartable via 0xC4) ─────────────
+            if self.warm_cnt < self.warmup:
                 self.current_flag_2bit = FLAG_INVALID_WARMUP
                 flags_arr[t_rel] = (self.current_flag_2bit & 0x03) | ((1 if self.is_confident_flag else 0) << 2)
-                fhr_stream[t_rel] = 0
+                fhr_stream[t_rel] = self.fhr_current if self.warm_done_t >= 0 else 0
                 self.warm_max = max(self.warm_max, self.mwi_sum)
                 self.warm_sum += self.mwi_sum
-                if t == self.warmup - 1:
+                self.warm_cnt += 1
+                if self.warm_cnt == self.warmup:
                     self.peak_level = self.warm_max
                     self.noise_level = self.warm_sum >> 9  # Mean over 512 samples
                     self.detector_enabled = (self.peak_level > self.noise_level)
+                    self.warm_done_t = t
                 self._advance_sample(xint_arr, t_rel)
                 continue
 
@@ -454,7 +489,7 @@ class BitAccuratePipelineRunner:
                 m = t - 1
                 v = int(xint_arr[t_rel - 1] if t_rel >= 1 else self.prev_mwi)
                 v_prev = int(xint_arr[t_rel - 2] if t_rel >= 2 else (self.prev_mwi if t_rel == 1 else self.prev_prev_mwi))
-                if v_prev < v and v >= self.mwi_sum and m >= self.warmup - 1:
+                if v_prev < v and v >= self.mwi_sum and m >= self.warm_done_t:
                     thr = (self.peak_level >> 2) + self.noise_level - (self.noise_level >> 2)
                     if thr >= (1 << 36):
                         self.acc_tracker.threshold_overflow += 1
@@ -582,7 +617,7 @@ def run_bit_accurate_pipeline_final(
     refractory: int = REFRACTORY_SAMPLES, # 50 samples (200 ms)
     warmup: int = 512,               # 512 samples (~2.05 s)
     loc_window: int = 26,            # 26 samples (104 ms)
-    latency: int = LATENCY_COMPENSATION_SAMPLES, # 18 samples
+    latency: int = LATENCY_COMPENSATION_SAMPLES, # 13 samples
     target_weights: Optional[Sequence[Tuple[int, Sequence[int]]]] = None # List of (sample_idx, new_weights)
 ) -> BitAccurateFinalResult:
     """
