@@ -91,3 +91,37 @@ The FPGA is unchanged apart from the `0xC4` restart and latency 13.
 - **"Fastest regular train" selection (FHR > MHR):** 32%. Rejected.
 
 **Conclusion:** v2 doubles real-data accuracy, but real-data F1 above 90% needs a stronger front end than one linear spatial filter. That is a redesign, not tuning.
+
+## v3 redesign for real data (float prototype, `fe3.py`)
+**Protocol:**
+- CinC 2013 is split into a **dev** half (odd-numbered recordings) for all design decisions and a **held-out test** half (even-numbered), scored only on the frozen design.
+- Everything is causal. The maternal canceller has a fixed 0.44 s output delay; the tracker's decision delay is at most 1.3 RR.
+
+**Pipeline** (`system_hybrid`):
+1. **Causal maternal R-peak detection** on PC1 or PC2 of the 5–25 Hz band, estimated on the first 10 s; the slower regular train is taken as the mother.
+2. **Per-lead maternal cancellation:** a template made of the mean plus 2 principal components of the last 20 aligned maternal beats, fitted to each new beat by least squares and subtracted.
+3. **Maternal-QRS blanking** of the detector envelope.
+4. **Twelve candidate projections** of the cancelled leads: the 4 single leads, 4 PCA directions and 4 self-referencing GEVD directions, each followed by an **RR-predictive beat tracker**.
+5. **The v2 path** (beamformer on the raw leads plus the FPGA threshold detector) as an extra candidate.
+6. **Dynamic selection:** every 5 s, output the candidate with the best label-free quality over the trailing 10 s. Quality = morphology consistency × acceptance × log prominence.
+7. **FHR:** median of the last 5 RR intervals.
+
+| | v2 | v3 hybrid |
+|---|---|---|
+| CinC **held-out** half: mean F1 (37 records) | 41.2% | **49.9%** |
+| CinC held-out half, reliable references only (33) | 43.2% | **53.3%** |
+| CinC held-out half: FHR MAE | 49.6 bpm | **31.3 bpm** |
+| CinC dev half: mean F1 | 42.0% | 59.4% |
+| FECGSYNDB, all 1,248 records: F1 | 95.6% | 95.0% |
+
+**Diagnostics** (these use the labels):
+- Best possible filter plus tracker: 68.9% on the dev half.
+- With the best candidate picked using the labels: 71.8%. So label-free selection still loses about 12–20 points.
+- A wider detection band (60 Hz low-pass, 15–50 Hz band-pass) raises the best-filter-plus-tracker diagnostic from 68.9% to 74.3%. It is not yet adopted, because it changes the FPGA filters and must be re-validated on both datasets.
+
+**Status:**
+- v3 is a Python prototype. It is **not** in the RTL or on the board.
+- Hardware cost estimate:
+  - maternal detector;
+  - 4-lead template canceller, with the template PCA basis computed by the host per beat or every few seconds;
+  - about 12 tracker chains, or fewer if selection moves to the host.
