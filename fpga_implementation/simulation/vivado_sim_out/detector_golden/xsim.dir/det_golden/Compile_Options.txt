@@ -1,0 +1,1 @@
+"tb_detector_golden" -s "det_golden" -debug "off" 

@@ -1,0 +1,1 @@
+"tb_adaptive_detector" -s "tbad" 

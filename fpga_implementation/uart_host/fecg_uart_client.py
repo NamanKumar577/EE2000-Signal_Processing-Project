@@ -66,6 +66,7 @@ except ImportError:
 
 HEADER_SAMPLE        = 0xA5  # Downlink 4-ch ADC samples (11 bytes)
 HEADER_CALIBRATION   = 0xC3  # Downlink PCA weights (10 bytes)
+HEADER_CALIB_RESTART = 0xC4  # Downlink weights + detector warm-up restart (10 bytes)
 HEADER_FECG_STREAM   = 0x5A  # Uplink clean FECG waveform (6 bytes)
 HEADER_FHR_TELEMETRY = 0xAA  # Uplink QRS/FHR event (8 bytes)
 HEADER_DIAGNOSTIC    = 0xEE  # Uplink hardware anomaly (8 bytes)
@@ -270,16 +271,18 @@ def decode_sample_packet(packet: bytes) -> DownlinkSample:
     return DownlinkSample(seq=seq, ch0=ch0, ch1=ch1, ch2=ch2, ch3=ch3, raw_bytes=packet)
 
 
-def encode_calibration_packet(weights: Sequence[int]) -> bytes:
+def encode_calibration_packet(weights: Sequence[int], restart_detector: bool = False) -> bytes:
     """
     Encode 4 signed 16-bit Q1.15 weights into a 10-byte Downlink Calibration Packet.
     Format: [0xC3] [W0 2B] [W1 2B] [W2 2B] [W3 2B] [CRC8 1B]
+    restart_detector=True sends header 0xC4: same weights, and the FPGA re-runs the
+    detector warm-up 128 samples later (use for the initial calibration).
     """
     if len(weights) != 4:
         raise ValueError(f"Expected 4 weights, got {len(weights)}")
 
     payload = bytearray(9)
-    payload[0] = HEADER_CALIBRATION
+    payload[0] = HEADER_CALIB_RESTART if restart_detector else HEADER_CALIBRATION
     w_ints = []
     for i, w in enumerate(weights):
         w_int = int(w)

@@ -200,7 +200,7 @@ def calib_selfref(Xbuf, start=512, iters=3, use_maternal=True, extra_seeds=True)
         rb = train_rate(Y @ best, start) if rr_regularity_any(pkb) >= 0.5 else 0.0
         info.append(("pc1", round(s1, 3), round(r1, 1), round(rb, 1)))
         # FHR > MHR: the dominant source can only be the fetus if it is the faster one
-        if s1 > best_s + FALLBACK_SCORE and r1 > 1.05 * rb:
+        if s1 > best_s + FALLBACK_SCORE and r1 > 1.05 * rb and r1 >= 110.0:
             best, best_s = w1, s1
     return best, best_s, info
 

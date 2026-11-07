@@ -1,0 +1,7 @@
+record,samples,elapsed_s,fecg_rx,fecg_missing,crc_errors,fecg_max_err_lsb,fecg_exact_pct,beats_board,beats_model,beat_timestamps_identical,fhr_telemetry_match,weight_packets,c4_packets,board_F1,board_Se,board_PPV,board_FHR_MAE
+sub01_snr06dB_l1_c0,15000,61.5,15000,0,0,0,100.0,131,131,True,129/131,1,1,100.0,100.0,100.0,0.72
+sub04_snr00dB_l2_c1,15000,61.5,15000,0,0,0,100.0,86,86,True,86/86,1,1,100.0,100.0,100.0,1.55
+sub07_snr09dB_l3_c2,15000,61.5,15000,0,0,0,100.0,105,105,True,105/105,1,1,100.0,100.0,100.0,0.95
+sub10_snr12dB_l1_c2,15000,61.5,15000,0,0,0,100.0,125,125,True,125/125,1,1,99.43,98.86,100.0,0.57
+sub08_snr03dB_l5_c0,15000,61.5,15000,0,0,0,100.0,90,90,True,90/90,1,1,100.0,100.0,100.0,1.06
+sub05_snr03dB_l3_c3,75000,301.5,75000,0,0,0,100.0,579,579,True,579/579,46,1,96.19,96.79,95.6,4.23

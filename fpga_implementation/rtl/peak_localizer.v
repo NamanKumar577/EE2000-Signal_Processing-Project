@@ -29,7 +29,7 @@ module peak_localizer #(
     parameter integer DATA_WIDTH   = 16,        // Signed 16-bit Q12 bandpass input
     parameter integer TIME_WIDTH   = 24,        // Timestamp counter width (24 bits)
     parameter integer LOC_WINDOW   = 26,        // Trailing search window length
-    parameter integer LATENCY_COMP = 18         // Group delay compensation samples (Config C @ 15 Hz)
+    parameter integer LATENCY_COMP = 13         // Group delay compensation samples (Config C @ 20-30 Hz)
 )(
     input  wire                          clk,               // Master system clock (100 MHz)
     input  wire                          rst_n,             // Synchronous active-low reset
@@ -139,7 +139,7 @@ module peak_localizer #(
     wire [TIME_WIDTH-1:0] calc_raw_peak;
     wire [TIME_WIDTH-1:0] calc_comp_peak;
 
-    assign total_comp_offset = comb_best_k + 6'd18;
+    assign total_comp_offset = comb_best_k + LATENCY_COMP[5:0];   // was hard-coded 6'd18 (parameter ignored)
     assign calc_raw_peak     = (t_latched >= comb_best_k) ? (t_latched - comb_best_k) : {TIME_WIDTH{1'b0}};
     assign calc_comp_peak    = (t_latched >= total_comp_offset) ? (t_latched - total_comp_offset) : {TIME_WIDTH{1'b0}};
 

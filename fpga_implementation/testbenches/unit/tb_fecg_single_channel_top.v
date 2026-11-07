@@ -65,7 +65,7 @@ module tb_fecg_single_channel_top;
         .FHR_WIDTH(FHR_WIDTH),
         .WARMUP_LEN(WARMUP_LEN),
         .LOC_WINDOW(26),
-        .LATENCY_COMP(18)
+        .LATENCY_COMP(13)
     ) dut (
         .clk(clk),
         .rst_n(rst_n),

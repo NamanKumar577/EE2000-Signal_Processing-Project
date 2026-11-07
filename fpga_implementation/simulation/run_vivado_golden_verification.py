@@ -110,7 +110,7 @@ def run_vivado_dataset(dataset_name: str, x_adc_s16: np.ndarray):
         w_q=w_single,
         warmup=512,
         loc_window=26,
-        latency=18
+        latency=bar.LATENCY_COMPENSATION_SAMPLES
     )
 
     # 3. Launch Vivado xsim

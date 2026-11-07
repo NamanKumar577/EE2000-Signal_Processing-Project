@@ -49,7 +49,7 @@ module tb_fecg_single_channel_verifier;
     fecg_single_channel_top #(
         .WARMUP_LEN(512),
         .LOC_WINDOW(26),
-        .LATENCY_COMP(18)
+        .LATENCY_COMP(13)
     ) dut (
         .clk(clk),
         .rst_n(rst_n),

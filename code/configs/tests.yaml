@@ -31,10 +31,10 @@ test_cases:
     status: verified
     folder: test/test1
     records:
-      fecg1: test/test1/sub01_snr12dB_l1_c0_fecg1
-      mecg:  test/test1/sub01_snr12dB_l1_c0_mecg
-      noise1: test/test1/sub01_snr12dB_l1_c0_noise1
-      noise2: test/test1/sub01_snr12dB_l1_c0_noise2
+      fecg1: data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_fecg1
+      mecg:  data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_mecg
+      noise1: data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_noise1
+      noise2: data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_noise2
 
   TC2:
     id: TC2
@@ -44,10 +44,10 @@ test_cases:
     status: verified
     folder: test/test2
     records:
-      fecg1: test/test2/sub01_snr06dB_l1_c0_fecg1
-      mecg:  test/test2/sub01_snr06dB_l1_c0_mecg
-      noise1: test/test2/sub01_snr06dB_l1_c0_noise1
-      noise2: test/test2/sub01_snr06dB_l1_c0_noise2
+      fecg1: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c0_fecg1
+      mecg:  data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c0_mecg
+      noise1: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c0_noise1
+      noise2: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c0_noise2
 
   TC3:
     id: TC3
@@ -57,10 +57,10 @@ test_cases:
     status: verified
     folder: test/test3
     records:
-      fecg1: test/test3/sub01_snr00dB_l1_c0_fecg1
-      mecg:  test/test3/sub01_snr00dB_l1_c0_mecg
-      noise1: test/test3/sub01_snr00dB_l1_c0_noise1
-      noise2: test/test3/sub01_snr00dB_l1_c0_noise2
+      fecg1: data/FECGSD/DESTINATION/sub01/snr00dB/sub01_snr00dB_l1_c0_fecg1
+      mecg:  data/FECGSD/DESTINATION/sub01/snr00dB/sub01_snr00dB_l1_c0_mecg
+      noise1: data/FECGSD/DESTINATION/sub01/snr00dB/sub01_snr00dB_l1_c0_noise1
+      noise2: data/FECGSD/DESTINATION/sub01/snr00dB/sub01_snr00dB_l1_c0_noise2
 
   TC4:
     id: TC4
@@ -70,10 +70,10 @@ test_cases:
     status: verified
     folder: test/test4
     records:
-      fecg1: test/test4/sub01_snr06dB_l1_c1_fecg1
-      mecg:  test/test4/sub01_snr06dB_l1_c1_mecg
-      noise1: test/test4/sub01_snr06dB_l1_c1_noise1
-      noise2: test/test4/sub01_snr06dB_l1_c1_noise2
+      fecg1: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c1_fecg1
+      mecg:  data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c1_mecg
+      noise1: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c1_noise1
+      noise2: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c1_noise2
 
   TC5:
     id: TC5
@@ -83,7 +83,7 @@ test_cases:
     status: verified
     folder: test/test5
     records:
-      fecg1: test/test5/sub01_snr06dB_l1_c4_fecg1
-      mecg:  test/test5/sub01_snr06dB_l1_c4_mecg
-      noise1: test/test5/sub01_snr06dB_l1_c4_noise1
-      noise2: test/test5/sub01_snr06dB_l1_c4_noise2
+      fecg1: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c4_fecg1
+      mecg:  data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c4_mecg
+      noise1: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c4_noise1
+      noise2: data/FECGSD/DESTINATION/sub01/snr06dB/sub01_snr06dB_l1_c4_noise2

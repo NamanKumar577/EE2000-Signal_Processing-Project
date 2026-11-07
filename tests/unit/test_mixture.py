@@ -22,10 +22,10 @@ from src.data_loader import load_test_case
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 TC1_RECORDS = {
-    "fecg1": "test/test1/sub01_snr12dB_l1_c0_fecg1",
-    "mecg":  "test/test1/sub01_snr12dB_l1_c0_mecg",
-    "noise1": "test/test1/sub01_snr12dB_l1_c0_noise1",
-    "noise2": "test/test1/sub01_snr12dB_l1_c0_noise2",
+    "fecg1": "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_fecg1",
+    "mecg":  "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_mecg",
+    "noise1": "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_noise1",
+    "noise2": "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_noise2",
 }
 
 

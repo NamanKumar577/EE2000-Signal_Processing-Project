@@ -3,8 +3,8 @@
 # SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
 # IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
 # SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
-# Start of session at: Wed Nov  4 18:42:48 2026
-# Process ID         : 10512
+# Start of session at: Sat Nov  7 22:57:30 2026
+# Process ID         : 3244
 # Current directory  : D:/signal_project/fpga_implementation/simulation/vivado_sim_out
 # Command line       : xsim.exe -mode tcl -source {xsim.dir/verifier_snap/xsim_script.tcl}
 # Log file           : D:/signal_project/fpga_implementation/simulation/vivado_sim_out/xsim.log
@@ -17,9 +17,9 @@
 # CPU Physical cores : 10
 # CPU Logical cores  : 16
 # Host memory        : 16786 MB
-# Swap memory        : 15032 MB
-# Total Virtual      : 31818 MB
-# Available Virtual  : 11131 MB
+# Swap memory        : 13958 MB
+# Total Virtual      : 30744 MB
+# Available Virtual  : 18276 MB
 #-----------------------------------------------------------
 source xsim.dir/verifier_snap/xsim_script.tcl
 # xsim {verifier_snap} -autoloadwcfg -runall
@@ -28,4 +28,4 @@ run -all
 Vivado simulation complete! Processed        5000 samples.
 $finish called at time : 850096 ns : File "D:/signal_project/fpga_implementation/testbenches/unit/tb_fecg_single_channel_verifier.v" Line 145
 exit
-INFO: [Common 17-206] Exiting xsim at Wed Nov  4 18:42:50 2026...
+INFO: [Common 17-206] Exiting xsim at Sat Nov  7 22:57:33 2026...

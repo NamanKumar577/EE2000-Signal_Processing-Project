@@ -1,7 +1,7 @@
-Running: xsim.dir/verifier_snap/xsimk.exe -runall -simmode gui -wdb verifier_snap.wdb -simrunnum 0 -socket 52154
+Running: xsim.dir/verifier_snap/xsimk.exe -runall -simmode gui -wdb verifier_snap.wdb -simrunnum 0 -socket 59982
 Design successfully loaded
-Design Loading Memory Usage: 10236 KB (Peak: 10236 KB)
-Design Loading CPU Usage: 31 ms
+Design Loading Memory Usage: 10204 KB (Peak: 10204 KB)
+Design Loading CPU Usage: 77 ms
 Simulation completed
-Simulation Memory Usage: 11188 KB (Peak: 11188 KB)
-Simulation CPU Usage: 280 ms
+Simulation Memory Usage: 11168 KB (Peak: 11168 KB)
+Simulation CPU Usage: 812 ms

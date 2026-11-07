@@ -53,6 +53,7 @@ module tb_adaptive_detector;
         .enable(enable),
         .valid_in(valid_in),
         .mwi_in(mwi_in),
+        .restart_req(1'b0),
         .candidate_strobe(candidate_strobe),
         .cand_timestamp(cand_timestamp),
         .cand_energy(cand_energy),
@@ -86,9 +87,9 @@ module tb_adaptive_detector;
 
         // Feed warmup samples (constant noise of 1000)
         $display("Streaming %0d warmup samples...", WARMUP_LEN);
-        for (i = 0; i < WARMUP_LEN; i = i + 1) begin
+        for (i = 0; i <= WARMUP_LEN; i = i + 1) begin   // +1: active from first post-warm-up sample
             @(posedge clk);
-            mwi_in   <= 36'd1000;
+            mwi_in   <= (i == WARMUP_LEN / 2) ? 36'd1200 : 36'd1000; // peak > noise -> enabled
             valid_in <= 1'b1;
             @(posedge clk);
             valid_in <= 1'b0;

@@ -142,7 +142,7 @@ def test_sub08_biphasic_bimodal_lobe_proof():
 
 def test_fixed_association_12_sample_global_optimality():
     """Verify that compensation=12 achieves minimum MAE and peak concordance on fixed associations."""
-    df_agg = pd.read_csv("QRS_RESIDUAL_TIMING_ANALYSIS/FIXED_ASSOCIATION_TIMING_RESULTS.csv")
+    df_agg = pd.read_csv("archive/timing_bundles/QRS_RESIDUAL_TIMING_ANALYSIS/FIXED_ASSOCIATION_TIMING_RESULTS.csv")
     
     row_12 = df_agg[df_agg["compensation_samples"] == 12].iloc[0]
     row_11 = df_agg[df_agg["compensation_samples"] == 11].iloc[0]

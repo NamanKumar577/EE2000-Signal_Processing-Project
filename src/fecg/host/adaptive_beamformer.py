@@ -23,8 +23,8 @@ Algorithm
      e. Choose the refined filter whose beat train is regular, periodic, at a
         fetal-plausible rate and NOT time-locked to the maternal beats.  If no
         candidate is acceptable but the dominant component is itself a regular
-        train FASTER than the competing one (FHR > MHR), the dominant
-        component is the fetus (weak maternal ECG).
+        train FASTER than the competing one (FHR > MHR) and >= 110 bpm, the
+        dominant component is the fetus (weak maternal ECG).
      -> sent as a 0xC4 packet (weights + detector warm-up restart).
   2. Every UPDATE_EVERY samples (2 s): rho = tr(C0^-1 C_recent)/4 compares the
      last 5 s with the calibration covariance C0.  If rho > GATE (new strong
@@ -60,6 +60,7 @@ RIDGE = 1e-6             # relative diagonal loading (must stay tiny: the trace
                          # is dominated by the maternal ECG)
 FHR_LO, FHR_HI = 80.0, 220.0
 FALLBACK_SCORE = 0.5
+FALLBACK_MIN_BPM = 110.0
 WEIGHT_MAX = 0.999
 
 
@@ -324,7 +325,10 @@ def calibrate(Xbuf: np.ndarray) -> Tuple[np.ndarray, dict]:
         s1 = _score(Y @ w1, None)
         pkb = _peaks_after(Y @ best)
         rb = _rate(pkb) if _regularity(pkb, 0.0, 1e9) >= 0.5 else 0.0
-        if s1 > best_s + FALLBACK_SCORE and _rate(_peaks_after(Y @ w1)) > 1.05 * rb:
+        r1 = _rate(_peaks_after(Y @ w1))
+        # FHR > MHR, and a dominant source slower than normal FHR (110 bpm) is taken
+        # to be the mother: on real abdominal recordings the maternal ECG dominates.
+        if s1 > best_s + FALLBACK_SCORE and r1 > 1.05 * rb and r1 >= FALLBACK_MIN_BPM:
             best, best_s = w1, s1
             info.update(score=s1, fallback=True)
     return best, info

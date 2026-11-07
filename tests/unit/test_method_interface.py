@@ -17,11 +17,11 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.methods.base import BaseExtractor, OUTPUT_KEYS
-from src.methods.svd import SVDExtractorV1, SVDExtractorV2, SVDExtractorV3
-from src.methods.template_subtraction import TemplatSubtractionExtractor
-from src.methods.swt_lms_ssnf import SWTLMSSNFExtractor
-from src.methods.alternative import AlternativeExtractor
+from src.fecg.methods.base import BaseExtractor, OUTPUT_KEYS
+from src.fecg.methods.svd import SVDExtractorV1, SVDExtractorV2, SVDExtractorV3
+from src.fecg.methods.template_subtraction import TemplatSubtractionExtractor
+from src.fecg.methods.swt_lms_ssnf import SWTLMSSNFExtractor
+from src.fecg.methods.alternative import AlternativeExtractor
 
 FS = 250
 N  = 1000   # short smoke-test signal length
@@ -66,7 +66,7 @@ class TestBaseExtractorInheritance:
         assert extractor.fs == FS
 
     def test_template_subtraction_runs_and_returns_correct_shape(self):
-        from src.methods.base import OUTPUT_KEYS
+        from src.fecg.methods.base import OUTPUT_KEYS
         extractor = TemplatSubtractionExtractor(fs=FS)
         mixture = _make_synthetic_mixture()
         fecg_est, metadata = extractor.run(mixture)
@@ -97,7 +97,7 @@ class TestBaseExtractorInheritance:
         assert metadata["input_condition"] == "oracle_assisted"
 
     def test_alternative_runs_and_returns_correct_shape(self):
-        from src.methods.base import OUTPUT_KEYS
+        from src.fecg.methods.base import OUTPUT_KEYS
         extractor = AlternativeExtractor(fs=FS)
         mixture = _make_synthetic_mixture()
         fecg_est, metadata = extractor.run(mixture)
@@ -110,7 +110,7 @@ class TestBaseExtractorInheritance:
         assert metadata["runtime_s"] > 0
 
     def test_swt_lms_ssnf_runs_and_returns_correct_shape(self):
-        from src.methods.base import OUTPUT_KEYS
+        from src.fecg.methods.base import OUTPUT_KEYS
         extractor = SWTLMSSNFExtractor(fs=FS)
         mixture = _make_synthetic_mixture()
         fecg_est, metadata = extractor.run(mixture)

@@ -15,6 +15,9 @@
 // UART Protocol (115,200 Baud, 8-N-1):
 //   - Downlink 4-CH Sample (0xA5, 11B): [0xA5][Seq][CH0:2B][CH1:2B][CH2:2B][CH3:2B][CRC8]
 //   - Downlink Calibration (0xC3, 10B): [0xC3][W0:2B][W1:2B][W2:2B][W3:2B][CRC8]
+//   - Downlink Calibration + Detector Restart (0xC4, 10B): same layout as 0xC3;
+//     additionally re-runs the detector warm-up 128 samples after the weights
+//     (host sends it for the initial / any re-anchoring calibration)
 //   - Uplink Clean FECG Stream (0x5A, 6B): [0x5A][Seq][FECG:3B Q20][CRC8]
 //   - Uplink QRS/FHR Telemetry (0xAA, 8B): [0xAA][Timestamp:3B][FHR:2B in 0.1 bpm][Status:1B][CRC8]
 //
@@ -45,7 +48,7 @@ module fecg_multichannel_top #(
     parameter integer FHR_WIDTH         = 16,          // 16-bit FHR in 0.1 bpm
     parameter integer WARMUP_LEN        = 512,         // Warmup duration (512 samples)
     parameter integer LOC_WINDOW        = 26,          // Trailing search window
-    parameter integer LATENCY_COMP      = 18           // Group delay compensation
+    parameter integer LATENCY_COMP      = 13           // Group delay compensation (20-30 Hz)
 )(
     input  wire       clk,        // Master 100.0 MHz oscillator (Pin F14)
     input  wire       rst_pin,    // External pushbutton reset BTN0 (Pin J2, active-high)
@@ -189,6 +192,8 @@ module fecg_multichannel_top #(
     reg signed [15:0] w0_reg, w1_reg, w2_reg, w3_reg;
     reg signed [WEIGHT_WIDTH-1:0] target_w0, target_w1, target_w2, target_w3;
     reg        weights_valid_strobe;
+    reg        calib_restart_flag;     // current calibration packet is 0xC4
+    reg        det_restart_strobe;     // 1-cycle: 0xC4 accepted (CRC ok)
 
     // Diagnostic activity toggles
     reg rx_sample_toggle;
@@ -220,11 +225,14 @@ module fecg_multichannel_top #(
             target_w2            <= 17'sd0;
             target_w3            <= 17'sd0;
             weights_valid_strobe <= 1'b0;
+            calib_restart_flag   <= 1'b0;
+            det_restart_strobe   <= 1'b0;
             rx_sample_toggle     <= 1'b0;
             crc_error_counter    <= 16'd0;
         end else begin
             sample_valid_strobe  <= 1'b0;
             weights_valid_strobe <= 1'b0;
+            det_restart_strobe   <= 1'b0;
 
             if (rx_valid) begin
                 case (parse_state)
@@ -233,9 +241,10 @@ module fecg_multichannel_top #(
                         if (rx_data == 8'hA5) begin
                             rx_crc_accum <= crc8_byte(8'hA5, 8'h00);
                             parse_state  <= PARSE_SAMPLE;
-                        end else if (rx_data == 8'hC3) begin
-                            rx_crc_accum <= crc8_byte(8'hC3, 8'h00);
-                            parse_state  <= PARSE_CALIB;
+                        end else if (rx_data == 8'hC3 || rx_data == 8'hC4) begin
+                            rx_crc_accum       <= crc8_byte(rx_data, 8'h00);
+                            calib_restart_flag <= (rx_data == 8'hC4);
+                            parse_state        <= PARSE_CALIB;
                         end
                     end
 
@@ -356,6 +365,7 @@ module fecg_multichannel_top #(
                                     target_w2 <= {w2_reg[15], w2_reg};
                                     target_w3 <= {w3_reg[15], w3_reg};
                                     weights_valid_strobe <= 1'b1;
+                                    det_restart_strobe   <= calib_restart_flag;
                                 end else begin
                                     crc_error_counter <= crc_error_counter + 1'b1;
                                 end
@@ -561,6 +571,7 @@ module fecg_multichannel_top #(
         .enable(1'b1),
         .valid_in(mwi_valid),
         .mwi_in(mwi_out),
+        .restart_req(det_restart_strobe),
         .candidate_strobe(candidate_strobe),
         .cand_timestamp(cand_timestamp),
         .cand_energy(cand_energy),

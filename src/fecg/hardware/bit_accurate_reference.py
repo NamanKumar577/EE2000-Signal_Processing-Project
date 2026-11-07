@@ -255,6 +255,8 @@ class BitAccurateFinalResult:
     accounting: StageOverflowAccounting
     max_ranges: Dict[str, int]
     n_fused_events: int
+    telemetry_peaks: Optional[np.ndarray] = None  # compensated timestamps as transmitted in 0xAA
+                                                  # (first accepted value; not rewritten by RR<50 fusion)
 
 class BitAccuratePipelineRunner:
     """
@@ -371,6 +373,7 @@ class BitAccuratePipelineRunner:
         block_raw_peaks: List[int] = []
         block_comp_peaks: List[int] = []
         block_rr: List[int] = []
+        block_telem: List[int] = []
         t_block_start = self.t_global
 
         for t_rel in range(n):
@@ -472,7 +475,7 @@ class BitAccuratePipelineRunner:
             if self.warm_cnt < self.warmup:
                 self.current_flag_2bit = FLAG_INVALID_WARMUP
                 flags_arr[t_rel] = (self.current_flag_2bit & 0x03) | ((1 if self.is_confident_flag else 0) << 2)
-                fhr_stream[t_rel] = self.fhr_current if self.warm_done_t >= 0 else 0
+                fhr_stream[t_rel] = 0
                 self.warm_max = max(self.warm_max, self.mwi_sum)
                 self.warm_sum += self.mwi_sum
                 self.warm_cnt += 1
@@ -526,6 +529,7 @@ class BitAccuratePipelineRunner:
                                     self.comp_peaks_list.append(comp_idx)
                                     self.rr_list.append(raw_rr)
                                     block_comp_peaks.append(rel_comp_idx)
+                                    block_telem.append(rel_comp_idx)
                                     block_raw_peaks.append(rel_raw_idx)
                                     block_rr.append(raw_rr)
 
@@ -544,6 +548,7 @@ class BitAccuratePipelineRunner:
                                     self.comp_peaks_list.append(comp_idx)
                                     self.rr_list.append(raw_rr)
                                     block_comp_peaks.append(rel_comp_idx)
+                                    block_telem.append(rel_comp_idx)
                                     block_raw_peaks.append(rel_raw_idx)
                                     block_rr.append(raw_rr)
                             else:
@@ -552,6 +557,7 @@ class BitAccuratePipelineRunner:
                                 self.comp_peaks_list.append(comp_idx)
                                 self.rr_list.append(0)
                                 block_comp_peaks.append(rel_comp_idx)
+                                block_telem.append(rel_comp_idx)
                                 block_raw_peaks.append(rel_raw_idx)
                                 block_rr.append(0)
 
@@ -593,7 +599,8 @@ class BitAccuratePipelineRunner:
             rr=np.array(block_rr, dtype=np.int64),
             accounting=self.acc_tracker,
             max_ranges=max_ranges,
-            n_fused_events=self.n_fused
+            n_fused_events=self.n_fused,
+            telemetry_peaks=np.array(block_telem, dtype=np.int64)
         )
 
     def _advance_sample(self, xint_arr: np.ndarray, t_rel: int) -> None:

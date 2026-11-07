@@ -22,17 +22,17 @@ from src.preprocessing import preprocess
 from src.qrs_detector import detect_fetal_qrs
 from src.fhr import compute_fhr, compare_fhr
 from src.evaluation import compute_beat_metrics, compute_waveform_metrics
-from src.methods.alternative import AlternativeExtractor
+from src.fecg.methods.alternative import AlternativeExtractor
 from src.fixed_point_model import FixedPointAlternativeExtractor, to_fixed
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 TEST_VECTORS_DIR = Path(__file__).resolve().parents[1] / "results" / "fpga_test_vectors"
 
 TC1_RECORDS = {
-    "fecg1": "test/test1/sub01_snr12dB_l1_c0_fecg1",
-    "mecg":  "test/test1/sub01_snr12dB_l1_c0_mecg",
-    "noise1": "test/test1/sub01_snr12dB_l1_c0_noise1",
-    "noise2": "test/test1/sub01_snr12dB_l1_c0_noise2",
+    "fecg1": "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_fecg1",
+    "mecg":  "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_mecg",
+    "noise1": "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_noise1",
+    "noise2": "data/FECGSD/DESTINATION/sub01/snr12dB/sub01_snr12dB_l1_c0_noise2",
 }
 
 

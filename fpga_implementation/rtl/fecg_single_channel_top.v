@@ -37,7 +37,7 @@ module fecg_single_channel_top #(
     parameter integer FHR_WIDTH     = 16,        // FHR output width (0.1 bpm units)
     parameter integer WARMUP_LEN    = 512,       // Warmup duration (512 samples ~ 2.05 s)
     parameter integer LOC_WINDOW    = 26,        // Trailing search window length
-    parameter integer LATENCY_COMP  = 18         // Group delay compensation (18 samples)
+    parameter integer LATENCY_COMP  = 13         // Group delay compensation (13 samples)
 )(
     input  wire                          clk,               // Master system clock (100 MHz)
     input  wire                          rst_n,             // Synchronous active-low reset
@@ -211,6 +211,7 @@ module fecg_single_channel_top #(
         .enable(enable),
         .valid_in(mwi_valid),
         .mwi_in(mwi_out),
+        .restart_req(1'b0),
         .candidate_strobe(candidate_strobe),
         .cand_timestamp(cand_timestamp),
         .cand_energy(cand_energy),
