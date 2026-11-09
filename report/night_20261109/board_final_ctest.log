@@ -1,0 +1,41 @@
+board: FECG-v5 73728000 921600
+ctest a02                      F1  54.84  beats  142  exact True  cyc/sample    59769   14.0s for    60s
+ctest a04                      F1  93.49  beats   83  exact True  cyc/sample    49197   11.8s for    60s
+ctest a06                      F1  69.57  beats  121  exact True  cyc/sample    58307   13.7s for    60s
+ctest a08                      F1  96.43  beats   84  exact True  cyc/sample    49709   11.9s for    60s
+ctest a10                      F1  73.77  beats  122  exact True  cyc/sample    62244   14.4s for    60s
+ctest a12                      F1  94.25  beats   85  exact True  cyc/sample    52387   12.4s for    60s
+ctest a14                      F1  96.15  beats   77  exact True  cyc/sample    53323   12.7s for    60s
+ctest a16                      F1  42.86  beats   96  exact True  cyc/sample    64372   14.8s for    60s
+ctest a18                      F1  37.07  beats  107  exact True  cyc/sample    62321   14.4s for    60s
+ctest a20                      F1  87.15  beats   90  exact True  cyc/sample    49971   12.0s for    60s
+ctest a22                      F1  97.56  beats   82  exact True  cyc/sample    50752   12.1s for    60s
+ctest a24                      F1  92.50  beats   78  exact True  cyc/sample    46018   11.2s for    60s
+ctest a26                      F1  78.72  beats   97  exact True  cyc/sample    45077   11.0s for    60s
+ctest a28                      F1  86.11  beats  105  exact True  cyc/sample    59355   13.9s for    60s
+ctest a30                      F1  19.11  beats   65  exact True  cyc/sample    32698    8.5s for    60s
+ctest a32                      F1  98.02  beats  101  exact True  cyc/sample    50730   12.1s for    60s
+ctest a34                      F1  56.35  beats   94  exact True  cyc/sample    26189    7.1s for    60s
+ctest a36                      F1  24.00  beats   64  exact True  cyc/sample    32492    8.5s for    60s
+ctest a38                      F1  26.04  beats   90  exact True  cyc/sample    48784   11.7s for    60s
+ctest a40                      F1  76.00  beats  103  exact True  cyc/sample    51802   12.3s for    60s
+ctest a42                      F1  51.96  beats  105  exact True  cyc/sample    54546   12.9s for    60s
+ctest a44                      F1  95.77  beats  105  exact True  cyc/sample    55175   13.0s for    60s
+ctest a46                      F1  18.18  beats   58  exact True  cyc/sample    26674    7.2s for    60s
+ctest a48                      F1  81.32  beats   92  exact True  cyc/sample    47329   11.4s for    60s
+ctest a50                      F1  95.60  beats   91  exact True  cyc/sample    50863   12.2s for    60s
+ctest a52                      F1  24.69  beats   77  exact True  cyc/sample    36333    9.2s for    60s
+ctest a54                      F1   0.00  beats   59  exact True  cyc/sample    85491   19.2s for    60s
+ctest a56                      F1  66.67  beats   85  exact True  cyc/sample    53753   12.7s for    60s
+ctest a58                      F1  87.50  beats   86  exact True  cyc/sample    58886   13.7s for    60s
+ctest a60                      F1  23.08  beats   57  exact True  cyc/sample    32850    8.5s for    60s
+ctest a62                      F1  57.47  beats   79  exact True  cyc/sample    55225   13.0s for    60s
+ctest a64                      F1  94.97  beats   91  exact True  cyc/sample    49199   11.9s for    60s
+ctest a66                      F1  18.54  beats   65  exact True  cyc/sample    32911    8.5s for    60s
+ctest a68                      F1  93.48  beats   91  exact True  cyc/sample    49842   11.9s for    60s
+ctest a70                      F1  90.32  beats   94  exact True  cyc/sample    52995   12.5s for    60s
+ctest a72                      F1  90.65  beats  103  exact True  cyc/sample    50747   12.1s for    60s
+ctest a74                      F1  42.55  beats   99  exact True  cyc/sample    43963   10.7s for    60s
+           f1      se     ppv  fhr_mae  records  bit_exact  cyc_per_sample  rt_factor
+set                                                                                  
+ctest  65.751  64.676  67.328   17.939       37        1.0       49791.339      5.032

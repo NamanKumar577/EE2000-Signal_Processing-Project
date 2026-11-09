@@ -326,7 +326,7 @@ static int det_step(det_t *d, int t, float e, float ab)
 fecg_cfg_t fecg_cfg = {
     .mat_refr = 75, .mat_lo = 40.0f, .mat_hi = 130.0f,
     .gate = 1000.0f, .c0 = 0.3f, .c1 = 0.6f, .floor = 0.0f,
-    .use_canc = 1, .use_rawT = 1, .use_rawD = 1, .mat_minfrac = 0.0f, .pen_minfrac = 0.1f, .cand_mask = 0xF0F, .sel_look = 5000, .hyst = 0.0f, .reg_pow = 2.0f,
+    .use_canc = 1, .use_rawT = 1, .use_rawD = 1, .mat_minfrac = 0.0f, .pen_minfrac = 0.1f, .cand_mask = 0xF0F, .sel_look = 5000, .hyst = 0.0f, .reg_pow = 2.0f, .sel_hop = 625, .agr_w = 1.0f, .agr_a0 = 0.5f, .pen_rate_ok = 0.0f, .rate_full = 120.0f, .rate_floor = 0.2f, .trk_lo = 70, .trk_hi = 130, .trk_thr = 0.25f,
 };
 
 /* ─────────────────────────── state ─────────────────────────── */
@@ -774,13 +774,13 @@ static void tracker_step(track_t *tr, int s)
             tr->nrr = 0; tr->rrs[tr->nrr++ & 7] = tr->R;
             tr->namp = 0; tr->amps[tr->namp++ & 7] = eget(tr, m);
             tr->misses = 0;
-            tr->st = 2; tr->dec = tr->t + (13 * tr->R) / 10;
+            tr->st = 2; tr->dec = tr->t + (fecg_cfg.trk_hi * tr->R) / 100;
             if (tr->dec > s) return;
         }
         if (tr->st == 2) {
-            int lo = tr->t + (7 * tr->R) / 10, hi = tr->t + (13 * tr->R) / 10;
+            int lo = tr->t + (fecg_cfg.trk_lo * tr->R) / 100, hi = tr->t + (fecg_cfg.trk_hi * tr->R) / 100;
             int m = argmax_e(tr, lo, hi);
-            if (eget(tr, m) > 0.25f * amp_median(tr)) {
+            if (eget(tr, m) > fecg_cfg.trk_thr * amp_median(tr)) {
                 int rr = m - tr->t;
                 tr->t = m;
                 add_beat(tr, localise(tr, m));
@@ -798,7 +798,7 @@ static void tracker_step(track_t *tr, int s)
                     continue;
                 }
             }
-            tr->dec = tr->t + (13 * tr->R) / 10;
+            tr->dec = tr->t + (fecg_cfg.trk_hi * tr->R) / 100;
             if (tr->dec > s) return;
         }
     }
@@ -870,6 +870,11 @@ static float window_quality(track_t *tr, int t0, int t1)
     float prom = pe / (med + 1e-12f);
     if (c < 0.0f) c = 0.0f;
     float q = c * acc * mylogf(1.0f + prom);
+    if (fecg_cfg.rate_full > 80.0f && rate < fecg_cfg.rate_full) {   /* physiological prior: FHR 110-160 */
+        float pr = (rate - 80.0f) / (fecg_cfg.rate_full - 80.0f);
+        if (pr < fecg_cfg.rate_floor) pr = fecg_cfg.rate_floor;
+        q *= pr;
+    }
     if (fecg_cfg.reg_pow > 0.0f) {
         int ok = 0;
         for (int i = 0; i < n - 1; i++) if (fabsf((float)rr[i] - R) <= 0.15f * R) ok++;
@@ -885,7 +890,10 @@ static float coincidence_penalty(track_t *tr, int t0, int t1)
     for (int i = first; i < S.nmpk && nm < 64; i++) { int p = S.mpk[i & 511]; if (p >= t0 - 20 && p < t1 + 20) m[nm++] = p; }
     float mr = 1e9f;
     if (nm > 3) { int rr[64]; for (int i = 0; i < nm - 1; i++) rr[i] = m[i + 1] - m[i]; mr = 60.0f * FS / imedian(rr, nm - 1); }
-    if (!(mr < fecg_cfg.gate) || S.mk < 0 || S.pcfrac[S.mk] < fecg_cfg.pen_minfrac) return 1.0f;
+    if (!(mr < fecg_cfg.gate) || S.mk < 0) return 1.0f;
+    /* maternal reference trusted if it comes from a strong component, or if its rate is
+       clearly maternal (a weak-component train at a fetal-like rate is usually the fetus) */
+    if (S.pcfrac[S.mk] < fecg_cfg.pen_minfrac && !(mr < fecg_cfg.pen_rate_ok)) return 1.0f;
     int n = 0, hit = 0, f = tr->npk > PKRING ? tr->npk - PKRING : 0;
     for (int i = f; i < tr->npk; i++) {
         int q = tr->pk[i % PKRING];
@@ -929,6 +937,34 @@ static int emit_beats(fecg_beat_t *out, int nout, int max_out)
     return nout;
 }
 
+/* label-free cross-track agreement of track k on [t0, t1): mean over its beats of the
+   fraction of the other tracks with a beat within +-8 samples */
+#ifdef FECG_DEBUG
+void (*fecg_dbg_sel)(int t, int k, float wq, float pen, float q) = 0;
+#endif
+static float agreement(int k, int t0, int t1)
+{
+    track_t *tk = &TR[k];
+    int fk = tk->npk > PKRING ? tk->npk - PKRING : 0, nb = 0, hits = 0;
+    for (int i = fk; i < tk->npk; i++) {
+        int q = tk->pk[i % PKRING];
+        if (q < t0 || q >= t1) continue;
+        nb++;
+        for (int j = 0; j < S.ntr; j++) {
+            if (j == k) continue;
+            track_t *tj = &TR[j];
+            int fj = tj->npk > PKRING ? tj->npk - PKRING : 0;
+            for (int m = tj->npk - 1; m >= fj; m--) {
+                int d = tj->pk[m % PKRING] - q;
+                if (d < -8) break;
+                if (d <= 8) { hits++; break; }
+            }
+        }
+    }
+    if (nb == 0 || S.ntr < 2) return 0.0f;
+    return (float)hits / ((float)nb * (float)(S.ntr - 1));
+}
+
 static int do_select(int t, fecg_beat_t *out, int nout, int max_out)
 {
     nout = emit_beats(out, nout, max_out);        /* flush the old segment */
@@ -937,9 +973,13 @@ static int do_select(int t, fecg_beat_t *out, int nout, int max_out)
         int lk = fecg_cfg.sel_look;
         float q = window_quality(&TR[k], t - lk, t) * coincidence_penalty(&TR[k], t - lk, t);
         if (k == S.sel_k) q *= 1.0f + fecg_cfg.hyst;
+        if (fecg_cfg.agr_w > 0.0f && q > 0.0f) q *= fecg_cfg.agr_a0 + fecg_cfg.agr_w * agreement(k, t - lk, t);
+#ifdef FECG_DEBUG
+        if (fecg_dbg_sel) fecg_dbg_sel(t, k, window_quality(&TR[k], t - lk, t), coincidence_penalty(&TR[k], t - lk, t), q);
+#endif
         if (q > bq) { bq = q; best = k; }
     }
-    S.sel_k = best; S.sel_t = t; S.sel_end = t + SEL_HOP;
+    S.sel_k = best; S.sel_t = t; S.sel_end = t + fecg_cfg.sel_hop;
     return nout;
 }
 
@@ -1069,7 +1109,7 @@ int fecg_push(const int16_t x[4], fecg_beat_t *out, int max_out)
                     tr->bmed[tr->nb & 63] = fmedian(b, 125); tr->nb++;
                 }
             }
-            if (s == S.sel_next + SEL_LAG) { nout = do_select(S.sel_next, out, nout, max_out); S.sel_next += SEL_HOP; }
+            if (s == S.sel_next + SEL_LAG) { nout = do_select(S.sel_next, out, nout, max_out); S.sel_next += fecg_cfg.sel_hop; }
             nout = emit_beats(out, nout, max_out);
         }
     }

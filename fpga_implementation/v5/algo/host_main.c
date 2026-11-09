@@ -27,19 +27,30 @@ static void setcfg(const char *kv)
     else if (!strcmp(k, "sel_look")) fecg_cfg.sel_look = (int)v;
     else if (!strcmp(k, "hyst")) fecg_cfg.hyst = (float)v;
     else if (!strcmp(k, "reg_pow")) fecg_cfg.reg_pow = (float)v;
+    else if (!strcmp(k, "sel_hop")) fecg_cfg.sel_hop = (int)v;
+    else if (!strcmp(k, "agr_w")) fecg_cfg.agr_w = (float)v;
+    else if (!strcmp(k, "agr_a0")) fecg_cfg.agr_a0 = (float)v;
+    else if (!strcmp(k, "pen_rate_ok")) fecg_cfg.pen_rate_ok = (float)v;
+    else if (!strcmp(k, "rate_full")) fecg_cfg.rate_full = (float)v;
+    else if (!strcmp(k, "rate_floor")) fecg_cfg.rate_floor = (float)v;
+    else if (!strcmp(k, "trk_lo")) fecg_cfg.trk_lo = (int)v;
+    else if (!strcmp(k, "trk_hi")) fecg_cfg.trk_hi = (int)v;
+    else if (!strcmp(k, "trk_thr")) fecg_cfg.trk_thr = (float)v;
     else { fprintf(stderr, "unknown cfg %s\n", k); exit(2); }
 }
 
 #ifdef FECG_DEBUG
 extern void (*fecg_dbg_beat)(int k, int q);
 static void dbg(int k, int q) { printf("# %d %d\n", k, q); }
+extern void (*fecg_dbg_sel)(int t, int k, float wq, float pen, float q);
+static void dbgs(int t, int k, float wq, float pen, float q) { printf("@ %d %d %g %g %g\n", t, k, wq, pen, q); }
 #endif
 
 int main(int argc, char **argv)
 {
     _mm_setcsr(_mm_getcsr() | 0x8040);   /* FTZ + DAZ: match the MicroBlaze FPU */
 #ifdef FECG_DEBUG
-    if (getenv("FECG_DUMP")) fecg_dbg_beat = dbg;
+    if (getenv("FECG_DUMP")) { fecg_dbg_beat = dbg; fecg_dbg_sel = dbgs; }
 #endif
     if (argc < 2) return 1;
     for (int i = 2; i < argc; i++) setcfg(argv[i]);

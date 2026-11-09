@@ -1,0 +1,13 @@
+{
+ "board": "FECG-v5 73728000 921600",
+ "ctest": {
+  "f1": 65.7506,
+  "se": 64.6755,
+  "ppv": 67.3276,
+  "fhr_mae": 17.9387,
+  "records": 37,
+  "bit_exact": 1.0,
+  "cyc_per_sample": 49791.3393,
+  "rt_factor": 5.0324
+ }
+}

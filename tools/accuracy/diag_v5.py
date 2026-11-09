@@ -16,12 +16,15 @@ def run_dump(X, cfg=()):
     env = dict(os.environ, FECG_DUMP="1")
     out = subprocess.run([str(v5c.EXE), path, *cfg], capture_output=True, text=True, env=env).stdout
     os.unlink(path)
-    tr, sel = {}, []
+    tr, sel, qrows = {}, [], []
     for l in out.splitlines():
-        if l.startswith("#"):
+        if l.startswith("@"):
+            _, t, k, wq, pen, qq = l.split(); qrows.append((int(t), int(k), float(wq), float(pen), float(qq)))
+        elif l.startswith("#"):
             _, k, q = l.split(); tr.setdefault(int(k), []).append(int(q))
         elif l.strip():
             sel.append(list(map(int, l.split())))
+    run_dump.q = qrows
     return {k: np.array(v) - 13 for k, v in tr.items()}, np.array(sel).reshape(-1, 3)
 
 

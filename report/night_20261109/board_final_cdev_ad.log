@@ -1,0 +1,48 @@
+board: FECG-v5 73728000 921600
+cdev  a01                      F1  94.12  beats  103  exact True  cyc/sample    54746   12.9s for    60s
+cdev  a03                      F1  92.68  beats   79  exact True  cyc/sample    55021   13.0s for    60s
+cdev  a05                      F1  94.67  beats   84  exact True  cyc/sample    49936   11.9s for    60s
+cdev  a07                      F1  64.63  beats   78  exact True  cyc/sample    59620   13.9s for    60s
+cdev  a09                      F1  87.06  beats   84  exact True  cyc/sample    53556   12.7s for    60s
+cdev  a11                      F1  63.87  beats   98  exact True  cyc/sample    57681   13.5s for    60s
+cdev  a13                      F1  67.53  beats   71  exact True  cyc/sample    48095   11.6s for    60s
+cdev  a15                      F1  95.91  beats   85  exact True  cyc/sample    48503   11.6s for    60s
+cdev  a17                      F1  92.74  beats   91  exact True  cyc/sample    58417   13.7s for    60s
+cdev  a19                      F1  84.28  beats   77  exact True  cyc/sample    50702   12.1s for    60s
+cdev  a21                      F1  55.07  beats  109  exact True  cyc/sample    54940   13.0s for    60s
+cdev  a23                      F1  96.34  beats   82  exact True  cyc/sample    51088   12.2s for    60s
+cdev  a25                      F1  76.83  beats   82  exact True  cyc/sample    50891   12.2s for    60s
+cdev  a27                      F1  51.98  beats   89  exact True  cyc/sample    49778   11.9s for    60s
+cdev  a29                      F1  40.22  beats   96  exact True  cyc/sample    51091   12.2s for    60s
+cdev  a31                      F1  72.73  beats   97  exact True  cyc/sample    54817   12.9s for    60s
+cdev  a33                      F1  91.80  beats   93  exact True  cyc/sample    56831   13.4s for    60s
+cdev  a35                      F1  91.16  beats  106  exact True  cyc/sample    58119   13.6s for    60s
+cdev  a37                      F1  73.03  beats   84  exact True  cyc/sample    52995   12.6s for    60s
+cdev  a39                      F1  89.89  beats   89  exact True  cyc/sample    51513   12.3s for    60s
+cdev  a41                      F1  93.85  beats   89  exact True  cyc/sample    57801   13.5s for    60s
+cdev  a43                      F1  99.04  beats  105  exact True  cyc/sample    57187   13.4s for    60s
+cdev  a45                      F1  84.04  beats   94  exact True  cyc/sample    55224   13.0s for    60s
+cdev  a47                      F1  81.91  beats   95  exact True  cyc/sample    47716   11.5s for    60s
+cdev  a49                      F1  90.16  beats   95  exact True  cyc/sample    56961   13.3s for    60s
+cdev  a51                      F1  78.36  beats   81  exact True  cyc/sample    48760   11.7s for    60s
+cdev  a53                      F1  70.94  beats  102  exact True  cyc/sample    50234   12.0s for    60s
+cdev  a55                      F1  68.06  beats   99  exact True  cyc/sample    52908   12.5s for    60s
+cdev  a57                      F1  98.97  beats   97  exact True  cyc/sample    52497   12.5s for    60s
+cdev  a59                      F1  98.48  beats   99  exact True  cyc/sample    56802   13.3s for    60s
+cdev  a61                      F1  78.69  beats   91  exact True  cyc/sample    48581   11.7s for    60s
+cdev  a63                      F1  87.57  beats   93  exact True  cyc/sample    51397   12.2s for    60s
+cdev  a65                      F1  17.83  beats   60  exact True  cyc/sample    59309   13.8s for    60s
+cdev  a67                      F1  80.00  beats   91  exact True  cyc/sample    53205   12.6s for    60s
+cdev  a69                      F1  20.38  beats   59  exact True  cyc/sample    49809   11.9s for    60s
+cdev  a71                      F1  21.21  beats  103  exact True  cyc/sample    51510   12.3s for    60s
+cdev  a73                      F1  23.08  beats   63  exact True  cyc/sample    31892    8.3s for    60s
+cdev  a75                      F1  90.80  beats   88  exact True  cyc/sample    49948   11.9s for    60s
+ad    r01                      F1  96.69  beats  579  exact True  cyc/sample    64766   74.4s for   300s
+ad    r04                      F1  88.21  beats  565  exact True  cyc/sample    62836   72.6s for   300s
+ad    r07                      F1  92.97  beats  555  exact True  cyc/sample    61999   71.6s for   300s
+ad    r08                      F1  96.84  beats  596  exact True  cyc/sample    64588   74.3s for   300s
+ad    r10                      F1  92.48  beats  577  exact True  cyc/sample    66740   76.5s for   300s
+          f1      se     ppv  fhr_mae  records  bit_exact  cyc_per_sample  rt_factor
+set                                                                                 
+ad    93.440  91.701  95.252    1.555        5        1.0       64186.030      4.060
+cdev  75.261  73.684  77.182   12.534       38        1.0       52633.784      4.804
