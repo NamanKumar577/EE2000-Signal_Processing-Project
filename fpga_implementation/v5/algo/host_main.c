@@ -1,8 +1,10 @@
 /* PC reference runner: host_main <in.i16> [key=value ...]
-   in.i16 = N x 4 int16 little-endian; prints "t fhr_x10 src" per output beat. */
+   in.i16 = N x 4 int16 little-endian; prints "t fhr_x10 src" per output beat.
+   With -DFECG_DEBUG and FECG_DUMP set, also prints "# k q" for every track beat. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <xmmintrin.h>
 #include "fecg_v5.h"
 
 static void setcfg(const char *kv)
@@ -19,11 +21,26 @@ static void setcfg(const char *kv)
     else if (!strcmp(k, "use_canc")) fecg_cfg.use_canc = (int)v;
     else if (!strcmp(k, "use_rawT")) fecg_cfg.use_rawT = (int)v;
     else if (!strcmp(k, "use_rawD")) fecg_cfg.use_rawD = (int)v;
+    else if (!strcmp(k, "mat_minfrac")) fecg_cfg.mat_minfrac = (float)v;
+    else if (!strcmp(k, "pen_minfrac")) fecg_cfg.pen_minfrac = (float)v;
+    else if (!strcmp(k, "cand_mask")) fecg_cfg.cand_mask = (int)v;
+    else if (!strcmp(k, "sel_look")) fecg_cfg.sel_look = (int)v;
+    else if (!strcmp(k, "hyst")) fecg_cfg.hyst = (float)v;
+    else if (!strcmp(k, "reg_pow")) fecg_cfg.reg_pow = (float)v;
     else { fprintf(stderr, "unknown cfg %s\n", k); exit(2); }
 }
 
+#ifdef FECG_DEBUG
+extern void (*fecg_dbg_beat)(int k, int q);
+static void dbg(int k, int q) { printf("# %d %d\n", k, q); }
+#endif
+
 int main(int argc, char **argv)
 {
+    _mm_setcsr(_mm_getcsr() | 0x8040);   /* FTZ + DAZ: match the MicroBlaze FPU */
+#ifdef FECG_DEBUG
+    if (getenv("FECG_DUMP")) fecg_dbg_beat = dbg;
+#endif
     if (argc < 2) return 1;
     for (int i = 2; i < argc; i++) setcfg(argv[i]);
     FILE *f = fopen(argv[1], "rb");

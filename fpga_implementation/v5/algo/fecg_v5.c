@@ -274,7 +274,7 @@ static int det_step(det_t *d, int t, float e, float ab)
 fecg_cfg_t fecg_cfg = {
     .mat_refr = 75, .mat_lo = 40.0f, .mat_hi = 130.0f,
     .gate = 1000.0f, .c0 = 0.3f, .c1 = 0.6f, .floor = 0.0f,
-    .use_canc = 1, .use_rawT = 1, .use_rawD = 1,
+    .use_canc = 1, .use_rawT = 1, .use_rawD = 1, .mat_minfrac = 0.0f, .pen_minfrac = 0.1f, .cand_mask = 0xF0F, .sel_look = 5000, .hyst = 0.0f, .reg_pow = 2.0f,
 };
 
 /* ─────────────────────────── state ─────────────────────────── */
@@ -294,7 +294,7 @@ typedef struct {
     /* beats + features */
     int pk[PKRING]; float pcc[PKRING][31]; float pem[PKRING]; int npk; int nfeat;
     /* block medians of e for the prominence normaliser */
-    float bmed[32]; int nb;
+    float bmed[64]; int nb;
 } track_t;
 
 static struct {
@@ -304,7 +304,7 @@ static struct {
     float xf[ZRING][NL];                /* Xf ring (unmodified) */
     float z[ZRING][NL];                 /* Z ring (maternal-cancelled) */
     /* maternal */
-    float V[16]; int have_V;
+    float V[16]; int have_V; float pcfrac[NL];
     det_t mdet[NL]; mwi_t mmwi[NL];
     int mtr[NL][PKRING]; int nmtr[NL];  /* final peaks per train */
     int mk, mseg_t, mseg_end, mlast;    /* current train, segment [t, end) */
@@ -353,7 +353,7 @@ static int mat_choose(int t, int prev)
     for (int k = 0; k < NL; k++) train_stats(S.mtr[k], S.nmtr[k], t0, t, &rate[k], &reg[k]);
     int best = -1;
     for (int k = 0; k < NL; k++)
-        if (reg[k] >= 0.6f && rate[k] >= fecg_cfg.mat_lo && rate[k] <= fecg_cfg.mat_hi &&
+        if (reg[k] >= 0.6f && rate[k] >= fecg_cfg.mat_lo && rate[k] <= fecg_cfg.mat_hi && S.pcfrac[k] >= fecg_cfg.mat_minfrac &&
             (best < 0 || rate[k] < rate[best] * 0.9f)) best = k;
     if (best >= 0) return best;
     if (prev >= 0) return prev;
@@ -552,7 +552,7 @@ static void calibrate(void)
         for (int j = 0; j < 4; j++) { for (int i = 0; i < 4; i++) cands[nc][i] = V[i * 4 + j]; nc++; }
         for (int j = 0; j < 4; j++) { float v0[4]; for (int i = 0; i < 4; i++) v0[i] = V[i * 4 + j]; refine(C2, v0, m, nm, cands[nc]); nc++; }
         if (src == 0) {
-            for (int c = 0; c < 12; c++) track_setup(&TR[S.ntr++], 0, 0, 1, cands[c]);
+            for (int c = 0; c < 12; c++) if ((fecg_cfg.cand_mask >> c) & 1) track_setup(&TR[S.ntr++], 0, 0, 1, cands[c]);
         } else {
             if (fecg_cfg.use_rawT) for (int c = 8; c < 12; c++) track_setup(&TR[S.ntr++], 0, 1, 0, cands[c]);
             if (fecg_cfg.use_rawD) for (int c = 8; c < 12; c++) track_setup(&TR[S.ntr++], 1, 1, 0, cands[c]);
@@ -586,8 +586,14 @@ static int localise(track_t *tr, int m)
     return best;
 }
 
+#ifdef FECG_DEBUG
+void (*fecg_dbg_beat)(int k, int q) = 0;
+#endif
 static void add_beat(track_t *tr, int q)
 {
+#ifdef FECG_DEBUG
+    if (fecg_dbg_beat) fecg_dbg_beat((int)(tr - TR), q);
+#endif
     tr->pk[tr->npk % PKRING] = q; tr->npk++;
 }
 
@@ -720,13 +726,20 @@ static float window_quality(track_t *tr, int t0, int t1)
     float c = fmedian(cc, n);
     float pe = fmedian(em, n);
     /* prominence normaliser: median of the 125-sample block medians inside [t0, t1) */
-    float bm[32]; int nb = 0;
-    int nbk = tr->nb < 32 ? tr->nb : 32;
-    for (int i = 0; i < nbk && i < SEL_LOOK / 125; i++) bm[nb++] = tr->bmed[(tr->nb - 1 - i) & 31];
+    float bm[64]; int nb = 0;
+    int nbk = tr->nb < 64 ? tr->nb : 64;
+    for (int i = 0; i < nbk && i < (t1 - t0) / 125; i++) bm[nb++] = tr->bmed[(tr->nb - 1 - i) & 63];
     float med = nb ? fmedian(bm, nb) : 0.0f;
     float prom = pe / (med + 1e-12f);
     if (c < 0.0f) c = 0.0f;
-    return c * acc * mylogf(1.0f + prom);
+    float q = c * acc * mylogf(1.0f + prom);
+    if (fecg_cfg.reg_pow > 0.0f) {
+        int ok = 0;
+        for (int i = 0; i < n - 1; i++) if (fabsf((float)rr[i] - R) <= 0.15f * R) ok++;
+        float reg = (float)ok / (float)(n - 1);
+        for (int i = 0; i < (int)fecg_cfg.reg_pow; i++) q *= reg;
+    }
+    return q;
 }
 
 static float coincidence_penalty(track_t *tr, int t0, int t1)
@@ -735,7 +748,7 @@ static float coincidence_penalty(track_t *tr, int t0, int t1)
     for (int i = first; i < S.nmpk && nm < 64; i++) { int p = S.mpk[i & 511]; if (p >= t0 - 20 && p < t1 + 20) m[nm++] = p; }
     float mr = 1e9f;
     if (nm > 3) { int rr[64]; for (int i = 0; i < nm - 1; i++) rr[i] = m[i + 1] - m[i]; mr = 60.0f * FS / imedian(rr, nm - 1); }
-    if (!(mr < fecg_cfg.gate)) return 1.0f;
+    if (!(mr < fecg_cfg.gate) || S.mk < 0 || S.pcfrac[S.mk] < fecg_cfg.pen_minfrac) return 1.0f;
     int n = 0, hit = 0, f = tr->npk > PKRING ? tr->npk - PKRING : 0;
     for (int i = f; i < tr->npk; i++) {
         int q = tr->pk[i % PKRING];
@@ -784,7 +797,9 @@ static int do_select(int t, fecg_beat_t *out, int nout, int max_out)
     nout = emit_beats(out, nout, max_out);        /* flush the old segment */
     int best = 0; float bq = -1.0f;
     for (int k = 0; k < S.ntr; k++) {
-        float q = window_quality(&TR[k], t - SEL_LOOK, t) * coincidence_penalty(&TR[k], t - SEL_LOOK, t);
+        int lk = fecg_cfg.sel_look;
+        float q = window_quality(&TR[k], t - lk, t) * coincidence_penalty(&TR[k], t - lk, t);
+        if (k == S.sel_k) q *= 1.0f + fecg_cfg.hyst;
         if (q > bq) { bq = q; best = k; }
     }
     S.sel_k = best; S.sel_t = t; S.sel_end = t + SEL_HOP;
@@ -833,6 +848,7 @@ int fecg_push(const int16_t x[4], fecg_beat_t *out, int max_out)
             float C[16] = {0}, ev[4];
             for (int t = 256; t < MAT_INIT; t++) for (int a = 0; a < 4; a++) for (int b = 0; b < 4; b++) C[a * 4 + b] += Ym[t][a] * Ym[t][b];
             jacobi(C, 4, ev, S.V);
+            { float es = 1e-30f; for (int k = 0; k < NL; k++) es += ev[k] > 0 ? ev[k] : 0; for (int k = 0; k < NL; k++) S.pcfrac[k] = (ev[NL - 1 - k] > 0 ? ev[NL - 1 - k] : 0) / es; }
             for (int k = 0; k < NL; k++) { det_init(&S.mdet[k], 0, 512, refr, MAT_LOC, refr); memset(&S.mmwi[k], 0, sizeof(mwi_t)); S.mmwi[k].w = MAT_MWI; }
             for (int t = 0; t < MAT_INIT; t++) mat_det_step(t, Ym[t]);
             S.have_V = 1;
@@ -898,7 +914,7 @@ int fecg_push(const int16_t x[4], fecg_beat_t *out, int max_out)
                 if (s >= CAL_END + 124 && ((s + 1 - SEL_START) % 125 + 125) % 125 == 0) {
                     float b[125];
                     for (int i = 0; i < 125; i++) b[i] = eget(tr, s - 124 + i);
-                    tr->bmed[tr->nb & 31] = fmedian(b, 125); tr->nb++;
+                    tr->bmed[tr->nb & 63] = fmedian(b, 125); tr->nb++;
                 }
             }
             if (s == S.sel_next + SEL_LAG) { nout = do_select(S.sel_next, out, nout, max_out); S.sel_next += SEL_HOP; }
