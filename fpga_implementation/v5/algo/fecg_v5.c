@@ -22,8 +22,11 @@
 #include <math.h>
 #include "fecg_v5.h"
 
-#ifndef BIGMEM
-#define BIGMEM
+#include <stdint.h>
+#ifdef FECG_MB                 /* MicroBlaze: slow AXI BRAM for rarely-touched data */
+#define SLOWMEM __attribute__((section(".bigdata")))
+#else
+#define SLOWMEM
 #endif
 
 /* ─────────────────────────── constants ─────────────────────────── */
@@ -51,11 +54,15 @@
 #define SEARCH 4
 #define KHIST 20
 #define WARMB 4
-#define ZRING 4096           /* Z / Xf history (power of 2) */
-#define ERING 1536           /* tracker envelope history (power of 2 not needed) */
+
+#ifndef ZRING
+#define ZRING 3072           /* Z / Xf history: covers the start-up burst back to CAL_BEGIN */
+#endif
+#define ZI(s) ((s) % ZRING)
+#define ERING 1280           /* tracker envelope history (bf16) */
 #define BRING 256            /* bp / |bp| history */
-#define PKRING 128
-#define MAXTR 20
+#define PKRING 96
+#define MAXTR 16
 #define LAT_OUT 13
 
 /* ─────────────────────────── filters ─────────────────────────── */
@@ -83,14 +90,37 @@ static float hp_step(hp_t *h, float x)
     return y;
 }
 
-typedef struct { float r[40]; int w, i; } mwi_t;
+typedef struct { float r[40]; int w, i; float sum; } mwi_t;
 static float mwi_step(mwi_t *m, float sq)
 {
+    m->sum += sq - m->r[m->i];
     m->r[m->i] = sq;
-    m->i = (m->i + 1) % m->w;
-    float s = 0.0f;
-    for (int k = 0; k < m->w; k++) s += m->r[k];
-    return s;
+    if (++m->i == m->w) {
+        m->i = 0;
+        float s = 0.0f;
+        for (int k = 0; k < m->w; k++) s += m->r[k];
+        m->sum = s;
+    }
+    return m->sum > 0.0f ? m->sum : 0.0f;
+}
+
+/* compact storage (int16 samples, bfloat16 envelopes) */
+static int16_t sat16(float x)
+{
+    float r = floorf(x + 0.5f);
+    if (r > 32767.0f) r = 32767.0f;
+    if (r < -32768.0f) r = -32768.0f;
+    return (int16_t)r;
+}
+static uint16_t f2bf(float f)          /* float -> bfloat16, round to nearest even */
+{
+    uint32_t u; memcpy(&u, &f, 4);
+    return (uint16_t)((u + 0x7FFFu + ((u >> 16) & 1u)) >> 16);
+}
+static float bf2f(uint16_t b)
+{
+    uint32_t u = (uint32_t)b << 16; float f; memcpy(&f, &u, 4);
+    return f;
 }
 
 /* ─────────────────────────── small math ─────────────────────────── */
@@ -108,10 +138,32 @@ static float imedian(const int *a, int n)          /* numpy median of ints */
     memcpy(b, a, n * sizeof(int)); isort(b, n);
     return (n & 1) ? (float)b[n / 2] : 0.5f * (float)(b[n / 2 - 1] + b[n / 2]);
 }
-static float fmedian(float *b, int n)               /* sorts b in place */
+static float fselect(float *a, int n, int k)        /* k-th smallest, reorders a */
 {
-    fsort(b, n);
-    return (n & 1) ? b[n / 2] : 0.5f * (b[n / 2 - 1] + b[n / 2]);
+    int lo = 0, hi = n - 1;
+    while (hi > lo) {
+        float piv = a[(lo + hi) >> 1];
+        int i = lo, j = hi;
+        while (i <= j) {
+            while (a[i] < piv) i++;
+            while (a[j] > piv) j--;
+            if (i <= j) { float t = a[i]; a[i] = a[j]; a[j] = t; i++; j--; }
+        }
+        if (k <= j) hi = j;
+        else if (k >= i) lo = i;
+        else break;
+    }
+    return a[k];
+}
+static float fmedian(float *b, int n)               /* reorders b */
+{
+    if (n <= 0) return 0.0f;
+    if (n < 12) { fsort(b, n); return (n & 1) ? b[n / 2] : 0.5f * (b[n / 2 - 1] + b[n / 2]); }
+    float hi = fselect(b, n, n / 2);
+    if (n & 1) return hi;
+    float lo = b[0];                                 /* max of the lower part */
+    for (int i = 1; i < n / 2; i++) if (b[i] > lo) lo = b[i];
+    return 0.5f * (lo + hi);
 }
 
 /* symmetric Jacobi eigen-decomposition, n <= 20; A destroyed; ascending order */
@@ -284,7 +336,7 @@ typedef struct {
     int blank;           /* maternal blanking of the envelope */
     float w[4];
     sos_t bp; mwi_t mw; float ehold; int blank_until;
-    float e[ERING];      /* envelope ring, index s % ERING */
+    uint16_t e[ERING];   /* envelope ring (bf16), index s % ERING */
     float bpr[BRING];    /* bp ring, index s & (BRING-1) */
     /* tracker */
     int st, t, R, ts, a, misses, nrr, namp, rrs[8]; float amps[8];
@@ -292,7 +344,7 @@ typedef struct {
     int first_done, started;
     det_t det;
     /* beats + features */
-    int pk[PKRING]; float pcc[PKRING][31]; float pem[PKRING]; int npk; int nfeat;
+    int pk[PKRING]; int8_t pcc[PKRING][31]; float pem[PKRING]; int npk; int nfeat;
     /* block medians of e for the prominence normaliser */
     float bmed[64]; int nb;
 } track_t;
@@ -301,8 +353,8 @@ static struct {
     int T;                              /* input sample index */
     hp_t hp[NL], hpm[NL];
     sos_t lp[NL], mat[NL];
-    float xf[ZRING][NL];                /* Xf ring (unmodified) */
-    float z[ZRING][NL];                 /* Z ring (maternal-cancelled) */
+    int16_t xf[ZRING][NL];              /* Xf ring (unmodified) */
+    int16_t z[ZRING][NL];               /* Z ring (maternal-cancelled) */
     /* maternal */
     float V[16]; int have_V; float pcfrac[NL];
     det_t mdet[NL]; mwi_t mmwi[NL];
@@ -312,7 +364,9 @@ static struct {
     int mpk[512]; int nmpk;             /* emitted maternal peaks (ring 512) */
     int mproc;                          /* next maternal peak to cancel */
     /* canceller history */
-    float hist[KHIST][LSEG][NL]; int nhist, hhead;
+    int nhist, hhead;
+    int32_t hsum[LSEG][NL];             /* exact sum of the history beats */
+    float Q[NL][KHIST][2];              /* warm start of the top-2 eigenvectors per lead */
     float taper[LSEG];
     /* tracks */
     int ntr; int calibrated;
@@ -321,14 +375,28 @@ static struct {
     /* selection */
     int sel_next, sel_k, sel_t, sel_end, out_last; int rrbuf[5], nrr;
     int emitted_upto; float fhr;
+    int zc_ptr;                         /* next Z-time sample to copy into the calibration buffers */
 } S;
 
-static BIGMEM track_t TR[MAXTR];
-static BIGMEM float Ym[MAT_INIT][NL];   /* maternal-band history until PCA is known */
+static SLOWMEM int16_t HIST[KHIST][LSEG][NL];   /* canceller beat history */
+static SLOWMEM float GRAW[NL][KHIST][KHIST];      /* raw Gram matrix of the history, per lead */
+/* Buffers that are never alive at the same time share memory:
+   before calibration: Zc/Xc (int16 calibration copies) + Ym (maternal init) / Yc (band-passed);
+   after calibration: the trackers. */
+static union {
+    struct {
+        int16_t Zc[CAL_LEN][NL], Xc[CAL_LEN][NL];
+        union { float Ym[MAT_INIT][NL]; float Yc[CAL_LEN][NL]; } u;
+    } c;
+    track_t tr[MAXTR];
+} U;
+#define TR (U.tr)
+#define Ym (U.c.u.Ym)
+#define Yc (U.c.u.Yc)
 
 /* ─────────────────────────── helpers ─────────────────────────── */
-static float zget(int s, int l) { return S.z[s & (ZRING - 1)][l]; }
-static float xget(int s, int l) { return S.xf[s & (ZRING - 1)][l]; }
+static float zget(int s, int l) { return (float)S.z[ZI(s)][l]; }
+static float xget(int s, int l) { return (float)S.xf[ZI(s)][l]; }
 
 static void train_stats(const int *pk, int npk, int t0, int t1, float *rate, float *reg)
 {
@@ -380,49 +448,101 @@ static void mat_flush(void)
 }
 
 /* ─────────────────────────── maternal cancellation of one beat ─────────── */
+/* top-2 eigenpairs of a symmetric n x n matrix by subspace iteration (warm-started) */
+static void top2(const float *G, int n, float Q[][2], float *lam)
+{
+    float Z[KHIST][2];
+    for (int it = 0; it < 12; it++) {
+        for (int i = 0; i < n; i++) {
+            float a = 0.0f, b = 0.0f;
+            for (int j = 0; j < n; j++) { a += G[i * n + j] * Q[j][0]; b += G[i * n + j] * Q[j][1]; }
+            Z[i][0] = a; Z[i][1] = b;
+        }
+        float n0 = 0.0f; for (int i = 0; i < n; i++) n0 += Z[i][0] * Z[i][0];
+        n0 = sqrtf(n0); if (n0 <= 0.0f) n0 = 1.0f;
+        float d = 0.0f;
+        for (int i = 0; i < n; i++) { Q[i][0] = Z[i][0] / n0; d += Q[i][0] * Z[i][1]; }
+        float n1 = 0.0f;
+        for (int i = 0; i < n; i++) { Z[i][1] -= d * Q[i][0]; n1 += Z[i][1] * Z[i][1]; }
+        n1 = sqrtf(n1); if (n1 <= 0.0f) n1 = 1.0f;
+        for (int i = 0; i < n; i++) Q[i][1] = Z[i][1] / n1;
+    }
+    /* Rayleigh-Ritz on the 2-D subspace */
+    float t00 = 0.0f, t01 = 0.0f, t11 = 0.0f;
+    for (int i = 0; i < n; i++) {
+        float a = 0.0f, b = 0.0f;
+        for (int j = 0; j < n; j++) { a += G[i * n + j] * Q[j][0]; b += G[i * n + j] * Q[j][1]; }
+        t00 += Q[i][0] * a; t01 += Q[i][0] * b; t11 += Q[i][1] * b;
+    }
+    float tr = 0.5f * (t00 + t11), df = 0.5f * (t00 - t11);
+    float rad = sqrtf(df * df + t01 * t01);
+    lam[0] = tr + rad; lam[1] = tr - rad;
+    float c = 1.0f, sn = 0.0f;
+    if (t01 != 0.0f) {
+        float th = (t11 - t00) / (2.0f * t01);
+        float t = (th >= 0 ? 1.0f : -1.0f) / (fabsf(th) + sqrtf(th * th + 1.0f));
+        c = 1.0f / sqrtf(t * t + 1.0f); sn = t * c;
+        /* rotation diagonalises T; pick the column with the larger eigenvalue first */
+        float a0 = c * c * t00 - 2.0f * sn * c * t01 + sn * sn * t11;
+        float a1 = sn * sn * t00 + 2.0f * sn * c * t01 + c * c * t11;
+        for (int i = 0; i < n; i++) {
+            float q0 = c * Q[i][0] - sn * Q[i][1], q1 = sn * Q[i][0] + c * Q[i][1];
+            if (a0 >= a1) { Q[i][0] = q0; Q[i][1] = q1; } else { Q[i][0] = q1; Q[i][1] = q0; }
+        }
+    }
+}
+
 static void cancel_beat(int p)
 {
     static float seg[LSEG][NL];
+    static float mu[LSEG], basis[3][LSEG], G[KHIST * KHIST];
     int lag = 0;
-    if (S.nhist >= 1) {
-        static float Tm[LSEG][NL];
-        int nh = S.nhist < KHIST ? S.nhist : KHIST;
-        memset(Tm, 0, sizeof(Tm));
-        for (int h = 0; h < nh; h++) for (int i = 0; i < LSEG; i++) for (int l = 0; l < NL; l++) Tm[i][l] += S.hist[h][i][l];
-        for (int i = 0; i < LSEG; i++) for (int l = 0; l < NL; l++) Tm[i][l] /= (float)nh;
+    int nh = S.nhist < KHIST ? S.nhist : KHIST;
+    if (nh >= 1) {
         float bc = 0.0f; int bk = 0;
         for (int k = -SEARCH; k <= SEARCH; k++) {
             float c = 0.0f;
-            for (int i = 0; i < LSEG; i++) for (int l = 0; l < NL; l++) c += xget(p + k - L1 + i, l) * Tm[i][l];
+            int zi = ZI(p + k - L1);
+            for (int i = 0; i < LSEG; i++) {
+                for (int l = 0; l < NL; l++) c += (float)S.xf[zi][l] * ((float)S.hsum[i][l] / (float)nh);
+                if (++zi == ZRING) zi = 0;
+            }
             if (k == -SEARCH || c > bc) { bc = c; bk = k; }
         }
         lag = bk;
     }
     p += lag;
-    for (int i = 0; i < LSEG; i++) for (int l = 0; l < NL; l++) seg[i][l] = xget(p - L1 + i, l);
-    if (S.nhist >= WARMB) {
-        int nh = S.nhist < KHIST ? S.nhist : KHIST;
+    {
+        int zi = ZI(p - L1);
+        for (int i = 0; i < LSEG; i++) {
+            for (int l = 0; l < NL; l++) seg[i][l] = (float)S.xf[zi][l];
+            if (++zi == ZRING) zi = 0;
+        }
+    }
+    if (nh >= WARMB) {
         for (int l = 0; l < NL; l++) {
-            static float mu[LSEG], A[KHIST][LSEG], G[KHIST * KHIST], VV[KHIST * KHIST], basis[3][LSEG];
-            float ev[KHIST];
-            for (int i = 0; i < LSEG; i++) { float s = 0.0f; for (int h = 0; h < nh; h++) s += S.hist[h][i][l]; mu[i] = s / (float)nh; }
+            for (int i = 0; i < LSEG; i++) mu[i] = (float)S.hsum[i][l] / (float)nh;
             int nb = 1;
             memcpy(basis[0], mu, sizeof(mu));
             if (nh >= 3) {
-                for (int h = 0; h < nh; h++) for (int i = 0; i < LSEG; i++) A[h][i] = S.hist[h][i][l] - mu[i];
-                for (int a = 0; a < nh; a++) for (int b = a; b < nh; b++) {
-                    float s = 0.0f; for (int i = 0; i < LSEG; i++) s += A[a][i] * A[b][i];
-                    G[a * nh + b] = G[b * nh + a] = s;
+                /* centred Gram from the raw Gram: G_ab = R_ab - r_a - r_b + m, r_a = (1/n) sum_b R_ab */
+                float r[KHIST], m = 0.0f;
+                for (int a = 0; a < nh; a++) { float t = 0.0f; for (int b = 0; b < nh; b++) t += GRAW[l][a][b]; r[a] = t / (float)nh; m += r[a]; }
+                m /= (float)nh;
+                for (int a = 0; a < nh; a++) for (int b = 0; b < nh; b++) G[a * nh + b] = GRAW[l][a][b] - r[a] - r[b] + m;
+                if (S.Q[l][0][0] == 0.0f && S.Q[l][1][1] == 0.0f) {
+                    for (int a = 0; a < KHIST; a++) { S.Q[l][a][0] = (a == 0); S.Q[l][a][1] = (a == 1); }
                 }
-                jacobi(G, nh, ev, VV);
+                float lam[2];
+                top2(G, nh, S.Q[l], lam);
+                float lmax = lam[0] > 0.0f ? lam[0] : 1.0f;
                 for (int c = 0; c < 2; c++) {
-                    int col = nh - 1 - c;
-                    float lam = ev[col];
-                    if (!(lam > 1e-6f * (ev[nh - 1] > 0 ? ev[nh - 1] : 1.0f))) break;
-                    float sv = sqrtf(lam), nn = 0.0f;
-                    for (int i = 0; i < LSEG; i++) {
-                        float s = 0.0f; for (int h = 0; h < nh; h++) s += A[h][i] * VV[h * nh + col];
-                        basis[nb][i] = s / sv; nn += basis[nb][i] * basis[nb][i];
+                    if (!(lam[c] > 1e-6f * lmax)) break;
+                    float sv = sqrtf(lam[c]);
+                    for (int i = 0; i < LSEG; i++) basis[nb][i] = 0.0f;
+                    for (int h = 0; h < nh; h++) {
+                        float qh = S.Q[l][h][c] / sv;
+                        for (int i = 0; i < LSEG; i++) basis[nb][i] += ((float)HIST[h][i][l] - mu[i]) * qh;
                     }
                     nb++;
                 }
@@ -430,43 +550,57 @@ static void cancel_beat(int p)
             /* least squares: (B^T B) c = B^T seg */
             float M[3][4] = {{0}};
             for (int a = 0; a < nb; a++) {
-                for (int b = 0; b < nb; b++) { float s = 0.0f; for (int i = 0; i < LSEG; i++) s += basis[a][i] * basis[b][i]; M[a][b] = s; }
-                float s = 0.0f; for (int i = 0; i < LSEG; i++) s += basis[a][i] * seg[i][l]; M[a][3] = s;
+                for (int b = 0; b < nb; b++) { float t = 0.0f; for (int i = 0; i < LSEG; i++) t += basis[a][i] * basis[b][i]; M[a][b] = t; }
+                float t = 0.0f; for (int i = 0; i < LSEG; i++) t += basis[a][i] * seg[i][l]; M[a][3] = t;
             }
             float coef[3] = {0};
             int ok = 1;
             for (int c = 0; c < nb; c++) {           /* Gauss-Jordan with partial pivot */
                 int pv = c;
-                for (int r = c + 1; r < nb; r++) if (fabsf(M[r][c]) > fabsf(M[pv][c])) pv = r;
+                for (int rr = c + 1; rr < nb; rr++) if (fabsf(M[rr][c]) > fabsf(M[pv][c])) pv = rr;
                 if (fabsf(M[pv][c]) < 1e-20f) { ok = 0; break; }
                 if (pv != c) for (int j = 0; j < 4; j++) { float t = M[c][j]; M[c][j] = M[pv][j]; M[pv][j] = t; }
-                for (int r = 0; r < nb; r++) if (r != c) {
-                    float f = M[r][c] / M[c][c];
-                    for (int j = c; j < 4; j++) M[r][j] -= f * M[c][j];
+                for (int rr = 0; rr < nb; rr++) if (rr != c) {
+                    float f = M[rr][c] / M[c][c];
+                    for (int j = c; j < 4; j++) M[rr][j] -= f * M[c][j];
                 }
             }
             if (!ok) continue;
             for (int c = 0; c < nb; c++) coef[c] = M[c][3] / M[c][c];
+            int zi = ZI(p - L1);
             for (int i = 0; i < LSEG; i++) {
                 float fit = 0.0f; for (int c = 0; c < nb; c++) fit += coef[c] * basis[c][i];
-                S.z[(p - L1 + i) & (ZRING - 1)][l] = seg[i][l] - fit * S.taper[i];
+                S.z[zi][l] = sat16(seg[i][l] - fit * S.taper[i]);
+                if (++zi == ZRING) zi = 0;
             }
         }
     }
-    /* history ring (most recent KHIST beats) */
-    memcpy(S.hist[S.hhead], seg, sizeof(seg));
+    /* history ring (most recent KHIST beats): exact sums + raw Gram row of the new beat */
+    int hh = S.hhead;
+    for (int i = 0; i < LSEG; i++) for (int l = 0; l < NL; l++) {
+        if (S.nhist >= KHIST) S.hsum[i][l] -= HIST[hh][i][l];
+        int16_t v = (int16_t)seg[i][l];
+        HIST[hh][i][l] = v;
+        S.hsum[i][l] += v;
+    }
+    int nn = S.nhist < KHIST ? S.nhist + 1 : KHIST;
+    for (int l = 0; l < NL; l++)
+        for (int b = 0; b < nn; b++) {
+            float t = 0.0f;
+            for (int i = 0; i < LSEG; i++) t += seg[i][l] * (float)HIST[b][i][l];
+            GRAW[l][hh][b] = t; GRAW[l][b][hh] = t;
+        }
     S.hhead = (S.hhead + 1) % KHIST;
     if (S.nhist < KHIST) S.nhist++;
 }
 
 /* ─────────────────────────── calibration (candidates) ─────────────────── */
-static BIGMEM float Yc[CAL_LEN][NL];       /* band-passed calibration buffer */
 
 static void cal_bandpass(int src)
 {
     sos_t f[NL]; memset(f, 0, sizeof(f));
     for (int i = 0; i < CAL_LEN; i++) for (int l = 0; l < NL; l++) {
-        float x = src ? xget(CAL_BEGIN + i, l) : zget(CAL_BEGIN + i, l);
+        float x = (float)(src ? U.c.Xc[i][l] : U.c.Zc[i][l]);
         Yc[i][l] = sos_step(BP_SOS, BP_SOS_NS, &f[l], x);
     }
 }
@@ -534,6 +668,7 @@ static void track_setup(track_t *tr, int kind, int src, int blank, const float *
 static void calibrate(void)
 {
     int m[64], nm = cal_mpk(m);
+    static float cands[2][12][4];
     S.ntr = 0;
     for (int src = 0; src < 2; src++) {
         if (src == 0 && !fecg_cfg.use_canc) continue;
@@ -547,22 +682,21 @@ static void calibrate(void)
         float tr_ = C[0] + C[5] + C[10] + C[15];
         memcpy(C2, C, sizeof(C2));
         for (int i = 0; i < 4; i++) C2[i * 4 + i] += 1e-6f * tr_ / 4.0f;
-        float cands[12][4]; int nc = 0;
-        for (int i = 0; i < 4; i++) { for (int j = 0; j < 4; j++) cands[nc][j] = (i == j); nc++; }
-        for (int j = 0; j < 4; j++) { for (int i = 0; i < 4; i++) cands[nc][i] = V[i * 4 + j]; nc++; }
-        for (int j = 0; j < 4; j++) { float v0[4]; for (int i = 0; i < 4; i++) v0[i] = V[i * 4 + j]; refine(C2, v0, m, nm, cands[nc]); nc++; }
-        if (src == 0) {
-            for (int c = 0; c < 12; c++) if ((fecg_cfg.cand_mask >> c) & 1) track_setup(&TR[S.ntr++], 0, 0, 1, cands[c]);
-        } else {
-            if (fecg_cfg.use_rawT) for (int c = 8; c < 12; c++) track_setup(&TR[S.ntr++], 0, 1, 0, cands[c]);
-            if (fecg_cfg.use_rawD) for (int c = 8; c < 12; c++) track_setup(&TR[S.ntr++], 1, 1, 0, cands[c]);
-        }
+        float (*cd)[4] = cands[src]; int nc = 0;
+        for (int i = 0; i < 4; i++) { for (int j = 0; j < 4; j++) cd[nc][j] = (i == j); nc++; }
+        for (int j = 0; j < 4; j++) { for (int i = 0; i < 4; i++) cd[nc][i] = V[i * 4 + j]; nc++; }
+        for (int j = 0; j < 4; j++) { float v0[4]; for (int i = 0; i < 4; i++) v0[i] = V[i * 4 + j]; refine(C2, v0, m, nm, cd[nc]); nc++; }
     }
+    /* the trackers overwrite the calibration buffers (shared memory): set them up last */
+    if (fecg_cfg.use_canc)
+        for (int c = 0; c < 12; c++) if (((fecg_cfg.cand_mask >> c) & 1) && S.ntr < MAXTR) track_setup(&TR[S.ntr++], 0, 0, 1, cands[0][c]);
+    if (fecg_cfg.use_rawT) for (int c = 8; c < 12 && S.ntr < MAXTR; c++) track_setup(&TR[S.ntr++], 0, 1, 0, cands[1][c]);
+    if (fecg_cfg.use_rawD) for (int c = 8; c < 12 && S.ntr < MAXTR; c++) track_setup(&TR[S.ntr++], 1, 1, 0, cands[1][c]);
     S.calibrated = 1;
 }
 
 /* ─────────────────────────── tracker ─────────────────────────── */
-static float eget(track_t *tr, int s) { return tr->e[s % ERING]; }
+static float eget(track_t *tr, int s) { return bf2f(tr->e[s % ERING]); }
 
 static int autocorr_rr(track_t *tr, int ts, int len)
 {
@@ -687,8 +821,11 @@ static void capture_features(track_t *tr, int s)
     while (tr->nfeat < tr->npk) {
         int q = tr->pk[tr->nfeat % PKRING];
         if (s < q + 40) break;
-        float *w = tr->pcc[tr->nfeat % PKRING];
-        for (int i = 0; i < 31; i++) w[i] = tr->bpr[(q - 15 + i) & (BRING - 1)];
+        int8_t *w = tr->pcc[tr->nfeat % PKRING];
+        float mx = 0.0f;
+        for (int i = 0; i < 31; i++) { float v = fabsf(tr->bpr[(q - 15 + i) & (BRING - 1)]); if (v > mx) mx = v; }
+        float sc = mx > 0.0f ? 127.0f / mx : 0.0f;
+        for (int i = 0; i < 31; i++) w[i] = (int8_t)floorf(tr->bpr[(q - 15 + i) & (BRING - 1)] * sc + 0.5f);
         float m = eget(tr, q + 13);
         for (int i = q + 14; i < q + 40; i++) if (eget(tr, i) > m) m = eget(tr, i);
         tr->pem[tr->nfeat % PKRING] = m;
@@ -710,16 +847,16 @@ static float window_quality(track_t *tr, int t0, int t1)
     float expct = (float)(t1 - t0) / R; if (expct < 1.0f) expct = 1.0f;
     float acc = (float)n / expct; if (acc > 1.0f) acc = 1.0f;
     float T[31], col[PKRING];
-    for (int j = 0; j < 31; j++) { for (int i = 0; i < n; i++) col[i] = tr->pcc[idx[i] % PKRING][j]; T[j] = fmedian(col, n); }
+    for (int j = 0; j < 31; j++) { for (int i = 0; i < n; i++) col[i] = (float)tr->pcc[idx[i] % PKRING][j]; T[j] = fmedian(col, n); }
     float tm = 0.0f; for (int j = 0; j < 31; j++) tm += T[j]; tm /= 31.0f;
     float tn = 0.0f; for (int j = 0; j < 31; j++) { T[j] -= tm; tn += T[j] * T[j]; }
     tn = sqrtf(tn);
     float cc[PKRING], em[PKRING];
     for (int i = 0; i < n; i++) {
-        const float *w = tr->pcc[idx[i] % PKRING];
-        float wm = 0.0f; for (int j = 0; j < 31; j++) wm += w[j]; wm /= 31.0f;
+        const int8_t *w = tr->pcc[idx[i] % PKRING];
+        float wm = 0.0f; for (int j = 0; j < 31; j++) wm += (float)w[j]; wm /= 31.0f;
         float d = 0.0f, wn = 0.0f;
-        for (int j = 0; j < 31; j++) { float a = w[j] - wm; d += a * T[j]; wn += a * a; }
+        for (int j = 0; j < 31; j++) { float a = (float)w[j] - wm; d += a * T[j]; wn += a * a; }
         cc[i] = d / (sqrtf(wn) * tn + 1e-12f);
         em[i] = tr->pem[idx[i] % PKRING];
     }
@@ -810,12 +947,15 @@ static int do_select(int t, fecg_beat_t *out, int nout, int max_out)
 void fecg_reset(void)
 {
     memset(&S, 0, sizeof(S));
-    memset(TR, 0, sizeof(TR));
+    memset(&U, 0, sizeof(U));
+    memset(HIST, 0, sizeof(HIST));
+    memset(GRAW, 0, sizeof(GRAW));
     for (int i = 0; i < LSEG; i++) S.taper[i] = 1.0f;
     for (int i = 0; i < 8; i++) { S.taper[i] = (float)i / 7.0f; S.taper[LSEG - 1 - i] = (float)i / 7.0f; }
     S.mw0z.w = S.mw0x.w = 30;
     S.mk = -1; S.mlast = -1; S.mseg_t = S.mseg_end = 0;
     S.sel_k = -1; S.sel_next = SEL_START; S.out_last = -1; S.emitted_upto = -1;
+    S.zc_ptr = CAL_BEGIN;
 }
 
 static void mat_det_step(int t, const float *ym)
@@ -837,8 +977,8 @@ int fecg_push(const int16_t x[4], fecg_beat_t *out, int max_out)
     for (int l = 0; l < NL; l++) {
         float h = hp_step(&S.hp[l], (float)x[l]);
         float xf = sos_step(LP_SOS, LP_SOS_NS, &S.lp[l], h);
-        S.xf[T & (ZRING - 1)][l] = xf;
-        S.z[T & (ZRING - 1)][l] = xf;
+        S.xf[ZI(T)][l] = sat16(xf);
+        S.z[ZI(T)][l] = sat16(xf);
         ym[l] = sos_step(MAT_SOS, MAT_SOS_NS, &S.mat[l], h);
     }
     /* 2. maternal detection */
@@ -875,6 +1015,16 @@ int fecg_push(const int16_t x[4], fecg_beat_t *out, int max_out)
         if (p - L1 - SEARCH >= 0 && p - L1 - SEARCH > T - ZRING + 1) cancel_beat(p);
         S.mproc++;
     }
+    /* calibration copies: Z(s) is final once s <= T - DZ and the start-up burst of
+       maternal beats (all peaks before MAT_INIT, emitted at MAT_INIT + lagm) is cancelled */
+    if (T > MAT_INIT + lagm + L2 + SEARCH)
+        while (S.zc_ptr < CAL_END && S.zc_ptr <= T - DZ) {
+            for (int l = 0; l < NL; l++) {
+                U.c.Zc[S.zc_ptr - CAL_BEGIN][l] = S.z[ZI(S.zc_ptr)][l];
+                U.c.Xc[S.zc_ptr - CAL_BEGIN][l] = S.xf[ZI(S.zc_ptr)][l];
+            }
+            S.zc_ptr++;
+        }
     /* 4-6. Z-time processing */
     int s = T - DZ;
     if (s >= 0) {
@@ -889,12 +1039,13 @@ int fecg_push(const int16_t x[4], fecg_beat_t *out, int max_out)
             int bstart = 0;
             while (S.mblank_ptr < S.nmpk && S.mpk[S.mblank_ptr & 511] <= s) { if (S.mpk[S.mblank_ptr & 511] == s) bstart = 1; S.mblank_ptr++; }
             float r = (float)(s - (CAL_END - 1)); if (r > 64.0f) r = 64.0f; r /= 64.0f;
+            const int zis = ZI(s);
             for (int k = 0; k < S.ntr; k++) {
                 track_t *tr = &TR[k];
                 float y = 0.0f;
                 for (int l = 0; l < NL; l++) {
                     float w0 = (l == 0) ? 1.0f : 0.0f, w = w0 + r * (tr->w[l] - w0);
-                    y += w * (tr->src ? xget(s, l) : zget(s, l));
+                    y += w * (float)(tr->src ? S.xf[zis][l] : S.z[zis][l]);
                 }
                 float bp = sos_step(BP_SOS, BP_SOS_NS, &tr->bp, y);
                 float e = mwi_step(&tr->mw, bp * bp);
@@ -902,7 +1053,8 @@ int fecg_push(const int16_t x[4], fecg_beat_t *out, int max_out)
                     if (bstart) { tr->ehold = eget(tr, s - 1); tr->blank_until = s + 45; }
                     if (s < tr->blank_until) e = tr->ehold;
                 }
-                tr->e[s % ERING] = e;
+                tr->e[s % ERING] = f2bf(e);
+                e = bf2f(tr->e[s % ERING]);
                 tr->bpr[s & (BRING - 1)] = bp;
                 if (tr->kind == 0) {
                     if (s >= T0_TRACK) { if (!tr->started) { tr->started = 1; tr->ts = T0_TRACK; } tracker_step(tr, s); }
