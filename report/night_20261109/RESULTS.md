@@ -22,7 +22,7 @@ This runs on a MicroBlaze soft processor with a hardware FPU, built into the xc7
 | Clock | 25 MHz DSP pipeline | 73.728 MHz MicroBlaze (WNS +1.91 ns) |
 | Speed | real time | 4–5× faster than real time; about 50k of the 295k cycles available per sample |
 | Output latency | about 50 ms | about 1.5–2 s (causal tracker and selection decision delay) |
-| Board vs PC model | bit-exact | **bit-exact on every record tested (37 + 43 + 59)** |
+| Board vs PC model | bit-exact | **bit-exact on all 140 records streamed (37 + 43 + 60)** |
 
 ## Accuracy
 Beat-level F1 is scored from 20 s with a ±50 ms tolerance. All methods are strictly causal and label-free; annotations are used only for scoring.
@@ -37,7 +37,7 @@ For CinC, design decisions used only the odd-numbered records. The even-numbered
 | CinC 2013 dev (odd) | 38 | — | 42.0 | 59.4 | 68.4 | **75.3** |
 | ADFECGDB (scalp-electrode reference) | 5 | — | 37.0 | 78.7 | 91.3 | **93.4** (FHR MAE 1.6 bpm) |
 | FECGSYNDB, all 1,248 (PC model of the same C) | 1,248 | 82.2 | **95.6** | 95.0 | 92.1 (subset) | 91.5 |
-| FECGSYNDB subset (every 21st record) | 59 | — | — | 95.2 | 92.1 | see `board_final/board_syn.csv` |
+| FECGSYNDB subset (every 21st record) | 60 | — | — | 95.2 | 92.1 | **91.9** (FHR MAE 5.2 bpm) |
 
 **Notes on the table:**
 - CinC held-out, v5 on the board: Se 64.7%, PPV 67.3%, FHR MAE 17.9 bpm (v2: 49.6 bpm).

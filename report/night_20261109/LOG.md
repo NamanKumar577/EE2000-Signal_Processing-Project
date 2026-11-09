@@ -45,3 +45,4 @@
 | 03:40 | **Held-out CinC test half (37 even records), first and only touch** | **ctest** | **v5 65.75** (Se 64.7, PPV 67.3, FHR MAE 17.9); v4 53.08; v3 49.94; v2 41.22; old design 16.66. Reliable references only (33): **v5 70.89**, v4 56.0, v3 53.3, v2 43.2. Records ≥ 90%: v5 13, v4 5, v2 3. | +24.5 points over the v2 design on the board; +12.7 over v4 |
 | 04:00 | **Final board run, frozen firmware**: CinC held-out | **board** ctest | **65.75** (Se 64.68, PPV 67.33, FHR MAE 17.94); **37/37 records bit-exact** with the PC model; 5.0× real time | Identical to the PC model |
 | 04:25 | Final board run: CinC dev + ADFECGDB | **board** cdev / ad | **75.26 / 93.44** (FHR MAE 12.5 / 1.6); **43/43 bit-exact** | — |
+| 05:45 | Final board run: FECGSYNDB subset (every 21st record) | **board** syn | **91.92** (Se 90.75, PPV 93.77, FHR MAE 5.17); **60/60 bit-exact**; 3.8× real time | All final board runs done: 140/140 records bit-exact with the PC model |
