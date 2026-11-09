@@ -161,6 +161,58 @@ def maternal_peaks_robust(X, init=2500, refractory=75, mwi_len=38):
     return c[1], c[2]
 
 
+def _train_stats(pk, t0, t1):
+    p = pk[(pk >= t0) & (pk < t1)]
+    if len(p) < 4:
+        return 0.0, 0.0
+    rr = np.diff(p)
+    med = np.median(rr)
+    return 60 * FS / med, float(np.mean(np.abs(rr - med) <= 0.15 * med))
+
+
+def maternal_peaks_dynamic(X, init=2500, hop=1250, look=5000, refractory=75, mwi_len=38):
+    """Causal maternal R peaks with dynamic train selection.  Detectors run in
+    parallel on all PCs of the 5-25 Hz band (PCs from the first `init` samples).
+    Every `hop` samples the output switches to the train that best fits a mother
+    over the trailing `look` samples: the slowest regular (>=60% of RR within
+    15% of the median) train at 40-130 bpm; if none is regular, keep the previous
+    choice (at start: the most regular).
+    Fixes recordings where the fetal or artefact energy dominates PC1 at start."""
+    Y = sosfilt(MAT_SOS, P.hp1(X), axis=0)
+    C = Y[256:init].T @ Y[256:init]
+    _, V = np.linalg.eigh(C)
+    n = len(X)
+    trains = []
+    for j in range(1, V.shape[1] + 1):
+        y = Y @ V[:, -j]
+        e = P.mwi(y * y, mwi_len)
+        comp, raw, _ = P.detect2(np.abs(y), e, 0, 512, refractory, 30, 0, refractory, 625,
+                                 0, 0.5, 0.6, 1.4, 1.5, 0.0, 0.0)
+        trains.append(raw)
+
+    def choose(t, prev=None):
+        st = [_train_stats(pk, max(512, t - look), t) for pk in trains]
+        best = None
+        for k, (rate, reg) in enumerate(st):
+            if reg >= 0.6 and 40 <= rate <= 130 and (best is None or rate < st[best][0] * 0.9):
+                best = k
+        if best is not None:
+            return best
+        return prev if prev is not None else int(np.argmax([s[1] for s in st]))
+
+    k = choose(init)
+    out = [trains[k][trains[k] < init]]
+    t = init
+    while t < n:
+        k = choose(t, k)
+        pk = trains[k]
+        out.append(pk[(pk >= t) & (pk < t + hop)])
+        t += hop
+    pk = np.concatenate(out)
+    keep = np.concatenate([[True], np.diff(pk) >= refractory])[:len(pk)]   # drop duplicates at switch points
+    return pk[keep], None
+
+
 def calibrate_residual(Z, mpk, cal_end=3000, start=512, cal_begin=0):
     """Self-referencing GEVD calibration on the maternal-cancelled leads, with the
     known (causal) maternal beats as the exclusion / coincidence reference."""
@@ -477,21 +529,103 @@ def v2_track(X, Xf):
     return raw, bp, e
 
 
-def system_hybrid(X, ncomp=3, cal_end=3750, cal_begin=750, hop=1250, look=2500, v2_bonus=1.0):
+from numba import njit  # noqa: E402
+
+
+@njit(cache=True)
+def _nlms(D, r, taps, delay, mu):
+    n, M = D.shape
+    out = D.copy()
+    w = np.zeros((M, taps))
+    for t in range(taps, n - delay):
+        x = r[t + delay - taps + 1:t + delay + 1]
+        p = np.dot(x, x) + 1e-6
+        for m in range(M):
+            err = D[t, m] - np.dot(w[m], x)
+            out[t, m] = err
+            w[m] += mu * err * x / p
+    return out
+
+
+def window_agreement(tracks, k, t0, t1, tol=8):
+    """Label-free cross-candidate agreement of candidate k on [t0, t1): mean over
+    its beats of the fraction of the other candidates with a beat within +-tol.
+    The fetal train is shared by many projections; spurious beats are not."""
+    p = tracks[k][0]
+    p = p[(p >= t0) & (p < t1)]
+    if len(p) < 4:
+        return 0.0
+    ag = np.zeros(len(p))
+    for j, tr in enumerate(tracks):
+        if j == k:
+            continue
+        q = tr[0][(tr[0] >= t0 - tol) & (tr[0] < t1 + tol)]
+        if len(q) == 0:
+            continue
+        i = np.clip(np.searchsorted(q, p), 1, len(q) - 1) if len(q) > 1 else np.zeros(len(p), int)
+        d = np.minimum(np.abs(q[i] - p), np.abs(q[np.maximum(i - 1, 0)] - p))
+        ag += d <= tol
+    return float(np.mean(ag) / (len(tracks) - 1))
+
+
+# ── maternal chest-lead reference (optional hardware channel) ───────────────
+def maternal_peaks_chest(thor, refractory=75, mwi_len=38):
+    """Maternal R peaks from a thoracic (chest) lead: 5-25 Hz band, FPGA-style
+    adaptive threshold detector, 300 ms refractory.  Causal."""
+    y = sosfilt(MAT_SOS, P.hp1(thor[:, None])[:, 0])
+    e = P.mwi(y * y, mwi_len)
+    comp, raw, _ = P.detect2(np.abs(y), e, 0, 512, refractory, 30, 0, refractory, 625,
+                             0, 0.5, 0.6, 1.4, 1.5, 0.0, 0.0)
+    return raw
+
+
+def nlms_cancel(D, r, taps=17, delay=8, mu=0.02):
+    """Causal NLMS: predict each abdominal lead from the chest reference
+    r[t+delay-taps+1 .. t+delay] and subtract.  Output delayed by `delay` samples
+    relative to r is avoided by delaying D instead (the output at t is final once
+    r[t+delay] has arrived: fixed 32 ms look-ahead)."""
+    return _nlms(np.ascontiguousarray(D, float), np.ascontiguousarray(r, float), taps, delay, mu)
+
+
+def hybrid_tracks(X, ncomp=3, cal_end=3750, cal_begin=750, mat="robust", thor=None, chest="template"):
+    """All candidate beat tracks of the hybrid: [v2 path] + 12 cancelled-lead trackers.
+    thor: optional chest-lead signal; chest = 'template' (maternal peaks from the
+    chest lead), 'nlms' (adaptive cancellation only) or 'both'."""
     Xf = prefilter(X)
-    mpk, _ = maternal_peaks_robust(X)
-    Z = cancel_maternal(Xf, mpk, ncomp=ncomp)
-    n = len(Z)
+    if thor is not None and chest in ("template", "both"):
+        mpk = maternal_peaks_chest(thor)
+    else:
+        mpk, _ = (maternal_peaks_dynamic if mat == "dynamic" else maternal_peaks_robust)(X)
+    Z = cancel_maternal(Xf, mpk, ncomp=ncomp) if (thor is None or chest != "nlms") else Xf
+    if thor is not None and chest in ("nlms", "both"):
+        Z = nlms_cancel(Z, prefilter(thor[:, None])[:, 0])
     tracks = [v2_track(X, Xf)]
     for w in candidates_residual(Z, mpk, cal_begin, cal_end):
         y = project(Z, w, cal_end)
         pk, _ = track_beats(y, cal_end + 127, mpk=mpk, latency=0)
         bp = sosfilt(P.BP_SOS, y)
         tracks.append((pk, bp, blank_maternal(P.mwi(bp * bp, 30), mpk)))
+    return tracks
+
+
+def select_tracks(tracks, n, t_start, hop=1250, look=2500, v2_bonus=1.0, sel="quality", agr_floor=0.0):
+    """Every `hop` samples output the candidate with the best trailing-window score.
+    sel: 'quality' = morph*acc*log(prom); 'agree' = cross-candidate agreement x
+    acceptance; 'both' = product of the two.  agr_floor softens the agreement
+    term: (agr_floor + agreement)."""
     out, choice = [], []
-    t = cal_end + 127 + 1000
+    t = t_start
     while t < n:
-        qs = [window_quality(bp, e, pk, max(0, t - look), t) for pk, bp, e in tracks]
+        t0 = max(0, t - look)
+        qs = []
+        for k, (pk, bp, e) in enumerate(tracks):
+            q = window_quality(bp, e, pk, t0, t) if sel in ("quality", "both") else 1.0
+            if sel in ("agree", "both"):
+                p = pk[(pk >= t0) & (pk < t)]
+                R = np.median(np.diff(p)) if len(p) > 3 else 1e9
+                acc = min(1.0, len(p) / max((t - t0) / R, 1)) if 60 * FS / R >= 80 else 0.0
+                q *= (agr_floor + window_agreement(tracks, k, t0, t)) * acc
+            qs.append(q)
         qs[0] *= v2_bonus
         k = int(np.argmax(qs))
         choice.append(k)
@@ -500,3 +634,9 @@ def system_hybrid(X, ncomp=3, cal_end=3750, cal_begin=750, hop=1250, look=2500, 
         t += hop
     peaks = np.maximum(0, np.array(sorted(out), np.int64) - 13)
     return (peaks, fhr_median5(peaks, n)), choice
+
+
+def system_hybrid(X, ncomp=3, cal_end=3750, cal_begin=750, hop=1250, look=2500, v2_bonus=1.0,
+                  mat="robust", sel="quality", thor=None, chest="template"):
+    tracks = hybrid_tracks(X, ncomp, cal_end, cal_begin, mat, thor, chest)
+    return select_tracks(tracks, len(X), cal_end + 127 + 1000, hop, look, v2_bonus, sel)

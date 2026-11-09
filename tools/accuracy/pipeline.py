@@ -29,6 +29,23 @@ def q15_to_sos(coeffs):
 
 LP_SOS = q15_to_sos(LP40_COEFFS_Q15)
 BP_SOS = q15_to_sos(DET_BP_CONFIG_C_COEFFS_Q15)
+LP0_SOS, BP0_SOS = LP_SOS, BP_SOS
+V4_BAND = (60, 15, 40)          # wider detection band adopted for v4 (LP60, BP 15-40 Hz)
+
+
+def set_band(spec):
+    """Swap the float front-end/detector filters. None = deployed FPGA filters
+    (LP40, BP 12-35); (lp_hz, bp_lo, bp_hi[, notch_hz]) = Butterworth LP4 and BP4."""
+    global LP_SOS, BP_SOS
+    if spec is None:
+        LP_SOS, BP_SOS = LP0_SOS, BP0_SOS
+        return
+    from scipy.signal import butter, iirnotch, tf2sos
+    LP_SOS = butter(4, spec[0], fs=FS, output="sos")
+    BP_SOS = butter(4, [spec[1], spec[2]], btype="band", fs=FS, output="sos")
+    if len(spec) > 3 and spec[3]:
+        b, a = iirnotch(spec[3], 10, fs=FS)
+        BP_SOS = np.vstack([BP_SOS, tf2sos(b, a)])
 
 
 def hp1(x: np.ndarray, k: int = 6) -> np.ndarray:
