@@ -18,3 +18,5 @@ fpga_implementation/v5/build/*.log
 fpga_implementation/v5/build/empty.c
 fpga_implementation/v5/build/run.out
 fpga_implementation/v5/updatemem*
+fpga_implementation/v6/model/*.exe
+fpga_implementation/v6/sim/

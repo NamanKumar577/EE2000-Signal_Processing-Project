@@ -13,6 +13,7 @@ import pandas as pd
 import harness as H
 
 ROOT = Path(__file__).resolve().parents[2]
+PREFIX = "v5c"
 EXE = ROOT / "fpga_implementation" / "v5" / "algo" / "fecg_v5_host.exe"
 
 
@@ -69,7 +70,7 @@ def main(argv):
     rows = [r for r in H.run_parallel(one, [(it, cfg) for it in items(sets)], procs=14) if r]
     df = pd.DataFrame(rows)
     tag = "_".join(cfg) or "default"
-    df.to_csv(Path(__file__).parent / f"results_v5c_{tag}.csv", index=False)
+    df.to_csv(Path(__file__).parent / f"results_{PREFIX}_{tag}.csv", index=False)
     print(tag)
     print(df.groupby("set")[["f1", "se", "ppv", "fhr_mae"]].mean().round(2).to_string())
     return df
