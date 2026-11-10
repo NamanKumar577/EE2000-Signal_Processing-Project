@@ -9,3 +9,12 @@ __pycache__/
 graphify-out/cache/
 graphify-out/.graphify_detect.json
 graphify-out/*.tmp
+# v5 build intermediates
+fpga_implementation/v5/build/proj/
+fpga_implementation/v5/build/lib/
+fpga_implementation/v5/build/*.elf
+fpga_implementation/v5/build/*.o
+fpga_implementation/v5/build/*.log
+fpga_implementation/v5/build/empty.c
+fpga_implementation/v5/build/run.out
+fpga_implementation/v5/updatemem*
