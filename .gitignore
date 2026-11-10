@@ -19,4 +19,13 @@ fpga_implementation/v5/build/empty.c
 fpga_implementation/v5/build/run.out
 fpga_implementation/v5/updatemem*
 fpga_implementation/v6/model/*.exe
-fpga_implementation/v6/sim/
+fpga_implementation/v6/sim/*.i16
+fpga_implementation/v6/sim/*.hex
+fpga_implementation/v6/sim/*.txt
+fpga_implementation/v6/sim/*.log
+fpga_implementation/v6/sim/*.jou
+fpga_implementation/v6/sim/*.pb
+fpga_implementation/v6/sim/*.exe
+fpga_implementation/v6/sim/*.wdb
+fpga_implementation/v6/sim/xsim.dir/
+fpga_implementation/v6/sim/.Xil/

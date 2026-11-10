@@ -9,6 +9,7 @@ typedef void (*fm_need_fn)(void);     /* called when a response is needed: deliv
 void fm_reset(fm_emit_fn emit, fm_need_fn need);
 void fm_rx(int cmd, const uint8_t *payload, int len);                    /* downlink response */
 void fm_push(const int16_t x[4]);
+void fm_done(void);                   /* end of a SAMPLES frame -> DONE */
 extern int fm_overflow;
 
 #endif

@@ -597,3 +597,6 @@ void fm_push(const int16_t x[4])
     }
     S.T = T + 1;
 }
+
+/* end of a SAMPLES frame: all its samples are processed */
+void fm_done(void) { emit_u32(C_DONE, (uint32_t)S.T); }

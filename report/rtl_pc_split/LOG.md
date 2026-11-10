@@ -48,3 +48,45 @@ The template least-squares fit becomes a projection onto a PC-orthonormalised ba
   - **downlink, about 9.4 KB/s:** samples 2 KB/s and template bases 7.3 KB/s;
   - **uplink, about 7.2 KB/s:** features 4.6 KB/s, segments 1.6 KB/s, rest about 1 KB/s.
   - At 921600 baud, about 92 KB/s per direction, so the link allows up to roughly 10× real time.
+
+## RTL (2026-11-10)
+Hand-written Verilog in `fpga_implementation/v6/rtl/`. There is no soft processor: a sequential datapath runs one sample at a time, in the order of the C model.
+
+| File | Function |
+|---|---|
+| `v6_uart.v` | UART 8-N-1 receiver and transmitter |
+| `v6_link.v` | Frame parser, 512-sample FIFO, PC response buffers (basis RAM 1800×24), message writer, 4 KB TX FIFO |
+| `v6_sos.v` | Time-multiplexed DF2T biquad cascade (Q28, 64-bit state), LP / maternal / BP sets |
+| `v6_mwi.v` | Time-multiplexed moving-window integrators |
+| `v6_det.v` | Time-multiplexed adaptive-threshold peak detectors |
+| `v6_fe.v` | HP1 + LP + maternal band, 4 leads → Xf / Z rings |
+| `v6_mat.v` | Maternal covariance, PCA handshake, 2,500-sample replay, 4 detectors, train rings, segment choice, R-peak queue |
+| `v6_canc.v` | Lag search, segment, projection on the PC basis, tapered subtraction, 20-beat history, SEG |
+| `v6_trk.v` | 16 tracks: projection with crossfade, BP, envelope code, blanking, trackers (block-floating autocorrelation, sorting networks), detectors, features, radix-select median, selection, output + FHR divider |
+| `v6_core.v` | Xf / Z rings (4096×64 each), sequencer, CALDATA, DONE, port muxes |
+
+### Verification
+- Unit tests (xsim) against the C model:
+  - SOS engine: 9,000 outputs, 0 errors;
+  - MWI + detector engines: 20,000 samples × 2 instances, 0 errors.
+- **System test (`sim/tb_core.v`):** the testbench acts as the board host. It sends the recording in 64-sample chunks, replays the PC brain's responses when their trigger frame arrives, and compares every uplink byte with the C system model.
+
+| Record | Length | Uplink bytes | Frames | Errors |
+|---|---|---|---|---|
+| CinC a01 | 60 s | 406,454 | 6,580 | **0** |
+| CinC a07 | 60 s | 409,771 | 6,473 | **0** |
+| CinC a29 | 60 s | 394,992 | 6,104 | **0** |
+| CinC a65 | 60 s | 427,056 | 6,114 | **0** |
+| CinC a71 | 60 s | 417,980 | 6,707 | **0** |
+| ADFECGDB r01 | 120 s | 838,652 | 13,532 | **0** |
+| FECGSYNDB sub01 l1 c0 | 120 s | 976,056 | 14,660 | **0** |
+| FECGSYNDB sub01 l5 c1 | 120 s | 1,047,441 | 15,669 | **0** |
+
+The RTL is bit-exact with the system model, whose accuracy is in the table above.
+
+Bugs found by the tests:
+- the SEG frame length (604 → 1204);
+- review-time fixes before simulation:
+  - signedness of the detector constants;
+  - a 4-bit loop index that could not reach 16;
+  - byte packing of the track id.
