@@ -33,15 +33,20 @@ module v6_core (
         .w_valid(w_valid), .w_data(w_data), .w_nb(w_nb), .w_ready(w_ready));
 
     // ---------------- rings (Xf, Z): 4096 x 4 x s16
-    reg [63:0] xring [0:4095], zring [0:4095];
+    (* ram_style = "block" *) reg [63:0] xring [0:4095];
+    (* ram_style = "block" *) reg [63:0] zring [0:4095];
     reg [11:0] xr_ra, zr_ra; reg [63:0] xr_rd, zr_rd;
     wire       fe_we;  wire [11:0] fe_wa;  wire [63:0] fe_wd;
     wire       ca_zwe; wire [11:0] ca_zwa; wire [63:0] ca_zwd;
+    wire        z_we = fe_we | ca_zwe;                // one write port: front end or canceller
+    wire [11:0] z_wa = fe_we ? fe_wa : ca_zwa;
+    wire [63:0] z_wd = fe_we ? fe_wd : ca_zwd;
     always @(posedge clk) begin
         if (fe_we) xring[fe_wa] <= fe_wd;
-        if (fe_we) zring[fe_wa] <= fe_wd;
-        else if (ca_zwe) zring[ca_zwa] <= ca_zwd;
         xr_rd <= xring[xr_ra];
+    end
+    always @(posedge clk) begin
+        if (z_we) zring[z_wa] <= z_wd;
         zr_rd <= zring[zr_ra];
     end
 

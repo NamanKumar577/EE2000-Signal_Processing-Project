@@ -90,3 +90,33 @@ Bugs found by the tests:
   - signedness of the detector constants;
   - a 4-bit loop index that could not reach 16;
   - byte packing of the track id.
+
+## Implementation (2026-11-10)
+`build_v6.tcl` → `v6/build/v6.bit` (xc7s50, PLL 100 → 50 MHz, UART 921600 baud).
+
+| Resource | Used | Utilization |
+|---|---|---|
+| LUTs | 19.0k (3.4k as LUT RAM) | 58% |
+| Flip-flops | 10.1k | 16% |
+| DSP48 | 33 | 28% |
+| BRAM tiles | 74.5 / 75 | 99% |
+| Timing | WNS +0.49 ns at 50 MHz | met |
+
+Fixes needed for implementation (the built bitstream contains them and is bit-exact on all 140 board records below):
+- the Z ring was merged to a single write port so it maps to block RAM (distributed-RAM overuse);
+- the sorting-network loop was rewritten for synthesis error 8-3380.
+
+## Board results (2026-11-10)
+`uart_host/run_v6_board_eval.py`: the PC streams the record and runs the brain pipe; the RTL does everything else. Every record's complete uplink byte stream was compared with the C system model.
+
+| Set | Records | **v6 board F1** | Se | PPV | FHR MAE | Bit-exact | Speed | v5 board F1 |
+|---|---|---|---|---|---|---|---|---|
+| FECGSYNDB subset | 60 | **91.83** | 90.67 | 93.65 | 5.24 | 60/60 | 4.3× real time | 91.92 |
+| CinC dev (odd) | 38 | **76.04** | 74.45 | 77.98 | 12.52 | 38/38 | 4.8× | 75.26 |
+| ADFECGDB | 5 | **92.73** | 91.16 | 94.37 | 2.03 | 5/5 | 4.5× | 93.44 |
+| CinC test (even, held out) | 37 | **65.48** | 64.39 | 67.00 | 18.37 | 37/37 | 5.0× | 65.75 |
+
+- **140/140 records bit-exact**: the board equals the model, so the board F1 equals the model F1 on every set.
+- CinC test was scored once with the frozen design; no v6 decision was tuned on it.
+- Accuracy matches v5 within ±0.8 points on every set, now with all sample-rate work in hand-written RTL and no soft processor.
+- Logs: `board_cdev_ad_ctest.log`, `board_syn.log`; per-record CSVs in `board/`.

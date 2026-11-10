@@ -332,8 +332,8 @@ module v6_trk (
             ph <= 0; s <= 76;
         end
         76: begin
-            for (n = (ph[0] ? 1 : 0); n < 7; n = n + 2)
-                if ($signed(srt[n]) > $signed(srt[n + 1])) begin srt[n] <= srt[n + 1]; srt[n + 1] <= srt[n]; end
+            for (n = 0; n < 7; n = n + 1)
+                if ((n % 2) == ph[0] && $signed(srt[n]) > $signed(srt[n + 1])) begin srt[n] <= srt[n + 1]; srt[n + 1] <= srt[n]; end
             if (ph == 7) s <= 77; else ph <= ph + 1'b1;
         end
         77: begin
@@ -359,8 +359,8 @@ module v6_trk (
         81: if (i == ns) begin ph <= 0; s <= 82; end
             else begin srt[i[2:0]] <= {55'd0, rrs[{k[3:0], nrr[k][2:0] - ns[2:0] + i[2:0]}]}; i <= i + 1; end
         82: begin
-            for (n = (ph[0] ? 1 : 0); n < 7; n = n + 2)
-                if ($signed(srt[n]) > $signed(srt[n + 1])) begin srt[n] <= srt[n + 1]; srt[n + 1] <= srt[n]; end
+            for (n = 0; n < 7; n = n + 1)
+                if ((n % 2) == ph[0] && $signed(srt[n]) > $signed(srt[n + 1])) begin srt[n] <= srt[n + 1]; srt[n + 1] <= srt[n]; end
             if (ph == 7) s <= 83; else ph <= ph + 1'b1;
         end
         83: begin
@@ -467,8 +467,8 @@ module v6_trk (
             ns <= nrro; ph <= 0; s <= 136;
         end
         136: begin
-            for (n = (ph[0] ? 1 : 0); n < 7; n = n + 2)
-                if ($signed(srt[n]) > $signed(srt[n + 1])) begin srt[n] <= srt[n + 1]; srt[n + 1] <= srt[n]; end
+            for (n = 0; n < 7; n = n + 1)
+                if ((n % 2) == ph[0] && $signed(srt[n]) > $signed(srt[n + 1])) begin srt[n] <= srt[n + 1]; srt[n + 1] <= srt[n]; end
             if (ph == 7) s <= 137; else ph <= ph + 1'b1;
         end
         137: begin                                                    // fhr_x10 = (300000+M)/(2M) or (600000+M2)/(2M2)

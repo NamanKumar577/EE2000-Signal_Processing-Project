@@ -29,3 +29,7 @@ fpga_implementation/v6/sim/*.exe
 fpga_implementation/v6/sim/*.wdb
 fpga_implementation/v6/sim/xsim.dir/
 fpga_implementation/v6/sim/.Xil/
+fpga_implementation/v6/build/*.log
+fpga_implementation/v6/.Xil/
+fpga_implementation/v6/clockInfo.txt
+fpga_implementation/v6/dfx_runtime.txt
