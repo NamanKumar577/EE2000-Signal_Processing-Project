@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FECG FPGA Monitor</title>
+<style>
+:root {
+  --bg: #f6f7f9; --card: #ffffff; --ink: #1b1f24; --muted: #66707a; --line: #e2e5e9;
+  --ok: #1a8a4a; --warn: #b7791f; --bad: #c53030; --accent: #2b6cb0;
+  --fetal: #d6336c; --mat: #6b46c1; --truth: #1a8a4a;
+  --lead1: #2b6cb0; --lead2: #0f766e; --lead3: #b7791f; --lead4: #475569;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111418; --card: #1a1f25; --ink: #e6e9ec; --muted: #9aa4ae; --line: #2b323a;
+    --ok: #48bb78; --warn: #ecc94b; --bad: #fc8181; --accent: #63b3ed;
+    --fetal: #f06595; --mat: #b794f4; --truth: #68d391;
+    --lead1: #63b3ed; --lead2: #4fd1c5; --lead3: #f6ad55; --lead4: #a0aec0; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--card); }
+h1 { font-size: 18px; margin: 0; flex: 1; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; }
+main { display: grid; grid-template-columns: 330px 1fr; gap: 16px; padding: 16px 20px; max-width: 1500px; margin: 0 auto; }
+@media (max-width: 900px) { main { grid-template-columns: 1fr; padding: 12px 16px; } }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); font-weight: 600; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
+.dot.ok { background: var(--ok); } .dot.warn { background: var(--warn); } .dot.bad { background: var(--bad); }
+.dot.busy { background: var(--ok); animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: .3; } }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+button, select, input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; }
+button { cursor: pointer; font-weight: 600; }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0; }
+.notes { margin: 6px 0 0; padding-left: 18px; }
+.err { color: var(--bad); font-weight: 600; }
+.stages { list-style: none; margin: 0; padding: 0; }
+.stages li { padding: 6px 0 6px 28px; position: relative; color: var(--muted); }
+.stages li::before { content: ""; position: absolute; left: 6px; top: 11px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--line); }
+.stages li.done { color: var(--ink); } .stages li.done::before { background: var(--ok); border-color: var(--ok); }
+.stages li.now { color: var(--ink); font-weight: 700; } .stages li.now::before { background: var(--accent); border-color: var(--accent); animation: pulse 1s infinite; }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.bar > div { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.kpi .v { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi .v small { font-size: 14px; color: var(--muted); font-weight: 500; }
+.kpi .l { color: var(--muted); font-size: 12px; }
+.kpi.fetal .v { color: var(--fetal); } .kpi.mat .v { color: var(--mat); }
+canvas { width: 100%; display: block; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 3px; margin-right: 5px; vertical-align: middle; background: var(--c); }
+#log { max-height: 220px; overflow: auto; font: 12px/1.5 ui-monospace, Consolas, monospace; }
+#log div { border-bottom: 1px dashed var(--line); padding: 2px 0; }
+table { border-collapse: collapse; width: 100%; } td { padding: 4px 0; } td:last-child { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Fetal ECG monitor: Spartan-7 RTL + PC brain (v6)</h1>
+  <span class="pill"><span id="bdot" class="dot"></span><span id="btxt">Checking board…</span></span>
+  <select id="port" title="Serial port"></select>
+  <button id="reconnect">Reconnect</button>
+</header>
+<div class="muted small" id="bdetail" style="padding:6px 20px 0"></div>
+
+<main>
+<section>
+  <div class="card">
+    <h2>1 · Recording</h2>
+    <input type="file" id="files" multiple accept=".hea,.dat,.fqrs,.qrs,.zip,.csv">
+    <p class="muted small">PhysioNet WFDB: select the <b>.hea</b> and <b>.dat</b> (add <b>.fqrs</b>/<b>.qrs</b> for accuracy), or a .zip of them. CSV: 4 lead columns (an optional leading time column is ignored).</p>
+    <div id="csvopts" hidden>
+      <div class="row"><label>Sample rate <input id="fs" type="number" value="1000" min="1" style="width:90px"> Hz</label></div>
+      <div class="row"><label>Units <select id="units"><option>uV</option><option>mV</option></select></label></div>
+    </div>
+    <div class="row"><button id="upload">Load</button></div>
+    <div id="recinfo" class="small"></div>
+  </div>
+
+  <div class="card">
+    <h2>2 · Run on the FPGA</h2>
+    <div class="row"><button id="start" class="primary" disabled>Start (real time)</button><button id="stop" disabled>Stop</button></div>
+    <div id="runmsg" class="small"></div>
+    <div class="bar"><div id="prog"></div></div>
+    <div class="small muted" id="progtxt">—</div>
+    <div id="saved" hidden>
+      <div class="row"><a href="/api/download/beats.csv"><button>Download beats.csv</button></a>
+        <a href="/api/download/summary.json"><button>Download summary.json</button></a></div>
+      <div class="small muted">Saved to <code id="savedir"></code></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Processing stage</h2>
+    <ul class="stages" id="stages"></ul>
+  </div>
+
+  <div class="card" id="acccard" hidden>
+    <h2>Accuracy vs annotations</h2>
+    <table>
+      <tr><td>F1</td><td id="a_f1">—</td></tr>
+      <tr><td>Sensitivity</td><td id="a_se">—</td></tr>
+      <tr><td>PPV</td><td id="a_ppv">—</td></tr>
+      <tr><td>FHR error (MAE)</td><td id="a_mae">—</td></tr>
+      <tr><td>TP / FP / FN</td><td id="a_n">—</td></tr>
+    </table>
+    <div class="small muted" id="a_upto">Scored from 20 s, ±50 ms.</div>
+  </div>
+</section>
+
+<section>
+  <div class="kpis">
+    <div class="kpi fetal"><div class="l">Fetal heart rate</div><div class="v"><span id="k_fhr">—</span> <small>bpm</small></div></div>
+    <div class="kpi mat"><div class="l">Maternal heart rate</div><div class="v"><span id="k_mhr">—</span> <small>bpm</small></div></div>
+    <div class="kpi"><div class="l">Fetal beats reported</div><div class="v" id="k_beats">0</div></div>
+    <div class="kpi"><div class="l">Selected track (of 16)</div><div class="v" id="k_trk">—</div></div>
+    <div class="kpi"><div class="l">FPGA time per 0.256 s chunk</div><div class="v"><span id="k_ms">—</span> <small>ms</small></div></div>
+    <div class="kpi"><div class="l">PC brain replies</div><div class="v" id="k_rsp">0</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Abdominal leads: last 10 s</h2>
+    <canvas id="sig" height="300"></canvas>
+    <div class="legend">
+      <span style="--c:var(--fetal)">fetal beat (FPGA output)</span>
+      <span style="--c:var(--mat)">maternal R peak (FPGA)</span>
+      <span style="--c:var(--truth)">annotated fetal beat</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Heart rate trend</h2>
+    <canvas id="hr" height="220"></canvas>
+    <div class="legend"><span style="--c:var(--fetal)">fetal HR</span><span style="--c:var(--mat)">maternal HR</span></div>
+  </div>
+
+  <div class="card">
+    <h2>Event log</h2>
+    <div id="log"></div>
+  </div>
+</section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const STAGES = ["Learning the maternal signal (collecting 10 s for PCA)",
+  "Maternal detection + cancellation, collecting calibration data",
+  "PC brain: GEVD calibration of 16 candidate fetal tracks",
+  "Fetal trackers warming up", "Monitoring: reporting fetal beats"];
+const FS = 250, WIN = 10;
+let S = null, running = false, haveRec = false, boardOk = false;
+
+function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function log(t, cls) { const d = document.createElement("div"); d.textContent = t; if (cls) d.className = cls; $("log").prepend(d); }
+function stagesView(idx) {
+  $("stages").innerHTML = STAGES.map((s, i) => `<li class="${i < idx ? "done" : i === idx ? "now" : ""}">${s}</li>`).join("");
+}
+stagesView(-1);
+
+function resetState(n, truth) {
+  S = { n, done: 0, leads: [0,1,2,3].map(() => new Float32Array(Math.ceil(n / 2) + 64)),
+        beats: [], mpk: [], truth: truth || [], fhr: [], mhr: [] };
+  ["k_fhr","k_mhr","k_trk","k_ms"].forEach(k => $(k).textContent = "—");
+  $("k_beats").textContent = "0"; $("k_rsp").textContent = "0";
+  ["a_f1","a_se","a_ppv","a_mae","a_n"].forEach(k => $(k).textContent = "—");
+}
+
+// ── board status ──
+function showBoard(b) {
+  const map = { connected: ["ok", "FPGA connected"], busy: ["busy", "FPGA processing"],
+                no_answer: ["warn", "FPGA not answering"], no_port: ["bad", "FPGA not connected"], unknown: ["", "Checking…"] };
+  const [c, t] = map[b.state] || map.unknown;
+  $("bdot").className = "dot " + c; $("btxt").textContent = t;
+  $("bdetail").textContent = b.detail + (b.state === "connected" && b.probe_ms ? ` · probe round trip ${b.probe_ms} ms` : "");
+  boardOk = b.state === "connected" || b.state === "busy";
+  const sel = $("port"), cur = b.port, opts = [...new Set([cur, ...b.ports])];
+  if ([...sel.options].map(o => o.value).join() !== opts.join()) sel.innerHTML = opts.map(p => `<option>${p}</option>`).join("");
+  sel.value = cur;
+  buttons();
+}
+function buttons() {
+  $("start").disabled = running || !haveRec || !boardOk;
+  $("stop").disabled = !running;
+  $("upload").disabled = running;
+  $("start").title = !boardOk ? "FPGA not connected" : !haveRec ? "Load a recording first" : "";
+}
+async function poll() {
+  if (!running) {
+    try {
+      const r = await (await fetch("/api/status")).json();
+      showBoard(r.board); running = r.running;
+      if (r.recording && !haveRec) showRec(r.recording);
+    } catch { $("bdot").className = "dot bad"; $("btxt").textContent = "Server not reachable"; }
+  }
+  setTimeout(poll, 3000);
+}
+$("reconnect").onclick = async () => {
+  const r = await (await fetch("/api/port", { method: "POST", body: JSON.stringify({ port: $("port").value }) })).json();
+  if (r.board) showBoard(r.board); else log(r.error, "err");
+};
+
+// ── upload ──
+$("files").onchange = () => { $("csvopts").hidden = ![...$("files").files].some(f => /\.csv$/i.test(f.name)); };
+function showRec(r) {
+  haveRec = true;
+  $("recinfo").innerHTML = `<b>${r.name}</b> · ${r.seconds.toFixed(1)} s · ${r.fs_in} Hz in → 250 Hz · leads ${r.leads.join(", ")}`
+    + `<br>${r.has_truth ? "Fetal annotations: yes" : "Fetal annotations: no (accuracy not shown)"}`
+    + (r.notes.length ? `<ul class="notes">${r.notes.map(n => `<li>${n}</li>`).join("")}</ul>` : "");
+  buttons();
+}
+$("upload").onclick = async () => {
+  const fl = $("files").files;
+  if (!fl.length) { $("recinfo").innerHTML = `<span class="err">Choose file(s) first.</span>`; return; }
+  const fd = new FormData();
+  for (const f of fl) fd.append("file", f, f.name);
+  fd.append("fs", $("fs").value); fd.append("units", $("units").value);
+  $("recinfo").textContent = "Loading…";
+  const r = await (await fetch("/api/upload", { method: "POST", body: fd })).json();
+  if (r.ok) showRec(r.recording);
+  else { haveRec = false; $("recinfo").innerHTML = `<span class="err">${r.error}</span>`; buttons(); }
+};
+
+// ── run ──
+$("start").onclick = async () => {
+  $("runmsg").textContent = "";
+  const r = await (await fetch("/api/start", { method: "POST" })).json();
+  if (!r.ok) $("runmsg").innerHTML = `<span class="err">${r.error}</span>`;
+};
+$("stop").onclick = () => fetch("/api/stop", { method: "POST" });
+
+const es = new EventSource("/api/events");
+es.onmessage = m => {
+  const e = JSON.parse(m.data);
+  switch (e.type) {
+    case "reset": $("log").innerHTML = ""; $("saved").hidden = true; break;
+    case "saved": $("savedir").textContent = e.dir; $("saved").hidden = false; log(`Saved: ${e.dir}`); break;
+    case "board": showBoard(e); break;
+    case "start":
+      running = true; buttons(); resetState(e.n, e.truth); stagesView(0);
+      $("acccard").hidden = !e.has_truth;
+      log(`Start: ${e.name}, ${(e.n / FS).toFixed(1)} s, streaming in real time`); break;
+    case "stage": stagesView(e.idx); log(`${e.t.toFixed(1)} s · ${e.text}`); break;
+    case "chunk": onChunk(e); break;
+    case "brain": break;
+    case "score": showScore(e); break;
+    case "end":
+      running = false; buttons();
+      if (S) $("prog").style.width = "100%";
+      log(e.stopped ? "Stopped by user" : `Finished: ${e.beats} fetal beats reported`);
+      if (e.f1 !== undefined) showScore(e);
+      break;
+    case "error": running = false; buttons(); log(e.text, "err"); $("runmsg").innerHTML = `<span class="err">${e.text}</span>`; break;
+  }
+};
+
+function onChunk(e) {
+  if (!S) return;
+  S.done = e.done;
+  for (let k = 0; k < 4; k++) S.leads[k].set(e.leads[k], e.t0 / 2);
+  for (const [t, f, src] of e.beats) {
+    S.beats.push(t);
+    if (f > 0) S.fhr.push([t, f]);
+    $("k_trk").textContent = src;
+  }
+  S.mpk.push(...e.mpk);
+  if (e.mhr) { S.mhr.push([e.done, e.mhr]); $("k_mhr").textContent = e.mhr.toFixed(0); }
+  if (e.fhr) $("k_fhr").textContent = e.fhr.toFixed(0);
+  $("k_beats").textContent = S.beats.length;
+  $("k_ms").textContent = e.fpga_ms.toFixed(0);
+  $("k_rsp").textContent = e.n_rsp;
+  for (const r of e.reqs) log(`${(e.done / FS).toFixed(1)} s · FPGA asked the PC brain: ${r}`);
+  $("prog").style.width = (100 * e.done / S.n) + "%";
+  $("progtxt").textContent = `${(e.done / FS).toFixed(1)} / ${(S.n / FS).toFixed(1)} s of recording processed`;
+}
+function showScore(e) {
+  const f = v => v == null ? "—" : v.toFixed(1);
+  $("a_f1").textContent = f(e.f1) + " %"; $("a_se").textContent = f(e.se) + " %"; $("a_ppv").textContent = f(e.ppv) + " %";
+  $("a_mae").textContent = f(e.fhr_mae) + " bpm"; $("a_n").textContent = `${e.tp} / ${e.fp} / ${e.fn}`;
+  $("a_upto").textContent = `Scored from 20 s to ${e.upto_s.toFixed(0)} s, ±50 ms.`;
+}
+
+// ── drawing ──
+function fit(c) {
+  const r = devicePixelRatio || 1, w = c.clientWidth, h = c.getAttribute("height") | 0;
+  if (c.width !== w * r) { c.width = w * r; c.height = h * r; c.style.height = h + "px"; }
+  const g = c.getContext("2d"); g.setTransform(r, 0, 0, r, 0, 0); return [g, w, h];
+}
+function drawSig() {
+  const [g, w, h] = fit($("sig"));
+  g.clearRect(0, 0, w, h);
+  if (!S) return;
+  const end = S.done / 2, start = Math.max(0, end - WIN * FS / 2), span = WIN * FS / 2;
+  const x = i => (i - (end - span)) / span * w;
+  const lh = h / 4, cols = ["--lead1","--lead2","--lead3","--lead4"].map(css);
+  g.font = "11px system-ui"; g.fillStyle = css("--muted");
+  for (let k = 0; k < 4; k++) {
+    const L = S.leads[k];
+    let m = 0, s = 0, c = 0;
+    for (let i = start | 0; i < end; i++) { s += L[i]; c++; }
+    m = c ? s / c : 0; let a = 1;
+    for (let i = start | 0; i < end; i++) a = Math.max(a, Math.abs(L[i] - m));
+    g.strokeStyle = cols[k]; g.lineWidth = 1; g.beginPath();
+    for (let i = start | 0; i < end; i++) { const y = lh * (k + .5) - (L[i] - m) / a * lh * .45; i === (start | 0) ? g.moveTo(x(i), y) : g.lineTo(x(i), y); }
+    g.stroke(); g.fillText(`lead ${k + 1}`, 4, lh * k + 12);
+  }
+  const mark = (arr, col, y0, y1, wd) => {
+    g.strokeStyle = col; g.lineWidth = wd;
+    for (const t of arr) { const i = t / 2; if (i < start || i > end) continue; g.beginPath(); g.moveTo(x(i), y0); g.lineTo(x(i), y1); g.stroke(); }
+  };
+  mark(S.mpk, css("--mat"), 0, h, 1);
+  mark(S.truth.filter(t => t <= S.done), css("--truth"), h - 14, h, 3);
+  mark(S.beats, css("--fetal"), 0, h, 2);
+  g.fillStyle = css("--muted");
+  for (let s = Math.ceil((end - span) * 2 / FS); s <= end * 2 / FS; s++) g.fillText(s + " s", x(s * FS / 2) + 2, h - 2);
+}
+function drawHR() {
+  const [g, w, h] = fit($("hr"));
+  g.clearRect(0, 0, w, h);
+  if (!S) return;
+  const lo = 50, hi = 200, pad = 30, X = t => pad + t / S.n * (w - pad - 6), Y = v => h - 16 - (v - lo) / (hi - lo) * (h - 26);
+  g.strokeStyle = css("--line"); g.fillStyle = css("--muted"); g.font = "11px system-ui"; g.lineWidth = 1;
+  for (let v = 60; v <= 200; v += 20) { g.beginPath(); g.moveTo(pad, Y(v)); g.lineTo(w, Y(v)); g.stroke(); g.fillText(v, 2, Y(v) + 4); }
+  const step = S.n / FS > 120 ? 30 : 10;
+  for (let s = 0; s <= S.n / FS; s += step) g.fillText(s + " s", X(s * FS) - 6, h - 2);
+  const line = (pts, col) => {
+    g.strokeStyle = col; g.lineWidth = 2; g.beginPath();
+    pts.forEach(([t, v], i) => { const yy = Y(Math.min(hi, Math.max(lo, v))); i ? g.lineTo(X(t), yy) : g.moveTo(X(t), yy); });
+    g.stroke();
+  };
+  line(S.mhr, css("--mat")); line(S.fhr, css("--fetal"));
+  g.strokeStyle = css("--muted"); g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(S.done), 0); g.lineTo(X(S.done), h - 14); g.stroke(); g.setLineDash([]);
+}
+(function frame() { drawSig(); drawHR(); requestAnimationFrame(frame); })();
+poll();
+</script>
+</body>
+</html>

@@ -33,3 +33,5 @@ fpga_implementation/v6/build/*.log
 fpga_implementation/v6/.Xil/
 fpga_implementation/v6/clockInfo.txt
 fpga_implementation/v6/dfx_runtime.txt
+# web demo run outputs
+fpga_implementation/webdemo/runs/
