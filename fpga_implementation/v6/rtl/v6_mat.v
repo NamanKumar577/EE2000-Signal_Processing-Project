@@ -13,6 +13,12 @@ module v6_mat (
     input  wire [31:0]        T,
     input  wire [127:0]       ym_in,
     output reg                done,
+    // stored maternal-band samples, 10 x 13-bit words per sample (memory in v6_core,
+    // shared with the track envelopes, which are written only from s = 3750)
+    output reg  [14:0]        ya,
+    output reg                ywe,
+    output reg  [12:0]        ywd,
+    input  wire [12:0]        yrd,
     // PC responses
     input  wire               v_valid,
     input  wire [255:0]       v_q,
@@ -35,10 +41,7 @@ module v6_mat (
     input  wire               w_ready
 );
     localparam MAT_INIT = 2500, LAGM = 104, MAT_HOP = 1250;
-    // stored maternal-band samples
-    reg [127:0] ymem [0:2499];
-    reg [11:0]  ya; reg [127:0] yrd; reg ywe;
-    always @(posedge clk) begin if (ywe) ymem[ya] <= ym_in; yrd <= ymem[ya]; end
+    reg [14:0]  ybase;                                                // 10 * sample index
     // trains: 4 x 96 peaks (ring index = i mod 96)
     reg signed [31:0] tmem [0:511];
     reg [8:0] ta, twa; reg twe; reg signed [31:0] twd, trd;
@@ -68,7 +71,7 @@ module v6_mat (
 
     reg [5:0]  s = 0, ret;
     reg [31:0] tt;
-    reg [127:0] yv;
+    reg [129:0] yv;                                                   // 4 x s32, zero-padded to 10 x 13
     reg [1:0]  k, l;
     reg [3:0]  ci; reg [1:0] ca, cb;
     reg signed [63:0] acc, y;
@@ -93,8 +96,15 @@ module v6_mat (
         end else case (s)
         0: if (start) begin
             tt <= T; yv <= ym_in;
-            if (T < MAT_INIT) begin ya <= T[11:0]; ywe <= 1'b1; ci <= 0; ca <= 0; cb <= 0; s <= (T >= 256) ? 1 : 4; end
+            if (T < MAT_INIT) begin
+                ybase <= ({3'd0, T[11:0]} << 3) + ({3'd0, T[11:0]} << 1);
+                wi <= 0; ci <= 0; ca <= 0; cb <= 0; s <= 26;
+            end
             else begin k <= 0; ret <= 20; s <= 10; end                  // mat_det_step(T, ym)
+        end
+        26: begin                                                    // store ym: 10 words
+            ywe <= 1'b1; ya <= ybase + wi; ywd <= yv[13 * wi +: 13];
+            if (wi == 9) s <= (tt >= 256) ? 1 : 4; else wi <= wi + 1'b1;
         end
         // covariance accumulation (upper triangle, a <= b)
         1: begin pa <= $signed(yv[32 * ca +: 32]); pb <= $signed(yv[32 * cb +: 32]); s <= 2; end
@@ -120,10 +130,15 @@ module v6_mat (
         8: if (d_done) begin if (k == 3) begin i <= 0; s <= 9; end else begin k <= k + 1'b1; s <= 7; end end
         9: begin                                                     // replay t = 0 .. 2499
             if (i == MAT_INIT) begin have_V <= 1'b1; s <= 20; end
-            else begin ya <= i[11:0]; s <= 18; end
+            else begin ybase <= ({3'd0, i[11:0]} << 3) + ({3'd0, i[11:0]} << 1); wi <= 0; s <= 27; end
         end
-        18: s <= 19;
-        19: begin yv <= yrd; tt <= i; k <= 0; ret <= 21; s <= 10; end
+        27: begin ya <= ybase + wi; s <= 28; end                     // load ym: 10 words
+        28: s <= 29;
+        29: begin
+            yv[13 * wi +: 13] <= yrd;
+            if (wi == 9) s <= 19; else begin wi <= wi + 1'b1; s <= 27; end
+        end
+        19: begin tt <= i; k <= 0; ret <= 21; s <= 10; end
         21: begin i <= i + 1'b1; tt <= T; s <= 9; end
         // ---- mat_det_step(tt, yv): k = 0..3, then -> ret
         10: begin acc <= 0; l <= 0; s <= 11; end

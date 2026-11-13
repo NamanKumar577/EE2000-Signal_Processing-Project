@@ -50,6 +50,14 @@ module v6_core (
         zr_rd <= zring[zr_ra];
     end
 
+    // shared memory ports (memory below): v6_mat writes/reads it only for T < 2500,
+    // v6_trk only once calibrated (s >= 3750), so the two uses never overlap
+    wire        y_we, e_we;
+    wire [14:0] y_a, e_ra, e_wa;
+    wire [12:0] y_wd;
+    wire [15:0] e_wd;
+    reg  [12:0] u_rd;
+
     // ---------------- units
     reg clear, fe_go, mat_go, ca_go, tk_go;
     reg [31:0] T;
@@ -62,6 +70,7 @@ module v6_core (
     wire [31:0] nmpk; wire [8:0] mt_mpk_ra; reg [8:0] mpk_ra; wire signed [31:0] mpk_rd;
     wire mt_ms, mt_wv; wire [7:0] mt_mc; wire [15:0] mt_ml; wire [63:0] mt_wd; wire [3:0] mt_wn;
     v6_mat mat(.clk(clk), .clear(clear), .start(mat_go), .T(T), .ym_in(ym), .done(mat_done),
+               .ya(y_a), .ywe(y_we), .ywd(y_wd), .yrd(u_rd),
                .v_valid(v_valid), .v_q(v_q), .v_clr(v_clr), .mk_valid(mk_valid), .mk_in(mk), .mk_clr(mk_clr),
                .nmpk(nmpk), .mpk_ra(mpk_ra), .mpk_rd(mpk_rd),
                .msg_start(mt_ms), .msg_cmd(mt_mc), .msg_len(mt_ml), .msg_idle(msg_idle),
@@ -83,6 +92,7 @@ module v6_core (
                .sel_valid(sel_valid), .sel_in(sel), .sel_clr(sel_clr),
                .nmpk(nmpk), .mpk_ra(tk_mpk_ra), .mpk_rd(mpk_rd),
                .xr_ra(tk_xra), .xr_rd(xr_rd), .zr_ra(tk_zra), .zr_rd(zr_rd),
+               .ea(e_ra), .erd({3'd0, u_rd}), .ewe(e_we), .ewa(e_wa), .ewd(e_wd),
                .msg_start(tk_ms), .msg_cmd(tk_mc), .msg_len(tk_ml), .msg_idle(msg_idle),
                .w_valid(tk_wv), .w_data(tk_wd), .w_nb(tk_wn), .w_ready(w_ready));
 
@@ -102,6 +112,18 @@ module v6_core (
         3'd4: begin xr_ra = tk_xra; zr_ra = tk_zra; mpk_ra = tk_mpk_ra; end
         default: begin xr_ra = c_ra; zr_ra = c_ra; mpk_ra = 9'd0; end
         endcase
+    end
+
+    // ---------------- shared memory, 32K x 13: maternal samples (10 words each, T < 2500),
+    // then track envelope codes (enc_e < 2^13). Saves the separate 2500 x 128 ymem.
+    (* ram_style = "block" *) reg [12:0] umem [0:32767];
+    wire        u_we = y_we | e_we;
+    wire [14:0] u_wa = y_we ? y_a : e_wa;
+    wire [12:0] u_wd = y_we ? y_wd : e_wd[12:0];
+    wire [14:0] u_ra = (ph == 3'd2) ? y_a : e_ra;
+    always @(posedge clk) begin
+        if (u_we) umem[u_wa] <= u_wd;
+        u_rd <= umem[u_ra];
     end
 
     // ---------------- sequencer

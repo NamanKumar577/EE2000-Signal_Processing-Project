@@ -120,3 +120,21 @@ Fixes needed for implementation (the built bitstream contains them and is bit-ex
 - CinC test was scored once with the frozen design; no v6 decision was tuned on it.
 - Accuracy matches v5 within ±0.8 points on every set, now with all sample-rate work in hand-written RTL and no soft processor.
 - Logs: `board_cdev_ad_ctest.log`, `board_syn.log`; per-record CSVs in `board/`.
+
+## Block RAM reduction (2026-11-14)
+`ymem` (first 10 s of maternal-band samples, used only while T < 2500) and `emem` (16 x 2048 envelope codes, written only from s = 3750) are never live at the same time. They now share one 32K x 13 block RAM (`umem` in `v6_core.v`); envelope codes are always < 2^13 (largest is 7423), so 13 bits are enough. The C model is unchanged.
+
+| Resource | Before | After |
+|---|---|---|
+| BRAM tiles | 74.5 / 75 (99%) | **60 / 75 (80%)** |
+| LUTs | 19.0k (58%) | 18.1k (56%) |
+| Flip-flops | 10.1k | 10.0k |
+| DSP48 | 33 | 33 |
+| Timing (50 MHz) | WNS +0.49 ns | WNS +0.26 ns |
+
+Verification:
+- Stale data is never read: the C model with the envelope rings filled with garbage at calibration (except e[3749], which the RTL zeroes) gives identical uplink streams on 80 records.
+- `sim/regress.sh`: 8/8 records, 0 byte errors.
+- Board: 140/140 records bit-exact with the C model, and every uplink stream has the same MD5 as the previous bitstream, so F1 is unchanged on every set (`board_umem.log`, `board_umem/`).
+
+Dropped ideas: shrinking the X/Z rings (CALDATA is already streamed; the 4096 depth is needed for the start-up burst cancellation at T ~ 2604) and halving emem (a tracker restart looks back ~1057 samples). Details in `fpga_implementation/v6/PLANNED_CHANGES.md`.

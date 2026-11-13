@@ -25,9 +25,47 @@ The primary objective is the extraction of the weak **Fetal Electrocardiogram (F
 
 ---
 
+## Final Design (v6): Hand-Written RTL + PC Brain
+
+All sample-rate processing runs in hand-written Verilog on the Spartan-7 (no soft CPU):
+filters, maternal detection and cancellation, 16 candidate fetal tracks, trackers, beat
+output and FHR. The PC answers five low-rate requests (maternal PCA, maternal train
+choice, template basis, GEVD calibration, track selection). Strictly causal, no labels.
+
+| Data set | Records | F1 (board) |
+|---|---|---|
+| FECGSYNDB (all, model = board) | 1,248 | 91.4 |
+| ADFECGDB | 5 | 92.7 |
+| CinC 2013, dev (odd records) | 38 | 76.0 |
+| CinC 2013, held-out test (even records) | 37 | 65.5 |
+
+- The board's complete UART output stream is bit-exact with the C model on all 140 board-tested records.
+- **Resources:** xc7s50 at 50 MHz; 60/75 BRAM, 56% LUT.
+- **Speed:** about 4–5× real time; a beat is reported ~1.5–2 s after it occurs.
+
+| What | Where |
+|---|---|
+| RTL, C model, testbenches, bitstream | [`fpga_implementation/v6/`](fpga_implementation/v6/README.md) |
+| Board evaluation (stream records, score, bit-exact check) | `fpga_implementation/uart_host/run_v6_board_eval.py` |
+| Local web demo (upload a recording, live FHR on the board) | `fpga_implementation/webdemo/` |
+| Accuracy tooling (scorer, data loaders) | `tools/accuracy/` |
+| Work logs and results | `report/rtl_pc_split/`, `report/night_20261109/` |
+
+```bash
+# board evaluation (board programmed with fpga_implementation/v6/program_v6.tcl)
+venv/Scripts/python.exe fpga_implementation/uart_host/run_v6_board_eval.py --sets cdev,ad
+# web demo, then open http://localhost:8050
+venv/Scripts/python.exe fpga_implementation/webdemo/server.py
+```
+
+Earlier versions are kept for reference: v2 (`fpga_implementation/{rtl,bitstream,...}` + `src/fecg/`) and v5 (MicroBlaze, `fpga_implementation/v5/`).
+
+---
+
 ## Repository Structure
 
 ```text
+├── fpga_implementation/       # FPGA work: v6 (final), v5 (MicroBlaze), v2 RTL, uart_host, webdemo
 ├── src/fecg/                  # Active Python package (authoritative source code)
 │   ├── core/                  #   Preprocessing, data loading, evaluation, mixture
 │   ├── pipelines/             #   Causal streaming FPGA pipeline, multichannel study
@@ -47,11 +85,11 @@ The primary objective is the extraction of the weak **Fetal Electrocardiogram (F
 ├── scripts/validation/        # Verification audit runners
 ├── data/fecgsyndb/            # PhysioNet FECGSYNDB recordings (test1–test5)
 ├── results/                   # Benchmark CSVs, figures, and validation reports
-├── hardware/spec/             # Spartan-7 FPGA specifications and datasheets
 ├── docs/                      # Architecture decisions, literature, trackers, audits
-├── report/                    # IEEE CVF mid-term conference submission
-├── tools/                     # Development and maintenance utilities
-├── archive/                   # Historical packages, superseded code, logs
+│   └── hardware_spec/         #   Spartan-7 FPGA specifications and datasheets
+├── report/                    # Mid-term submission, v5/v6 work logs and board results
+├── tools/                     # accuracy/ (v6 evaluation chain), legacy validation utilities
+├── archive/                   # Historical packages, superseded code, old scratch and UART bring-up
 ├── code/                      # Legacy source tree (preserved for compatibility)
 │
 ├── CLAUDE.md                  # LLM engineering guidelines
@@ -119,9 +157,9 @@ The `data/fecgsyndb/` directory contains 5 PhysioNet FECGSYNDB recordings (97.4 
 
 ## FPGA Hardware Documentation
 
-- **Frozen Architecture Spec (v0.2):** [`hardware/spec/FPGA_SPEC.md`](hardware/spec/FPGA_SPEC.md)
-- **Hardware Datasheets & Constraints:** [`hardware/spec/DATASHEETS_AND_HARDWARE_SPECS.md`](hardware/spec/DATASHEETS_AND_HARDWARE_SPECS.md)
-- **Synthesis Feasibility Report:** [`hardware/spec/MASTER_FPGA_IMPLEMENTATION_AND_FEASIBILITY_REPORT.md`](hardware/spec/MASTER_FPGA_IMPLEMENTATION_AND_FEASIBILITY_REPORT.md)
+- **Frozen Architecture Spec (v0.2):** [`docs/hardware_spec/FPGA_SPEC.md`](docs/hardware_spec/FPGA_SPEC.md)
+- **Hardware Datasheets & Constraints:** [`docs/hardware_spec/DATASHEETS_AND_HARDWARE_SPECS.md`](docs/hardware_spec/DATASHEETS_AND_HARDWARE_SPECS.md)
+- **Synthesis Feasibility Report:** [`docs/hardware_spec/MASTER_FPGA_IMPLEMENTATION_AND_FEASIBILITY_REPORT.md`](docs/hardware_spec/MASTER_FPGA_IMPLEMENTATION_AND_FEASIBILITY_REPORT.md)
 
 ---
 

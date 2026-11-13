@@ -31,6 +31,12 @@ module v6_trk (
     input  wire [63:0]        xr_rd,
     output reg  [11:0]        zr_ra,
     input  wire [63:0]        zr_rd,
+    // envelope rings, 16 tracks x 2048 codes (memory in v6_core, shared with v6_mat)
+    output reg  [14:0]        ea,
+    input  wire [15:0]        erd,
+    output reg                ewe,
+    output reg  [14:0]        ewa,
+    output reg  [15:0]        ewd,
     // message writer
     output reg                msg_start,
     output reg  [7:0]         msg_cmd,
@@ -71,8 +77,6 @@ module v6_trk (
     function [31:0] div100(input [31:0] x); div100 = (x * 32'd5243) >> 19; endfunction
 
     // ---------------- memories
-    reg [15:0] emem [0:32767];   reg [14:0] ea, ewa; reg ewe; reg [15:0] ewd, erd;
-    always @(posedge clk) begin if (ewe) emem[ewa] <= ewd; erd <= emem[ea]; end
     reg signed [31:0] bmem [0:4095]; reg [11:0] ba, bwa; reg bwe; reg signed [31:0] bwd, brd;
     always @(posedge clk) begin if (bwe) bmem[bwa] <= bwd; brd <= bmem[ba]; end
     reg signed [31:0] pmem [0:511]; reg [8:0] pa_, pwa; reg pwe; reg signed [31:0] pwd, prd;

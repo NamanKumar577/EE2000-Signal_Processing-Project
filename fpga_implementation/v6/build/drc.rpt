@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
-| Date         : Tue Nov 10 08:05:48 2026
+| Date         : Sat Nov 14 00:38:45 2026
 | Host         : LAPTOP-JP0HJTKD running 64-bit major release  (build 9200)
 | Command      : report_drc -file D:/signal_project/fpga_implementation/v6/build/drc.rpt
 | Design       : v6_top

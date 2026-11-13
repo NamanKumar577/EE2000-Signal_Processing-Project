@@ -45,11 +45,11 @@ python ../uart_host/run_v6_board_eval.py --sets cdev,ad
 ## Implementation (xc7s50, 50 MHz)
 | Resource | Used | Utilization |
 |---|---|---|
-| LUTs | 19.0k | 58% (3.4k of them as LUT RAM) |
-| Flip-flops | 10.1k | 16% |
+| LUTs | 18.1k | 56% (2.1k of them as LUT RAM) |
+| Flip-flops | 10.0k | 15% |
 | DSP48 | 33 | 28% |
-| BRAM tiles | 74.5 / 75 | 99% |
-| Timing | WNS +0.49 ns at 50 MHz | met |
+| BRAM tiles | 60 / 75 | 80% (was 74.5 before the shared ymem/emem memory, 2026-11-14) |
+| Timing | WNS +0.26 ns at 50 MHz | met |
 
 ## Number formats
 - Raw input: int16.
