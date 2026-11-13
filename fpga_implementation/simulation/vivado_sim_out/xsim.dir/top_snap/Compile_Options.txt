@@ -1,1 +1,0 @@
--top "tb_fecg_single_channel_top" -snapshot "top_snap" 

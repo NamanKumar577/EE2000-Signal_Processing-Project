@@ -114,7 +114,7 @@ The project features are partitioned across four sequential engineering mileston
 | **FEAT-04** | Directory Structure & Root Project Architecture Initialization | `fpga_implementation/**`, `PROJECT.md` | M0 | Complete |
 | **FEAT-05** | Master Fixed-Point Parameter Specification & DSP48 Alignment | `fpga_implementation/docs/fixed_point_specification.md` | M0 | Complete |
 | **FEAT-06** | Algorithm-to-Hardware Mapping & Single-Channel Feasibility | `fpga_implementation/docs/algorithm_mapping.md` | M0 | Complete |
-| **FEAT-07** | UART Transceiver Audit, Framing & Watchdog Bug Remediation | `uart_bringup/`, `fpga_implementation/docs/uart_protocol.md` | M0 | Complete |
+| **FEAT-07** | UART Transceiver Audit, Framing & Watchdog Bug Remediation | `archive/uart_bringup/`, `fpga_implementation/docs/uart_protocol.md` | M0 | Complete |
 | **FEAT-08** | Spartan-7 Resource, Power & Clocking Architecture Specification | `fpga_implementation/docs/architecture.md` | M0 | Complete |
 | **FEAT-09** | Parameterized Transposed Direct Form II Biquad Core (`biquad_df2t.v`)| `fpga_implementation/rtl/datapath/biquad_df2t.v` | M1 | Planned |
 | **FEAT-10** | Cascaded LP40 Lowpass and Config C Bandpass Filters | `fpga_implementation/rtl/datapath/lp40_filter.v`, `bp_filter.v` | M1 | Planned |
@@ -244,7 +244,7 @@ The project features are partitioned across four sequential engineering mileston
 d:\signal_project/
 ├── PROJECT.md                               # Root Project Specification (This document)
 ├── README.md                                # Repository Overview
-├── hardware/spec/                           # Hardware specifications and reports
+├── docs/hardware_spec/                      # Hardware specifications and reports (was hardware/spec/)
 │   ├── FPGA_SPEC.md                         # Authoritative FPGA Specification v0.2
 │   ├── MASTER_FPGA_IMPLEMENTATION_AND_FEASIBILITY_REPORT.md
 │   └── DATASHEETS_AND_HARDWARE_SPECS.md
@@ -274,7 +274,7 @@ d:\signal_project/
 │   │   └── README.md
 │   └── constraints/                         # Board constraint files (.xdc)
 │       └── README.md
-├── uart_bringup/                            # Standalone verified UART reference infrastructure
+├── archive/uart_bringup/                    # Standalone verified UART reference infrastructure (moved)
 │   ├── rtl/                                 # Verified uart_rx.v, uart_tx.v, uart_top.v
 │   ├── tb/                                  # Verified simulation testbenches
 │   ├── sim/                                 # run_sim.py, adversarial_stress_check.py
@@ -291,7 +291,7 @@ d:\signal_project/
 ├── tests/                                   # Existing test suites (Protected read-only)
 │   ├── hardware/                            # 26 passed tests
 │   └── regression/                          # 26 passed tests
-└── .agents/teamwork/                        # Agent metadata only (No code or test files)
+└── archive/agent_sessions/                  # Agent metadata only (was .agents/teamwork/)
     ├── worker_baseline_1/                   # DISPATCH.md, BRIEFING.md, progress.md, handoff.md
     ├── explorer_survey_1/                   # Non-ML pipeline audit findings
     ├── explorer_survey_2/                   # Hardware models & difference equations findings

@@ -35,3 +35,17 @@ fpga_implementation/v6/clockInfo.txt
 fpga_implementation/v6/dfx_runtime.txt
 # web demo run outputs
 fpga_implementation/webdemo/runs/
+# tool junk (Vivado / xsim / LaTeX / pytest)
+*.jou
+vivado*.log
+*.backup.*
+*.pb
+*.wdb
+xsim.dir/
+.Xil/
+clockInfo.txt
+dfx_runtime.txt
+.pytest_cache/
+*.aux
+*.brf
+code/venv/

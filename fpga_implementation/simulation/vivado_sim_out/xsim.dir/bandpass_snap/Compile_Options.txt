@@ -1,1 +1,0 @@
--top "tb_bandpass_config_c" -snapshot "bandpass_snap" 

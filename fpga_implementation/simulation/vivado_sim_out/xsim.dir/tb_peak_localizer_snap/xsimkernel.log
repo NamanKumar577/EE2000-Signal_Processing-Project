@@ -1,7 +1,0 @@
-Running: xsim.dir/tb_peak_localizer_snap/xsimk.exe -runall -simmode gui -wdb tb_peak_localizer_snap.wdb -simrunnum 0 -socket 52749
-Design successfully loaded
-Design Loading Memory Usage: 11016 KB (Peak: 11016 KB)
-Design Loading CPU Usage: 46 ms
-Simulation completed
-Simulation Memory Usage: 12236 KB (Peak: 12236 KB)
-Simulation CPU Usage: 61 ms
