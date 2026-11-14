@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+"""
+Consistency check for the final report: recompute the key numbers from the saved result
+files and check that fpr-8.tex quotes exactly those values.  Prints one line per check and
+exits with 1 if any check fails.
+
+    venv/Scripts/python.exe report/final_report/tools/check_final_numbers.py
+"""
+import re
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[3]
+TEX = (ROOT / "report/final_report/fpr-8.tex").read_text(encoding="utf-8")
+TEX = re.sub(r"\\textbf\{([^{}]*)\}", r"\1", TEX)          # compare without bold markup
+ACC = ROOT / "tools/accuracy"
+B6 = ROOT / "fpga_implementation/v6/build"
+fails = 0
+
+
+def check(name, value, *texts):
+    """value: the recomputed number (for the log); texts: strings that must occur in the .tex."""
+    global fails
+    missing = [t for t in texts if t not in TEX]
+    ok = not missing
+    fails += not ok
+    print(f"{'PASS' if ok else 'FAIL'}  {name:58s} {value!s:>12}" + ("" if ok else f"   missing: {missing}"))
+
+
+f1 = lambda x: f"{x:.1f}"        # noqa: E731
+f2 = lambda x: f"{x:.2f}"        # noqa: E731
+
+# ---- v6 board results (Tab. final_results)
+b = pd.read_csv(ROOT / "report/rtl_pc_split/board_umem/board_cdev_ad_ctest_syn.csv")
+check("board records bit-exact", int(b.bit_exact.sum()), "140/140")
+for s, n in [("syn", 60), ("ad", 5), ("cdev", 38), ("ctest", 37)]:
+    g = b[b.set == s]
+    assert len(g) == n
+    row = f"& {n} & {f2(g.f1.mean())} & {f2(g.se.mean())} & {f2(g.ppv.mean())} & {f2(g.fhr_mae.mean())} & {int((g.f1 >= 90).sum())} & {n}/{n}"
+    check(f"board {s}: F1/Se/PPV/MAE/>=90/bit-exact", f2(g.f1.mean()), row.replace("&  ", "& "))
+    check(f"board {s}: rounded F1 in text", f1(g.f1.mean()), f1(g.f1.mean()))
+rt = b.groupby("set").apply(lambda g: g.record_s.sum() / g.stream_s.sum(), include_groups=False)
+check("board speed CinC test", f1(rt["ctest"]), f"{f1(rt['ctest'])}$\\times$")
+
+# ---- confidence intervals (Tab. final_ci)
+ci = pd.read_csv(ROOT / "report/final_report/tables/board_f1_ci.csv")
+for _, r in ci.iterrows():
+    check(f"CI {r.set}", f1(r.f1_mean), f"{f1(r.f1_mean)} [{f1(r.ci_low)}, {f1(r.ci_high)}] & {f1(r["median"])}")
+
+# ---- earlier versions on real data
+c = pd.read_csv(ACC / "results_cinc2013.csv")
+odd = c.record.str[1:].astype(int) % 2 == 1
+check("mid-term design causal, CinC test", f1(c.old_f1[~odd].mean()), f"& {f1(c.old_f1[~odd].mean())} & {f1(c.old_f1[odd].mean())} &")
+check("v2, CinC test / dev", f1(c.v2_f1[~odd].mean()), f"& {f1(c.v2_f1[~odd].mean())} & {f1(c.v2_f1[odd].mean())} &")
+ad = pd.read_csv(ACC / "results_adfecgdb.csv")
+check("v2 / v3 ADFECGDB", f1(ad.v2_f1.mean()), f1(ad.v2_f1.mean()), f1(ad.hyb_f1.mean()))
+v2 = pd.read_csv(ACC / "results_bitaccurate.csv")
+check("v2 FECGSYNDB 1,248", f1(v2.f1.mean()), f"{f1(v2.f1.mean())}\\%")
+v5 = pd.read_csv(ACC / "results_v5_final_synall.csv")
+check("v5 FECGSYNDB 1,248", f1(v5.f1.mean()), f"& {f1(v5.f1.mean())} &")
+u = pd.read_csv(ACC / "results_unet_syn.csv")
+ua = pd.read_csv(ACC / "results_unet_adfecgdb.csv")
+check("U-Net synthetic / ADFECGDB", f1(ua.f1.mean()), f"{f1(u.f1.mean())}\\%", f"{f1(ua.f1.mean())}\\%")
+d = pd.read_csv(ACC / "results_diag_v5.csv").groupby("set").mean(numeric_only=True)
+check("best single track / oracle, CinC dev", f1(d.loc["cdev", "best_track"]),
+      f"{f1(d.loc['cdev', 'best_track'])}\\%", f"{f1(d.loc['cdev', 'win_oracle'])}\\%")
+
+# ---- failure analysis
+fa = pd.read_csv(ROOT / "report/final_report/tables/cinc_failures.csv")
+vc = fa.category.value_counts()
+check("failures: ok / mother / wrong / unreliable", dict(vc),
+      f"{vc['ok']} of 75", f"Followed the mother ({vc['followed the mother']} records)",
+      f"Wrong fetal-range track ({vc['wrong fetal-range track']} records)",
+      f"Unreliable reference ({vc['reference unreliable']} records)")
+nf = fa[(fa.category == "followed the mother") & ~fa.maternal_train_found]
+check("followed the mother without a maternal train", len(nf), f"In {len(nf)} of these")
+
+# ---- FPGA reports
+util = (B6 / "util.rpt").read_text()
+lut = int(re.search(r"\| Slice LUTs\s+\|\s+(\d+)", util).group(1))
+ff = int(re.search(r"\| Slice Registers\s+\|\s+(\d+)", util).group(1))
+bram = re.search(r"\| Block RAM Tile\s+\|\s+([\d.]+)", util).group(1)
+dsp = int(re.search(r"\| DSPs\s+\|\s+(\d+)", util).group(1))
+check("LUTs / FFs", lut, f"{lut:,}", f"{ff:,}")
+check("BRAM tiles / DSP", bram, f"{int(float(bram))} (80\\%)", f"{dsp} (27.5\\%)")
+wns = float(re.search(r"^\s+(-?\d+\.\d+)\s+\d+\.\d+\s+\d+\s+\d+", (B6 / "timing.rpt").read_text(), re.M).group(1))
+check("worst slack", wns, f"+{wns:.2f}\\,ns")
+pw = (B6 / "power.rpt").read_text()
+tot = re.search(r"Total On-Chip Power \(W\)\s+\|\s+([\d.]+)", pw).group(1)
+dyn = re.search(r"Dynamic \(W\)\s+\|\s+([\d.]+)", pw).group(1)
+stat = re.search(r"Device Static \(W\)\s+\|\s+([\d.]+)", pw).group(1)
+check("power total / dynamic / static", tot, f"{tot}\\,W", f"{dyn}\\,$W dynamic", f"{stat}\\,$W static")
+
+# ---- simulation (needs fpga_implementation/v6/sim/wave/wave.vcd)
+vcd = ROOT / "fpga_implementation/v6/sim/wave/wave.vcd"
+if vcd.exists():
+    sys.path.insert(0, str(ROOT / "report/final_report/tools"))
+    import plot_waves as W
+    S = W.read_vcd(vcd)
+    t, v = S["seq_state"]
+    a, e = t[v == 4], t[v == 20]
+    m = min(len(a), len(e))
+    cyc = (e[:m] - a[:m]) // W.CLK_PS
+    med = int(np.median(cyc[np.arange(m) >= 4877]))
+    check("median cycles per sample after calibration", med, f"{med:,} cycles")
+    check("simulated time for 30 s", f"{t[-1] / 1e9:.1f} ms", f"{t[-1] / 1e9:.1f}\\,ms")
+else:
+    print("SKIP  simulation checks (run fpga_implementation/v6/sim/wave/run_wave.sh first)")
+
+# ---- v6.1 and v7 (Sec. final_v7): board results, CIs, offline v7-LA, all-FECGSYNDB C-model results
+UNREL = {"a33", "a38", "a47", "a52", "a54", "a71", "a74"}
+b61 = pd.read_csv(ROOT / "report/v61_v7/board_v61/board_cdev_ad_ctest_syn.csv")
+b7 = pd.read_csv(ROOT / "report/v61_v7/board_v7/board_cdev_ad_ctest_syn.csv")
+for nm, d in (("v6.1", b61), ("v7-DL", b7)):
+    check(f"{nm} board records bit-exact", int(d.bit_exact.sum()), "140/140")
+ci = pd.read_csv(ROOT / "report/final_report/tables/board_v7_f1_ci.csv").set_index(["version", "set"])
+for s, nm in [("syn", "FECGSYNDB subset"), ("ad", "ADFECGDB"), ("cdev", "CinC dev"), ("ctest", "CinC test")]:
+    for ver, d in (("v6.1", b61), ("v7-DL", b7)):
+        g = d[d.set == s]
+        r = ci.loc[(ver, nm)]
+        check(f"{ver} {s} F1 [CI]", f"{g.f1.mean():.2f}", f"{f1(g.f1.mean())} [{r.ci_low:.1f}, {r.ci_high:.1f}]")
+    check(f"{s} FHR MAE v6.1 / v7-DL", "", f"{f2(b61[b61.set == s].fhr_mae.mean())} / {f2(b7[b7.set == s].fhr_mae.mean())}")
+for ver, d in (("v6.1", b61), ("v7-DL", b7)):
+    g = d[(d.set == "ctest") & ~d.rid.isin(UNREL)]
+    r = ci.loc[(ver, "CinC test reliable")]
+    check(f"{ver} ctest reliable F1 [CI]", f"{g.f1.mean():.2f}", f"{f1(g.f1.mean())} [{r.ci_low:.1f}, {r.ci_high:.1f}]")
+c7 = b7[b7.set == "ctest"]
+check("v7-DL ctest better / worse than live v6.1", "", f"improves {int((c7.f1 > c7.f1_causal + 1).sum())} records and worsens {int((c7.f1 < c7.f1_causal - 1).sum())}")
+cc = b7[b7.set.isin(["cdev", "ctest"])]
+check("v7-DL CinC better / worse (fig)", "", f"{int((cc.f1 > cc.f1_causal + 1).sum())} records improve by more than one point and {int((cc.f1 < cc.f1_causal - 1).sum())} get worse")
+check("v7-DL ctest >= 90%", int((c7.f1 >= 90).sum()), f"18 records reach $\\ge 90\\%$")
+s61 = pd.read_csv(ACC / "results_v61_synall.csv")
+sdl = pd.read_csv(ACC / "results_v7dl_synall.csv")
+sla = pd.read_csv(ACC / "results_v7la_synall.csv")
+check("FECGSYNDB all: v6.1 / v7-DL / v7-LA", "", f"& 1,248 & {f1(s61[s61.variant == 'v61'].f1.mean())} & {f1(sdl.f1.mean())} &",
+      f"{f2(s61[s61.variant == 'v61'].fhr_mae.mean())} / {f2(sdl.fhr_mae.mean())}", f"$94.3\\%$ on all 1,248 FECGSYNDB")
+cond = sdl.rid.str.extract(r"_(c\d)$")[0]
+check("v7-DL by condition", "", ", ".join(f"${c}$ {sdl[cond == c].f1.mean():.1f}" for c in ["c0", "c1", "c2", "c3", "c4"]))
+la_t = pd.read_csv(ACC / "results_v7la_ctest.csv")
+la_d = pd.read_csv(ACC / "results_v7la_dev.csv")
+check("v7-LA ctest / reliable / dev / ad", "", f"scores $75.6\\%$ on CinC test ($80.9\\%$ on reliable references), $84.6\\%$ on CinC dev, $95.8\\%$ on ADFECGDB")
+assert f1(la_t.f1.mean()) == "75.6" and f1(la_t[~la_t.rid.isin(UNREL)].f1.mean()) == "80.9"
+assert f1(la_d[la_d.set == "cdev"].f1.mean()) == "84.6" and f1(la_d[la_d.set == "ad"].f1.mean()) == "95.8"
+for nm, path, lut in (("v6.1", "v61", "18,986"), ("v7-DL", "v7", "26,701")):
+    u = (ROOT / f"fpga_implementation/v6/build/{path}/util.rpt").read_text()
+    got = re.search(r"\| Slice LUTs\s+\|\s+(\d+)", u).group(1)
+    check(f"{nm} LUTs", got, f"{int(got):,}")
+
+print(f"\n{'ALL CHECKS PASSED' if not fails else f'{fails} CHECK(S) FAILED'}")
+sys.exit(1 if fails else 0)

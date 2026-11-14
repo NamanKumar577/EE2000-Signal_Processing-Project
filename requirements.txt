@@ -8,3 +8,6 @@ matplotlib>=3.7.0
 pyyaml>=6.0
 pytest>=7.4.0
 pywavelets>=1.4.0    # Stationary Wavelet Transform (SWT-LMS-SSNF)
+pandas>=2.0          # result tables (final evaluation tools)
+pyserial>=3.5        # UART link to the Spartan-7 board (board evaluation, web demo)
+# optional: torch (only for the mid-term U-Net comparison, tools/accuracy/eval_unet.py)
