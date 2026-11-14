@@ -2,6 +2,16 @@
 
 This directory provides host-side Python utilities, streaming drivers, calibration engines, and real-time telemetry processing for interfacing with the AMD/Xilinx Spartan-7 FPGA accelerator over the FTDI FT2232H USB-UART bridge at 921,600 baud (bringup fallback: 115,200 baud).
 
+## Final design (v6): board and model evaluation
+
+| Script | What it does |
+|---|---|
+| `run_v6_board_eval.py --sets cdev,ad[,ctest,syn] [--port COM5] [--out DIR]` | Streams each recording to the v6 board in 64-sample frames, pipes the board's requests to the PC brain (`../v6/model/v6_brain.exe`), scores the beats and checks that the board's whole output byte stream equals the C model. |
+| `run_v6_model_eval.py --sets cdev,ad[,ctest,syn]` | Same scoring with the bit-accurate C system model only (`../v6/model/v6_sim.exe`); no board needed. |
+| `run_v5_board_eval.py` | The same for the MicroBlaze version v5. |
+
+The rest of this file describes the v2 client (`fecg_uart_client.py`) and its packet format.
+
 ## Core Driver & Streaming Engine
 
 ### `fecg_uart_client.py`

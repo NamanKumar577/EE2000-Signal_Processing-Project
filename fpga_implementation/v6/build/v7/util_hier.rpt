@@ -1,0 +1,48 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Sat Nov 14 18:40:01 2026
+| Host         : LAPTOP-JP0HJTKD running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -hierarchical_depth 3 -file D:/signal_project/fpga_implementation/v6/build/v7/util_hier.rpt
+| Design       : v6_top
+| Device       : xc7s50csga324-1
+| Speed File   : -1
+| Design State : Routed
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++-------------+------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|   Instance  |         Module         | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++-------------+------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| v6_top      |                  (top) |      26701 |      23576 |    3124 |    1 | 15970 |     65 |     12 |         43 |
+|   (v6_top)  |                  (top) |          2 |          1 |       0 |    1 |     1 |      0 |      0 |          0 |
+|   core      |                v6_core |      26489 |      23365 |    3124 |    0 | 15744 |     65 |     12 |         43 |
+|     (core)  |                v6_core |        279 |        279 |       0 |    0 |   300 |     27 |      2 |          0 |
+|     canc    |                v6_canc |       1250 |       1200 |      50 |    0 |   948 |     10 |      1 |         15 |
+|     fe      |                  v6_fe |        844 |        844 |       0 |    0 |   959 |      1 |      0 |          4 |
+|       (fe)  |                  v6_fe |        386 |        386 |       0 |    0 |   602 |      0 |      0 |          0 |
+|       sos   |                 v6_sos |        458 |        458 |       0 |    0 |   357 |      1 |      0 |          4 |
+|     link    |                v6_link |       1098 |       1098 |       0 |    0 |  1829 |      3 |      1 |          0 |
+|     mat     |                 v6_mat |       5104 |       4240 |     864 |    0 |  2583 |      2 |      2 |          4 |
+|       (mat) |                 v6_mat |       1965 |       1965 |       0 |    0 |  1981 |      0 |      2 |          4 |
+|       det   |               v6_det_0 |       2768 |       2052 |     716 |    0 |   375 |      1 |      0 |          0 |
+|       mwi   |                 v6_mwi |        372 |        224 |     148 |    0 |   227 |      1 |      0 |          0 |
+|     trk     |                 v6_trk |      10660 |       9430 |    1230 |    0 |  4572 |     13 |      2 |         10 |
+|       (trk) |                 v6_trk |       6625 |       6261 |     364 |    0 |  3594 |      7 |      2 |          6 |
+|       det   |                 v6_det |       2635 |       1917 |     718 |    0 |   359 |      1 |      0 |          0 |
+|       mwi   | v6_mwi__parameterized0 |        927 |        779 |     148 |    0 |   255 |      4 |      0 |          0 |
+|       sos   | v6_sos__parameterized0 |        475 |        475 |       0 |    0 |   364 |      1 |      0 |          4 |
+|     v7      |                  v7_la |       7297 |       6317 |     980 |    0 |  4553 |      9 |      4 |         10 |
+|   disp      |                v7_disp |        138 |        138 |       0 |    0 |   156 |      0 |      0 |          0 |
++-------------+------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

@@ -1,0 +1,3 @@
+     f1_causal     f1    se    ppv  fhr_mae_causal  fhr_mae
+set                                                        
+syn      91.89  94.34  93.6  95.28            4.85     3.48

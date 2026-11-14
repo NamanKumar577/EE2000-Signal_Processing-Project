@@ -8,13 +8,13 @@
 :root {
   --bg: #f6f7f9; --card: #ffffff; --ink: #1b1f24; --muted: #66707a; --line: #e2e5e9;
   --ok: #1a8a4a; --warn: #b7791f; --bad: #c53030; --accent: #2b6cb0;
-  --fetal: #d6336c; --mat: #6b46c1; --truth: #1a8a4a;
+  --fetal: #d6336c; --mat: #6b46c1; --truth: #1a8a4a; --live: #e8a0b8;
   --lead1: #2b6cb0; --lead2: #0f766e; --lead3: #b7791f; --lead4: #475569;
 }
 @media (prefers-color-scheme: dark) {
   :root { --bg: #111418; --card: #1a1f25; --ink: #e6e9ec; --muted: #9aa4ae; --line: #2b323a;
     --ok: #48bb78; --warn: #ecc94b; --bad: #fc8181; --accent: #63b3ed;
-    --fetal: #f06595; --mat: #b794f4; --truth: #68d391;
+    --fetal: #f06595; --mat: #b794f4; --truth: #68d391; --live: #8a4a62;
     --lead1: #63b3ed; --lead2: #4fd1c5; --lead3: #f6ad55; --lead4: #a0aec0; }
 }
 * { box-sizing: border-box; }
@@ -62,7 +62,8 @@ table { border-collapse: collapse; width: 100%; } td { padding: 4px 0; } td:last
 </head>
 <body>
 <header>
-  <h1>Fetal ECG monitor: Spartan-7 RTL + PC brain (v6)</h1>
+  <h1 id="title">Fetal ECG monitor: Spartan-7 RTL + PC brain</h1>
+  <span class="pill" id="vpill" title="Design programmed on the board (V6_VARIANT)">—</span>
   <span class="pill"><span id="bdot" class="dot"></span><span id="btxt">Checking board…</span></span>
   <select id="port" title="Serial port"></select>
   <button id="reconnect">Reconnect</button>
@@ -102,7 +103,7 @@ table { border-collapse: collapse; width: 100%; } td { padding: 4px 0; } td:last
   </div>
 
   <div class="card" id="acccard" hidden>
-    <h2>Accuracy vs annotations</h2>
+    <h2 id="acctitle">Accuracy vs annotations</h2>
     <table>
       <tr><td>F1</td><td id="a_f1">—</td></tr>
       <tr><td>Sensitivity</td><td id="a_se">—</td></tr>
@@ -116,19 +117,21 @@ table { border-collapse: collapse; width: 100%; } td { padding: 4px 0; } td:last
 
 <section>
   <div class="kpis">
-    <div class="kpi fetal"><div class="l">Fetal heart rate</div><div class="v"><span id="k_fhr">—</span> <small>bpm</small></div></div>
+    <div class="kpi fetal"><div class="l" id="l_fhr">Fetal heart rate</div><div class="v"><span id="k_fhr">—</span> <small>bpm</small></div><div class="small muted" id="k_live"></div></div>
     <div class="kpi mat"><div class="l">Maternal heart rate</div><div class="v"><span id="k_mhr">—</span> <small>bpm</small></div></div>
-    <div class="kpi"><div class="l">Fetal beats reported</div><div class="v" id="k_beats">0</div></div>
+    <div class="kpi"><div class="l" id="l_beats">Fetal beats reported</div><div class="v" id="k_beats">0</div></div>
+    <div class="kpi" id="kpi_delay" hidden><div class="l">Look-ahead delay of the final beats</div><div class="v"><span id="k_delay">—</span> <small>s</small></div></div>
     <div class="kpi"><div class="l">Selected track (of 16)</div><div class="v" id="k_trk">—</div></div>
     <div class="kpi"><div class="l">FPGA time per 0.256 s chunk</div><div class="v"><span id="k_ms">—</span> <small>ms</small></div></div>
     <div class="kpi"><div class="l">PC brain replies</div><div class="v" id="k_rsp">0</div></div>
   </div>
 
   <div class="card">
-    <h2>Abdominal leads: last 10 s</h2>
+    <h2 id="sigtitle">Abdominal leads: last 10 s</h2>
     <canvas id="sig" height="300"></canvas>
     <div class="legend">
-      <span style="--c:var(--fetal)">fetal beat (FPGA output)</span>
+      <span style="--c:var(--fetal)" id="lg_beat">fetal beat (FPGA output)</span>
+      <span style="--c:var(--live)" id="lg_live" hidden>live beat (causal v6.1 output, short mark)</span>
       <span style="--c:var(--mat)">maternal R peak (FPGA)</span>
       <span style="--c:var(--truth)">annotated fetal beat</span>
     </div>
@@ -137,7 +140,7 @@ table { border-collapse: collapse; width: 100%; } td { padding: 4px 0; } td:last
   <div class="card">
     <h2>Heart rate trend</h2>
     <canvas id="hr" height="220"></canvas>
-    <div class="legend"><span style="--c:var(--fetal)">fetal HR</span><span style="--c:var(--mat)">maternal HR</span></div>
+    <div class="legend"><span style="--c:var(--fetal)" id="lg_fhr">fetal HR</span><span style="--c:var(--live)" id="lg_fhrlive" hidden>fetal HR, live estimate (v6.1)</span><span style="--c:var(--mat)">maternal HR</span><span style="--c:var(--line)" id="lg_pend" hidden>not final yet (look-ahead window)</span></div>
   </div>
 
   <div class="card">
@@ -149,12 +152,28 @@ table { border-collapse: collapse; width: 100%; } td { padding: 4px 0; } td:last
 
 <script>
 const $ = id => document.getElementById(id);
-const STAGES = ["Learning the maternal signal (collecting 10 s for PCA)",
+let STAGES = ["Learning the maternal signal (collecting 10 s for PCA)",
   "Maternal detection + cancellation, collecting calibration data",
   "PC brain: GEVD calibration of 16 candidate fetal tracks",
   "Fetal trackers warming up", "Monitoring: reporting fetal beats"];
 const FS = 250, WIN = 10;
-let S = null, running = false, haveRec = false, boardOk = false;
+let S = null, running = false, haveRec = false, boardOk = false, V7 = false;
+
+// v7-DL: the board sends live beats (causal v6.1) at once and the final beats of the look-ahead
+// unit about 15 s later; the page shows the final answer and the live estimate next to it.
+function showVariant(v7, name) {
+  V7 = !!v7;
+  $("vpill").textContent = name ? `Design: ${name}` + (V7 ? " · look-ahead on the FPGA" : "") : "—";
+  $("title").textContent = V7 ? "Fetal ECG monitor: Spartan-7 RTL with on-chip look-ahead (v7-DL)"
+                              : "Fetal ECG monitor: Spartan-7 RTL + PC brain";
+  $("l_fhr").textContent = V7 ? "Fetal heart rate · final (FPGA look-ahead)" : "Fetal heart rate";
+  $("l_beats").textContent = V7 ? "Final fetal beats" : "Fetal beats reported";
+  $("acctitle").textContent = V7 ? "Accuracy vs annotations (final beats)" : "Accuracy vs annotations";
+  $("lg_beat").textContent = V7 ? "final fetal beat (FPGA look-ahead)" : "fetal beat (FPGA output)";
+  $("lg_fhr").textContent = V7 ? "fetal HR, final" : "fetal HR";
+  ["kpi_delay", "lg_live", "lg_fhrlive", "lg_pend"].forEach(k => $(k).hidden = !V7);
+  if (!V7) $("k_live").textContent = "";
+}
 
 function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 function log(t, cls) { const d = document.createElement("div"); d.textContent = t; if (cls) d.className = cls; $("log").prepend(d); }
@@ -165,8 +184,9 @@ stagesView(-1);
 
 function resetState(n, truth) {
   S = { n, done: 0, leads: [0,1,2,3].map(() => new Float32Array(Math.ceil(n / 2) + 64)),
-        beats: [], mpk: [], truth: truth || [], fhr: [], mhr: [] };
-  ["k_fhr","k_mhr","k_trk","k_ms"].forEach(k => $(k).textContent = "—");
+        beats: [], mpk: [], truth: truth || [], fhr: [], mhr: [], live: [], fhrLive: [], lastFinal: -1, flushed: false };
+  ["k_fhr","k_mhr","k_trk","k_ms","k_delay"].forEach(k => $(k).textContent = "—");
+  $("k_live").textContent = V7 ? "live estimate: —" : "";
   $("k_beats").textContent = "0"; $("k_rsp").textContent = "0";
   ["a_f1","a_se","a_ppv","a_mae","a_n"].forEach(k => $(k).textContent = "—");
 }
@@ -176,6 +196,7 @@ function showBoard(b) {
   const map = { connected: ["ok", "FPGA connected"], busy: ["busy", "FPGA processing"],
                 no_answer: ["warn", "FPGA not answering"], no_port: ["bad", "FPGA not connected"], unknown: ["", "Checking…"] };
   const [c, t] = map[b.state] || map.unknown;
+  if (b.variant_name) showVariant(b.v7, b.variant_name);
   $("bdot").className = "dot " + c; $("btxt").textContent = t;
   $("bdetail").textContent = b.detail + (b.state === "connected" && b.probe_ms ? ` · probe round trip ${b.probe_ms} ms` : "");
   boardOk = b.state === "connected" || b.state === "busy";
@@ -242,9 +263,12 @@ es.onmessage = m => {
     case "saved": $("savedir").textContent = e.dir; $("saved").hidden = false; log(`Saved: ${e.dir}`); break;
     case "board": showBoard(e); break;
     case "start":
+      if (e.stages) STAGES = e.stages;
+      showVariant(e.v7, e.variant_name);
       running = true; buttons(); resetState(e.n, e.truth); stagesView(0);
       $("acccard").hidden = !e.has_truth;
-      log(`Start: ${e.name}, ${(e.n / FS).toFixed(1)} s, streaming in real time`); break;
+      log(`Start: ${e.name}, ${(e.n / FS).toFixed(1)} s, streaming in real time` + (e.v7 ? " · final beats come from the FPGA look-ahead unit, about 15 s behind" : "")); break;
+    case "flush": log(`${e.t.toFixed(1)} s · end of the recording: FLUSH sent, the FPGA finishes the last ${e.pending_s.toFixed(1)} s with the data it has`); break;
     case "stage": stagesView(e.idx); log(`${e.t.toFixed(1)} s · ${e.text}`); break;
     case "chunk": onChunk(e); break;
     case "brain": break;
@@ -252,7 +276,7 @@ es.onmessage = m => {
     case "end":
       running = false; buttons();
       if (S) $("prog").style.width = "100%";
-      log(e.stopped ? "Stopped by user" : `Finished: ${e.beats} fetal beats reported`);
+      log(e.stopped ? "Stopped by user" : `Finished: ${e.beats} ${V7 ? "final " : ""}fetal beats reported`);
       if (e.f1 !== undefined) showScore(e);
       break;
     case "error": running = false; buttons(); log(e.text, "err"); $("runmsg").innerHTML = `<span class="err">${e.text}</span>`; break;
@@ -264,10 +288,14 @@ function onChunk(e) {
   S.done = e.done;
   for (let k = 0; k < 4; k++) S.leads[k].set(e.leads[k], e.t0 / 2);
   for (const [t, f, src] of e.beats) {
-    S.beats.push(t);
+    S.beats.push(t); S.lastFinal = t;
     if (f > 0) S.fhr.push([t, f]);
-    $("k_trk").textContent = src;
+    $("k_trk").textContent = src === 16 ? "filled" : src;
   }
+  for (const [t, f] of (e.live || [])) { S.live.push(t); if (f > 0) S.fhrLive.push([t, f]); }
+  if (e.fhr_live) $("k_live").textContent = `live estimate: ${e.fhr_live.toFixed(0)} bpm`;
+  if (e.flushed) S.flushed = true;
+  if (V7) $("k_delay").textContent = S.flushed ? "0 (done)" : S.lastFinal < 0 ? "—" : ((S.done - S.lastFinal) / FS).toFixed(1);
   S.mpk.push(...e.mpk);
   if (e.mhr) { S.mhr.push([e.done, e.mhr]); $("k_mhr").textContent = e.mhr.toFixed(0); }
   if (e.fhr) $("k_fhr").textContent = e.fhr.toFixed(0);
@@ -295,7 +323,12 @@ function drawSig() {
   const [g, w, h] = fit($("sig"));
   g.clearRect(0, 0, w, h);
   if (!S) return;
-  const end = S.done / 2, start = Math.max(0, end - WIN * FS / 2), span = WIN * FS / 2;
+  // v7: show the 10 s that end just after the newest final beat (the final beats are ~15 s behind)
+  const lagS = V7 && !S.flushed && S.lastFinal >= 0 ? Math.max(0, S.done - S.lastFinal - 2 * FS) : 0;
+  const end = (S.done - lagS) / 2, start = Math.max(0, end - WIN * FS / 2), span = WIN * FS / 2;
+  $("sigtitle").textContent = !V7 ? "Abdominal leads: last 10 s"
+    : lagS > 0 ? `Abdominal leads: 10 s ending ${(lagS / FS).toFixed(0)} s ago, where the final beats are`
+    : "Abdominal leads: last 10 s (final beats appear about 15 s later)";
   const x = i => (i - (end - span)) / span * w;
   const lh = h / 4, cols = ["--lead1","--lead2","--lead3","--lead4"].map(css);
   g.font = "11px system-ui"; g.fillStyle = css("--muted");
@@ -315,6 +348,7 @@ function drawSig() {
   };
   mark(S.mpk, css("--mat"), 0, h, 1);
   mark(S.truth.filter(t => t <= S.done), css("--truth"), h - 14, h, 3);
+  if (V7) mark(S.live, css("--live"), 0, 16, 2);
   mark(S.beats, css("--fetal"), 0, h, 2);
   g.fillStyle = css("--muted");
   for (let s = Math.ceil((end - span) * 2 / FS); s <= end * 2 / FS; s++) g.fillText(s + " s", x(s * FS / 2) + 2, h - 2);
@@ -333,7 +367,12 @@ function drawHR() {
     pts.forEach(([t, v], i) => { const yy = Y(Math.min(hi, Math.max(lo, v))); i ? g.lineTo(X(t), yy) : g.moveTo(X(t), yy); });
     g.stroke();
   };
-  line(S.mhr, css("--mat")); line(S.fhr, css("--fetal"));
+  if (V7 && S.lastFinal >= 0 && !S.flushed) {
+    g.fillStyle = css("--line"); g.globalAlpha = .5; g.fillRect(X(S.lastFinal), 0, X(S.done) - X(S.lastFinal), h - 14); g.globalAlpha = 1;
+  }
+  line(S.mhr, css("--mat"));
+  if (V7) { g.setLineDash([4, 3]); line(S.fhrLive, css("--live")); g.setLineDash([]); }
+  line(S.fhr, css("--fetal"));
   g.strokeStyle = css("--muted"); g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(S.done), 0); g.lineTo(X(S.done), h - 14); g.stroke(); g.setLineDash([]);
 }
 (function frame() { drawSig(); drawHR(); requestAnimationFrame(frame); })();

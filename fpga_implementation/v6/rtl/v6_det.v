@@ -9,6 +9,7 @@ module v6_det #(parameter integer NINST = 4) (
     input  wire               init,         // pulse: initialise instance inst
     input  wire signed [31:0] i_start,      // det_start
     input  wire [7:0]         i_refr, i_loc, i_rrmin,
+    input  wire               i_decay,      // v6.1: peak decays after 500 samples without a detection
     input  wire               start,        // pulse: one step
     input  wire [2:0]         inst,
     input  wire signed [31:0] t,
@@ -21,7 +22,7 @@ module v6_det #(parameter integer NINST = 4) (
     reg signed [31:0] refr [0:NINST-1], loc [0:NINST-1], rrmin [0:NINST-1];
     reg signed [63:0] peak [0:NINST-1], noise [0:NINST-1], wmax [0:NINST-1], wsum [0:NINST-1];
     reg signed [63:0] e1 [0:NINST-1], e2 [0:NINST-1], pendv [0:NINST-1];
-    reg        en [0:NINST-1];
+    reg        en [0:NINST-1], dcy [0:NINST-1];
     reg signed [31:0] last [0:NINST-1], pend [0:NINST-1];
     reg signed [63:0] ring [0:NINST*32-1];
     reg [7:0]  ra, wa; reg we; reg signed [63:0] wd, rd;
@@ -37,7 +38,7 @@ module v6_det #(parameter integer NINST = 4) (
         case (s)
         0: if (init) begin
                k <= inst; dstart[inst] <= i_start; refr[inst] <= $signed({24'd0, i_refr}); loc[inst] <= $signed({24'd0, i_loc}); rrmin[inst] <= $signed({24'd0, i_rrmin});
-               peak[inst] <= 0; noise[inst] <= 0; wmax[inst] <= 0; wsum[inst] <= 0;
+               peak[inst] <= 0; noise[inst] <= 0; wmax[inst] <= 0; wsum[inst] <= 0; dcy[inst] <= i_decay;
                e1[inst] <= 0; e2[inst] <= 0; pendv[inst] <= 0; en[inst] <= 0;
                last[inst] <= -32'sd1000000000; pend[inst] <= -32'sd1;
                cnt <= 0; s <= 1;
@@ -69,7 +70,10 @@ module v6_det #(parameter integer NINST = 4) (
                         i <= lo + 1; best <= lo; ra <= {k, lo[4:0]};
                         s <= 3;
                     end else begin
-                        if (v <= thr) noise[k] <= noise[k] + ((v - noise[k]) >>> 3);
+                        if (v <= thr) begin
+                            noise[k] <= noise[k] + ((v - noise[k]) >>> 3);
+                            if (dcy[k] && (tv - 1) - last[k] >= 500) peak[k] <= peak[k] - (peak[k] >>> 3);
+                        end
                         s <= 8;
                     end
                 end else s <= 8;

@@ -28,6 +28,42 @@
  */
 #ifndef V6_PROTO_H
 #define V6_PROTO_H
+
+/* v6.1 (2026-11-14, C model only): maternal detectors start after the filter transient and their
+ * peak level decays after 2 s without a detection; spatial filters are recalibrated every 30 s on
+ * the latest 12 s, keeping a track's old filter unless the new one scores higher (label-free).
+ * Build with -DV61.  Without it the model is the frozen v6 that matches the board bitstream. */
+/* v7-DL: v6.1 + the look-ahead unit (v7_post.c) that outputs the final beats with a fixed delay.
+ * Build with -DV7 (implies V61).  Window, margin, Viterbi lag and clean-up passes: */
+#ifdef V7
+#ifndef V61
+#define V61
+#endif
+#ifndef V7_WP
+#define V7_WP 6
+#endif
+#ifndef V7_WF
+#define V7_WF 3
+#endif
+#ifndef V7_M
+#define V7_M 375
+#endif
+#ifndef V7_LV
+#define V7_LV 0
+#endif
+#ifndef V7_DL
+#define V7_DL 3750          /* deadline: no beat waits more than 17.5 s */
+#endif
+#ifndef V7_IT
+#define V7_IT 1
+#endif
+#endif
+#ifdef V61
+#define MAT_DET_START 256
+#define MAT_DECAY 1
+#define RECAL 7500
+#define RECAL_KEEP 1
+#endif
 #include <stdint.h>
 
 #define NL 4
@@ -62,7 +98,8 @@ enum {
     C_RSP_V = 0x10, C_RSP_MK = 0x11, C_RSP_BASIS = 0x12, C_RSP_CAL = 0x13, C_RSP_SEL = 0x14,
     C_COV = 0x80, C_MDET = 0x81, C_REQ_MK = 0x82, C_MPK = 0x83, C_SEG = 0x84, C_CALDATA = 0x85,
     C_REQ_CAL = 0x86, C_BEAT = 0x87, C_FEAT = 0x88, C_BMED = 0x89, C_REQ_SEL = 0x8A, C_OUT = 0x8B,
-    C_DONE = 0x8C
+    C_DONE = 0x8C,
+    C_FLUSH = 0x03, C_OUT7 = 0x8D, C_END7 = 0x8E          /* v7-DL */
 };
 
 /* envelope code: monotonic 8-significant-bit float of a non-negative integer

@@ -1,0 +1,46 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Sat Nov 14 15:16:15 2026
+| Host         : LAPTOP-JP0HJTKD running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -hierarchical_depth 3 -file D:/signal_project/fpga_implementation/v6/build/v61/util_hier.rpt
+| Design       : v6_top
+| Device       : xc7s50csga324-1
+| Speed File   : -1
+| Design State : Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++-------------+------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|   Instance  |         Module         | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++-------------+------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| v6_top      |                  (top) |      18986 |      16841 |    2144 |    1 | 11179 |     56 |      8 |         33 |
+|   (v6_top)  |                  (top) |          2 |          1 |       0 |    1 |     1 |      0 |      0 |          0 |
+|   core      |                v6_core |      18908 |      16764 |    2144 |    0 | 11109 |     56 |      8 |         33 |
+|     (core)  |                v6_core |        291 |        291 |       0 |    0 |   231 |     27 |      2 |          0 |
+|     canc    |                v6_canc |       1144 |       1094 |      50 |    0 |   948 |     10 |      1 |         15 |
+|     fe      |                  v6_fe |        800 |        800 |       0 |    0 |   959 |      1 |      0 |          4 |
+|       (fe)  |                  v6_fe |        340 |        340 |       0 |    0 |   602 |      0 |      0 |          0 |
+|       sos   |                 v6_sos |        460 |        460 |       0 |    0 |   357 |      1 |      0 |          4 |
+|     link    |                v6_link |        889 |        889 |       0 |    0 |  1825 |      3 |      1 |          0 |
+|     mat     |                 v6_mat |       5098 |       4234 |     864 |    0 |  2581 |      2 |      2 |          4 |
+|       (mat) |                 v6_mat |       1956 |       1956 |       0 |    0 |  1979 |      0 |      2 |          4 |
+|       det   |               v6_det_0 |       2770 |       2054 |     716 |    0 |   375 |      1 |      0 |          0 |
+|       mwi   |                 v6_mwi |        372 |        224 |     148 |    0 |   227 |      1 |      0 |          0 |
+|     trk     |                 v6_trk |      10719 |       9489 |    1230 |    0 |  4565 |     13 |      2 |         10 |
+|       (trk) |                 v6_trk |       6688 |       6324 |     364 |    0 |  3587 |      7 |      2 |          6 |
+|       det   |                 v6_det |       2633 |       1915 |     718 |    0 |   359 |      1 |      0 |          0 |
+|       mwi   | v6_mwi__parameterized0 |        928 |        780 |     148 |    0 |   255 |      4 |      0 |          0 |
+|       sos   | v6_sos__parameterized0 |        474 |        474 |       0 |    0 |   364 |      1 |      0 |          4 |
++-------------+------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

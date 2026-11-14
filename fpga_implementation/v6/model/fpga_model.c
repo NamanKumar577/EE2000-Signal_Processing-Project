@@ -19,6 +19,9 @@
 #include "proto.h"
 #include "coef_q28.h"
 #include "fpga_model.h"
+#ifdef V7
+#include "v7_post.h"
+#endif
 
 typedef int64_t i64;
 
@@ -77,7 +80,20 @@ typedef struct {
     i64 e1, e2;
     i64 ab[32];
     int pend; i64 pend_v;
+    int decay;                      /* 1: peak level decays while nothing is detected (maternal detectors) */
 } det_t;
+#ifndef RECAL
+#define RECAL 0                     /* >0: recalibrate the spatial filters every RECAL samples (Z-time) */
+#endif
+#ifndef MAT_DET_START
+#define MAT_DET_START 0             /* first sample of the maternal detectors' warm-up */
+#endif
+#ifndef MAT_DECAY
+#define MAT_DECAY 0                 /* 1: maternal detector peak decays after MAT_DECAY_GAP samples without a detection */
+#endif
+#ifndef MAT_DECAY_GAP
+#define MAT_DECAY_GAP 500
+#endif
 static void det_init(det_t *d, int det_start, int warmup, int refr, int loc, int rr_min)
 {
     memset(d, 0, sizeof(*d));
@@ -115,6 +131,7 @@ static int det_step(det_t *d, int t, i64 e, i64 ab)    /* warmup must be 512 */
                     d->peak += (v - d->peak) >> 3;
                 } else if (v <= thr) {
                     d->noise += (v - d->noise) >> 3;
+                    if (d->decay && m - d->last >= MAT_DECAY_GAP) d->peak -= d->peak >> 3;
                 }
             }
         }
@@ -127,7 +144,7 @@ static int det_step(det_t *d, int t, i64 e, i64 ab)    /* warmup must be 512 */
 /* ─────────── state ─────────── */
 typedef struct {
     int kind, src, blank;
-    int wq[4];
+    int wq[4], w0[4], rbase;            /* weights now, weights before the last (re)calibration, ramp start */
     sos_t bp; mwi_t mw; uint16_t ehold; int blank_until;
     uint16_t e[ERING];
     int32_t bpr[BRING];
@@ -156,7 +173,7 @@ static struct {
     sos_t bp0z, bp0x; mwi_t mw0z, mw0x;
     int mblank_ptr;
     int sel_next, sel_k, sel_t, sel_end, out_last, rrbuf[5], nrr, emitted_upto, fhr_x10;
-    int zc_ptr;
+    int zc_ptr, recal_next;
     track_t tr[MAXTR];
     /* response buffers (written by fm_rx) */
     int r_v, r_mk, r_basis, r_cal, r_sel;
@@ -178,6 +195,9 @@ static void wait_rsp(int *flag, const char *what)
 void fm_rx(int cmd, const uint8_t *p, int len)
 {
     (void)len;
+#ifdef V7
+    v7_rsp(cmd, p, len);
+#endif
     switch (cmd) {
     case C_RSP_V:
         for (int k = 0; k < NL; k++) for (int l = 0; l < NL; l++) S.rv_V[k][l] = get16s(p + 2 * (k * NL + l));
@@ -206,9 +226,17 @@ void fm_rx(int cmd, const uint8_t *p, int len)
 
 static void emit_u32(int cmd, uint32_t v) { uint8_t b[4]; put32(b, v); EMIT(cmd, b, 4); }
 
+#ifdef V7
+static fm_emit_fn EMIT_OUT;
+static void emit_tap(int cmd, const uint8_t *p, int len) { v7_up(cmd, p, len); EMIT_OUT(cmd, p, len); }
+void fm_flush(void) { v7_flush(S.T); }
+#endif
 void fm_reset(fm_emit_fn emit, fm_need_fn need)
 {
     EMIT = emit; NEED = need;
+#ifdef V7
+    EMIT_OUT = emit; EMIT = emit_tap; v7_reset(emit);
+#endif
     memset(&S, 0, sizeof(S));
     for (int i = 0; i < LSEG; i++) S.tap[i] = 32768;
     for (int i = 0; i < 8; i++) { int v = (int)((i * 32768 + 3) / 7); S.tap[i] = v; S.tap[LSEG - 1 - i] = v; }
@@ -216,6 +244,7 @@ void fm_reset(fm_emit_fn emit, fm_need_fn need)
     S.mk = -1; S.mlast = -1;
     S.sel_k = -1; S.sel_next = SEL_START; S.out_last = -1; S.emitted_upto = -1;
     S.zc_ptr = CAL_BEGIN;
+    S.recal_next = RECAL > 0 ? CAL_END + RECAL : -1;
 }
 
 /* ─────────── maternal ─────────── */
@@ -474,12 +503,38 @@ static void calibrate(void)
         memset(tr, 0, sizeof(*tr));
         tr->kind = S.rv_kind[k]; tr->src = S.rv_src[k]; tr->blank = S.rv_blank[k];
         memcpy(tr->wq, S.rv_w[k], sizeof(tr->wq));
+        tr->w0[0] = 1 << W_FRAC; tr->rbase = CAL_END - 1;
         tr->bp = tr->src ? S.bp0x : S.bp0z;
         tr->mw = tr->src ? S.mw0x : S.mw0z;
         tr->dec = T0_TRACK + 1000 - 1;
         if (tr->kind == 1) det_init(&tr->det, T0_TRACK, 512, 50, 26, 50);
     }
     S.calibrated = 1;
+}
+
+/* periodic recalibration: latest CAL_LEN samples of Z/Xf to the PC, new weights, 64-sample cross-fade */
+static void recalibrate(int s)
+{
+    static uint8_t b[6 + 16 * 2048];
+    for (int s0 = s - CAL_LEN; s0 < s; ) {
+        int n = s - s0 < 2048 ? s - s0 : 2048;
+        for (int i = 0; i < n; i++) for (int l = 0; l < NL; l++) {
+            put16(b + 6 + 16 * i + 2 * l, S.z[ZI(s0 + i)][l]);
+            put16(b + 6 + 16 * i + 8 + 2 * l, S.xf[ZI(s0 + i)][l]);
+        }
+        put32(b, (uint32_t)s0); put16(b + 4, n);
+        EMIT(C_CALDATA, b, 6 + 16 * n);
+        s0 += n;
+    }
+    EMIT(C_REQ_CAL, 0, 0);
+    wait_rsp(&S.r_cal, "CAL");
+    for (int k = 0; k < S.ntr && k < S.rv_ntr; k++) {
+        track_t *tr = &S.tr[k];
+        memcpy(tr->w0, tr->wq, sizeof(tr->w0));      /* the previous ramp finished long ago */
+        memcpy(tr->wq, S.rv_w[k], sizeof(tr->wq));
+        tr->rbase = s - 1;
+    }
+    S.recal_next += RECAL;
 }
 
 /* ─────────── per-sample driver ─────────── */
@@ -503,7 +558,7 @@ void fm_push(const int16_t x[4])
             EMIT(C_COV, b, 80);
             wait_rsp(&S.r_v, "V");
             memcpy(S.Vq, S.rv_V, sizeof(S.Vq));
-            for (int k = 0; k < NL; k++) { det_init(&S.mdet[k], 0, 512, MAT_REFR, MAT_LOC, MAT_REFR); memset(&S.mmwi[k], 0, sizeof(mwi_t)); S.mmwi[k].w = MAT_MWI; }
+            for (int k = 0; k < NL; k++) { det_init(&S.mdet[k], MAT_DET_START, 512, MAT_REFR, MAT_LOC, MAT_REFR); S.mdet[k].decay = MAT_DECAY; memset(&S.mmwi[k], 0, sizeof(mwi_t)); S.mmwi[k].w = MAT_MWI; }
             for (int t = 0; t < MAT_INIT; t++) mat_det_step(t, S.Ym[t]);
             S.have_V = 1;
         }
@@ -553,15 +608,16 @@ void fm_push(const int16_t x[4])
                 int32_t bx = sos_q(BP_Q, BP_NS, &S.bp0x, (int32_t)S.xf[ZI(s)][0] << 8); mwi_q(&S.mw0x, (i64)bx * bx);
             }
         }
+        if (S.calibrated && s == S.recal_next) recalibrate(s);
         if (S.calibrated) {
             int bstart = 0;
             while (S.mblank_ptr < S.nmpk && S.mpk[S.mblank_ptr & (MPKQ - 1)] <= s) { if (S.mpk[S.mblank_ptr & (MPKQ - 1)] == s) bstart = 1; S.mblank_ptr++; }
-            int rr = s - (CAL_END - 1); if (rr > 64) rr = 64;
             for (int k = 0; k < S.ntr; k++) {
                 track_t *tr = &S.tr[k];
+                int rr = s - tr->rbase; if (rr > 64) rr = 64;
                 i64 acc = 0;
                 for (int l = 0; l < NL; l++) {
-                    int w0 = (l == 0) ? (1 << W_FRAC) : 0;
+                    int w0 = tr->w0[l];
                     i64 w = (i64)w0 * 64 + (i64)(tr->wq[l] - w0) * rr;          /* Q20 */
                     acc += w * (tr->src ? S.xf[ZI(s)][l] : S.z[ZI(s)][l]);
                 }
@@ -595,6 +651,9 @@ void fm_push(const int16_t x[4])
             emit_beats();
         }
     }
+#ifdef V7
+    v7_sample(T);
+#endif
     S.T = T + 1;
 }
 

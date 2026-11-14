@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 #include "proto.h"
 #include "brain.h"
 #include "../../v5/algo/fecg_v5_coef.h"
@@ -36,6 +37,9 @@ static struct {
     float Yc[CAL_LEN][NL];
     /* tracks */
     int ntr;
+    float prev_rate;
+    int cal_base, cal_open, ncal;           /* calibration window start, data being received, calibrations done */
+    double wsent[MAXTR][4];                 /* weights sent at the last calibration */
     struct { int pk[PKRING], npk, nfeat; int8_t pcc[PKRING][31]; float pem[PKRING]; float bmed[64]; int nb; } tr[MAXTR];
 } B;
 
@@ -383,10 +387,30 @@ static void refine(const double *C2, const double *w0, const int *m, int nm, dou
     }
     memcpy(wout, w, sizeof(w));
 }
+#ifndef RECAL_KEEP
+#define RECAL_KEEP 0            /* 1: at a recalibration keep a track's old filter unless the new one scores higher */
+#endif
+/* label-free filter quality on the current calibration window: regular, complete, non-maternal beat train */
+static double cal_quality(const double *w, const int *m, int nm)
+{
+    int pk[256], n0 = cal_detect(w, pk, 256), n = 0;
+    for (int i = 0; i < n0; i++) if (pk[i] >= CAL_WARM) pk[n++] = pk[i];
+    if (n < 4) return 0.0;
+    int rr[256];
+    for (int i = 0; i < n - 1; i++) rr[i] = pk[i + 1] - pk[i];
+    float med = imedian(rr, n - 1);
+    double rate = 60.0 * FS / med;
+    if (rate < 80.0 || rate > 220.0) return 0.0;
+    int ok = 0, hit = 0;
+    for (int i = 0; i < n - 1; i++) if (fabsf((float)rr[i] - med) <= 0.15f * med) ok++;
+    for (int i = 0; i < n; i++) for (int j = 0; j < nm; j++) if (abs(pk[i] - m[j]) <= 12) { hit++; break; }
+    double acc = (double)n * med / (double)(CAL_LEN - CAL_WARM); if (acc > 1.0) acc = 1.0;
+    return ((double)ok / (n - 1)) * acc * (1.0 - (double)hit / n);
+}
 static void on_req_cal(void)
 {
     int m[64], nm = 0, first = B.nmpk > 512 ? B.nmpk - 512 : 0;
-    for (int i = first; i < B.nmpk && nm < 64; i++) { int p = B.mpk[i & 511]; if (p >= CAL_BEGIN + CAL_WARM && p < CAL_END) m[nm++] = p - CAL_BEGIN; }
+    for (int i = first; i < B.nmpk && nm < 64; i++) { int p = B.mpk[i & 511]; if (p >= B.cal_base + CAL_WARM && p < B.cal_base + CAL_LEN) m[nm++] = p - B.cal_base; }
     double cands[2][12][4];
     for (int src = 0; src < 2; src++) {
         cal_bandpass(src);
@@ -402,6 +426,11 @@ static void on_req_cal(void)
         for (int i = 0; i < 4; i++) { for (int j = 0; j < 4; j++) cands[src][nc][j] = (i == j); nc++; }
         for (int j = 0; j < 4; j++) { for (int i = 0; i < 4; i++) cands[src][nc][i] = V[i * 4 + j]; nc++; }
         for (int j = 0; j < 4; j++) { double v0[4]; for (int i = 0; i < 4; i++) v0[i] = V[i * 4 + j]; refine(C2, v0, m, nm, cands[src][nc]); nc++; }
+        if (RECAL_KEEP && B.ncal > 0)                   /* recalibration: keep the old filter if it is at least as good here */
+            for (int j = 0; j < 4; j++) {
+                int k = src ? 8 + j : 4 + j;
+                if (cal_quality(B.wsent[k], m, nm) >= cal_quality(cands[src][8 + j], m, nm)) memcpy(cands[src][8 + j], B.wsent[k], sizeof(double) * 4);
+            }
     }
     /* 16 tracks: Z leads + Z GEVD (tracker, blanked), Xf GEVD tracker, Xf GEVD detector */
     static const int csrc[16] = {0,0,0,0, 0,0,0,0, 1,1,1,1, 1,1,1,1};
@@ -414,12 +443,23 @@ static void on_req_cal(void)
         n = sqrt(n);
         o[off] = (uint8_t)(k >= 12); o[off + 1] = (uint8_t)csrc[k]; o[off + 2] = (uint8_t)(csrc[k] == 0); off += 3;
         for (int i = 0; i < 4; i++) { put16(o + off, q14(n > 0 ? w[i] / n : (i == 0))); off += 2; }
+        for (int i = 0; i < 4; i++) B.wsent[k][i] = n > 0 ? w[i] / n : (i == 0);
     }
-    memset(B.tr, 0, sizeof(B.tr));
+    if (B.ncal == 0) memset(B.tr, 0, sizeof(B.tr));    /* recalibration keeps the tracks' history */
+    B.ncal++; B.cal_open = 0;
     SEND(C_RSP_CAL, o, off);
 }
 
 /* ─────────── 5. selection ─────────── */
+#ifndef SEL_WIN
+#define SEL_WIN 5000            /* selection window (samples) */
+#endif
+#ifndef SEL_REGP
+#define SEL_REGP 2              /* exponent of the RR-regularity factor */
+#endif
+#ifndef SEL_AGR0
+#define SEL_AGR0 0.5f           /* quality x (SEL_AGR0 + agreement) */
+#endif
 static float mylogf(float x)
 {
     if (!(x > 0.0f)) return -1e30f;
@@ -429,15 +469,19 @@ static float mylogf(float x)
     float s = z * (2.0f + z2 * (0.6666667f + z2 * (0.4f + z2 * (0.2857143f + z2 * 0.2222222f))));
     return s + (float)e * 0.69314718f;
 }
-static float window_quality(int k, int t0, int t1)
+static float FEAT_[MAXTR][6];         /* last window features per track (c, acc, log prom, reg, rate, n) */
+static float window_quality(int k, int t0, int t1, float *rate_out)
 {
+    for (int j = 0; j < 6; j++) FEAT_[k][j] = 0.0f;
     int idx[PKRING], n = 0, first = B.tr[k].npk > PKRING ? B.tr[k].npk - PKRING : 0;
+    *rate_out = 0.0f;
     for (int i = first; i < B.tr[k].npk; i++) { int q = B.tr[k].pk[i % PKRING]; if (q >= t0 + 16 && q < t1 - 16 && i < B.tr[k].nfeat) idx[n++] = i; }
     if (n < 4) return 0.0f;
     int rr[PKRING];
     for (int i = 0; i < n - 1; i++) rr[i] = B.tr[k].pk[idx[i + 1] % PKRING] - B.tr[k].pk[idx[i] % PKRING];
     float R = imedian(rr, n - 1);
     float rate = 60.0f * FS / R;
+    *rate_out = rate;
     if (rate < 80.0f || rate > 220.0f) return 0.0f;
     float expct = (float)(t1 - t0) / R; if (expct < 1.0f) expct = 1.0f;
     float acc = (float)n / expct; if (acc > 1.0f) acc = 1.0f;
@@ -466,7 +510,9 @@ static float window_quality(int k, int t0, int t1)
     int ok = 0;
     for (int i = 0; i < n - 1; i++) if (fabsf((float)rr[i] - R) <= 0.15f * R) ok++;
     float reg = (float)ok / (float)(n - 1);
-    return q * reg * reg;
+    float rg = reg; for (int i = 1; i < SEL_REGP; i++) rg *= reg;
+    FEAT_[k][0] = c; FEAT_[k][1] = acc; FEAT_[k][2] = mylogf(1.0f + prom); FEAT_[k][3] = reg; FEAT_[k][4] = rate; FEAT_[k][5] = (float)n;
+    return q * rg;
 }
 static float coincidence_penalty(int k, int t0, int t1)
 {
@@ -504,13 +550,61 @@ static float agreement(int k, int t0, int t1)
     if (nb == 0 || B.ntr < 2) return 0.0f;
     return (float)hits / ((float)nb * (float)(B.ntr - 1));
 }
+#ifndef SEL_MATRATE
+#define SEL_MATRATE 0.0f        /* >0: quality x (1 - SEL_MATRATE) for tracks at the maternal rate (+-8%) */
+#endif
+#ifndef SEL_CLUSTER
+#define SEL_CLUSTER 0           /* 1: pick the rate cluster with the largest summed quality, then its best track */
+#endif
+#ifndef SEL_CONT
+#define SEL_CONT 0.0f           /* >0: continuity with the previous output rate, scale in bpm */
+#endif
+static float maternal_rate(int t0, int t1)
+{
+    int m[64], nm = 0, first = B.nmpk > 512 ? B.nmpk - 512 : 0;
+    for (int i = first; i < B.nmpk && nm < 64; i++) { int p = B.mpk[i & 511]; if (p >= t0 && p < t1) m[nm++] = p; }
+    if (nm < 4) return 0.0f;
+    int rr[64];
+    for (int i = 0; i < nm - 1; i++) rr[i] = m[i + 1] - m[i];
+    float med = imedian(rr, nm - 1);
+    int ok = 0;
+    for (int i = 0; i < nm - 1; i++) if (fabsf((float)rr[i] - med) <= 0.15f * med) ok++;
+    if ((float)ok < 0.6f * (float)(nm - 1)) return 0.0f;           /* irregular: not a usable maternal rate */
+    return 60.0f * FS / med;
+}
 static void on_req_sel(int t)
 {
     int best = 0; float bq = -1.0f;
+    float q[MAXTR], rate[MAXTR];
+    float mrate = maternal_rate(t - SEL_WIN, t);
     for (int k = 0; k < B.ntr; k++) {
-        float q = window_quality(k, t - 5000, t) * coincidence_penalty(k, t - 5000, t);
-        if (q > 0.0f) q *= 0.5f + agreement(k, t - 5000, t);
-        if (q > bq) { bq = q; best = k; }
+        q[k] = window_quality(k, t - SEL_WIN, t, &rate[k]) * coincidence_penalty(k, t - SEL_WIN, t);
+        if (q[k] > 0.0f) q[k] *= SEL_AGR0 + agreement(k, t - SEL_WIN, t);
+        if (SEL_MATRATE > 0.0f && mrate > 0.0f && fabsf(rate[k] - mrate) <= 0.08f * mrate) q[k] *= 1.0f - SEL_MATRATE;
+        if (SEL_CONT > 0.0f && B.prev_rate > 0.0f && q[k] > 0.0f) q[k] *= 0.5f + 0.5f * expf(-fabsf(rate[k] - B.prev_rate) / SEL_CONT);
+        if (q[k] > bq) { bq = q[k]; best = k; }
+    }
+    if (SEL_CLUSTER && bq > 0.0f) {
+        int c = best; float bs = -1.0f;
+        for (int k = 0; k < B.ntr; k++) {
+            if (q[k] <= 0.0f) continue;
+            float s = 0.0f;
+            for (int j = 0; j < B.ntr; j++) if (q[j] > 0.0f && fabsf(rate[j] - rate[k]) <= 0.05f * rate[k]) s += q[j];
+            if (s > bs) { bs = s; c = k; }
+        }
+        bq = -1.0f;
+        for (int k = 0; k < B.ntr; k++) if (q[k] > 0.0f && fabsf(rate[k] - rate[c]) <= 0.05f * rate[c] && q[k] > bq) { bq = q[k]; best = k; }
+    }
+    if (bq > 0.0f) B.prev_rate = rate[best];
+    {   /* development dump: features of every track at every selection (env BR_DUMP=file) */
+        static FILE *df = 0; static int tried = 0;
+        if (!tried) { const char *fn = getenv("BR_DUMP"); tried = 1; if (fn) df = fopen(fn, "w"); }
+        if (df) {
+            for (int k = 0; k < B.ntr; k++)
+                fprintf(df, "%d %d %.4f %.4f %.4f %.4f %.3f %.0f %.4f %.4f %.5g %.1f\n", t, k, FEAT_[k][0], FEAT_[k][1], FEAT_[k][2], FEAT_[k][3],
+                        FEAT_[k][4], FEAT_[k][5], coincidence_penalty(k, t - SEL_WIN, t), agreement(k, t - SEL_WIN, t), q[k], mrate);
+            fflush(df);
+        }
     }
     uint8_t o = (uint8_t)best;
     SEND(C_RSP_SEL, &o, 1);
@@ -535,9 +629,10 @@ void br_rx(int cmd, const uint8_t *p, int len)
     case C_SEG: on_seg(p); break;
     case C_CALDATA: {
         int s0 = (int)get32(p), n = (int)get16u(p + 4);
+        if (!B.cal_open) { B.cal_base = s0; B.cal_open = 1; }
         for (int i = 0; i < n; i++) for (int l = 0; l < NL; l++) {
-            B.Zc[s0 + i - CAL_BEGIN][l] = (int16_t)get16s(p + 6 + 16 * i + 2 * l);
-            B.Xc[s0 + i - CAL_BEGIN][l] = (int16_t)get16s(p + 6 + 16 * i + 8 + 2 * l);
+            B.Zc[s0 + i - B.cal_base][l] = (int16_t)get16s(p + 6 + 16 * i + 2 * l);
+            B.Xc[s0 + i - B.cal_base][l] = (int16_t)get16s(p + 6 + 16 * i + 8 + 2 * l);
         }
         break;
     }

@@ -11,7 +11,8 @@ module tb_core;
     v6_core dut(.clk(clk), .rst(rst), .rx_data(rxd), .rx_valid(rxv), .tx_data(txd), .tx_valid(txv), .tx_ready(1'b1), .status(status));
 
     reg [7:0] expb [0:MAXB-1];
-    integer up_i = 0, frames = 0, errs = 0, dones = 0, fs = 0, flen = 0, fpos = 0, idle = 0;
+    integer up_i = 0, frames = 0, errs = 0, dones = 0, ends = 0, fs = 0, flen = 0, fpos = 0, idle = 0;
+    reg flushed = 0;
     reg [7:0] fcmd;
     initial $readmemh("G_up.hex", expb);
     always @(posedge clk) begin
@@ -35,6 +36,7 @@ module tb_core;
             6: begin
                 fs = 0; frames = frames + 1;
                 if (fcmd == 8'h8C) dones = dones + 1;
+                if (fcmd == 8'h8E) ends = ends + 1;
                 if (frames % 2000 == 0) $display("  %0d frames, %0d bytes, t=%0t", frames, up_i, $time);
             end
             endcase
@@ -64,7 +66,12 @@ module tb_core;
                 for (i = 0; i < n; i = i + 1) begin r = $fscanf(fd, "%h", b); buf_[i] = b; end
                 while (frames <= idx) begin @(negedge clk); if (idle > 20000000) begin $display("TIMEOUT waiting frame %0d (have %0d)", idx, frames); $finish; end end
                 for (i = 0; i < n; i = i + 1) send_byte(buf_[i]);
+            end else if (ch == "F") begin                      // v7: FLUSH after the last DONE
+                while (dones != chunks) begin @(negedge clk); if (idle > 20000000) begin $display("TIMEOUT before FLUSH"); $finish; end end
+                send_byte(8'hA5); send_byte(8'h5A); send_byte(8'h03); send_byte(8'h00); send_byte(8'h00); send_byte(8'h03);
+                flushed = 1;
             end else begin
+                while (flushed && ends == 0) begin @(negedge clk); if (idle > 20000000) begin $display("TIMEOUT waiting END7"); $finish; end end
                 while (dones != chunks) begin @(negedge clk); if (idle > 20000000) begin $display("TIMEOUT at end"); $finish; end end
                 repeat (100) @(negedge clk);
                 $display("RESULT: %0d uplink bytes, %0d frames, %0d byte errors, expected next byte %02h (x = end)", up_i, frames, errs, expb[up_i]);

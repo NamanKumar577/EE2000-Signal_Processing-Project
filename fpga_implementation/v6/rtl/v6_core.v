@@ -14,22 +14,22 @@ module v6_core (
     output wire [7:0] status
 );
     // ---------------- link
-    wire smp_empty, smp_last, soft_reset, err;
+    wire smp_empty, smp_last, soft_reset, err, flush;
     reg  smp_pop;
     wire [63:0] smp_x;
     wire v_valid, mk_valid, basis_valid, cal_valid, sel_valid;
     wire v_clr, mk_clr, basis_clr, cal_clr, sel_clr;
     wire [255:0] v_q; wire [1:0] mk; wire [7:0] basis_nb; wire [10:0] basis_raddr; wire signed [23:0] basis_rdata;
     wire [4:0] cal_ntr; wire [15:0] cal_kind, cal_src, cal_blank; wire [1023:0] cal_w; wire [3:0] sel;
-    reg  msg_start; reg [7:0] msg_cmd; reg [15:0] msg_len; wire msg_idle;
+    reg  msg_start; reg [7:0] msg_cmd; reg [15:0] msg_len; wire msg_idle_l, msg_idle;
     reg  w_valid; reg [63:0] w_data; reg [3:0] w_nb; wire w_ready;
     v6_link link(.clk(clk), .rst(rst | soft_reset), .rx_data(rx_data), .rx_valid(rx_valid), .tx_data(tx_data), .tx_valid(tx_valid), .tx_ready(tx_ready),
-        .smp_empty(smp_empty), .smp_pop(smp_pop), .smp_x(smp_x), .smp_last(smp_last), .soft_reset(soft_reset), .err(err),
+        .smp_empty(smp_empty), .smp_pop(smp_pop), .smp_x(smp_x), .smp_last(smp_last), .soft_reset(soft_reset), .flush(flush), .err(err),
         .v_valid(v_valid), .v_clr(v_clr), .v_q(v_q), .mk_valid(mk_valid), .mk_clr(mk_clr), .mk(mk),
         .basis_valid(basis_valid), .basis_clr(basis_clr), .basis_nb(basis_nb), .basis_raddr(basis_raddr), .basis_rdata(basis_rdata),
         .cal_valid(cal_valid), .cal_clr(cal_clr), .cal_ntr(cal_ntr), .cal_kind(cal_kind), .cal_src(cal_src), .cal_blank(cal_blank), .cal_w(cal_w),
         .sel_valid(sel_valid), .sel_clr(sel_clr), .sel(sel),
-        .msg_start(msg_start), .msg_cmd(msg_cmd), .msg_len(msg_len), .msg_idle(msg_idle),
+        .msg_start(msg_start), .msg_cmd(msg_cmd), .msg_len(msg_len), .msg_idle(msg_idle_l),
         .w_valid(w_valid), .w_data(w_data), .w_nb(w_nb), .w_ready(w_ready));
 
     // ---------------- rings (Xf, Z): 4096 x 4 x s16
@@ -96,6 +96,24 @@ module v6_core (
                .msg_start(tk_ms), .msg_cmd(tk_mc), .msg_len(tk_ml), .msg_idle(msg_idle),
                .w_valid(tk_wv), .w_data(tk_wd), .w_nb(tk_wn), .w_ready(w_ready));
 
+    // ---------------- v7-DL look-ahead unit (listens to the uplink words; ph 5 when it runs)
+    reg v7_go, v7_fl, v_seen;
+    wire v7_busy, v7_want, v7_done;
+    wire v7_ms, v7_wv; wire [7:0] v7_mc; wire [15:0] v7_ml; wire [63:0] v7_wd; wire [3:0] v7_wn;
+`ifdef V7
+    v7_la v7(.clk(clk), .clear(clear), .t_ms(msg_start), .t_mc(msg_cmd), .t_wv(w_valid & w_ready), .t_wd(w_data),
+             .v_seen(v_seen), .v_q(v_q), .mk(mk), .busy(v7_busy),
+             .start(v7_go), .fl(v7_fl), .T(T), .want(v7_want), .done(v7_done),
+             .msg_start(v7_ms), .msg_cmd(v7_mc), .msg_len(v7_ml), .msg_idle(msg_idle),
+             .w_valid(v7_wv), .w_data(v7_wd), .w_nb(v7_wn), .w_ready(w_ready));
+    assign msg_idle = msg_idle_l & ~v7_busy;      // FEAT shape math in progress: hold new messages
+`else
+    assign v7_busy = 1'b0, v7_want = 1'b0, v7_done = 1'b0, v7_ms = 1'b0, v7_wv = 1'b0;
+    assign v7_mc = 0, v7_ml = 0, v7_wd = 0, v7_wn = 0;
+    assign msg_idle = msg_idle_l;
+`endif
+    always @(posedge clk) if (rst || soft_reset) v_seen <= 1'b0; else if (v_valid) v_seen <= 1'b1;
+
     // ---------------- port muxes (by active unit)
     reg [2:0] ph;                               // 0 core, 1 fe, 2 mat, 3 canc, 4 trk
     reg c_ms, c_wv; reg [7:0] c_mc; reg [15:0] c_ml; reg [63:0] c_wd; reg [3:0] c_wn;
@@ -105,6 +123,7 @@ module v6_core (
         3'd2: begin msg_start = mt_ms; msg_cmd = mt_mc; msg_len = mt_ml; w_valid = mt_wv; w_data = mt_wd; w_nb = mt_wn; end
         3'd3: begin msg_start = ca_ms; msg_cmd = ca_mc; msg_len = ca_ml; w_valid = ca_wv; w_data = ca_wd; w_nb = ca_wn; end
         3'd4: begin msg_start = tk_ms; msg_cmd = tk_mc; msg_len = tk_ml; w_valid = tk_wv; w_data = tk_wd; w_nb = tk_wn; end
+        3'd5: begin msg_start = v7_ms; msg_cmd = v7_mc; msg_len = v7_ml; w_valid = v7_wv; w_data = v7_wd; w_nb = v7_wn; end
         default: begin msg_start = c_ms; msg_cmd = c_mc; msg_len = c_ml; w_valid = c_wv; w_data = c_wd; w_nb = c_wn; end
         endcase
         case (ph)
@@ -129,21 +148,30 @@ module v6_core (
     // ---------------- sequencer
     localparam S_RST = 0, S_RW = 1, S_IDLE = 2, S_P1 = 3, S_P2 = 4, S_FE = 5, S_MAT = 6, S_CA = 7,
                S_CD0 = 8, S_CD1 = 9, S_CD2 = 10, S_CD3 = 11, S_CD4 = 12, S_CD5 = 13, S_CD6 = 14, S_CD7 = 15,
-               S_TK0 = 16, S_TK = 17, S_DN = 18, S_DN2 = 19, S_NX = 20;
+               S_TK0 = 16, S_TK = 17, S_DN = 18, S_DN2 = 19, S_NX = 20, S_V0 = 21, S_V1 = 22, S_VF = 23;
+`ifdef V7
+    localparam S_AFTK = S_V0;                   // v7 step after the tracks
+`else
+    localparam S_AFTK = S_DN;
+`endif
+    reg flush_pend;
     reg [4:0]  st = S_RST;
     reg [11:0] cnt;
     reg        last;
     reg [31:0] zc, n, j;
     wire [31:0] lim1 = 32'd3750 - zc, lim2 = T - 32'd176 - zc + 32'd1;
     always @(posedge clk) begin
-        clear <= 1'b0; fe_go <= 1'b0; mat_go <= 1'b0; ca_go <= 1'b0; tk_go <= 1'b0;
+        clear <= 1'b0; fe_go <= 1'b0; mat_go <= 1'b0; ca_go <= 1'b0; tk_go <= 1'b0; v7_go <= 1'b0;
+        if (flush) flush_pend <= 1'b1;
         smp_pop <= 1'b0; c_ms <= 1'b0;
         if (c_wv && w_ready && ph == 0) c_wv <= 1'b0;
         if (rst || soft_reset) st <= S_RST;
         else case (st)
-        S_RST: begin clear <= 1'b1; cnt <= 0; T <= 0; zc <= 750; ph <= 0; c_wv <= 1'b0; st <= S_RW; end
+        S_RST: begin clear <= 1'b1; cnt <= 0; T <= 0; zc <= 750; ph <= 0; c_wv <= 1'b0; flush_pend <= 1'b0; st <= S_RW; end
         S_RW: if (cnt == 12'd4000) st <= S_IDLE; else cnt <= cnt + 1'b1;
         S_IDLE: if (!smp_empty) st <= S_P1;
+                else if (flush_pend) begin flush_pend <= 1'b0; ph <= 5; v7_go <= 1'b1; v7_fl <= 1'b1; st <= S_VF; end
+        S_VF: if (v7_done) begin ph <= 0; st <= S_IDLE; end
         S_P1: st <= S_P2;
         S_P2: begin xs <= smp_x; last <= smp_last; smp_pop <= 1'b1; ph <= 1; fe_go <= 1'b1; st <= S_FE; end
         S_FE: if (fe_done) begin ph <= 2; mat_go <= 1'b1; st <= S_MAT; end
@@ -164,8 +192,10 @@ module v6_core (
                    if (j + 1 == n) begin zc <= zc + n; st <= S_TK0; end
                    else begin j <= j + 1; st <= S_CD3; end
                end
-        S_TK0: if (T >= 176) begin ph <= 4; tk_go <= 1'b1; st <= S_TK; end else st <= S_DN;
-        S_TK: if (tk_done) begin ph <= 0; st <= S_DN; end
+        S_TK0: if (T >= 176) begin ph <= 4; tk_go <= 1'b1; st <= S_TK; end else st <= S_AFTK;
+        S_TK: if (tk_done) begin ph <= 0; st <= S_AFTK; end
+        S_V0: if (v7_want) begin ph <= 5; v7_go <= 1'b1; v7_fl <= 1'b0; st <= S_V1; end else st <= S_DN;
+        S_V1: if (v7_done) begin ph <= 0; st <= S_DN; end
         S_DN: if (last) begin
                   if (msg_idle) begin c_ms <= 1'b1; c_mc <= 8'h8C; c_ml <= 4; st <= S_DN2; end
               end else st <= S_NX;

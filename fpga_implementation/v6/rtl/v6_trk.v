@@ -48,6 +48,12 @@ module v6_trk (
     input  wire               w_ready
 );
     localparam signed [31:0] CAL_END = 3750, T0_TRACK = 3877, SEL_START = 4877;
+`ifdef V61
+    localparam signed [31:0] RECAL = 7500;           // v6.1: recalibrate the spatial filters every 30 s (Z-time)
+`else
+    localparam signed [31:0] RECAL = 0;
+`endif
+    localparam [1023:0] W0_UNIT = {16{64'h0000000000004000}};   // lead 0 = 1.0 (Q14) for every track
 
     // ---------------- envelope code (enc_e / dec_e of proto.h)
     function [15:0] enc_e(input [63:0] x);
@@ -95,7 +101,7 @@ module v6_trk (
     v6_mwi #(.NINST(18)) mwi(.clk(clk), .clear(mw_clear), .start(mw_start), .inst(mw_inst), .w(6'd30), .sq(mw_sq),
                              .copy(mw_copy), .copy_from(mw_from), .done(mw_done), .sum(mw_sum));
     reg d_init, d_start; reg [2:0] d_inst; reg signed [31:0] d_t; reg signed [63:0] d_e, d_ab; wire d_done; wire signed [31:0] d_out;
-    v6_det #(.NINST(4)) det(.clk(clk), .init(d_init), .i_start(T0_TRACK), .i_refr(8'd50), .i_loc(8'd26), .i_rrmin(8'd50),
+    v6_det #(.NINST(4)) det(.clk(clk), .init(d_init), .i_start(T0_TRACK), .i_refr(8'd50), .i_loc(8'd26), .i_rrmin(8'd50), .i_decay(1'b0),
                             .start(d_start), .inst(d_inst), .t(d_t), .e(d_e), .ab(d_ab), .done(d_done), .out(d_out));
     reg signed [31:0] ma, mb; reg signed [63:0] mp;
     always @(posedge clk) mp <= ma * mb;
@@ -148,6 +154,11 @@ module v6_trk (
 
     wire signed [15:0] w_kl = cal_w[64 * k + 16 * l +: 16];
     wire signed [15:0] src_kl = cal_src[k] ? xw[16 * l +: 16] : zw[16 * l +: 16];
+    // weights before the last (re)calibration and the start of the 64-sample cross-fade
+    reg [1023:0] w0f;
+    reg signed [31:0] rbase, recal_next, s0c;
+    reg [11:0] jj, nc;
+    wire signed [15:0] w0_kl = w0f[64 * k + 16 * l +: 16];
 
     // generic message: header (cmd, len) + up to 4 staged words, then -> rt_msg
     task send_msg(input [7:0] cmd, input [15:0] len, input [2:0] nwords, input [7:0] ret);
@@ -161,6 +172,7 @@ module v6_trk (
         if (w_valid && w_ready) w_valid <= 1'b0;
         if (clear) begin
             calibrated <= 1'b0; ntr <= 0; mblank <= 0;
+            w0f <= W0_UNIT; rbase <= CAL_END - 1; recal_next <= (RECAL > 0) ? CAL_END + RECAL : -32'sd1;
             sel_next <= SEL_START; sel_k <= -1; out_last <= -1; emitted_upto <= -1; nrro <= 0; fhr_x10 <= 0;
             m125 <= 0; w_valid <= 1'b0;
             so_clear <= 1'b1; s <= 250;
@@ -175,7 +187,7 @@ module v6_trk (
         2: begin
             zw <= zr_rd; xw <= xr_rd;
             if (!calibrated) s <= (sv == CAL_END) ? 10 : 3;
-            else s <= 30;
+            else s <= (sv == recal_next) ? 220 : 30;
         end
         // ---- before calibration: lead-0 band-pass of Z (inst 16) and Xf (inst 17)
         3: begin so_inst <= 16; so_x <= $signed(zw[15:0]) <<< 8; so_start <= 1'b1; s <= 4; end
@@ -208,11 +220,11 @@ module v6_trk (
         32: s <= 33;
         33: if (mpk_rd <= sv) begin if (mpk_rd == sv) bstart <= 1'b1; mblank <= mblank + 1'b1; s <= 31; end
             else s <= 34;
-        34: begin rrw <= (sv - (CAL_END - 1) > 64) ? 7'd64 : sv - (CAL_END - 1); k <= 0; s <= 35; end
+        34: begin rrw <= (sv - rbase > 64) ? 7'd64 : sv - rbase; k <= 0; s <= 35; end
         // ---- track k: projection (Q20 weights) -> Q8
         35: if (k == ntr) s <= 120; else begin acc <= 0; l <= 0; s <= 36; end
         36: begin
-            ma <= ((l == 0) ? 32'sd1048576 : 32'sd0) + (w_kl - ((l == 0) ? 32'sd16384 : 32'sd0)) * $signed({25'd0, rrw});
+            ma <= ($signed(w0_kl) <<< 6) + ($signed(w_kl) - $signed(w0_kl)) * $signed({25'd0, rrw});
             mb <= src_kl;
             s <= 37;
         end
@@ -515,6 +527,27 @@ module v6_trk (
         183: if (!w_valid) s <= rt_beat;
         // ======================================================== end of sample
         190: begin m125 <= (m125 == 124) ? 7'd0 : m125 + 1'b1; done <= 1'b1; s <= 0; end
+        // ======================================================== v6.1 recalibration (C model: recalibrate())
+        // keep the current weights, send the latest CAL_LEN = 3000 samples of Z / Xf as CALDATA
+        // (chunks of <= 2048), REQ_CAL, wait for the new weights, restart the cross-fade
+        220: begin w0f <= cal_w; s0c <= sv - 32'sd3000; s <= 221; end
+        221: if (msg_idle) begin
+            nc <= (sv - s0c < 2048) ? sv - s0c : 12'd2048;
+            msg_start <= 1'b1; msg_cmd <= 8'h85;
+            msg_len <= 16'd6 + (((sv - s0c < 2048) ? sv - s0c : 16'd2048) << 4);
+            s <= 222;
+        end
+        222: if (!w_valid && w_ready) begin w_valid <= 1'b1; w_data <= {16'd0, 4'd0, nc, s0c}; w_nb <= 6; jj <= 0; s <= 223; end
+        223: if (!w_valid) begin zr_ra <= s0c[11:0] + jj; xr_ra <= s0c[11:0] + jj; s <= 224; end
+        224: s <= 225;
+        225: if (w_ready) begin w_valid <= 1'b1; w_data <= zr_rd; w_nb <= 8; s <= 226; end
+        226: if (!w_valid && w_ready) begin w_valid <= 1'b1; w_data <= xr_rd; w_nb <= 8; s <= 227; end
+        227: if (!w_valid) begin
+            if (jj + 1'b1 == nc) begin s0c <= s0c + nc; s <= (s0c + nc == sv) ? 228 : 221; end
+            else begin jj <= jj + 1'b1; s <= 223; end
+        end
+        228: if (msg_idle) begin msg_start <= 1'b1; msg_cmd <= 8'h86; msg_len <= 0; s <= 229; end
+        229: if (cal_valid && msg_idle) begin cal_clr <= 1'b1; rbase <= sv - 1; recal_next <= recal_next + RECAL; s <= 30; end
         250: if (so_done) begin mw_clear <= 1'b1; s <= 251; end
         251: if (mw_done) s <= 0;
         default: s <= 0;

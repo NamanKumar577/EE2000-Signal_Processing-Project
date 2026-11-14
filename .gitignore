@@ -49,3 +49,22 @@ dfx_runtime.txt
 *.aux
 *.brf
 code/venv/
+# v6 waveform run outputs (regenerate with fpga_implementation/v6/sim/wave/run_wave.sh)
+fpga_implementation/v6/sim/wave/wave.vcd
+fpga_implementation/v6/sim/wave/G_*
+fpga_implementation/v6/sim/wave/beats_model.txt
+fpga_implementation/v6/sim/wave/*.log
+fpr-8.zip
+# development builds and caches of the accuracy bench
+tools/accuracy/_v6build/
+tools/accuracy/results_devbench_v6.csv
+# v7-DL build/program logs and Vivado side files, design-study logs
+fpga_implementation/v6/build_v7.log
+fpga_implementation/v6/program_v7.log
+fpga_implementation/v6/tight_setup_hold_pins.txt
+tools/accuracy/v7_live_sweep1.log
+tools/accuracy/v7c_dev*.log
+# LaTeX build output of the final report
+report/final_report/*.log
+report/final_report/*.aux
+report/final_report/*.out

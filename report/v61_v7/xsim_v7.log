@@ -1,0 +1,9 @@
+a01_30s: RESULT: 162133 uplink bytes, 2730 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches
+a01: RESULT: 444487 uplink bytes, 6555 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches
+r_ad_r01: RESULT: 936276 uplink bytes, 13138 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches
+r_cdev_a07: RESULT: 445088 uplink bytes, 6416 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches
+r_cdev_a29: RESULT: 462238 uplink bytes, 6274 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches
+r_cdev_a65: RESULT: 443297 uplink bytes, 6575 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches
+r_cdev_a71: RESULT: 463412 uplink bytes, 6877 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches
+r_syn_sub01_snr00dB_l1_c0: RESULT: 1148667 uplink bytes, 15265 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches
+r_syn_sub01_snr00dB_l5_c1: RESULT: 1234162 uplink bytes, 15908 frames, 0 byte errors, expected next byte xx (x = end) 0 mismatches

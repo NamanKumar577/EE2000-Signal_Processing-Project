@@ -63,7 +63,14 @@ module v6_mat (
     v6_mwi #(.NINST(4)) mwi(.clk(clk), .clear(mw_clear), .start(mw_start), .inst(mw_inst), .w(6'd38), .sq(mw_sq),
                             .copy(1'b0), .copy_from(5'd0), .done(mw_done), .sum(mw_sum));
     reg d_init, d_start; reg [2:0] d_inst; reg signed [31:0] d_t; reg signed [63:0] d_e, d_ab; wire d_done; wire signed [31:0] d_out;
-    v6_det #(.NINST(4)) det(.clk(clk), .init(d_init), .i_start(32'sd0), .i_refr(8'd75), .i_loc(8'd30), .i_rrmin(8'd75),
+`ifdef V61
+    localparam signed [31:0] MDET_START = 256;      // v6.1: warm-up after the filter start-up transient
+    localparam               MDET_DECAY = 1'b1;
+`else
+    localparam signed [31:0] MDET_START = 0;
+    localparam               MDET_DECAY = 1'b0;
+`endif
+    v6_det #(.NINST(4)) det(.clk(clk), .init(d_init), .i_start(MDET_START), .i_refr(8'd75), .i_loc(8'd30), .i_rrmin(8'd75), .i_decay(MDET_DECAY),
                             .start(d_start), .inst(d_inst), .t(d_t), .e(d_e), .ab(d_ab), .done(d_done), .out(d_out));
     reg signed [31:0] pa, pb; reg signed [63:0] prod;
     integer n;

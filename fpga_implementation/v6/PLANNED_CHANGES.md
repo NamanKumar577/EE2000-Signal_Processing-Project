@@ -15,16 +15,31 @@ Per-memory tiles from the synthesis "Block RAM: Final Mapping Report" (`build/bu
 
 Proof that stale envelope data is never read (needed for 1a): (1) the C model with the envelope rings filled with garbage at calibration (except e[3749], which the RTL zeroes) gives identical uplink streams; (2) the old RTL never cleared emem between RESETs and was still bit-exact on 140 consecutive board records.
 
-## 2. Accuracy (to be decided)
-- Candidate selection: on CinC dev the label-free choice scores ~75 F1; the best single track scores 82.6 and a per-window oracle 85.0 (`report/night_20261109/RESULTS.md`).
-- Periodic recalibration (idea, not tried yet in v5/v6): today the maternal PCA (at 10 s) and the GEVD calibration (at 15 s) run once and stay fixed. Redo them every N s (e.g. 30-60 s) on the most recent 12 s, without labels. Swap in the new tracks only if a label-free quality check says they are better, or run them as extra candidates next to the old ones so the selector can choose. Depends on item 1b: with streamed calibration data the PC already has the data, so this costs no FPGA RAM. Test on ADFECGDB (5 min) and FECGSYNDB c1-c3; CinC records are only 60 s, so it can barely help there.
-- Tune only on CinC dev (odd records). CinC test (even records) has already been used once, so a fresh held-out split must be declared before the next reported number.
+## 2. Accuracy (done 2026-11-14 as v6.1: C model, RTL, board). Details: `report/v61_v7/LOG.md`
+| Idea | Result on dev (CinC dev / ADFECGDB / FECGSYNDB subset) | Decision |
+|---|---|---|
+| Maternal detector robustness: warm-up starts at sample 256, peak level decays after 2 s without a detection | 76.0 / 92.7 / 91.8 -> 79.5 / 93.3 / 91.1; in 4 of 5 "no mother found" failures all 4 detectors had fired 0 times | **adopted (v6.1)** |
+| Smarter selection: maternal-rate penalty, rate voting, FHR continuity, window / regularity / agreement sweeps, logistic selector trained on synthetic records | best +0.5 on CinC dev but -0.6 to -1.4 on FECGSYNDB; the learned selector -0.5 | not adopted |
+| Periodic recalibration every 30 s on the latest 12 s, keep a track's old filter unless the new one scores higher (label-free) | 79.5 / 93.3 / 91.1 -> 80.4 / 92.9 / 91.6 | **adopted (v6.1)** |
 
-## 3. Measurements to add
-- RTL-only compute time per second of recording (cycles per sample, from xsim), separate from UART and PC-brain wait time.
-- Output latency per beat on the board (documented as ~1.5-2 s in the v5 report).
+- v6.1 = build with `-DV61` (`model/v61_sim.exe`, `model/v61_brain.exe`). The default build is still the frozen v6 that matches the board bitstream.
+- RTL (define `V61`): detector warm-up start and decay in `v6_det`/`v6_mat`; recalibration states in `v6_trk` (CALDATA from the rings, REQ_CAL, cross-fade from the previous weights). xsim: 8/8 records bit-exact with the v6.1 model. Build `build/v61/v61.bit`: 18,986 LUTs, 60 BRAM, WNS +0.41 ns. The protocol does not change.
+- Board: 140/140 records bit-exact with the v6.1 model; F1 equal to the model on every set (`report/v61_v7/board_v61/`).
+- CinC test was scored once for v6.1 (it had already been used for v5/v6; no v6.1 decision used it).
+
+## 3. Measurements (done 2026-11-14)
+- RTL-only compute time: median 1,485 clock cycles per sample after calibration (301 before 10 s), 210.6 ms of simulated time for 30 s of CinC a01, so about 140x real time (`sim/wave/run_wave.sh`, `report/final_report/tools/plot_waves.py`). One-off peak of 1.12 M cycles at the tracker start.
+- Output latency per beat: about 1.5-2 s (tracker confirmation plus the selection delay), as in v5.
+- Power (Vivado estimate, default activity): 0.374 W on-chip (`report_power_v6.tcl`).
 
 ## 4. Local web demo (done 2026-11-14)
 - `fpga_implementation/webdemo/` (`server.py` + `index.html`): upload WFDB or CSV, stream to the board in real time, live FHR, board status and stage; accuracy shown when annotations exist. Board only.
 - Board check on a01 through the page: F1 95.05, 101 beats, FHR MAE 3.51, identical to `report/rtl_pc_split/board`.
 - If the memory changes in section 1 alter the protocol (item 1b), update `server.py` too.
+
+## 5. v7-DL: look-ahead on the FPGA (done 2026-11-14)
+- New RTL unit `v7_la` (+ `v7_disp` for the displays). C model `model/v7_post.c` (`-DV7`). Protocol: FLUSH (0x03) down; OUT7 (0x8D) and END7 (0x8E) up.
+- Dev (C model): CinC dev 84.68, ADFECGDB 96.10, FECGSYNDB subset 93.39 (v6.1: 80.41 / 92.87 / 91.64). Delay median 13.5 s, max 17.5 s.
+- xsim: 9/9 records bit-exact with the model. Build: 26,701 LUTs, 71 BRAM, WNS +0.05 ns.
+- The first RTL version did not fit (101% LUTs); shifts, divisions and log2 were made sequential (13.2k -> 8.4k LUTs for the unit).
+- Board: 140/140 bit-exact; F1 CinC dev 84.68, ADFECGDB 96.10, CinC test 76.91 (scored once), FECGSYNDB subset 93.39. Web demo with v7 checked on a01 (identical to the model).

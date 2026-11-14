@@ -10,6 +10,7 @@ void fm_reset(fm_emit_fn emit, fm_need_fn need);
 void fm_rx(int cmd, const uint8_t *payload, int len);                    /* downlink response */
 void fm_push(const int16_t x[4]);
 void fm_done(void);                   /* end of a SAMPLES frame -> DONE */
+void fm_flush(void);                  /* v7: FLUSH -> remaining OUT7 frames + END7 */
 extern int fm_overflow;
 
 #endif

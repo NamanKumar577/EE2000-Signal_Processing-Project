@@ -18,6 +18,7 @@ module v6_link (
     output wire [63:0] smp_x,          // 4 x s16, lead 0 in [15:0]
     output wire        smp_last,       // last sample of its SAMPLES frame
     output reg         soft_reset,     // RESET frame received (1-cycle pulse)
+    output reg         flush,          // FLUSH frame received (1-cycle pulse, v7)
     output reg         err,            // sticky: checksum error / FIFO overflow
     // PC responses
     output reg         v_valid,  input wire v_clr,
@@ -85,7 +86,7 @@ module v6_link (
     reg spush;
     reg [64:0] sdin;
     always @(posedge clk) begin
-        soft_reset <= 1'b0;
+        soft_reset <= 1'b0; flush <= 1'b0;
         bwe <= 1'b0;
         spush <= 1'b0;
         if (spush) begin sfifo[swp[8:0]] <= sdin; swp <= swp + 1'b1; if (scount == 10'd512) err <= 1'b1; end
@@ -179,6 +180,7 @@ module v6_link (
                 if (rx_data != pxor) err <= 1'b1;
                 else case (pcmd)
                     8'h01: soft_reset <= 1'b1;
+                    8'h03: flush <= 1'b1;
                     8'h10: v_valid <= 1'b1;
                     8'h11: mk_valid <= 1'b1;
                     8'h12: basis_valid <= 1'b1;

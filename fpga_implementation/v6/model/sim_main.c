@@ -7,7 +7,8 @@
      <prefix>_script.txt  host actions in order:
          "S nbytes b0 b1 ..."    send this SAMPLES frame (the previous one must have been answered by DONE)
          "R i nbytes b0 b1 ..."  send this response frame once uplink frame i (0-based) has arrived
-         "E"                     end: wait for the last DONE */
+         "F"                     (v7) send FLUSH; END7 follows the remaining OUT7 frames
+         "E"                     end: wait for the last DONE (v7: for END7) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,7 +44,11 @@ static void up(int cmd, const uint8_t *p, int len)
 {
     up_bytes += len + 6;
     if (fup) frame_bytes(fup, cmd, p, len, 1);
+#ifdef V7
+    if (cmd == C_OUT7) printf("%u %u %u\n", get32(p), get16u(p + 4), p[6]);   /* v7: the final output */
+#else
     if (cmd == C_OUT) printf("%u %u %u\n", get32(p), get16u(p + 4), p[6]);
+#endif
     n_up++;
     if (qn == QMAX) deliver();
     q[qn].cmd = cmd; q[qn].len = len; q[qn].p = malloc(len ? len : 1); memcpy(q[qn].p, p, len); qn++;
@@ -76,6 +81,11 @@ int main(int argc, char **argv)
         deliver();
         n += m;
     }
+#ifdef V7
+    if (fscr) fprintf(fscr, "F\n");                    /* host: FLUSH, then wait for END7 */
+    fm_flush();
+    deliver();
+#endif
     fclose(f);
     if (fup) fclose(fup);
     if (fscr) { fprintf(fscr, "E\n"); fclose(fscr); }

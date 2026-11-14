@@ -10,6 +10,9 @@ fetal heart rate, the board status and the processing stage.
 Board only: nothing is processed unless the FPGA answers the probe.
 
 Run:  venv/Scripts/python.exe fpga_implementation/webdemo/server.py [--port COM5] [--http 8050]
+      V6_VARIANT=v61 for a board programmed with the v6.1 bitstream (fpga_implementation/v6/program_v61.tcl)
+      V6_VARIANT=v7  for the v7-DL bitstream (program_v7.tcl): the page shows the FPGA's final look-ahead
+                     beats, about 15 s behind the stream; FLUSH at the end finishes the last part
 Open: http://localhost:8050
 """
 import argparse
@@ -34,7 +37,7 @@ from serial.tools import list_ports
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "fpga_implementation" / "uart_host"))
-from run_v6_board_eval import CHUNK, MODEL, frame, read_frame  # noqa: E402
+from run_v6_board_eval import CHUNK, MODEL, VARIANT, frame, read_frame  # noqa: E402
 import harness as H  # noqa: E402  (tools/accuracy, put on sys.path by run_v6_board_eval)
 import v5c  # noqa: E402
 
@@ -47,13 +50,17 @@ RUNS = Path(__file__).with_name("runs")          # one folder per run: beats.csv
 
 C_COV, C_MDET, C_REQ_MK, C_MPK, C_SEG, C_CALDATA, C_REQ_CAL = 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86
 C_REQ_SEL, C_OUT, C_DONE = 0x8A, 0x8B, 0x8C
+C_OUT7, C_END7 = 0x8D, 0x8E                      # v7-DL: final beats from the look-ahead unit, end after FLUSH
+V7 = VARIANT == "v7"
+VNAME = {"v6": "v6", "v61": "v6.1", "v7": "v7-DL"}.get(VARIANT, VARIANT)
 STAGES = [
     "Learning the maternal signal (collecting 10 s for PCA)",
     "Maternal detection + cancellation, collecting calibration data",
     "PC brain: GEVD calibration of 16 candidate fetal tracks",
     "Fetal trackers warming up",
-    "Monitoring: reporting fetal beats",
-]
+] + (["Monitoring: live beats (causal v6.1 output)",
+       "Final beats from the FPGA look-ahead unit (about 15 s behind the stream)"] if V7 else
+      ["Monitoring: reporting fetal beats"])
 
 
 # ───────────────────────────── event log (SSE) ─────────────────────────────
@@ -219,7 +226,7 @@ class Board:
             self.probe_ms = (time.perf_counter() - t0) * 1000
             with self.lock:
                 self.ser.write(frame(0x01))
-            self.state, self.detail = "connected", f"v6 RTL answering on {self.port}"
+            self.state, self.detail = "connected", f"{VNAME} RTL answering on {self.port}"
             return True
         except TimeoutError:
             self.state, self.detail = "no_answer", f"{self.port} open but the FPGA does not answer (bitstream loaded?)"
@@ -244,7 +251,8 @@ class Board:
 
     def status(self):
         return {"port": self.port, "state": self.state, "detail": self.detail,
-                "probe_ms": None if self.probe_ms is None else round(self.probe_ms, 1), "ports": self.ports()}
+                "probe_ms": None if self.probe_ms is None else round(self.probe_ms, 1), "ports": self.ports(),
+                "variant": VARIANT, "variant_name": VNAME, "v7": V7}
 
 
 # ───────────────────────────── run ─────────────────────────────
@@ -281,8 +289,9 @@ class Session:
         b.state, b.detail = "busy", f"streaming to the FPGA on {b.port}"
         EV.push("board", **b.status())
         EV.push("start", name=info["name"], n=n, fs=FS, has_truth=fq is not None,
-                truth=[] if fq is None else fq[(fq >= 0) & (fq < n)].tolist())
-        brain = subprocess.Popen([str(MODEL / "v6_brain.exe")], stdin=subprocess.PIPE,
+                truth=[] if fq is None else fq[(fq >= 0) & (fq < n)].tolist(),
+                variant=VARIANT, variant_name=VNAME, v7=V7, stages=STAGES)
+        brain = subprocess.Popen([str(MODEL / f"{VARIANT}_brain.exe")], stdin=subprocess.PIPE,
                                  stdout=subprocess.PIPE, bufsize=0)
         n_rsp = [0]
 
@@ -308,9 +317,10 @@ class Session:
 
         threading.Thread(target=brain_to_fpga, daemon=True).start()
         beats, mpk = [], []
+        live = []                             # v7: the causal v6.1 beats (OUT), shown as the live estimate
         stage = -1
         cal_req = False
-        fhr_now = 0.0
+        fhr_now = fhr_live = 0.0
         err = None
         done = 0
         chunk_ms = []
@@ -332,14 +342,24 @@ class Session:
                 t_send = time.perf_counter()
                 with b.lock:
                     b.ser.write(frame(0x02, blk.astype("<i2").tobytes()))
-                new_beats, new_mpk, reqs = [], [], []
+                new_beats, new_live, new_mpk, reqs = [], [], [], []
                 rd = b._reader(SILENT_S)
                 while True:
                     cmd, p, raw = read_frame(rd)
                     if cmd == C_DONE:
                         T = int.from_bytes(p[0:4], "little")
                         break
-                    if cmd == C_OUT:
+                    if cmd == C_END7:
+                        continue
+                    if V7 and cmd == C_OUT:                     # v7: OUT = live estimate, OUT7 = final beats
+                        t = int.from_bytes(p[0:4], "little")
+                        f10 = p[4] | (p[5] << 8)
+                        live.append(t)
+                        new_live.append([t, f10 / 10.0])
+                        if f10 > 0:
+                            fhr_live = f10 / 10.0
+                        continue
+                    if cmd == (C_OUT7 if V7 else C_OUT):
                         t = int.from_bytes(p[0:4], "little")
                         f10 = p[4] | (p[5] << 8)
                         beats.append((t, f10, p[6]))
@@ -359,7 +379,7 @@ class Session:
                 fpga_ms = (time.perf_counter() - t_send) * 1000
                 chunk_ms.append(fpga_ms)
                 done = c0 + len(blk)
-                st = (4 if beats or done >= 5027 else 2 if "GEVD calibration" in reqs
+                st = (5 if V7 and beats else 4 if beats or live or done >= 5027 else 2 if "GEVD calibration" in reqs
                       else 3 if cal_req else 1 if done >= 2500 else 0)
                 if st != stage:
                     stage = st
@@ -372,9 +392,32 @@ class Session:
                         mhr = round(60.0 * FS / float(np.median(rr)), 1)
                 lead = blk[::2].astype(int).T.tolist()                 # 125 Hz preview of the 4 leads
                 EV.push("chunk", t0=c0, done=done, T=T, fpga_ms=round(fpga_ms, 1), leads=lead,
-                        beats=new_beats, mpk=new_mpk, reqs=reqs, fhr=fhr_now, mhr=mhr, n_rsp=n_rsp[0])
+                        beats=new_beats, live=new_live, mpk=new_mpk, reqs=reqs, fhr=fhr_now, fhr_live=fhr_live,
+                        mhr=mhr, n_rsp=n_rsp[0])
                 if fq is not None and done >= SCORE0 + 2 * FS and ci % 8 == 0:
                     EV.push("score", **self._score(fq, beats, done))
+            if V7 and not self.stop.is_set():               # end of the recording: the FPGA finishes the last ~15 s
+                EV.push("flush", t=done / FS, pending_s=(done - (beats[-1][0] if beats else 0)) / FS)
+                with b.lock:
+                    b.ser.write(frame(0x03))
+                new_beats, rd = [], b._reader(SILENT_S)
+                while True:
+                    cmd, p, raw = read_frame(rd)
+                    if cmd == C_END7:
+                        break
+                    if cmd == C_OUT7:
+                        t = int.from_bytes(p[0:4], "little")
+                        f10 = p[4] | (p[5] << 8)
+                        beats.append((t, f10, p[6]))
+                        new_beats.append([t, f10 / 10.0, p[6]])
+                        if f10 > 0:
+                            fhr_now = f10 / 10.0
+                    elif cmd not in (C_OUT, C_DONE):
+                        brain.stdin.write(raw)
+                EV.push("chunk", t0=done, done=done, T=done, fpga_ms=0.0, leads=[[], [], [], []], beats=new_beats,
+                        live=[], mpk=[], reqs=[], fhr=fhr_now, fhr_live=fhr_live, mhr=None, n_rsp=n_rsp[0], flushed=True)
+                if fq is not None:
+                    EV.push("score", **self._score(fq, beats, n))
         except TimeoutError:
             err = f"FPGA stopped answering for {SILENT_S:.0f} s (cable unplugged or board reset?)"
         except (serial.SerialException, OSError) as e:
@@ -413,6 +456,7 @@ class Session:
         ms = np.array(chunk_ms) if chunk_ms else np.zeros(1)
         summary = {
             "record": info["name"], "input_fs_hz": info["fs_in"], "leads": info["leads"], "units": info["units"],
+            "design": VNAME, "beats_are": "final look-ahead beats (OUT7) from the FPGA" if V7 else "live beats (OUT)",
             "started": started, "status": status, "error": err, "port": self.board.port,
             "recording_s": n / FS, "processed_s": done / FS, "fetal_beats": len(beats),
             "annotations": has_truth,
