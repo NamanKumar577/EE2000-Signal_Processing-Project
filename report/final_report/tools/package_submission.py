@@ -42,10 +42,20 @@ The NIFEA database used in the v2 validation is at https://physionet.org/content
 """
 
 
+def local_excludes():
+    """folders listed in the local, untracked .git/info/exclude are also left out of the archive"""
+    p = ROOT / ".git" / "info" / "exclude"
+    if not p.exists():
+        return []
+    return [ln.strip().strip("/") + "/" for ln in p.read_text().splitlines()
+            if ln.strip() and not ln.startswith("#") and ln.strip().endswith("/")]
+
+
 def repo_files():
     out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=ROOT,
                          capture_output=True, text=True, check=True).stdout.splitlines()
-    return [f for f in out if (ROOT / f).is_file() and not f.endswith(".zip")]
+    skip = local_excludes()
+    return [f for f in out if (ROOT / f).is_file() and not f.endswith(".zip") and not any(f.startswith(d) for d in skip)]
 
 
 def main():
