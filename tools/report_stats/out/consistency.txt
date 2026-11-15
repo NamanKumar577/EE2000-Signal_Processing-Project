@@ -1,0 +1,28 @@
+CinC test             76.9  abstract                         found
+CinC test             76.9  Tab. 15 (v7_results)             found
+CinC test             76.9  Tab. 22 (final_objectives)       found
+CinC test             76.9  Tab. 19 (v7_literature)          -
+CinC test             76.9  Tab. 1 (clinical_specs)          found
+CinC test reliable    82.0  abstract                         found
+CinC test reliable    82.0  Tab. 15 (v7_results)             found
+CinC test reliable    82.0  Tab. 22 (final_objectives)       found
+CinC test reliable    82.0  Tab. 19 (v7_literature)          found
+CinC test reliable    82.0  Tab. 1 (clinical_specs)          found
+CinC dev              84.7  abstract                         found
+CinC dev              84.7  Tab. 15 (v7_results)             found
+CinC dev              84.7  Tab. 22 (final_objectives)       -
+CinC dev              84.7  Tab. 19 (v7_literature)          -
+CinC dev              84.7  Tab. 1 (clinical_specs)          found
+ADFECGDB              96.1  abstract                         found
+ADFECGDB              96.1  Tab. 15 (v7_results)             found
+ADFECGDB              96.1  Tab. 22 (final_objectives)       found
+ADFECGDB              96.1  Tab. 19 (v7_literature)          found
+ADFECGDB              96.1  Tab. 1 (clinical_specs)          found
+FECGSYNDB all         93.7  abstract                         found
+FECGSYNDB all         93.7  Tab. 15 (v7_results)             found
+FECGSYNDB all         93.7  Tab. 22 (final_objectives)       found
+FECGSYNDB all         93.7  Tab. 19 (v7_literature)          -
+FECGSYNDB all         93.7  Tab. 1 (clinical_specs)          found
+
+
+ALL CONSISTENT

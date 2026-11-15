@@ -1,0 +1,46 @@
+% Task 4: analysis and theory. Every number has its source file in a comment. Inputs are read-only.
+\begin{finalpart}
+\subsection{Analysis and Theory}
+\label{sec:analysis}
+Each item is labelled \emph{derived} (derivation written out here), \emph{checked against data} (compared with files on disk) or \emph{heuristic}. Scripts: \texttt{tools/report\_stats/collisions.py} and \texttt{selection\_loss.py}.
+
+\noindent\textbf{(a) Maternal-fetal QRS collisions (derived; checked against data).} Model the maternal QRS as a window of width $w_m$ repeating every $T_m$ and a fetal QRS of width $w_f$ at a phase that is uniform relative to the mother. The two windows overlap when the fetal R peak lies within $(w_m + w_f)/2$ of a maternal R peak, an interval of total length $w_m + w_f$ per maternal period, so
+\begin{equation}
+P(\text{collision}) = \frac{w_m + w_f}{T_m} = \frac{90 + 50}{800} = 17.5\%
+\end{equation}
+for $w_m = 90\,$ms, $w_f = 50\,$ms and $T_m = 800\,$ms. On the FECGSYNDB reference annotations (350 records of the 12-dB folder, all subjects, layouts and conditions; annotations do not depend on SNR) we counted the fetal R peaks within $70\,$ms of a maternal R peak: $18.5\%$ of fetal beats per record on average, against $18.5\%$ predicted by the formula with each record's own mean maternal RR ($847\,$ms on average). % source: tools/report_stats/out/collisions.csv
+The largest rate is in condition $c3$ (contractions): $21.2\%$ measured, $21.0\%$ predicted, because the maternal rate is higher. % source: out/collisions.csv (per condition)
+The uniform-phase model therefore describes the synthetic data well; real recordings were not checked because CinC and ADFECGDB have no maternal annotations.
+
+\noindent\textbf{(b) GEVD gives the maximum output SNR (derived; not checked against data).} For a spatial filter $\mathbf{w}$, let $\mathbf{R}_q$ be the covariance in windows around fetal QRS complexes and $\mathbf{R}_x$ the total covariance (symmetric positive definite). The output power ratio is the generalised Rayleigh quotient $J(\mathbf{w}) = \mathbf{w}^T \mathbf{R}_q \mathbf{w} / \mathbf{w}^T \mathbf{R}_x \mathbf{w}$. With the Cholesky factor $\mathbf{R}_x = \mathbf{L}\mathbf{L}^T$ and $\mathbf{u} = \mathbf{L}^T\mathbf{w}$,
+\begin{equation}
+J = \frac{\mathbf{u}^T \mathbf{M}\, \mathbf{u}}{\mathbf{u}^T\mathbf{u}}, \qquad \mathbf{M} = \mathbf{L}^{-1}\mathbf{R}_q\mathbf{L}^{-T} = \mathbf{M}^T .
+\end{equation}
+Writing $\mathbf{u} = \sum_i c_i \mathbf{e}_i$ in the orthonormal eigenvectors of $\mathbf{M}$ (eigenvalues $\lambda_1 \ge \dots \ge \lambda_4$) gives $J = \sum_i \lambda_i c_i^2 / \sum_i c_i^2 \le \lambda_1$, with equality for $\mathbf{u} = \mathbf{e}_1$. Since $\mathbf{M}\mathbf{u} = \lambda\mathbf{u}$ is equivalent to $\mathbf{R}_q\mathbf{w} = \lambda\mathbf{R}_x\mathbf{w}$, the best filter is the top generalised eigenvector and the best achievable ratio is $\lambda_{\max}$. This holds for the covariances estimated on the calibration window; our $\mathbf{R}_q$ uses the design's own detections, so the bound is reached only if those detections are fetal. Per-record output-SNR gains of the GEVD filters were not saved, so the bound is not compared with data (not measured).
+
+\noindent\textbf{(c) Template subtraction residual (derived; not checked against data).} Let the aligned maternal beat be $\mathbf{s}_k = \mathbf{m} + \mathbf{n}_k$ with a fixed maternal shape $\mathbf{m}$ and zero-mean noise (including the fetal ECG) of power $\sigma^2$ per sample, independent between beats. The template $\hat{\mathbf{m}} = \frac{1}{N}\sum_{j=1}^{N}\mathbf{s}_{k-j}$ has noise power $\sigma^2/N$, and the residual $\mathbf{s}_k - \hat{\mathbf{m}} = \mathbf{n}_k - \frac{1}{N}\sum_j \mathbf{n}_{k-j}$ has power
+\begin{equation}
+\sigma_r^2 = \sigma^2\left(1 + \frac{1}{N}\right),
+\end{equation}
+i.e.\ $+0.21\,$dB above the noise floor for $N = 20$. If fetal beats are asynchronous with the mother, a fetal complex appears in each averaged segment at a different position, so its contribution to the template also falls as $1/N$ in power and the template does not cancel the fetus. Changing maternal shape (respiration, contractions) adds a bias $\mathbf{m}_k - \bar{\mathbf{m}}$ that averaging does not remove; the design handles it with the two principal components of the beat history (Sec.~\ref{sec:final_algo}). Saved residuals are not on disk, so this is not checked against data.
+
+\noindent\textbf{(d) Selection loss versus candidate quality (checked against data, development sets only).} On the development sets, the v7-DL C model (\texttt{base} of \texttt{tools/accuracy/\_taps/results.csv}, byte-identical to v7-DL) gives the final F1, the best single candidate track per record and a per-5-s oracle (\cref{tab:selloss}). On CinC dev the final output loses only $0.3$ points to the best track (CI includes zero) and $3.1$ points to the oracle, while the best track itself is $15.0$ points below $100\%$: the loss is in the candidates, not in the choice. On ADFECGDB the final output beats the best single track (it switches between tracks); on the FECGSYNDB subset the selection loses $3.7$ points. CinC test is not in this file. % source: tools/report_stats/out/selection_loss.csv
+
+\begin{table}[t]
+\fb
+\caption{\fb Selection loss and candidate quality of v7-DL on the development sets (mean F1 in \%; paired bootstrap 95\% CI over records). Source: \texttt{tools/report\_stats/out/selection\_loss.csv}.}
+\label{tab:selloss}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lrcccc@{}}
+\toprule
+\textbf{Set} & \textbf{Rec.} & \textbf{Final} & \textbf{Best track $-$ final} & \textbf{Oracle $-$ final} & \textbf{$100 -$ best track} \\
+\midrule
+CinC dev & 38 & 84.7 & $+0.3$ [$-1.4$, $2.4$] & $+3.1$ [$1.1$, $5.6$] & 15.0 [11.0, 19.4] \\
+ADFECGDB & 5 & 96.1 & $-2.2$ [$-3.5$, $-0.8$] & $+0.1$ [$-0.6$, $1.0$] & 6.1 [2.0, 10.5] \\
+FECGSYNDB subset & 60 & 93.4 & $+3.7$ [$0.6$, $7.8$] & $+3.8$ [$0.7$, $7.9$] & 2.9 [1.5, 4.4] \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+\end{finalpart}

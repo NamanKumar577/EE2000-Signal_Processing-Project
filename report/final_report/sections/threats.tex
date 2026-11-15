@@ -1,0 +1,22 @@
+% Task 6 fragments: Threats to Validity (subsection), Reproducibility (section), claims-versus-evidence table.
+% Sources of numbers are given as comments. Insert inside the document; each block is wrapped in finalpart.
+
+% ---------------------------------------------------------------------------------------------
+\begin{finalpart}
+\subsection{Threats to Validity}
+\label{sec:threats}
+\begin{itemize}
+    \item \textbf{Reused held-out set.} CinC test was never used for a design decision, but it has been scored once for each of nine frozen designs (Tab.~\ref{tab:ledger}), so the final CinC test numbers are not a first look at unseen data. % source: Tab. final_versions
+    \item \textbf{Small real test sets.} 37 CinC test, 38 CinC dev and 5 ADFECGDB records. The 95\% CI of v7-DL on CinC test spans $16.4$ points ($[68.3, 84.7]$); on ADFECGDB no paired test can reach $p < 0.05$ (smallest Wilcoxon $p = 0.0625$). % source: report/final_report/tables/board_v7_f1_ci.csv, tools/report_stats/out/paired.csv
+    \item \textbf{ADFECGDB is not independent.} It was a development set from v4 on (Tab.~\ref{tab:ledger}).
+    \item \textbf{Clustered synthetic records.} FECGSYNDB records of one simulated subject are correlated; the subject-clustered CI of v7-DL ($[90.0, 96.5]$) is about $4.5\times$ wider than the record-level one ($[93.0, 94.4]$). % source: tools/report_stats/out/cluster.csv, ci.csv
+    \item \textbf{Uncertain v6.1 gain.} The v6.1 gain over v6 on CinC ($+5.4$ points, all 75 records) is not significant by Wilcoxon ($p = 0.12$); only the v7-DL gains are (Tab.~\ref{tab:paired}). % source: tools/report_stats/out/paired.csv
+    \item \textbf{Delay.} The final v7-DL beats leave the board $13.5\,$s (median, max $17.5\,$s) after they occur; the reported F1 is for this delayed output, not for a beat-synchronous monitor.
+    \item \textbf{PC in the loop.} Five decisions run on a PC (Sec.~\ref{sec:pc_loop}); the board alone is not a stand-alone monitor.
+    \item \textbf{Heuristic maternal detection.} The maternal train is chosen by rules (rate 40--130\,bpm, $\ge 60\%$ regular RR intervals); records where these rules pick the fetus or fail are a known failure mode (Secs.~\ref{sec:final_fail} and~\ref{sec:v61}).
+    \item \textbf{Lead layout.} The mid-term 4-lead FECGSYNDB sub-array was chosen by an anatomical ranking, not by measured FMR (Sec.~\ref{sec:dataset}); the final design simply uses the 4 abdominal leads each real database provides.
+    \item \textbf{U-Net split not verifiable.} The training script does not enforce the stated subject split and no record list was saved (Sec.~\ref{sec:final_realdata}).
+    \item \textbf{Mid-term figures.} Several mid-term figures were drawn from values typed into the figure script (App.~\ref{app:midterm}); none is used for a final-phase claim.
+    \item \textbf{Post-hoc tolerances.} The replication tolerance ($\pm 2$ F1 points) was fixed after the results were known (Sec.~\ref{sec:replications}).
+\end{itemize}
+\end{finalpart}

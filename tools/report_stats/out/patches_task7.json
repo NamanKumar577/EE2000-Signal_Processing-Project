@@ -1,0 +1,247 @@
+[
+ {
+  "old": "\\caption{\\fb Clinical engineering targets and the measured values of the final design v7-DL. The last column gives the mid-term value of the superseded beamformer for reference only (App.~\\ref{app:midterm}). Levels: L2 bit-true C model, L3 RTL simulation, L4 Vivado implementation, L5 board.}",
+  "new": "\\caption{\\fb Clinical engineering targets and the measured values of the final design v7-DL. The last column gives the mid-term value of the superseded beamformer for reference only (App.~\\ref{app:midterm}). Levels: L2 bit-true C model, L3 RTL simulation, L4 Vivado implementation, L5 board. \\textbf{[L2--L5]} Source: per-row levels; board files in report/v61\\_v7/board\\_v7/, Vivado reports in fpga\\_implementation/v6/build/v7/.}",
+  "why": "level label and data source for tab:clinical_specs"
+ },
+ {
+  "old": "\\caption{Comprehensive inventory of nine implemented and benchmarked fetal ECG extraction architectures.}",
+  "new": "\\caption{Comprehensive inventory of nine implemented and benchmarked fetal ECG extraction architectures. \\fin{\\textbf{[L1]} Source: mid-term method list (code/src/methods/).}}",
+  "why": "level label and data source for tab:method_inventory"
+ },
+ {
+  "old": "\\caption{\\fb Synthetic accuracy does not carry over to real recordings. The 1D U-Net of the mid-term (trained on synthetic data) and the v2 beamformer both score $\\ge 90\\%$ on the same 179 FECGSYNDB records but $17.7\\%$ and $37.0\\%$ on the real ADFECGDB recordings. The final algorithm keeps $92\\%$ on both (synthetic value from the C model, real value from the board).}",
+  "new": "\\caption{\\fb Synthetic accuracy does not carry over to real recordings. The 1D U-Net of the mid-term (trained on synthetic data) and the v2 beamformer both score $\\ge 90\\%$ on the same 179 FECGSYNDB records but $17.7\\%$ and $37.0\\%$ on the real ADFECGDB recordings. The final algorithm keeps $92\\%$ on both (synthetic value from the C model, real value from the board). \\textbf{[L2 C model / L5 board]} Source: tools/accuracy/results\\_unet\\_syn.csv, results\\_unet\\_adfecgdb.csv, results\\_bitaccurate.csv, results\\_v5\\_final\\_synall.csv, report/rtl\\_pc\\_split/board\\_umem/.}",
+  "why": "level label and data source for fig:fin_synreal"
+ },
+ {
+  "old": "\\caption{\\fb Every design version under the same label-free scoring (mean beat F1 in \\%). CinC test was scored once per frozen design. From v4 on, ADFECGDB and the 60-record FECGSYNDB subset were development sets. The v6, v6.1 and v7-DL numbers are measured on the board (FECGSYNDB 1,248: C model, which is bit-exact with the board). v7-LA is the offline (non-causal) reference on the PC.}",
+  "new": "\\caption{\\fb Every design version under the same label-free scoring (mean beat F1 in \\%). CinC test was scored once per frozen design. From v4 on, ADFECGDB and the 60-record FECGSYNDB subset were development sets. The v6, v6.1 and v7-DL numbers are measured on the board (FECGSYNDB 1,248: C model, which is bit-exact with the board). v7-LA is the offline (non-causal) reference on the PC. \\textbf{[L1--L5 by row]} Source: tools/accuracy/ result files and the board files in report/rtl\\_pc\\_split/board\\_umem/, report/v61\\_v7/board\\_v61/, report/v61\\_v7/board\\_v7/.}",
+  "why": "level label and data source for tab:final_versions"
+ },
+ {
+  "old": "\\caption{\\fb Mean beat F1 of every design version on every data set (values of Tab.~\\ref{tab:final_versions}). Real-data accuracy rose step by step from the mid-term design to v6, while synthetic accuracy fell by about four points after v3 (Sec.~\\ref{sec:final_obs}). The mid-term design has no ADFECGDB run; v4 was run only on the 60-record FECGSYNDB subset. v6.1 and the look-ahead versions are compared in Fig.~\\ref{fig:fin_v7_results}.}",
+  "new": "\\caption{\\fb Mean beat F1 of every design version on every data set (values of Tab.~\\ref{tab:final_versions}). Real-data accuracy rose step by step from the mid-term design to v6, while synthetic accuracy fell by about four points after v3 (Sec.~\\ref{sec:final_obs}). The mid-term design has no ADFECGDB run; v4 was run only on the 60-record FECGSYNDB subset. v6.1 and the look-ahead versions are compared in Fig.~\\ref{fig:fin_v7_results}. \\textbf{[L1--L5 by version]} Source: values of Tab.~\\ref{tab:final_versions}.}",
+  "why": "level label and data source for fig:fin_progression"
+ },
+ {
+  "old": "\\caption{\\fb Final architecture (v6). Everything that runs at the sample rate is hand-written Verilog on the Spartan-7. The FPGA sends five kinds of requests to the PC brain and stalls until the answer arrives, so results do not depend on PC timing. The PC never receives the raw recording, only data computed by the FPGA (features, beat segments and calibration buffers; Sec.~\\ref{sec:pc_loop}).}",
+  "new": "\\caption{\\fb Final architecture (v6). Everything that runs at the sample rate is hand-written Verilog on the Spartan-7. The FPGA sends five kinds of requests to the PC brain and stalls until the answer arrives, so results do not depend on PC timing. The PC never receives the raw recording, only data computed by the FPGA (features, beat segments and calibration buffers; Sec.~\\ref{sec:pc_loop}). \\textbf{[L3/L5]} Source: design diagram of fpga\\_implementation/v6/rtl and model/brain.c.}",
+  "why": "level label and data source for fig:fin_arch"
+ },
+ {
+  "old": "\\caption{\\fb The five decisions left to the PC in v6 and the data that crosses the link.}",
+  "new": "\\caption{\\fb The five decisions left to the PC in v6 and the data that crosses the link. \\textbf{[L2]} Source: fpga\\_implementation/v6/model/proto.h, brain.c.}",
+  "why": "level label and data source for tab:pc_jobs"
+ },
+ {
+  "old": "\\caption{\\fb The five PC decisions of v7-DL: rate, share of the link traffic (PC requests, data and answers; ADFECGDB r01) and what moving each into the FPGA would need.}",
+  "new": "\\caption{\\fb The five PC decisions of v7-DL: rate, share of the link traffic (PC requests, data and answers; ADFECGDB r01) and what moving each into the FPGA would need. \\textbf{[L2 C model]} Source: report/final\\_report/tables/pc\\_link\\_traffic.csv (tools/pc\\_link\\_traffic.py).}",
+  "why": "level label and data source for tab:pc_traffic"
+ },
+ {
+  "old": "\\caption{\\fb Whole simulation (210.6\\,ms of simulated time for 30\\,s of recording). The first 10\\,s are processed quickly while the maternal-band samples are stored; then the PCA request goes to the PC, the stored 2,500 samples are replayed through the maternal detectors (flat \\texttt{sample\\_T}, rising \\texttt{mat\\_npeaks}), the GEVD request follows at 15\\,s and sets \\texttt{calibrated}. The long flat part of \\texttt{sample\\_T} at about 85--107\\,ms is the one-time start of the beat trackers (an autocorrelation over 1,000 envelope samples per tracker). After that, the selected track (\\texttt{sel\\_track}), the FHR and the OUT frames appear. The analogue traces look uneven because the time axis is simulation time, not recording time.}",
+  "new": "\\caption{\\fb Whole simulation (210.6\\,ms of simulated time for 30\\,s of recording). The first 10\\,s are processed quickly while the maternal-band samples are stored; then the PCA request goes to the PC, the stored 2,500 samples are replayed through the maternal detectors (flat \\texttt{sample\\_T}, rising \\texttt{mat\\_npeaks}), the GEVD request follows at 15\\,s and sets \\texttt{calibrated}. The long flat part of \\texttt{sample\\_T} at about 85--107\\,ms is the one-time start of the beat trackers (an autocorrelation over 1,000 envelope samples per tracker). After that, the selected track (\\texttt{sel\\_track}), the FHR and the OUT frames appear. The analogue traces look uneven because the time axis is simulation time, not recording time. \\textbf{[L3 xsim]} Source: fpga\\_implementation/v6/sim/wave/wave.vcd (run\\_wave.sh, CinC a01, 30\\,s).}",
+  "why": "level label and data source for fig:wave_overview"
+ },
+ {
+  "old": "\\caption{\\fb Three seconds of recording (samples 6,000--6,750) inside the RTL: raw input leads, front-end output $\\mathbf{x}_f$, the maternal R-peak counter, the newest tracker beat (\\texttt{beat\\_q}, before the 13-sample latency compensation applied to the output), the FHR register in bpm, the selected track (which changes from 6 to 9 at a 2.5-s selection step) and the OUT frames sent to the PC.}",
+  "new": "\\caption{\\fb Three seconds of recording (samples 6,000--6,750) inside the RTL: raw input leads, front-end output $\\mathbf{x}_f$, the maternal R-peak counter, the newest tracker beat (\\texttt{beat\\_q}, before the 13-sample latency compensation applied to the output), the FHR register in bpm, the selected track (which changes from 6 to 9 at a 2.5-s selection step) and the OUT frames sent to the PC. \\textbf{[L3 xsim]} Source: wave.vcd, CinC a01.}",
+  "why": "level label and data source for fig:wave_signals"
+ },
+ {
+  "old": "\\caption{\\fb Maternal cancellation in the RTL, reconstructed from the simulated memory writes. Top: front-end output of lead 1 with the maternal R peaks found by the FPGA (blue). Middle: the same lead after per-beat maternal cancellation, as the tracks read it; the large maternal QRS complexes are gone and the small fetal complexes line up with the reference fetal annotations (dotted green). Bottom: fetal beats sent by the RTL and by the C model: identical.}",
+  "new": "\\caption{\\fb Maternal cancellation in the RTL, reconstructed from the simulated memory writes. Top: front-end output of lead 1 with the maternal R peaks found by the FPGA (blue). Middle: the same lead after per-beat maternal cancellation, as the tracks read it; the large maternal QRS complexes are gone and the small fetal complexes line up with the reference fetal annotations (dotted green). Bottom: fetal beats sent by the RTL and by the C model: identical. \\textbf{[L3 xsim]} Source: wave.vcd, CinC a01; C-model beats sim/wave/beats\\_model.txt.}",
+  "why": "level label and data source for fig:wave_canc"
+ },
+ {
+  "old": "\\caption{\\fb Clock-level view of one sample after calibration (T\\,=\\,6,100): the sequencer starts the front end, the maternal unit, the canceller (no maternal beat to process in this sample, so it finishes at once) and the 16-track unit, each with a go/done hand-shake; feature and beat frames are written to the UART buffer meanwhile. This sample takes 2,348 cycles ($47\\,\\mu$s at 50\\,MHz).}",
+  "new": "\\caption{\\fb Clock-level view of one sample after calibration (T\\,=\\,6,100): the sequencer starts the front end, the maternal unit, the canceller (no maternal beat to process in this sample, so it finishes at once) and the 16-track unit, each with a go/done hand-shake; feature and beat frames are written to the UART buffer meanwhile. This sample takes 2,348 cycles ($47\\,\\mu$s at 50\\,MHz). \\textbf{[L3 xsim]} Source: wave.vcd, CinC a01.}",
+  "why": "level label and data source for fig:wave_sample"
+ },
+ {
+  "old": "\\caption{\\fb A request to the PC brain (maternal PCA at T\\,=\\,2,499): the maternal unit sends the COV frame (\\texttt{tx\\_valid}), the FPGA waits, the answer bytes arrive (\\texttt{rx\\_valid}), \\texttt{pca\\_answer} pulses and processing continues. Results therefore never depend on how fast the PC answers.}",
+  "new": "\\caption{\\fb A request to the PC brain (maternal PCA at T\\,=\\,2,499): the maternal unit sends the COV frame (\\texttt{tx\\_valid}), the FPGA waits, the answer bytes arrive (\\texttt{rx\\_valid}), \\texttt{pca\\_answer} pulses and processing continues. Results therefore never depend on how fast the PC answers. \\textbf{[L3 xsim]} Source: wave.vcd, CinC a01.}",
+  "why": "level label and data source for fig:wave_req"
+ },
+ {
+  "old": "\\caption{\\fb Clock cycles needed for each input sample in the simulation. Median 301 cycles before 10\\,s, about 470 during calibration and 1,485 ($30\\,\\mu$s) once all 16 tracks run, far below the real-time budget of 200,000 cycles per sample. The single peak of 1.12 million cycles (22\\,ms) is the tracker start; the 512-sample input FIFO absorbs it.}",
+  "new": "\\caption{\\fb Clock cycles needed for each input sample in the simulation. Median 301 cycles before 10\\,s, about 470 during calibration and 1,485 ($30\\,\\mu$s) once all 16 tracks run, far below the real-time budget of 200,000 cycles per sample. The single peak of 1.12 million cycles (22\\,ms) is the tracker start; the 512-sample input FIFO absorbs it. \\textbf{[L3 xsim]} Source: wave.vcd, CinC a01.}",
+  "why": "level label and data source for fig:wave_cycles"
+ },
+ {
+  "old": "\\caption{\\fb Start-up timeline of v6 on a recording. The first $10\\,$s are stored for the maternal PCA, the GEVD calibration uses $[3, 15)\\,$s, and the first selected beat comes out at about $19.5\\,$s. After that a new track decision is made every $2.5\\,$s. Each beat is reported about $1.5$--$2\\,$s after it happens (tracker confirmation plus the selection delay); this is why scoring starts at $20\\,$s.}",
+  "new": "\\caption{\\fb Start-up timeline of v6 on a recording. The first $10\\,$s are stored for the maternal PCA, the GEVD calibration uses $[3, 15)\\,$s, and the first selected beat comes out at about $19.5\\,$s. After that a new track decision is made every $2.5\\,$s. Each beat is reported about $1.5$--$2\\,$s after it happens (tracker confirmation plus the selection delay); this is why scoring starts at $20\\,$s. \\textbf{[L2]} Source: constants of fpga\\_implementation/v6/model/proto.h.}",
+  "why": "level label and data source for fig:fin_timeline"
+ },
+ {
+  "old": "\\caption{\\fb FPGA utilisation of the v6 design on the XC7S50 (Vivado post-implementation), before and after sharing the block RAM. v6.1 and v7-DL: Tab.~\\ref{tab:v7_hw}.}",
+  "new": "\\caption{\\fb FPGA utilisation of the v6 design on the XC7S50 (Vivado post-implementation), before and after sharing the block RAM. v6.1 and v7-DL: Tab.~\\ref{tab:v7_hw}. \\textbf{[L4 Vivado]} Source: fpga\\_implementation/v6/build/ utilisation, timing and power reports.}",
+  "why": "level label and data source for tab:final_resources"
+ },
+ {
+  "old": "\\caption{\\fb Resources per module of v6 (post-implementation). BRAM in 36-kb tiles (one RAMB18 counts as half a tile).}",
+  "new": "\\caption{\\fb Resources per module of v6 (post-implementation). BRAM in 36-kb tiles (one RAMB18 counts as half a tile). \\textbf{[L4 Vivado]} Source: fpga\\_implementation/v6/build/ hierarchical utilisation report.}",
+  "why": "level label and data source for tab:module_resources"
+ },
+ {
+  "old": "\\caption{\\fb FPGA utilisation of each hardware version. v2 needed little logic because the PC computed the weights; v5 filled the block RAM with processor memory; v6 does all the work in logic and, after sharing one memory, leaves 15 BRAM tiles free.}",
+  "new": "\\caption{\\fb FPGA utilisation of each hardware version. v2 needed little logic because the PC computed the weights; v5 filled the block RAM with processor memory; v6 does all the work in logic and, after sharing one memory, leaves 15 BRAM tiles free. \\textbf{[L4 Vivado]} Source: fpga\\_implementation/v2, v5 and v6 build reports.}",
+  "why": "level label and data source for fig:fin_resources"
+ },
+ {
+  "old": "\\caption{\\fb Results of v6 measured on the Spartan-7 board (140 records). Every record was bit-exact with the C model. ``$\\ge 90\\%$'' counts records with F1 of at least $90\\%$. Speed is total record length divided by total streaming time, including UART transfer and the PC brain. The last row is the C model on all FECGSYNDB records (identical to the board wherever both were run).}",
+  "new": "\\caption{\\fb Results of v6 measured on the Spartan-7 board (140 records). Every record was bit-exact with the C model. ``$\\ge 90\\%$'' counts records with F1 of at least $90\\%$. Speed is total record length divided by total streaming time, including UART transfer and the PC brain. The last row is the C model on all FECGSYNDB records (identical to the board wherever both were run). \\textbf{[L5 board]} Source: report/rtl\\_pc\\_split/board\\_umem/board\\_cdev\\_ad\\_ctest\\_syn.csv.}",
+  "why": "level label and data source for tab:final_results"
+ },
+ {
+  "old": "\\caption{\\fb Per-record F1 of v6 on the board. Most synthetic and ADFECGDB records are above $90\\%$; real CinC recordings spread from $0$ to $99\\%$, so the mean hides a large difference between easy and hard recordings (CinC test median $73.6\\%$, dev median $84.1\\%$).}",
+  "new": "\\caption{\\fb Per-record F1 of v6 on the board. Most synthetic and ADFECGDB records are above $90\\%$; real CinC recordings spread from $0$ to $99\\%$, so the mean hides a large difference between easy and hard recordings (CinC test median $73.6\\%$, dev median $84.1\\%$). \\textbf{[L5 board]} Source: report/rtl\\_pc\\_split/board\\_umem/board\\_cdev\\_ad\\_ctest\\_syn.csv.}",
+  "why": "level label and data source for fig:fin_dist"
+ },
+ {
+  "old": "\\caption{\\fb Sensitivity against positive predictive value per record on the board. Failed real recordings lie close to the diagonal (Se and PPV both low): the design followed a wrong train, often the mother or noise. Weaker synthetic records have high PPV but lower Se: the reported beats are right, but some are missed (e.g.\\ ectopic beats).}",
+  "new": "\\caption{\\fb Sensitivity against positive predictive value per record on the board. Failed real recordings lie close to the diagonal (Se and PPV both low): the design followed a wrong train, often the mother or noise. Weaker synthetic records have high PPV but lower Se: the reported beats are right, but some are missed (e.g.\\ ectopic beats). \\textbf{[L5 board]} Source: report/rtl\\_pc\\_split/board\\_umem/board\\_cdev\\_ad\\_ctest\\_syn.csv.}",
+  "why": "level label and data source for fig:fin_seppv"
+ },
+ {
+  "old": "\\caption{\\fb Example output on a real recording (ADFECGDB r01, 5\\,min), from the C model, which is bit-exact with the board. Top: 6\\,s of the four raw abdominal leads, where the large complexes are maternal; green lines are the true fetal beats from the scalp electrode and red marks are v6 detections. Bottom: v6 FHR against the reference over the whole record (F1 $96.7\\%$, FHR MAE $0.56\\,$bpm), including the accelerations at 160--215\\,s.}",
+  "new": "\\caption{\\fb Example output on a real recording (ADFECGDB r01, 5\\,min), from the C model, which is bit-exact with the board. Top: 6\\,s of the four raw abdominal leads, where the large complexes are maternal; green lines are the true fetal beats from the scalp electrode and red marks are v6 detections. Bottom: v6 FHR against the reference over the whole record (F1 $96.7\\%$, FHR MAE $0.56\\,$bpm), including the accelerations at 160--215\\,s. \\textbf{[L2 C model]} Source: fpga\\_implementation/v6/model/v6\\_sim.exe on ADFECGDB r01.}",
+  "why": "level label and data source for fig:fin_trace"
+ },
+ {
+  "old": "\\caption{\\fb The same 75 real CinC recordings with v2 and with v6 (board). 63 records improve by more than one point and 8 get worse; the gain is not limited to a few records.}",
+  "new": "\\caption{\\fb The same 75 real CinC recordings with v2 and with v6 (board). 63 records improve by more than one point and 8 get worse; the gain is not limited to a few records. \\textbf{[L5 board / L2]} Source: tools/accuracy/results\\_cinc2013.csv (v2), report/rtl\\_pc\\_split/board\\_umem/.}",
+  "why": "level label and data source for fig:fin_cinc"
+ },
+ {
+  "old": "\\caption{\\fb FECGSYNDB (1,248 records) by clinical condition and by input SNR for v2 and for the final algorithm (C model of v5; v6 differs by at most $0.1$ point on every condition). The final algorithm loses on heart-rate changes ($c2$), contractions ($c3$) and ectopic beats ($c4$), where the RR-regularity term and the FHR prior can penalise the true fetal track, and is almost flat across SNR ($91.1$--$91.9\\%$).}",
+  "new": "\\caption{\\fb FECGSYNDB (1,248 records) by clinical condition and by input SNR for v2 and for the final algorithm (C model of v5; v6 differs by at most $0.1$ point on every condition). The final algorithm loses on heart-rate changes ($c2$), contractions ($c3$) and ectopic beats ($c4$), where the RR-regularity term and the FHR prior can penalise the true fetal track, and is almost flat across SNR ($91.1$--$91.9\\%$). \\textbf{[L2 C model]} Source: tools/accuracy/results\\_bitaccurate.csv, results\\_v5\\_final\\_synall.csv.}",
+  "why": "level label and data source for fig:fin_syn"
+ },
+ {
+  "old": "\\caption{\\fb Where the remaining real-data error is (diagnostic run on development sets, before the final FHR-prior step; labels used only for this analysis). Left: label-free selection against the best single track and a per-5-s oracle that always picks the right track. Right: per CinC dev record, our selection (red) against the oracle (purple). On CinC dev the selector loses about 9 points to the best track and 11 to the oracle; the candidates themselves are good on most records.}",
+  "new": "\\caption{\\fb Where the remaining real-data error is (diagnostic run on development sets, before the final FHR-prior step; labels used only for this analysis). Left: label-free selection against the best single track and a per-5-s oracle that always picks the right track. Right: per CinC dev record, our selection (red) against the oracle (purple). On CinC dev the selector loses about 9 points to the best track and 11 to the oracle; the candidates themselves are good on most records. \\textbf{[L2 C model]} Source: tools/accuracy/results\\_diag\\_v5.csv.}",
+  "why": "level label and data source for fig:fin_gap"
+ },
+ {
+  "old": "\\caption{\\fb Board processing speed per record, including UART transfer and the PC brain (mean of per-record ratios). Every record runs 3.7--9.4$\\times$ faster than real time. On CinC a01 (web demonstration log) the median time per 64-sample frame (0.256\\,s of signal) was 34\\,ms, with a one-off peak of 0.58\\,s during calibration.}",
+  "new": "\\caption{\\fb Board processing speed per record, including UART transfer and the PC brain (mean of per-record ratios). Every record runs 3.7--9.4$\\times$ faster than real time. On CinC a01 (web demonstration log) the median time per 64-sample frame (0.256\\,s of signal) was 34\\,ms, with a one-off peak of 0.58\\,s during calibration. \\textbf{[L5 board]} Source: report/rtl\\_pc\\_split/board\\_umem/board\\_cdev\\_ad\\_ctest\\_syn.csv (stream\\_s, record\\_s).}",
+  "why": "level label and data source for fig:fin_speed"
+ },
+ {
+  "old": "\\caption{\\fb Board F1 with 95\\% bootstrap confidence intervals (records resampled with replacement).}",
+  "new": "\\caption{\\fb Board F1 with 95\\% bootstrap confidence intervals (records resampled with replacement). \\textbf{[L5 board]} Source: report/final\\_report/tables/board\\_f1\\_ci.csv.}",
+  "why": "level label and data source for tab:final_ci"
+ },
+ {
+  "old": "\\caption{\\fb Failure analysis on all 75 CinC 2013 recordings (C model, bit-exact with the board). Top left: median output FHR against median reference FHR; grey crosses are the maternal heart rate found by the FPGA (missing where no maternal train was found). Top right: causes for the 17 records with F1 below $50\\%$. Bottom: one example per cause, with the reference FHR, the v6 output and the maternal rate.}",
+  "new": "\\caption{\\fb Failure analysis on all 75 CinC 2013 recordings (C model, bit-exact with the board). Top left: median output FHR against median reference FHR; grey crosses are the maternal heart rate found by the FPGA (missing where no maternal train was found). Top right: causes for the 17 records with F1 below $50\\%$. Bottom: one example per cause, with the reference FHR, the v6 output and the maternal rate. \\textbf{[L2 C model]} Source: report/final\\_report/tables/cinc\\_failures.csv.}",
+  "why": "level label and data source for fig:fin_fail"
+ },
+ {
+  "old": "\\caption{\\fb The three ideas on the development sets (C model, mean F1 in \\%). Each row adds to the adopted rows above it.}",
+  "new": "\\caption{\\fb The three ideas on the development sets (C model, mean F1 in \\%). Each row adds to the adopted rows above it. \\textbf{[L2 C model]} Source: tools/accuracy/results\\_devbench\\_v6.csv.}",
+  "why": "level label and data source for tab:v61_ideas"
+ },
+ {
+  "old": "\\caption{\\fb When v7-DL decides a segment. Every 2.5\\,s of signal the look-ahead unit scores all 16 tracks over a window from 15\\,s before to 7.5\\,s after the segment, 1.5\\,s after the end of that window so that the beats in it have been reported, runs one Viterbi step and decides the segment. After the clean-up and the centred FHR the final beats leave the FPGA about $13.5\\,$s after they occurred (median); a deadline sends any beat that has waited 15\\,s, so no beat is later than $17.5\\,$s.}",
+  "new": "\\caption{\\fb When v7-DL decides a segment. Every 2.5\\,s of signal the look-ahead unit scores all 16 tracks over a window from 15\\,s before to 7.5\\,s after the segment, 1.5\\,s after the end of that window so that the beats in it have been reported, runs one Viterbi step and decides the segment. After the clean-up and the centred FHR the final beats leave the FPGA about $13.5\\,$s after they occurred (median); a deadline sends any beat that has waited 15\\,s, so no beat is later than $17.5\\,$s. \\textbf{[L2]} Source: constants of fpga\\_implementation/v6/model/v7\\_post.c.}",
+  "why": "level label and data source for fig:fin_v7_timing"
+ },
+ {
+  "old": "\\caption{\\fb Mean F1 of v7-DL against its median output delay on the development sets (C model, which is bit-exact with the board), for future windows of 0, 1, 2, 3, 4 and 5 segments of 2.5\\,s. The large marker is the final design (3 segments, $13.5\\,$s); the orange square is the live v6.1 output, whose beats leave 1.5--2\\,s after they occur. The y axes differ between panels.}",
+  "new": "\\caption{\\fb Mean F1 of v7-DL against its median output delay on the development sets (C model, which is bit-exact with the board), for future windows of 0, 1, 2, 3, 4 and 5 segments of 2.5\\,s. The large marker is the final design (3 segments, $13.5\\,$s); the orange square is the live v6.1 output, whose beats leave 1.5--2\\,s after they occur. The y axes differ between panels. \\textbf{[L2 C model]} Source: report/final\\_report/tables/v7\\_delay\\_sweep.csv.}",
+  "why": "level label and data source for fig:fin_v7_delay"
+ },
+ {
+  "old": "\\caption{\\fb FPGA utilisation of the three hardware versions on the XC7S50 (Vivado post-implementation, 50\\,MHz).}",
+  "new": "\\caption{\\fb FPGA utilisation of the three hardware versions on the XC7S50 (Vivado post-implementation, 50\\,MHz). \\textbf{[L4 Vivado]} Source: fpga\\_implementation/v6/build/, build/v61/, build/v7/ reports.}",
+  "why": "level label and data source for tab:v7_hw"
+ },
+ {
+  "old": "\\caption{\\fb Mean F1 of v6, v6.1 and v7-DL measured on the board and of the offline v7-LA (PC, whole recording) on every data set. v7-DL, which runs on the FPGA with a fixed delay, is at least as good as the offline version on all real data sets and within 0.7 points on FECGSYNDB.}",
+  "new": "\\caption{\\fb Mean F1 of v6, v6.1 and v7-DL measured on the board and of the offline v7-LA (PC, whole recording) on every data set. v7-DL, which runs on the FPGA with a fixed delay, is at least as good as the offline version on all real data sets and within 0.7 points on FECGSYNDB. \\textbf{[L5 board / L2]} Source: report/rtl\\_pc\\_split/board\\_umem/, report/v61\\_v7/board\\_v61/, report/v61\\_v7/board\\_v7/, tools/accuracy/results\\_v7la\\_*.csv.}",
+  "why": "level label and data source for fig:fin_v7_results"
+ },
+ {
+  "old": "\\caption{\\fb v6.1 and v7-DL on the board (every record bit-exact with the C model): mean F1 with 95\\% bootstrap confidence intervals (records resampled 10,000 times) and FHR MAE. \\emph{Reliable refs}: without the 7 flagged records~\\cite{behar2014b}. The last row is the C model on all FECGSYNDB records; $^c$its CIs resample the 10 subjects (Sec.~\\ref{sec:stats}).}",
+  "new": "\\caption{\\fb v6.1 and v7-DL on the board (every record bit-exact with the C model): mean F1 with 95\\% bootstrap confidence intervals (records resampled 10,000 times) and FHR MAE. \\emph{Reliable refs}: without the 7 flagged records~\\cite{behar2014b}. The last row is the C model on all FECGSYNDB records; $^c$its CIs resample the 10 subjects (Sec.~\\ref{sec:stats}). \\textbf{[L5 board / L2]} Source: report/final\\_report/tables/board\\_v7\\_f1\\_ci.csv; tools/report\\_stats/out/cluster.csv.}",
+  "why": "level label and data source for tab:v7_results"
+ },
+ {
+  "old": "\\caption{\\fb Per-record F1 of the final v7-DL output against the live v6.1 output of the same board runs on all 75 CinC recordings: 63 records improve by more than one point and 2 get worse.}",
+  "new": "\\caption{\\fb Per-record F1 of the final v7-DL output against the live v6.1 output of the same board runs on all 75 CinC recordings: 63 records improve by more than one point and 2 get worse. \\textbf{[L5 board]} Source: report/v61\\_v7/board\\_v7/board\\_cdev\\_ad\\_ctest\\_syn.csv (f1, f1\\_causal).}",
+  "why": "level label and data source for fig:fin_v7_cinc"
+ },
+ {
+  "old": "\\caption{\\fb Paired differences in F1 on the same records (points; board, FECGSYNDB all: C model): mean with 95\\% paired bootstrap CI, records better / worse, two-sided Wilcoxon signed-rank $p$ (zero differences dropped). Source: \\texttt{tools/report\\_stats/out/paired.csv}.}",
+  "new": "\\caption{\\fb Paired differences in F1 on the same records (points; board, FECGSYNDB all: C model): mean with 95\\% paired bootstrap CI, records better / worse, two-sided Wilcoxon signed-rank $p$ (zero differences dropped). Source: \\texttt{tools/report\\_stats/out/paired.csv}. \\textbf{[L5 board / L2]} Source: tools/report\\_stats/out/paired.csv.}",
+  "why": "level label and data source for tab:paired"
+ },
+ {
+  "old": "\\caption{\\fb Data-use ledger. ``Scored'' counts the frozen designs scored on the set (Tab.~\\ref{tab:final_versions}); development sets were also scored repeatedly during development, which was not counted.}",
+  "new": "\\caption{\\fb Data-use ledger. ``Scored'' counts the frozen designs scored on the set (Tab.~\\ref{tab:final_versions}); development sets were also scored repeatedly during development, which was not counted. \\textbf{[--]} Source: Tab.~\\ref{tab:final_versions} and the development logs.}",
+  "why": "level label and data source for tab:ledger"
+ },
+ {
+  "old": "\\caption{\\fb FECGSYNDB (1,248 records, C model) by condition; v7-DL: $c0$ 98.0, $c1$ 97.8, $c2$ 91.9, $c3$ 96.8, $c4$ 84.0. The look-ahead helps most on ectopic beats ($c4$), which nevertheless stay the weakest condition.}",
+  "new": "\\caption{\\fb FECGSYNDB (1,248 records, C model) by condition; v7-DL: $c0$ 98.0, $c1$ 97.8, $c2$ 91.9, $c3$ 96.8, $c4$ 84.0. The look-ahead helps most on ectopic beats ($c4$), which nevertheless stay the weakest condition. \\textbf{[L2 C model]} Source: tools/accuracy/results\\_v7dl\\_synall.csv.}",
+  "why": "level label and data source for fig:fin_v7_cond"
+ },
+ {
+  "old": "\\caption{\\fb Final design against published fetal QRS detection results (beat F1 in \\%, $\\pm 50\\,$ms). Published methods run offline; v7-DL runs on the FPGA with a fixed delay. Rec.: records scored (--: not stated). $^a$5 records excluded, parameters tuned on set-a. $^b$Median F1.}",
+  "new": "\\caption{\\fb Final design against published fetal QRS detection results (beat F1 in \\%, $\\pm 50\\,$ms). Published methods run offline; v7-DL runs on the FPGA with a fixed delay. Rec.: records scored (--: not stated). $^a$5 records excluded, parameters tuned on set-a. $^b$Median F1. \\textbf{[L5 board / L2]} Source: cited papers; report/v61\\_v7/board\\_v7/, tools/accuracy/results\\_v7dl\\_synall.csv.}",
+  "why": "level label and data source for tab:v7_literature"
+ },
+ {
+  "old": "\\caption{\\fb Validation status of the hardware versions v6, v6.1 and v7-DL (final).}",
+  "new": "\\caption{\\fb Validation status of the hardware versions v6, v6.1 and v7-DL (final). \\textbf{[L1--L5]} Source: result files listed in Sec.~\\ref{sec:final_code}.}",
+  "why": "level label and data source for tab:final_status"
+ },
+ {
+  "old": "\\caption{\\fb Final status of the mid-term objectives O1--O5 (\\cref{tab:objective_status}).}",
+  "new": "\\caption{\\fb Final status of the mid-term objectives O1--O5 (\\cref{tab:objective_status}). \\textbf{[L3--L5]} Source: report/v61\\_v7/board\\_v7/, tools/accuracy/results\\_v7dl\\_synall.csv, Vivado reports.}",
+  "why": "level label and data source for tab:final_objectives"
+ },
+ {
+  "old": "\\caption{\\fb Project timeline from the repository history: preliminary proposal (PPR-8), mid-term report (MTR-8), and the final phase from the causal pipeline to the final RTL design, demonstration and this report (FPR-8).}",
+  "new": "\\caption{\\fb Project timeline from the repository history: preliminary proposal (PPR-8), mid-term report (MTR-8), and the final phase from the causal pipeline to the final RTL design, demonstration and this report (FPR-8). \\textbf{[--]} Source: git history of the repository.}",
+  "why": "level label and data source for fig:fin_project_timeline"
+ },
+ {
+  "old": "\\caption{\\fb Work division over the whole project. Each member was responsible for one mid-term method and one part of the final system.}",
+  "new": "\\caption{\\fb Work division over the whole project. Each member was responsible for one mid-term method and one part of the final system. \\textbf{[--]} Source: team records.}",
+  "why": "level label and data source for tab:contrib"
+ },
+ {
+  "old": "\\caption{Mid-term objective status summary against formal project targets.}",
+  "new": "\\caption{Mid-term objective status summary against formal project targets. \\fin{\\textbf{[L1--L4]} Source: mid-term report MTR-8.}}",
+  "why": "level label and data source for tab:objective_status"
+ },
+ {
+  "old": "\\caption{Fixed-point word-length specifications across pipeline processing stages.}",
+  "new": "\\caption{Fixed-point word-length specifications across pipeline processing stages. \\fin{\\textbf{[L2]} Source: mid-term fixed-point model src/fixed\\_point\\_model.py.}}",
+  "why": "level label and data source for tab:fixed_point_specs"
+ },
+ {
+  "old": "\\caption{Stage-by-stage cycle derivation for single-DSP time-multiplexed schedule.}",
+  "new": "\\caption{Stage-by-stage cycle derivation for single-DSP time-multiplexed schedule. \\fin{\\textbf{[L4 target, paper sizing]} Source: mid-term analysis (no build).}}",
+  "why": "level label and data source for tab:cycle_schedule"
+ },
+ {
+  "old": "Anthropic.\n\\newblock The Claude 3.5 Sonnet language model.\n\\newblock Large language model system, 2024. \\url{https://www.anthropic.com/claude}",
+  "new": "Anthropic.\n\\newblock Claude 3.5 Sonnet (model announcement).\n\\newblock 2024. \\url{https://www.anthropic.com/news/claude-3-5-sonnet}",
+  "why": "proper reference entry for the AI model used at mid-term"
+ },
+ {
+  "old": "\\begin{table*}[t]\n\\fb\n\\caption{\\fb Register of changes from the mid-term report (MTR-8) to this final report.}\n\\label{tab:final_changes}\n\\centering\n\\resizebox{\\textwidth}{!}{%\n\\begin{tabular}{@{}llp{4.2cm}p{5.6cm}p{4.2cm}@{}}\n\\toprule\n\\textbf{Item} & \\textbf{Category} & \\textbf{Mid-term (MTR-8)} & \\textbf{Final report} & \\textbf{Effect} \\\\\n\\midrule\n\\textbf{F-01} & Evaluation & Batch (zero-phase) processing & Strictly causal timeline; annotations only for scoring & Honest numbers: mid-term design $93.0 \\to 82.2\\%$ \\\\\n\\textbf{F-02} & Data & 250 synthetic records & 1,248 synthetic + 75 CinC 2013 + 5 ADFECGDB real recordings & Real-data weakness found \\\\\n\\textbf{F-03} & Protocol & Subject split on synthetic data & CinC dev (odd) / test (even); test scored once per frozen design & No tuning on test data \\\\\n\\textbf{F-04} & Calibration & PCA weights, component $\\mathbf{v}_2$ & Self-referencing GEVD on own detections (v2) & FECGSYNDB $82.2 \\to 95.6\\%$ \\\\\n\\textbf{F-05} & RTL fixes & Latency 18, hard-coded localiser & Latency 13, parameterised localiser, restartable detector & Board bit-exact with model \\\\\n\\textbf{F-06} & Algorithm & One beamformer + threshold detector & Maternal cancellation, 16 GEVD candidates, trackers, label-free selection & CinC test $16.7 \\to 65.5\\%$ \\\\\n\\textbf{F-07} & Deep learning & U-Net as accuracy upper bound & U-Net tested on real data: $17.7\\%$ on ADFECGDB & Classical method kept \\\\\n\\textbf{F-08} & FPGA (v5) & Weights from PC, detector on FPGA & Whole algorithm in C on MicroBlaze in the FPGA & First full on-chip version \\\\\n\\textbf{F-09} & FPGA (v6) & Sized estimate (L4) & Hand-written Verilog + PC brain; integer C model as specification & 140/140 records bit-exact (L5) \\\\\n\\textbf{F-10} & Clock / resources & 100\\,MHz, 990 LUT, 1 DSP (sized) & 50\\,MHz, 18.1k LUT, 33 DSP, 60/75 BRAM (measured) & Real design, timing met \\\\\n\\textbf{F-11} & Memory & -- & Shared memory for two non-overlapping buffers & BRAM $99 \\to 80\\%$, outputs unchanged \\\\\n\\textbf{F-12} & Demonstration & 7-segment display and switch presets & Live web page with board status, stages, FHR and accuracy & Any recording can be shown \\\\\n\\textbf{F-13} & Results & Synthetic tables & Board results, per-record distributions, oracle analysis & Sec.~\\ref{sec:final_results}--\\ref{sec:final_obs} \\\\\n\\textbf{F-14} & Team / AI & Roles only & Member contributions (\\cref{tab:contrib}); AI use acknowledged (Sec.~\\ref{sec:final_ai}) & Course requirements \\\\\n\\textbf{F-15} & Accuracy (v6.1) & One-time calibration; detector peak level updated only on detections & Detector warm-up after the filter transient, peak-level decay; GEVD recalibration every 30\\,s, keep if better & CinC test $65.5 \\to 71.9\\%$; 140/140 bit-exact \\\\\n\\textbf{F-16} & Selection & -- & Causal selection rules and a learned selector tested on the dev sets & Not adopted (no reliable gain) \\\\\n\\textbf{F-17} & Look-ahead (PC) & -- & v7-LA: offline Viterbi over track qualities, beat clean-up, centred FHR & CinC test $75.6\\%$, FECGSYNDB $94.3\\%$ \\\\\n\\textbf{F-18} & Look-ahead (FPGA) & -- & v7-DL: RTL look-ahead unit, fixed output delay, FLUSH / OUT7 / END7 frames; unit cut from 13.2k to 8.4k LUTs & CinC test $76.9\\%$; 140/140 bit-exact \\\\\n\\textbf{F-19} & Demonstration / tests & Web page with the v6 output & Final and live FHR and the delay on the page; final FHR on the board's displays; tests for v6.1 and v7 & 270 automated tests pass \\\\\n\\bottomrule\n\\end{tabular}%\n}\n\\end{table*}",
+  "new": "\\begin{table*}[t]\n\\fb\n\\caption{\\fb Register of changes from the mid-term report (MTR-8) to this final report: design changes (F) and corrections of reported values (C). \\textbf{[--]} Source: this report and the result files named in each row.}\n\\label{tab:final_changes}\\label{tab:register}\n\\centering\n\\resizebox{\\textwidth}{!}{%\n\\begin{tabular}{@{}p{3.0cm}p{3.8cm}p{4.6cm}p{2.0cm}p{4.4cm}@{}}\n\\toprule\n\\textbf{Item} & \\textbf{Old (mid-term)} & \\textbf{New (final)} & \\textbf{Section} & \\textbf{Reason / effect} \\\\\n\\midrule\nF-01: Evaluation & Batch (zero-phase) processing & Strictly causal timeline; annotations only for scoring & -- & Honest numbers: mid-term design $93.0 \\to 82.2\\%$ \\\\\nF-02: Data & 250 synthetic records & 1,248 synthetic + 75 CinC 2013 + 5 ADFECGDB real recordings & -- & Real-data weakness found \\\\\nF-03: Protocol & Subject split on synthetic data & CinC dev (odd) / test (even); test scored once per frozen design & -- & No tuning on test data \\\\\nF-04: Calibration & PCA weights, component $\\mathbf{v}_2$ & Self-referencing GEVD on own detections (v2) & -- & FECGSYNDB $82.2 \\to 95.6\\%$ \\\\\nF-05: RTL fixes & Latency 18, hard-coded localiser & Latency 13, parameterised localiser, restartable detector & -- & Board bit-exact with model \\\\\nF-06: Algorithm & One beamformer + threshold detector & Maternal cancellation, 16 GEVD candidates, trackers, label-free selection & -- & CinC test $16.7 \\to 65.5\\%$ \\\\\nF-07: Deep learning & U-Net as accuracy upper bound & U-Net tested on real data: $17.7\\%$ on ADFECGDB & -- & Classical method kept \\\\\nF-08: FPGA (v5) & Weights from PC, detector on FPGA & Whole algorithm in C on MicroBlaze in the FPGA & -- & First full on-chip version \\\\\nF-09: FPGA (v6) & Sized estimate (L4) & Hand-written Verilog + PC brain; integer C model as specification & -- & 140/140 records bit-exact (L5) \\\\\nF-10: Clock / resources & 100\\,MHz, 990 LUT, 1 DSP (sized) & 50\\,MHz, 18.1k LUT, 33 DSP, 60/75 BRAM (measured) & -- & Real design, timing met \\\\\nF-11: Memory & -- & Shared memory for two non-overlapping buffers & -- & BRAM $99 \\to 80\\%$, outputs unchanged \\\\\nF-12: Demonstration & 7-segment display and switch presets & Live web page with board status, stages, FHR and accuracy & -- & Any recording can be shown \\\\\nF-13: Results & Synthetic tables & Board results, per-record distributions, oracle analysis & -- & Sec.~\\ref{sec:final_results}--\\ref{sec:final_obs} \\\\\nF-14: Team / AI & Roles only & Member contributions (\\cref{tab:contrib}); AI use acknowledged (Sec.~\\ref{sec:final_ai}) & -- & Course requirements \\\\\nF-15: Accuracy (v6.1) & One-time calibration; detector peak level updated only on detections & Detector warm-up after the filter transient, peak-level decay; GEVD recalibration every 30\\,s, keep if better & -- & CinC test $65.5 \\to 71.9\\%$; 140/140 bit-exact \\\\\nF-16: Selection & -- & Causal selection rules and a learned selector tested on the dev sets & -- & Not adopted (no reliable gain) \\\\\nF-17: Look-ahead (PC) & -- & v7-LA: offline Viterbi over track qualities, beat clean-up, centred FHR & -- & CinC test $75.6\\%$, FECGSYNDB $94.3\\%$ \\\\\nF-18: Look-ahead (FPGA) & -- & v7-DL: RTL look-ahead unit, fixed output delay, FLUSH / OUT7 / END7 frames; unit cut from 13.2k to 8.4k LUTs & -- & CinC test $76.9\\%$; 140/140 bit-exact \\\\\nF-19: Demonstration / tests & Web page with the v6 output & Final and live FHR and the delay on the page; final FHR on the board's displays; tests for v6.1 and v7 & -- & 270 automated tests pass \\\\\nC-01: Fig.~\\ref{fig:runtime_bars} runtimes & Hankel-SVD 75.9\\,s (bar) / 107.5\\,s (caption); adaptive EMA 245.0\\,ms; FPGA 96\\,ms & 75.9\\,ms; 44.7\\,ms; 111\\,ms (148 cycles) & App.~\\ref{app:midterm} & values of code/results/mega\\_benchmark\\_summary.csv; FPGA bar left from a 128-cycle schedule \\\\\nC-02: Tab.~\\ref{tab:clinical_specs} U-Net held-out MAE & 3.57\\,bpm & 2.43\\,bpm & Sec.~\\ref{sec:clinical_specs} & 3.57 is the 10-subject mean; held-out sub09--10 value from mega\\_benchmark\\_results.csv \\\\\nC-03: Bland--Altman limits & $[-6.75, +5.90]$\\,bpm & $[-4.75, +5.88]$\\,bpm & App.~\\ref{app:midterm} & caption now matches the plotted limits \\\\\nC-04: Fig.~\\ref{fig:deep_learning_plot} correlation & $r = 0.979$ & $r = 0.966$ (TC1) & App.~\\ref{app:midterm} & figure shows TC1; 0.979 is the 5-case mean \\\\\nC-05: XADC scaling & $G = 200$ into the XADC & $G = 100$ needed & App.~\\ref{app:midterm} & 7-series XADC accepts at most 1\\,V peak-to-peak (UG480) \\\\\nC-06: filter order & ``4th-order Butterworth'' & 4th-order prototype, 8th-order bandpass (4 SOS) & several & terminology made consistent \\\\\nC-07: Fig.~\\ref{fig:fmr_topography} FMR & typed-in values; Lead 27 = 0.46 called the peak & measured: Lead 19 = 0.61 highest, Lead 27 = 0.51; selection was anatomical & App.~\\ref{app:midterm} & values recomputed from FECGSYNDB sub01--sub07 \\\\\nC-08: FMR range & 0.20--0.54 & 0.08--0.61 & Sec.~\\ref{sec:intro} & measured per-lead training means \\\\\nC-09: CinC test use & scored for 5 designs & scored for 9 designs & Secs.~\\ref{sec:final_obs}, \\ref{sec:limitations} & Tab.~\\ref{tab:final_versions} lists 9 scored designs \\\\\nC-10: replication R5 & published $\\approx 78\\%$ (12\\,dB), $<35\\%$ (0\\,dB) & Andreotti TS median 96.0\\%; verdict FAIL & Sec.~\\ref{sec:replications} & earlier value could not be traced to the paper \\\\\nC-11: replication R7 & literature $\\approx 81.2\\%$ / $42.1\\%$ quoted as result & no in-house result; NOT RUN & Sec.~\\ref{sec:replications} & numbers not traceable, method never run \\\\\nC-12: replication R4 setup & 32-tap transversal LMS & SWT + LMS + SSNF & Sec.~\\ref{sec:replications} & the reported numbers come from swt\\_lms\\_ssnf in code/results/metrics.csv \\\\\nC-13: RTL speed & about $140\\times$ real time & about $135\\times$ (median cycles per sample) & Sec.~\\ref{sec:final_obs} & 200,000 / 1,485 cycles; $140\\times$ is the whole-run ratio \\\\\nC-14: PC data & PC ``never sees the recording'' & never receives the raw recording & Abstract, Sec.~\\ref{sec:final_hw} & the PC receives beat segments and calibration buffers \\\\\nC-15: AI disclosure, final phase & Antigravity used once & Antigravity used 31 Oct--6 Nov & Sec.~\\ref{sec:final_ai} & matches the prompt log \\\\\nC-16: Fig.~\\ref{fig:fhr_bland_altman} legend & ``Vivek Hybrid'' & ``Wavelet Hybrid'' & App.~\\ref{app:midterm} & anonymity \\\\\nC-17: U-Net split & strict disjoint split stated as fact & split not verifiable from the archive & Secs.~\\ref{sec:unet}, \\ref{sec:final_realdata} & training script trains on the whole folder; no record list saved \\\\\nC-18: structure & mid-term Secs.~6--10 in the main text & moved to App.~\\ref{app:midterm} & App.~\\ref{app:midterm} & superseded design separated from the final design \\\\\n\\bottomrule\n\\end{tabular}%\n}\n\\end{table*}",
+  "why": "register merged into one table with item/old/new/section/reason; corrections added"
+ },
+ {
+  "old": "\\newblock Xilinx, San Jose, CA, v1.10 edition, 2018.\n",
+  "new": "\\newblock Xilinx, San Jose, CA, v1.10 edition, 2018. \\url{https://docs.amd.com/v/u/en-US/ug479_7Series_DSP48E1}\n",
+  "why": "reference had no DOI or URL (URL not opened; verify before submission)"
+ }
+]

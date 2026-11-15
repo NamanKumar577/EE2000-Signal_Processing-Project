@@ -1,0 +1,31 @@
+
+% ---------------------------------------------------------------------------------------------
+\begin{finalpart}
+\section{Reproducibility}
+\label{sec:repro}
+Every table and figure of the final-phase sections can be regenerated from files in the archive without re-running the board; re-running the board needs the Boolean Board and the bitstreams in \texttt{fpga\_implementation/v6/build*/}.
+
+\noindent\textbf{File map.}
+\begin{itemize}
+    \item \textbf{Algorithm and models:} \texttt{fpga\_implementation/v6/model/} (C model \texttt{fpga\_model.c}, PC brain \texttt{brain.c}, look-ahead model \texttt{v7\_post.c}); Python prototypes and studies in \texttt{tools/accuracy/}.
+    \item \textbf{RTL and builds:} \texttt{fpga\_implementation/v6/rtl/}, testbenches and regression in \texttt{sim/}, Vivado scripts \texttt{build\_v7.tcl} / \texttt{program\_v7.tcl}, reports \texttt{build/\{,v61/,v7/\}\{util,util\_hier,timing,power\}.rpt}.
+    \item \textbf{Per-record results:} board runs \texttt{report/rtl\_pc\_split/board\_umem/} (v6), \texttt{report/v61\_v7/board\_v61/} (v6.1), \texttt{report/v61\_v7/board\_v7/} (v7-DL); C-model and study results \texttt{tools/accuracy/results\_*.csv}; mid-term results \texttt{code/results/}.
+    \item \textbf{Report tools:} \texttt{report/final\_report/tools/}, \texttt{tools/report\_stats/} (outputs in \texttt{tools/report\_stats/out/}).
+\end{itemize}
+
+\noindent\textbf{Commands} (from the repository root, Python in \texttt{venv}):
+\begin{itemize}
+    \item Board runs and bit-exact check: \texttt{V6\_VARIANT=v7 python fpga\_implementation/uart\_host/run\_v6\_board\_eval.py --sets cdev,ad,ctest,syn} (\texttt{v61} for v6.1) $\rightarrow$ Tabs.~\ref{tab:final_results}, \ref{tab:v7_results}.
+    \item \texttt{python report/final\_report/tools/make\_final\_figures.py} $\rightarrow$ result figures \texttt{fin\_*.png} of v6.
+    \item \texttt{python report/final\_report/tools/final\_analysis.py} $\rightarrow$ Tab.~\ref{tab:final_ci}, failure analysis (\texttt{tables/cinc\_failures.csv}).
+    \item \texttt{python report/final\_report/tools/make\_v7\_figures.py} $\rightarrow$ \texttt{fin\_v7\_*.png}, \texttt{tables/board\_v7\_f1\_ci.csv} (Tab.~\ref{tab:v7_results}).
+    \item \texttt{bash fpga\_implementation/v6/sim/wave/run\_wave.sh}, then \texttt{python report/final\_report/tools/plot\_waves.py} $\rightarrow$ simulation figures \texttt{wave\_*.png}.
+    \item \texttt{python report/final\_report/tools/fix\_midterm\_figures.py} $\rightarrow$ corrected mid-term figures.
+    \item \texttt{python report/final\_report/tools/pc\_link\_traffic.py} $\rightarrow$ Tab.~\ref{tab:pc_traffic}.
+    \item \texttt{python tools/report\_stats/stats.py} $\rightarrow$ Sec.~\ref{sec:stats}, Tab.~\ref{tab:paired}, clustered CIs, shortfall.
+    \item \texttt{python report/final\_report/tools/check\_final\_numbers.py} $\rightarrow$ checks that the report quotes the numbers in the result files.
+    \item \texttt{python tools/report\_stats/checksums.py} $\rightarrow$ checksums.
+\end{itemize}
+
+\noindent\textbf{Checksums.} SHA-256 checksums of the 42 result files and Vivado reports used by the report are in \texttt{tools/report\_stats/out/sha256.csv}. % source: tools/report_stats/checksums.py output (42 files, 0 missing)
+\end{finalpart}

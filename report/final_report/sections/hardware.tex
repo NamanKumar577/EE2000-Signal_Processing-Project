@@ -1,0 +1,72 @@
+% Hardware summary and margins (Task 5). Numbers: tools/report_stats/out/hw_table.csv (tools/report_stats/hw_table.py)
+\begin{finalpart}
+\subsection{Hardware Summary and Margins}
+\label{sec:hw_summary}
+\Cref{tab:hw_summary} collects the implementation results of the three hardware versions from the Vivado reports on disk, and \cref{tab:hw_margin} gives the margins of the final design. \Cref{tab:o3o4} re-baselines the two mid-term objectives that the final design does not meet.
+
+\begin{table}[t]
+\fb
+\caption{\fb Implementation results (Vivado post-implementation, XC7S50) and board bit-exactness. Sources: $^a$\texttt{fpga\_implementation/v6/build/\{,v61/,v7/\}util.rpt}; $^b$\texttt{timing.rpt} in the same folders; $^c$\texttt{power.rpt} (vectorless estimate); $^d$board result files \texttt{report/rtl\_pc\_split/board\_umem/}, \texttt{report/v61\_v7/board\_v61/}, \texttt{report/v61\_v7/board\_v7/} (column \texttt{bit\_exact}). Extracted by \texttt{tools/report\_stats/hw\_table.py}.}
+\label{tab:hw_summary}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Quantity} & \textbf{v6} & \textbf{v6.1} & \textbf{v7-DL (final)} \\
+\midrule
+LUTs (of 32,600)$^a$ & 18,127 & 18,986 & 26,701 \\ % util.rpt "Slice LUTs"
+Flip-flops (of 65,200)$^a$ & 10,015 & 11,179 & 15,970 \\ % util.rpt "Slice Registers"
+DSP48E1 (of 120)$^a$ & 33 & 33 & 43 \\ % util.rpt "DSPs"
+Block RAM tiles (of 75)$^a$ & 60 & 60 & 71 \\ % util.rpt "Block RAM Tile"
+Worst setup slack$^b$ & $+0.262\,$ns & $+0.406\,$ns & $+0.048\,$ns \\ % timing.rpt WNS
+Clock$^b$ & 50\,MHz & 50\,MHz & 50\,MHz \\ % timing.rpt clk50_u, period 20 ns
+On-chip power, estimate$^c$ & 0.374\,W & 0.386\,W & 0.445\,W \\ % power.rpt Total On-Chip Power
+Board records bit-exact$^d$ & 140/140 & 140/140 & 140/140 \\ % board CSVs, bit_exact == True
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[t]
+\fb
+\caption{\fb Margins of the final design. Cycle counts are from the xsim run of the v6 datapath on CinC a01 (Fig.~\ref{fig:wave_cycles}; \texttt{report/final\_report/tools/plot\_waves.py}); the v6.1 and v7-DL additions run once per calibration or per 2.5\,s and were not simulated cycle by cycle. Board speed: \texttt{stream\_s} and \texttt{record\_s} in the board result files; link load: \texttt{report/final\_report/tables/pc\_link\_traffic.csv}.}
+\label{tab:hw_margin}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Quantity} & \textbf{Value} & \textbf{Budget / margin} \\
+\midrule
+Worst setup slack (v7-DL) & $+0.048\,$ns & period $20\,$ns; small positive margin \\ % build/v7/timing.rpt
+Cycles per sample, median after calibration & 1,485 & 200,000 ($50\,$MHz / $250\,$Hz): $135\times$ \\ % plot_waves.py output, Fig. wave_cycles
+Whole 30-s run, simulated time & $210.6\,$ms & $30\,$s: $142\times$ \\ % Sec. final_waves, Fig. wave_overview
+Largest single sample (tracker start) & 1.12 million cycles & absorbed by the 512-sample input FIFO \\ % Fig. wave_cycles caption
+Board speed incl.\ UART and PC, v6 & 3.7--9.4$\times$ real time (mean 4.8) & $\ge 1\times$ \\ % board_umem CSV: record_s / stream_s
+Board speed incl.\ UART and PC, v7-DL & 3.4--5.6$\times$ real time (mean 4.35) & $\ge 1\times$ \\ % board_v7 CSV: record_s / stream_s
+Link load, v7-DL (ADFECGDB r01) & 7.8\,KB/s up, 9.2\,KB/s down & 92.16\,KB/s per direction: 8.5\%, 10.0\% \\ % tables/pc_link_traffic.csv
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+The v7-DL board run (mean $4.35\times$ real time) is about $31\times$ slower than the datapath alone ($135\times$) because every sample and every PC request crosses the 921,600-baud UART and waits for the PC (Sec.~\ref{sec:pc_loop}); the logic is not the bottleneck.
+
+\begin{table*}[t]
+\fb
+\caption{\fb Re-baselined mid-term objectives O3 and O4 (\cref{tab:objective_status}).}
+\label{tab:o3o4}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lp{3.0cm}p{3.6cm}p{5.0cm}p{5.4cm}@{}}
+\toprule
+\textbf{Objective} & \textbf{Original target} & \textbf{Final value} & \textbf{Reason} & \textbf{What would be needed to meet it} \\
+\midrule
+O3: per-sample latency & $<10\,\mu$s per sample (sized for the mid-term beamformer at 100\,MHz) & $30\,\mu$s median per sample (1,485 cycles at 50\,MHz); live beats 1.5--2\,s, final beats $13.5\,$s median & The final algorithm runs 16 trackers and a cancellation per sample instead of one beamformer; beat tracking and look-ahead need seconds of signal by design & Per-sample: at 100\,MHz the median would be $14.9\,\mu$s, so the cycle count would also have to fall below 1,000 (parallel track engines); timing at 50\,MHz already has only $+0.048\,$ns slack, so 100\,MHz needs pipelining. Beat latency: not reachable with tracking and look-ahead; the real-time requirement (200,000 cycles) is met $135\times$ over \\
+O4: resources & $<5\%$ LUTs, $\le 1$ DSP48E1 & 26,701 LUTs (81.9\%), 43 DSP, 71/75 BRAM & The target was set for the paper-sized beamformer; the real-data algorithm needs cancellation, 16 tracks and look-ahead & Not reachable for this algorithm. Removing work from the chip would go the other way: moving the PC decisions on chip needs about 50 more BRAM tiles of state (Tab.~\ref{tab:pc_traffic}, Sec.~\ref{sec:pc_loop}) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\noindent\textbf{Not done.} Vivado seed or strategy sweeps, a word-length study for the final design, a negative control on the bit-exact test (a deliberately corrupted model or bitstream to show that the comparison can fail) and a measurement of board power were not done.
+\end{finalpart}

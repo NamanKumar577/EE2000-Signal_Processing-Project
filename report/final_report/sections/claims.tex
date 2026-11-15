@@ -1,0 +1,31 @@
+
+% ---------------------------------------------------------------------------------------------
+\begin{table*}[t]
+\fb
+\caption{\fb Claims and their evidence. Levels: L1 software, L2 bit-true C model, L3 RTL simulation, L4 Vivado implementation, L5 board.}
+\label{tab:claims}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}p{6.2cm}llp{6.4cm}l@{}}
+\toprule
+\textbf{Claim} & \textbf{Section} & \textbf{Table} & \textbf{Source file} & \textbf{Level} \\
+\midrule
+Board output bit-exact with the C model on 140/140 records (v6, v6.1, v7-DL) & \ref{sec:final_results}, \ref{sec:v7_results} & \ref{tab:final_results} & \texttt{board\_*/board\_cdev\_ad\_ctest\_syn.csv} (column \texttt{bit\_exact}) & L5 \\
+v7-DL CinC test F1 $76.9\%$ [$68.3$, $84.7$] & \ref{sec:v7_results} & \ref{tab:v7_results} & \texttt{report/v61\_v7/board\_v7/...csv}; \texttt{tables/board\_v7\_f1\_ci.csv} & L5 \\
+v7-DL CinC test median $87.3\%$; 7 records below $50\%$ give $57\%$ of the shortfall & \ref{sec:v7_where} & -- & \texttt{tools/report\_stats/out/shortfall.csv} & L5 \\
+v7-DL ADFECGDB F1 $96.1\%$ [$92.8$, $98.9$] & \ref{sec:v7_results} & \ref{tab:v7_results} & \texttt{report/v61\_v7/board\_v7/...csv} & L5 \\
+v7-DL FECGSYNDB (1,248) $93.7\%$ [$90.0$, $96.5$] subject-clustered & \ref{sec:stats} & \ref{tab:v7_results} & \texttt{tools/accuracy/results\_v7dl\_synall.csv}; \texttt{out/cluster.csv} & L2 \\
+v7-DL better than v6.1 on CinC test ($+5.0$ [$3.9$, $6.1$], $p = 2\cdot10^{-10}$) & \ref{sec:stats} & \ref{tab:paired} & \texttt{tools/report\_stats/out/paired.csv} & L5 \\
+v6.1 gain over v6 not significant ($p = 0.12$, CinC all) & \ref{sec:stats} & \ref{tab:paired} & \texttt{tools/report\_stats/out/paired.csv} & L5 \\
+Timing met at 50\,MHz (worst slack $+0.05\,$ns, v7-DL) & \ref{sec:v7dl} & \ref{tab:v7_hw} & \texttt{fpga\_implementation/v6/build/v7/timing.rpt} & L4 \\
+v7-DL uses 26,701 LUTs (81.9\%), 71/75 BRAM, 43 DSP & \ref{sec:v7dl} & \ref{tab:v7_hw} & \texttt{fpga\_implementation/v6/build/v7/util.rpt} & L4 \\
+Block RAM cut from 74.5 to 60 tiles with byte-identical output & \ref{sec:final_hw} & \ref{tab:final_resources} & \texttt{build/util.rpt}; board MD5 in \texttt{board\_umem/...csv} & L4/L5 \\
+Look-ahead unit cut from 13.2k to 8.4k LUTs with identical output & \ref{sec:v7dl} & -- & synthesis logs (\texttt{report/v61\_v7/LOG.md}); xsim regression & L3/L4 \\
+RTL median 1,485 cycles per sample (budget 200,000) & \ref{sec:final_waves} & -- & \texttt{fpga\_implementation/v6/sim/wave/wave.vcd} via \texttt{plot\_waves.py} & L3 \\
+Board (v7-DL) 3.4--5.6$\times$ faster than real time incl.\ UART and PC (v6: 3.7--9.4$\times$) & \ref{sec:final_results} & -- & \texttt{board\_*/...csv} (\texttt{stream\_s}, \texttt{record\_s}) & L5 \\
+PC link traffic: basis $59.1\%$, selection $28.7\%$, calibration $11.6\%$ & \ref{sec:pc_loop} & \ref{tab:pc_traffic} & \texttt{report/final\_report/tables/pc\_link\_traffic.csv} & L2 \\
+On-chip power $0.445\,$W (estimate; board not measured) & \ref{sec:v7dl} & \ref{tab:v7_hw} & \texttt{fpga\_implementation/v6/build/v7/power.rpt} & L4 (estimate) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}

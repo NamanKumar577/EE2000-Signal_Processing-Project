@@ -1,0 +1,13 @@
+% Replacement for the "Known limits of the final design, and why" enumerate (Task 6). Numbers with sources as comments.
+\begin{enumerate}
+    \item \textbf{Real-data accuracy.} v7-DL scores $76.9\%$ [$68.3$, $84.7$] on CinC test ($82.0\%$ on reliable references); 7 of 37 records are below $50\%$ and cause $57\%$ of the shortfall; the best published offline detectors reach up to $97.3\%$ on set-a (Tab.~\ref{tab:v7_literature}). % sources: tables/board_v7_f1_ci.csv, out/shortfall.csv
+    \item \textbf{Candidate quality.} On CinC dev the best single track misses $15.0$ points [$11.0$, $19.4$] while selection loses $0.3$ (Tab.~\ref{tab:selloss}); an all-CinC oracle breakdown was not saved and is not reported. % source: tools/report_stats/out/selection_loss.csv
+    \item \textbf{Reused and small test sets.} CinC test scored for nine designs; 37 / 38 / 5 real records (Tab.~\ref{tab:ledger}).
+    \item \textbf{Ectopic beats.} FECGSYNDB $c4$ $84.0\%$ [$79.6$, $88.1$] (subject-clustered), the weakest condition. % source: out/cluster.csv
+    \item \textbf{Output delay.} Final beats $13.5\,$s median, $17.5\,$s maximum after they occur; live beats $1.5$--$2\,$s.
+    \item \textbf{PC in the loop.} Five decisions on the PC; 7.8\,KB/s up and 9.2\,KB/s down (Tab.~\ref{tab:pc_traffic}). % source: tables/pc_link_traffic.csv
+    \item \textbf{Timing margin.} Worst slack $+0.05\,$ns at 50\,MHz with $81.9\%$ LUT use (Tab.~\ref{tab:v7_hw}). % source: build/v7/timing.rpt, util.rpt
+    \item \textbf{Calibration.} Maternal PCA once (first $10\,$s); spatial filters every $30\,$s, so a 60-s CinC record gets at most one recalibration.
+    \item \textbf{Not measured:} clinical agreement ($\pm 5\,$bpm) for the final design; board power (only the Vivado on-chip estimate, $0.445\,$W); per-record GEVD output SNR; template-subtraction residual power; Vivado seed sweeps; a word-length study of the final RTL; a negative control for the bit-exact test (a deliberately changed model that the comparison must reject); twins and fetal bradycardia cases.
+    \item \textbf{No analogue front end.} Recordings are streamed from files; electrodes, amplifier and ADC were not built.
+\end{enumerate}
