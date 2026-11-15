@@ -3,7 +3,7 @@
 Build the course submission archive fpr-8.zip (code, data, PDF) in the repository root.
 
 Contents (everything under the folder fpr-8/ inside the zip):
-  * fpr-8.pdf, AI_PROMPTS.md, README.md at the top;
+  * fpr-8.pdf, AI_PROMPTS.pdf, README.md at the top;
   * the whole repository as tracked by git plus new files that are not ignored
     (old submission zips are left out: their PDFs are in report/);
   * built programs the scripts need (v6 C model and PC brain) and the RTL test inputs;
@@ -79,7 +79,7 @@ def main():
             seen.add(arc)
             z.write(src, f"{TOP}/{arc}")
         add(ROOT / "report/final_report/fpr-8.pdf", "fpr-8.pdf")
-        add(ROOT / "report/final_report/AI_PROMPTS.md", "AI_PROMPTS.md")
+        add(ROOT / "report/final_report/AI_PROMPTS.pdf", "AI_PROMPTS.pdf")
         for f in files + extra:
             if (ROOT / f).is_file():
                 add(ROOT / f, f)

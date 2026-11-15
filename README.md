@@ -5,7 +5,7 @@ EE2000 Signal Processing course project, Team 8 (paper ID 0008).
 We extract the fetal heartbeat from four electrodes on the mother's abdomen, where the fetal ECG is 10 to 250 times weaker than the mother's, and report the fetal heart rate (FHR) in real time. The final design (**v7-DL**) runs as **hand-written Verilog on a Spartan-7 XC7S50 FPGA** (RealDigital Boolean Board). The recording is streamed to the board in 0.256-s frames; the FPGA gives a live estimate at once and the final beats, chosen by an on-chip look-ahead unit, about 13.5 s later (at most 17.5 s). It also shows the final heart rate on the board's displays. A PC answers only five low-rate requests and never sees the recording. All on-board methods are **causal** (v7-DL with a fixed output delay) and **label-free** (annotations are used only for scoring); v7-LA is an offline reference that sees the whole recording.
 
 - Final report: [`report/final_report/fpr-8.pdf`](report/final_report/fpr-8.pdf) (new text in blue; mid-term text in black)
-- AI prompts (course requirement): [`report/final_report/AI_PROMPTS.md`](report/final_report/AI_PROMPTS.md)
+- AI prompts (course requirement): [`report/final_report/AI_PROMPTS.pdf`](report/final_report/AI_PROMPTS.pdf)
 - Earlier reports: [`report/mtr-8.pdf`](report/mtr-8.pdf) (mid-term), [`report/preliminary/PPR-8.pdf`](report/preliminary/PPR-8.pdf) (proposal)
 
 ---
@@ -162,7 +162,7 @@ venv/Scripts/python.exe report/final_report/tools/make_delay_figure.py       # v
 venv/Scripts/python.exe report/final_report/tools/check_final_numbers.py     # checks the numbers in the text against the result files
 cd report/final_report && pdflatex fpr-8.tex && pdflatex fpr-8.tex && pdflatex fpr-8.tex
 ```
-`tools/package_submission.py` builds the submission archive `fpr-8.zip` (code, data, PDF) in the repository root. `AI_PROMPTS.md` is kept as it is; do not run `tools/extract_ai_prompts.py` again, because it would overwrite the file.
+`tools/package_submission.py` builds the submission archive `fpr-8.zip` (code, data, PDF) in the repository root. The AI prompts are built from `AI_PROMPTS.tex`: `cd report/final_report && pdflatex AI_PROMPTS.tex && pdflatex AI_PROMPTS.tex`.
 
 ### 8. Tests
 ```bash
@@ -191,4 +191,4 @@ venv/Scripts/python.exe -m pytest tests -q        # 270 passed, 3 skipped (RUN_R
 
 ## Use of AI
 
-We used AI tools as programming aids; the AI disclosure sections of the reports describe this, and the prompts are in [`report/final_report/AI_PROMPTS.md`](report/final_report/AI_PROMPTS.md) as the course requires.
+We used AI tools as programming aids; the AI disclosure sections of the reports describe this, and the prompts are in [`report/final_report/AI_PROMPTS.pdf`](report/final_report/AI_PROMPTS.pdf) as the course requires.

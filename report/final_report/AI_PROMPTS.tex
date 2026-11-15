@@ -1,0 +1,452 @@
+% AI prompts of the project (course requirement), built into AI_PROMPTS.pdf:
+%   pdflatex AI_PROMPTS.tex   (run twice)
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext}
+\usepackage[a4paper,margin=2.1cm]{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\urlstyle{tt}
+
+\definecolor{cnaman}{HTML}{1F5FAD}
+\definecolor{cvivek}{HTML}{B35C00}
+\definecolor{canshu}{HTML}{1E7B4F}
+\definecolor{castitva}{HTML}{7A3EA8}
+
+% name tag of the team member whose part of the work the prompt belongs to
+\newcommand{\tagbox}[2]{\tikz[baseline=(n.base)]\node[draw=#1,fill=#1!10,text=#1!80!black,rounded corners=2pt,
+  inner xsep=4pt,inner ysep=1.6pt,font=\sffamily\bfseries\small](n){#2};}
+\newcommand{\Naman}{\tagbox{cnaman}{Naman}}
+\newcommand{\Vivek}{\tagbox{cvivek}{Vivek}}
+\newcommand{\Anshu}{\tagbox{canshu}{Anshu}}
+\newcommand{\Astitva}{\tagbox{castitva}{Astitva}}
+
+% one prompt: number, date, member tag(s)
+\newtcolorbox{prompt}[3]{breakable,enhanced,colback=white,colframe=black!25,boxrule=0.5pt,arc=1.5pt,
+  colbacktitle=black!5,coltitle=black,toptitle=2pt,bottomtitle=2pt,left=7pt,right=7pt,top=5pt,bottom=5pt,
+  before skip=4pt,after skip=9pt,
+  title={\textbf{#1}\hspace{0.7em}#3\hfill{\small\color{black!65}#2}}}
+
+\titleformat{\section}{\large\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{black!80}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries AI Prompts}\\[5pt]
+{\large EE2000 Final Project Report (FPR-8), Team 8}\\[3pt]
+Fetal ECG Extraction from Maternal Abdominal ECG and Fetal QRS Detection on FPGA
+\end{center}
+
+\vspace{4pt}
+This file lists the prompts we gave to AI tools during the project, in time order and grouped by phase.
+Part~A covers the Antigravity agent tool (Google), used from the mid-term phase up to the first FPGA implementation
+(23 October to 6 November 2026). Part~B covers Claude Code (Anthropic), used in the final phase (7 to 14 November 2026).
+The tag next to each prompt names the team member whose part of the work the prompt belongs to, following the division
+of work in Sec.~27 of the final report. Dates are in IST.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+Member & Part of the work \\
+\midrule
+\Naman & Data, test set-up and integration: data set preparation, test cases and test suite, web demo, report assembly \\
+\Vivek & Fixed-point design and first full FPGA version: fixed-point model, UART and PC--FPGA protocol, v5 on MicroBlaze, board evaluation and board runs \\
+\Anshu & Real-time algorithm and accuracy: multichannel study, U-Net baseline, causal algorithm v2--v5, CinC protocol and scoring, v6.1 ideas, look-ahead algorithms v7-LA and v7-DL \\
+\Astitva & Final hardware design: hardware/PC split, bit-accurate C model, Verilog RTL, testbenches, board verification, block RAM optimisation, v6.1 RTL and look-ahead unit \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+% ---------------------------------------------------------------------------------------------
+\section{Part A: Antigravity (Google), 23 October to 6 November 2026}
+Model: Gemini~3 (Claude Opus~4 for A28).
+
+\subsection{Mid-term phase: repository audit, deep-learning baseline and multichannel study}
+
+\begin{prompt}{A1}{23 Oct 2026}{\Naman}
+Conduct a systematic audit of the repository to establish the current project status: completed milestones, pending
+deliverables and the immediate next steps in the pipeline. Then execute every validation, simulation and benchmark
+script that must pass before the mid-term report deliverables are prepared.
+\end{prompt}
+
+\begin{prompt}{A2}{23--24 Oct 2026}{\Anshu}
+Locate the training scripts and configuration of the deep-learning model and inspect its architecture and data loaders
+without starting a training run. Provide step-by-step instructions to train it on our Windows laptop (ASUS TUF) with full
+CUDA acceleration on the NVIDIA GeForce RTX~3050 Mobile GPU: confirm that the virtual environment is active and that
+PyTorch detects the GPU, and state whether the data loader traverses the data set folders recursively or needs explicit
+paths. During training the composite loss diverged to NaN from epoch 14 (learning rate 0.000206): identify the source of
+the numerical instability (exploding or vanishing gradients, division by zero in the loss terms) and add numerical
+safeguards. Then analyse and fix the errors raised when retraining with \texttt{-{}-lr 1e-4} and \texttt{-{}-lr 5e-5}.
+\end{prompt}
+
+\begin{prompt}{A3}{23--24 Oct 2026}{\Anshu}
+Check whether the codebase already contains multi-channel processing scripts or earlier exploratory modules written by
+team members, and produce a table comparing multi-channel and single-channel fetal ECG extraction on the standard
+metrics. Explain why our reporting has so far emphasised single-channel results, and add an explicit benchmark of the
+4-channel configuration used in the hardware and software pipelines: extend the extraction code to full multi-channel
+processing, give the command lines that reproduce the numbers, and recompute the combined comparison table. Investigate
+the performance drop on Case~5 (physiological noise or electrode artefacts). Finally, compare 4 electrodes with 8, 10 or
+16 in terms of FPGA resources, routing complexity and physiological information gained.
+\end{prompt}
+
+\begin{prompt}{A4}{24 Oct 2026}{\Anshu}
+Training on all target subsets has finished. Describe the verification protocol and the evaluation scripts for
+benchmarking the resulting checkpoint. State whether the network was trained on single-channel or 4-channel recordings,
+how the training and generalisation-test recordings were chosen, and why the 4-channel deep model is presented as a
+software comparison rather than the FPGA datapath despite its higher accuracy. Give a physical and physiological
+explanation of the large signal differences between the abdominal electrode channels.
+\end{prompt}
+
+\begin{prompt}{A5}{24 Oct 2026}{\Naman}
+Review the mid-term report (MTR-8) guidelines together with the LaTeX source of the preliminary report (PPR-8), then
+write the complete MTR-8 in LaTeX with all benchmark results, hardware resource estimates and pipeline diagrams. Deepen
+it: expand the mathematical formulation, the data tables and the architecture discussion, and cover all 10 simulations at
+all 5 SNR levels of the benchmark database rather than only the 5 baseline cases. Fix the tables that overflow the
+margins, make sure the compiled PDF is in the distribution package, and explain the Overleaf settings (compiler, main
+file) needed to build it. Reorganise the repository into a modular folder structure, with the reports sorted into
+\path{preliminary/} and \path{mid_term/}. Finally, write a complete README (repository layout, algorithms, hardware,
+reproduction steps), commit it and push.
+\end{prompt}
+
+\subsection{Mid-term phase: report review and corrections}
+
+\begin{prompt}{A6}{25--26 Oct 2026}{\Naman}
+Review the Team~22 reference report and our improvement-audit document in the report folder, and identify the
+architectural, numerical and structural improvements our mid-term report needs. The report currently fails to compile
+(log analysis pasted: unescaped underscores inside \texttt{\textbackslash texttt}, a \texttt{verbatim} block inside the
+\texttt{\textbackslash newcontent} argument, undefined labels and citation keys, duplicate source files): fix the fatal
+errors first, then every reference, citation and table-overrun warning. A local TeX Live distribution is now installed:
+compile and check the PDF locally with pdflatex/latexmk, and remove obsolete build files and duplicate report folders.
+\end{prompt}
+
+\begin{prompt}{A7}{25 Oct 2026}{\Naman}
+Two independent audits of the revised PDF are pasted. Their verdict: the report is much more complete, but not all
+issues are resolved, and some sections present planned work or software-model results as stronger evidence than the
+validation supports. Address their priorities. Make the evidence defensible: document the exact U-Net split, take every
+reported mean from one source of results, and remove unsupported claims of synthesis, RTL verification or board
+execution. Repair the experimental comparison: a properly configured reference-channel ANC baseline, stronger
+multichannel baselines, and a replication scorecard traceable to published results. Complete the evaluation: confidence
+intervals, FHR error analysis, worst cases, causal/adaptive PCA tests and real-data validation. Then use
+\path{MTR8_audit_and_fix_plan.md} as the specification and fix every mathematical, numerical and typographical item in
+it, in order.
+\end{prompt}
+
+\begin{prompt}{A8}{26 Oct 2026}{\Naman}
+Apply all corrections in \path{MTR8_v2_audit_python_theory.md}, so that the Python results and the theoretical claims
+agree. Move the whole report to the IEEE/CVPR two-column template required by \path{project.pdf}, assemble the mid-term
+submission archive as \path{project.pdf} specifies, with a compliance matrix of any missing deliverables, update the
+README with the latest results and repository layout, and commit and push everything.
+\end{prompt}
+
+\begin{prompt}{A9}{27 Oct 2026}{\Naman}
+Use \path{antigravity_prompt_mtr8_corrections.md} (our correction specification, in \path{report/mid_term/}) as the main
+directive: audit MTR-8 and apply every correction it lists. Make the report anonymous as the evaluation rules require:
+put EE2000 in the course header and remove all student and personal names. Check the DOIs and URLs of references [4],
+[5], [6] and [23] and replace broken links with working authoritative sources. Update Section~16 (AI Usage Disclosure) to
+describe the debugging done with AI, including the data set normalisation bug and the LaTeX build fixes. Finally, clean
+the build files, check that sources, figures and zip agree, build the final submission archive and push.
+\end{prompt}
+
+\subsection{Validation campaign and pre-FPGA specification}
+
+\begin{prompt}{A10}{31 Oct 2026}{\Astitva}
+Formulate a roadmap for moving the causal fetal ECG pipeline from the Python numerical models to synthesisable Verilog
+RTL for the Spartan-7 XC7S50. Diff the active feature branch against main to identify the recent RTL and testbench
+changes, run the complete simulation and regression suite to check whether they affect accuracy or timing, and write a
+technical reference that summarises the Spartan-7 and Boolean Board datasheets (specifications, pinout, timing
+constraints).
+\end{prompt}
+
+\begin{prompt}{A11}{31 Oct 2026}{\Naman}
+Add a data set characterisation section covering FECGSYNDB, CinC 2013 and NIFEA as stored in \path{data/}. Then run a
+complete validation campaign of the real-time multi-channel fetal ECG extraction and QRS/FHR system, acting as
+signal-processing, FPGA-verification and test engineer: audit the repository and reconstruct the pipeline that actually
+runs (PCA/SVD versus spatial beamforming) while preserving the original; reproduce the existing results; validate on the
+full synthetic data set by SNR, physiological condition and subject; test the four-channel configuration (channel
+ablation, permutation, channel failure, weight robustness); measure extraction quality and maternal residue; validate
+QRS detection and FHR (parameter sensitivity, heart-rate range); run an ablation study; validate on the NIFEA clinical
+recordings; check fixed-point overflow and quantisation, real-time streaming, the UART protocol and FPGA resource
+readiness; and add automated failure analysis and improvement experiments. All results must be reproducible and end in
+one master report, from executive summary to improvement roadmap.
+\end{prompt}
+
+\begin{prompt}{A12}{31 Oct 2026}{\Anshu}
+Based on the validation results, improve the existing algorithm without rewriting the project or starting RTL. Extend
+the 300-case benchmark, which covers only layout l1, to layouts l2--l5 with the same algorithm, beat-matching tolerance,
+SNR levels, conditions and subjects, and report the results per layout, subject, SNR and condition. Then investigate
+spatial calibration, detector improvements and FHR estimation, look into the NIFEA results and correct the fixed-point
+issues, keeping the baseline implementation unchanged.
+\end{prompt}
+
+\begin{prompt}{A13}{31 Oct 2026}{\Vivek}
+Complete all remaining validation, fixed-point verification and hardware specification work before RTL, for the
+RealDigital Boolean Board (Spartan-7 XC7S50-1CSGA324C). Rules: inspect before changing, preserve the baseline, no
+fabricated results, no data leakage, everything reproducible. Tasks: reproduce the full-layout benchmark; validate the
+autocorrelation-based spatial calibration (selection methods, maternal periodicity failures, heart-rate search range,
+confidence and fallback, stability); separate raw QRS performance from FHR post-processing; validate the detector
+configuration; verify the fixed-point implementation (beat matching, exact number formats, bit-accurate reference
+model); finalise the FPGA specification (module architecture, calibration responsibility, safe weight updates, UART data
+protocol, streaming timing, FHR output semantics); estimate resources; document the NIFEA limitations; freeze the
+algorithm; and add automated regression tests. Do not start full RTL; deliver one complete ZIP.
+\end{prompt}
+
+\begin{prompt}{A14}{31 Oct 2026}{\Vivek}
+An independent review of the pre-FPGA package found discrepancies between the reports, CSV files, Python code,
+regression tests and hardware specifications. Correct them (a correction phase, not new tuning): reconcile the QRS
+metrics; investigate the calibration confidence and the PC3 fallback; correct the fixed-point reference model (filter
+state widths, negative-number rounding, runtime coefficient generation, stage-by-stage comparison, independent arithmetic
+tests); correct M4, interval fusion and the FHR implementation; resolve the FHR range inconsistencies; reconcile the
+benchmark coverage; freeze the exact digital filter specifications; make the regression suite runnable on its own; and
+check the UART and hardware specifications for consistency. Then run the Phase~3 numerical verification over all
+benchmark recordings to fix bit-accurate baseline criteria before RTL synthesis.
+\end{prompt}
+
+\begin{prompt}{A15}{31 Oct 2026}{\Anshu}
+Determine how much delay the complete signal-processing pipeline introduces and what correction the detected QRS
+timestamps need (no calibration, FHR, fixed-point or RTL work in this task): reproduce the existing timing results,
+correct the timing evaluation method, trace the actual sources of delay, choose the compensation and add regression
+tests. Then, with 12 samples as the leading value, find out why agreement within $\pm$2 samples exceeds 90\,\% on some
+recordings but is below 10\,\% on others: keep the current implementation, plot the worst recordings, find the source of
+the variation, improve the evaluation method and compare compensation strategies before deciding.
+\end{prompt}
+
+\subsection{UART bring-up on the Boolean Board}
+
+\begin{prompt}{A16}{3--4 Nov 2026}{\Vivek}
+Run the standalone Verilog testbench in Vivado/XSim and diagnose the failing assertion from the simulation log. Then
+carry out a pre-integration audit of our standalone UART echo design (115200 baud 8N1, 100\,MHz clock), which already
+passes physical tests (single characters, strings, 512-byte transfers, a full 256-byte sweep, 50 stress iterations): you
+prepare each test, I run it on the board and return the evidence, and you analyse, fix and retest. Cover the required
+verification groups, Vivado source management, preparation for FECG integration, documentation and git checkpoints. Run
+the regression suite (FIFO, timing and framing testbenches) and the production timing testbench, trace the failing timing
+cases to the baud generator or the sampling point, and re-run with the corrected sampling.
+\end{prompt}
+
+\begin{prompt}{A17}{4 Nov 2026}{\Vivek}
+All five corner-case tests now pass (framing error and recovery, reset during TX and RX, FIFO pointer wraparound): audit
+whether each test really exercises the intended hardware and whether any PASS could be a false positive. Add a FIFO
+saturation and overflow test (fill all 16 entries, reject the 17th byte, drain and check the order). Verify the RTL with
+the real board parameters (100\,MHz, 115200 baud, \path{CLKS_PER_BIT} = 868) in a dedicated production timing testbench
+with data tests and per-bit timing assertions. When it reports bit durations of 869 and 867 cycles and an RX midpoint at
+cycle 0, find out whether the RTL or the testbench edge counting is wrong, without changing the RTL or relaxing any
+assertion; after a git checkpoint, correct the TX bit-duration asymmetry; then find why the production testbench stalls
+in Test Group~1 until the watchdog expires, again without touching the RTL or the watchdog.
+\end{prompt}
+
+\begin{prompt}{A18}{4 Nov 2026}{\Vivek}
+Use Teamwork mode with sub-agents (RX RTL audit, testbench measurement audit, independent timing reviewer) to resolve the
+production timing assertion ``RX 2-stage synchronizer latency mismatch: expected 2, got 1'', and resume the interrupted
+investigation without repeating finished work. Report the status of the RTL changes, the latest stress, timing, unit and
+loopback regressions, the git state and the remaining verification items.
+\end{prompt}
+
+\begin{prompt}{A19}{4 Nov 2026}{\Vivek}
+The production timing testbench passes in Vivado 2025.2: proceed to synthesis, implementation and bitstream generation
+for the Boolean Board (XC7S50-1CSGA324C, 100\,MHz clock, UART 115200 8N1), after parallel audits of the RTL, the XDC
+constraints and the Vivado project. Trace the UART and clock connections in the Boolean V2I1 schematic (page~9 USB-UART,
+page~11 FPGA pins: \texttt{clk} F14, \path{uart_rxd} U11, \path{uart_txd} V12, not V15/W15), audit the whole XDC (I/O
+standards, duplicate constraints, unconstrained ports, LED pins traced from the schematic) before synthesis, and correct
+\texttt{led[7:0]}. Document the LED diagnostic map and a board test procedure for UART packets. UART stopped working after
+the pin change: investigate against the schematic, rebuild with the corrected constraints, keep the verified pins and
+test on the board. Then organise the UART folder (RTL, testbenches, logs, constraints), commit, check that the branch
+differs from main only in UART files, and merge it into the causal FPGA pipeline branch.
+\end{prompt}
+
+\subsection{Python-to-Verilog conversion and board validation}
+
+\begin{prompt}{A20}{4 Nov 2026}{\Astitva}
+Teamwork mode, master task: convert the non-ML Python signal processing into synthesisable Verilog for the Spartan-7.
+First audit and freeze the Python reference in \path{src/fecg/} (baseline removal, filtering, QRS detection, FHR;
+machine-learning models excluded) with reproducible stage-by-stage vectors (milestone M0); map each block to hardware and
+write the fixed-point specification with bit widths, signedness, rounding and saturation (M1); audit the UART modules,
+the packet protocol and the known watchdog bug; and define the single-channel architecture, resource estimates and
+roadmap, pausing for review before any RTL is written. After approving the task breakdown, start RTL under strict
+conditions: keep the Python code and golden vectors, never change the frozen algorithm or fixed-point specification
+silently, test every module against the fixed-point Python model with exact matches, one module at a time, single-channel
+first with the beamformer kept separate, and no hardware claims from simulation. Begin with \path{biquad_df2t.v} only.
+\end{prompt}
+
+\begin{prompt}{A21}{4 Nov 2026}{\Astitva}
+Independently audit \path{biquad_df2t.v} rather than trusting the report of 22,404 bit-exact comparisons: read the RTL,
+its testbench, the checker and the Python reference, and derive every product, accumulator and state width yourself. Then
+audit the source line by line: operand signedness, expression widths before assignment, sign extension, arithmetic
+shifts, saturation constants, and rounding against Python. Then implement \path{hp1_baseline.v} from the exact recurrence
+in \path{src/fecg/}, documenting widths, scaling, rounding, reset behaviour and latency before writing the RTL.
+\end{prompt}
+
+\begin{prompt}{A22}{4 Nov 2026}{\Astitva}
+Implement the rest of the single-channel RTL in one coordinated sprint, with common interfaces and fixed-point contracts
+fixed first and the modules developed in parallel: \path{hp1_baseline}, \path{biquad_df2t}, \path{lp40_filter},
+\path{bandpass_config_c}, \path{squarer_mwi}, \path{adaptive_detector}, \path{peak_localizer}, \path{interval_fusion} and
+\path{fhr_calculator}, integrated into a verified single-channel pipeline. Then validate it with the real toolchain:
+compile and simulate every module and the top level in Vivado (no Python emulation in place of simulation), compare every
+stage with the Python golden reference and report exact mismatch counts, separate the latency components instead of
+quoting one number, run synthesis and implementation (DSP, LUT, FF and BRAM use, worst slack, maximum clock), program the
+board and compare its UART outputs with Python. Do not start the multichannel PCA yet.
+\end{prompt}
+
+\begin{prompt}{A23}{4 Nov 2026}{\Astitva}
+Phases 2 and 3: get the single-channel design running on the physical Spartan-7 board, implement the four-channel PCA
+beamformer in synthesisable Verilog, integrate it with the single-channel pipeline and test the complete multichannel
+system on the board against the Python reference. Work on the board directly (simulation only to debug a specific
+problem), with separate agents for the existing FPGA design and board, the PCA fixed-point design, the RTL and the UART
+data flow. Explain why we verify on the physical board and not only in Vivado simulation.
+\end{prompt}
+
+\begin{prompt}{A24}{4 Nov 2026}{\Anshu}
+Before declaring the FPGA implementation successful, verify that the complete system really extracts the fetal ECG
+correctly; correct extraction matters more than bit-exact agreement with Python. Use parallel agents to audit the PCA
+algorithm, the fetal heart-rate detection and the Python--FPGA comparison, and validate the corrected system on real
+four-channel recordings. Report F1, sensitivity and PPV on the benchmark, and fix the maternal false-alarm metric: the
+report says 0\,\% but the CSV has nonzero values, so check whether maternal beats are detected as fetal beats.
+\end{prompt}
+
+\begin{prompt}{A25}{4--6 Nov 2026}{\Vivek}
+Explain the nonzero LSB differences between Python and FPGA on five recordings (filter initial state or alignment), then
+evaluate the design on the board: resource use, timing and throughput, latency and UART performance, with optimisation
+where needed. Re-run the six Phase~4 cases on the board over COM5 with hardware mode mandatory (abort rather than fall
+back to software), save the FPGA output for every sample separately from the Python reference, and report the maximum
+and mean error in LSB, the exact-match percentage and the sample and packet counts. Then provide the exact script used
+(with its SHA-256), show where the FPGA output array comes from, give the raw UART captures, explain what the timing
+figures measure, and explain why an earlier log showed large errors while this run shows none.
+\end{prompt}
+
+\begin{prompt}{A26}{4 Nov 2026}{\Astitva}
+Carry out a complete technical audit of Phases 1--5 without changing anything: list every file needed to verify the
+reports, algorithms, RTL, data set results, UART communication and board tests independently (sources, testbenches,
+constraints, Vivado projects, bitstreams, CSVs, timing and utilisation reports, board logs), separating essential from
+optional evidence and flagging claims that lack evidence. Then collect these files unmodified into a ZIP with a manifest
+of paths, sizes and SHA-256 hashes, listing any file that is missing.
+\end{prompt}
+
+\begin{prompt}{A27}{6 Nov 2026}{\Naman}
+Expand the data set validation without changing the frozen algorithm, RTL, filter coefficients or bitstream. Audit the
+FECGSYNDB coverage: find exactly which subject, SNR, layout (l1--l5), condition and repetition combinations have been
+evaluated, separating floating-point, bit-accurate Python, RTL simulation and board tests, and produce a coverage matrix.
+Then validate the frozen algorithm on the NIFEA clinical database (inspection, signal preparation, run, FPGA check) and
+state the limits of that evaluation.
+\end{prompt}
+
+\begin{prompt}{A28}{6 Nov 2026}{\Astitva}
+The Spartan-7 board is connected. Describe the current synthesis and timing-closure bottlenecks, then profile the RTL
+datapath, find the critical-path latency and precision bottlenecks, and optimise the hardware to maximise causal fetal
+QRS detection accuracy on the board.
+\end{prompt}
+
+% ---------------------------------------------------------------------------------------------
+\section{Part B: Claude Code (Anthropic), 7 to 14 November 2026}
+Model: Claude Opus~5.5.
+
+\subsection{Causal algorithm on real recordings}
+
+\begin{prompt}{B1}{7 Nov 2026}{\Anshu}
+Audit the repository architecture, documentation and the Graphify knowledge graph, give a structured status of the
+milestones, baseline metrics and bottlenecks across software and hardware, and confirm that the Spartan-7 board is
+detected on the serial port. Commit the baseline, then audit and refine the extraction and detection algorithms to
+maximise fetal QRS accuracy across all FECGSYNDB recordings and on the FPGA. Enforce strict physical causality
+throughout: no non-causal filtering, no future-sample look-ahead and no ground-truth leakage. The PhysioNet/CinC
+Challenge 2013 data is now in the data directory: extend the validation to these real recordings and redesign the
+pipeline with causal filtering and online spatial beamforming.
+\end{prompt}
+
+\begin{prompt}{B2}{8 Nov 2026}{\Anshu}
+Pause the CinC evaluation and report F1, sensitivity, PPV and FHR MAE on the other two benchmark data sets and on
+NIFEADB. The real recordings score much lower than the synthetic ones: analyse the physiological and noise causes,
+propose remedies, and implement them to improve robustness on clinical recordings.
+\end{prompt}
+
+\begin{prompt}{B3}{9 Nov 2026}{\Anshu}
+Summarise the status of all algorithm variants. Evaluate the 1D convolutional U-Net on these data sets as a baseline
+against our classical methods. Outline a strategy to improve the classical, hardware-oriented algorithms under real
+clinical noise and changing maternal morphology, then implement it, preferring FPGA-friendly techniques over neural
+networks: verify convergence and numerical stability in Python first, and move to RTL once the F1 targets are met.
+\end{prompt}
+
+\subsection{FPGA-centred design: RTL and PC split}
+
+\begin{prompt}{B4}{9--10 Nov 2026}{\Astitva}
+The Spartan-7 must be the real-time processing engine: the PC only streams the digitised samples, while channel
+filtering, maternal suppression, QRS detection and FHR run on the chip; redesign the pipeline for this. Confirm whether
+the bit-accurate Python models and the Verilog RTL are both implemented and verified, compare the floating-point
+prototype with the fixed-point RTL (precision, latency, resources), and explain why we validate in software before RTL.
+Evaluate a PC--FPGA split that leaves the host only the minimum (for example the initial calibration or covariance
+decomposition); then commit and implement the RTL + PC split, run the multi-record validation, and compare the result
+with all earlier baselines (F1, sensitivity, PPV, MAE, resources).
+\end{prompt}
+
+\begin{prompt}{B5}{13--14 Nov 2026}{\Astitva}
+Summarise the milestones with the key metrics (accuracy, latency, resources). Explain why block RAM use on the
+Spartan-7 is high and propose memory reductions, and give the exact hardware throughput and delay for a 1-second
+(250-sample) input. Then implement the planned block RAM reductions.
+\end{prompt}
+
+\begin{prompt}{B6}{13--14 Nov 2026}{\Naman}
+Write a remediation checklist before changing the architecture, and build a real-time web demonstration: upload
+multi-lead recordings (PhysioNet WFDB \texttt{.dat}+\texttt{.hea} or 4-channel CSV), require the physical board on COM5,
+stream at the real-time rate of 250\,Hz, show the live fetal heart rate, the UART connection and the processing stages,
+and overlay the reference beats with accuracy figures when labels exist. Specify where the outputs are stored and explain
+the steps the page performs when a recording is loaded.
+\end{prompt}
+
+\begin{prompt}{B7}{14 Nov 2026}{\Anshu}
+Accuracy keeps improving over longer runs: analyse whether the adaptive thresholds and covariance estimates need a
+settling time, and what a longer calibration window or more adaptation would do to the convergence and the steady-state
+accuracy.
+\end{prompt}
+
+\subsection{Submission preparation, v6.1 and v7}
+
+\begin{prompt}{B8}{14 Nov 2026}{\Naman}
+Prepare the repository for submission: commit, restructure the folders and remove temporary build files, caches and
+orphaned logs while keeping all source code, testbenches and validated reports (remove the duplicate deep-learning
+environment \path{code/venv} and the superseded MicroBlaze v5 Vivado build tree but keep its bitstreams; keep the full
+git history). Push, merge the release branch into main with the repository anonymous and the AI acknowledgements kept for
+the report, and delete the merged feature branch. Propose a fair four-way division of the work over the whole project,
+from preliminary exploration to hardware verification, so that each member's contribution is clear and defensible.
+\end{prompt}
+
+\begin{prompt}{B9}{14 Nov 2026}{\Naman}
+Set up \path{report/final_report} from the IEEE/CVPR template of the earlier reports with all results, comparison tables,
+observations and the contribution matrix, following the instructor's rules (pasted: one zip \texttt{fpr-<team \#>.zip}
+with code, data and PDF; all new text in blue; all AI prompts in a separate file; AI acknowledgement mandatory) and with
+an honest AI disclosure. Show which testbenches to simulate and which signals and time ranges to capture for Vivado
+waveform figures. Suggest further analyses or verification sections, carry them out (except item~9), and rewrite
+\path{README.md} with the architecture, installation and the steps to reproduce the software and board runs. Keep the AI
+disclosure in the report short and the full prompt file in the archive.
+\end{prompt}
+
+\begin{prompt}{B10}{14 Nov 2026}{\Anshu}
+Explain the main theoretical and physiological limits on accuracy in a purely causal single-pass design (moving dipole
+axes, maternal QRS overlap, muscle noise). Implement the three proposed improvements on the causal baseline (v6.1), and
+design a variant v7 with a bounded look-ahead window, future samples within a clinically acceptable buffer, to measure
+the gain from non-causal spatial filtering and post-processing.
+\end{prompt}
+
+\begin{prompt}{B11}{14 Nov 2026}{\Astitva\ \Vivek}
+Translate v6.1 into synthesisable RTL. Check whether the v7 look-ahead can run on the FPGA itself by buffering short
+blocks in block RAM, so that the board outputs the results without continuous PC streaming, and extend the testbenches to
+benchmark both versions. Find out why the current test run takes so long. Do not finish the report until v7 is verified:
+stream the recordings in sub-blocks (a block latency of 15--20\,s is clinically acceptable), implement v7, synthesise it
+and verify it on the board.
+\end{prompt}
+
+\begin{prompt}{B12}{14 Nov 2026}{\Naman}
+Update the web demonstration to work with the v7 pipeline and show its intermediate results, give the commands to stop
+old server instances, and suggest which recordings to load for the demo. Then identify the data set with the lowest
+scores and explain why, and apply the final revisions to the report: remove obsolete sections, document v7 and its
+results, and summarise the main additions.
+\end{prompt}
+
+\end{document}
