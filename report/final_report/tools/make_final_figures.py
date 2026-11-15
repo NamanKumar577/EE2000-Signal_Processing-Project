@@ -104,7 +104,7 @@ def fig_architecture():
     arrow(22.5, 33.4, 22.5, 29.6)
     arrow(39.5, 33.4, 39.5, 29.6)
     ax.add_patch(FancyBboxPatch((14, 1), 85, 11, boxstyle="round,pad=0.3", fc="#FBEFE6", ec="#DD8452", lw=1.2))
-    ax.text(15, 10.6, "PC brain (v6_brain.exe): 5 low-rate decisions; sees only FPGA features, never the recording",
+    ax.text(15, 10.6, "PC brain (v6_brain.exe): 5 low-rate decisions on FPGA data; never the raw recording",
             fontsize=7, weight="bold", color="#8A4A1C")
     jobs = ["Maternal PCA\n(once, 10 s)", "Maternal train\nchoice (5 s)", "Template basis\n(per maternal beat)",
             "GEVD calibration\n(once, 15 s)", "Track selection\n(every 2.5 s)"]
@@ -128,7 +128,7 @@ def fig_board_distribution():
         bp["boxes"][i].set(facecolor=SET_COL[s], alpha=0.35)
         ax.scatter(i + 1 + rng.uniform(-0.15, 0.15, len(v)), v, s=7, color=SET_COL[s], alpha=0.8, lw=0)
         ax.text(i + 1, 103, f"mean {v.mean():.1f}", ha="center", fontsize=6.5)
-    ax.set_xticks(range(1, 5), [SET_NAME[s] for s in order], fontsize=6.5)
+    ax.set_xticks(range(1, 5), [SET_NAME[s].replace(", ", ",\n") for s in order], fontsize=6.3)
     ax.set_ylabel("Beat F1 per record (%)")
     ax.set_ylim(0, 108)
     ax.set_title("v6 on the board: 140 records, all bit-exact", fontsize=9)
@@ -141,7 +141,7 @@ def fig_syn_breakdown():
     v5 = pd.read_csv(ACC / "results_v5_final_synall.csv")
     fig, axs = plt.subplots(1, 2, figsize=(7.0, 2.5))
     conds = ["c0", "c1", "c2", "c3", "c4"]
-    lab = ["c0\nbaseline", "c1\nmovement", "c2\nHR change", "c3\ncontraction", "c4\nectopic"]
+    lab = ["c0\nbaseline", "c1\nmovement", "c2\nHR\nchange", "c3\ncontrac-\ntion", "c4\nectopic"]
     x = np.arange(5)
     for k, (df, nm, c) in enumerate([(v2, "v2 (synthetic-tuned)", VER_COL[1]), (v5, "v5/v6 final algorithm", VER_COL[5])]):
         m = df.groupby("cond").f1.mean().reindex(conds)
@@ -155,7 +155,7 @@ def fig_syn_breakdown():
     axs[1].set_xlabel("Input SNR (dB)")
     axs[1].set_ylim(80, 100)
     axs[1].set_title("by noise level")
-    axs[0].legend(frameon=False, loc="lower left")
+    axs[1].legend(frameon=False, loc="lower right")
     save(fig, "fin_syn_condition_snr.png")
 
 
@@ -288,7 +288,7 @@ def fig_syn_real_gap():
     ax.set_ylabel("Mean F1 (%)")
     ax.set_ylim(0, 132)
     ax.legend(frameon=False, fontsize=6.3, loc="upper left", ncol=1)
-    ax.set_title("Synthetic accuracy does not transfer to real data", fontsize=8.5)
+    ax.set_title("Synthetic accuracy does not transfer to real data", fontsize=7.8)
     save(fig, "fin_synthetic_vs_real.png")
 
 
@@ -309,7 +309,7 @@ def fig_timeline():
         ax.text(t, len(rows) - 0.3, lab, ha="center", fontsize=6)
     ax.set_yticks([])
     ax.set_xlim(0, 40)
-    ax.set_xlabel("Time from start of recording (s)  -  selection repeats every 2.5 s; output delay about 1.5-2 s")
+    ax.set_xlabel("Time from start of recording (s)\n(selection repeats every 2.5 s; output delay about 1.5-2 s)")
     ax.grid(axis="y", visible=False)
     save(fig, "fin_startup_timeline.png")
 

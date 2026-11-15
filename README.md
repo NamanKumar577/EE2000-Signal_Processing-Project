@@ -156,6 +156,8 @@ Rule we followed for every change: C model first, then RTL, then `sim/regress.sh
 ```bash
 venv/Scripts/python.exe report/final_report/tools/make_final_figures.py      # result figures (fin_*.png)
 venv/Scripts/python.exe report/final_report/tools/plot_waves.py              # simulation figures (wave_*.png), needs step 4's wave.vcd
+venv/Scripts/python.exe report/final_report/tools/fix_midterm_figures.py     # corrected mid-term figures used in the final report
+venv/Scripts/python.exe report/final_report/tools/pc_link_traffic.py         # PC <-> FPGA link traffic per PC decision
 venv/Scripts/python.exe report/final_report/tools/final_analysis.py          # confidence intervals, failure analysis, timeline
 venv/Scripts/python.exe report/final_report/tools/make_v7_figures.py         # v6.1 / v7 figures and confidence intervals
 venv/Scripts/python.exe report/final_report/tools/make_delay_figure.py       # v7-DL F1 against output delay (input: tools/accuracy/v7_delay_sweep.py)

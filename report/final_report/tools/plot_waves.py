@@ -370,7 +370,7 @@ def fig_cancellation(S, a01_fqrs=None):
         if a is not axs[2]:
             a.set_yticks([])
     fig.tight_layout()
-    fig.savefig(OUT / "wave_cancellation.png", dpi=300)
+    fig.savefig(OUT / "wave_cancellation.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     print("wrote wave_cancellation.png")
 
@@ -418,7 +418,7 @@ def cycle_stats(S):
     ax.grid(alpha=0.3, which="both")
     ax.set_title("RTL processing time per input sample (xsim, 50 MHz)", fontsize=8)
     fig.tight_layout()
-    fig.savefig(OUT / "wave_cycles_per_sample.png", dpi=300)
+    fig.savefig(OUT / "wave_cycles_per_sample.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     print("wrote wave_cycles_per_sample.png")
     return cyc

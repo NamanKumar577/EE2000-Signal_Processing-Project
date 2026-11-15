@@ -1,0 +1,9 @@
+decision,bytes,share_pct
+template basis,1056210,59.1
+track selection,513112,28.7
+GEVD calibration,207312,11.6
+maternal train,10739,0.6
+maternal PCA,124,0.0
+uplink_Bps,7802,
+answers_Bps,7178,
+samples_down_Bps,2025,

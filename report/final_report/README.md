@@ -13,6 +13,8 @@
 |---|---|
 | `make_final_figures.py` | Result figures `fin_*.png` from the saved result CSVs (`--trace` also redraws the r01 FHR trace with the C model). |
 | `plot_waves.py` | Simulation figures `wave_*.png` from the xsim VCD (`fpga_implementation/v6/sim/wave/run_wave.sh`); also prints cycles per sample. |
+| `pc_link_traffic.py` | Runs the v7-DL C model on ADFECGDB r01 and splits the PC <-> FPGA link traffic by PC decision (`tables/pc_link_traffic.csv`, Sec. "Why the PC Stays in the Loop"). |
+| `fix_midterm_figures.py` | Corrected versions of nine mid-term figures (Figs. 1, 2, 3, 7, 9, 12, 17, 19, 21) for this report; Fig. 3 uses the per-lead FMR measured on FECGSYNDB `sub01`--`sub07`. Writes only into `figures/`; the mid-term report is not changed. |
 | `make_v7_figures.py` | Figures of the v6.1 / v7 section (`fin_v7_*.png`) and the v6.1 / v7-DL confidence intervals, from the board and C-model result files. |
 | `make_delay_figure.py` | `fin_v7_delay.png` and `tables/v7_delay_sweep.csv` from `tools/accuracy/results_v7_delay_sweep.csv` (written by `tools/accuracy/v7_delay_sweep.py`). |
 | `final_analysis.py` | Confidence intervals, failure analysis on all 75 CinC records (C model), project timeline. |
@@ -25,6 +27,8 @@ Rebuild everything (from the repository root):
 ```
 venv/Scripts/python.exe report/final_report/tools/make_final_figures.py
 venv/Scripts/python.exe report/final_report/tools/plot_waves.py
+venv/Scripts/python.exe report/final_report/tools/fix_midterm_figures.py
+venv/Scripts/python.exe report/final_report/tools/pc_link_traffic.py
 venv/Scripts/python.exe report/final_report/tools/final_analysis.py
 venv/Scripts/python.exe report/final_report/tools/make_v7_figures.py
 venv/Scripts/python.exe report/final_report/tools/make_delay_figure.py

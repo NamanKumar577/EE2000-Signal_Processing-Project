@@ -148,6 +148,16 @@ check("v7-DL ctest better / worse than live v6.1", "", f"improves {int((c7.f1 > 
 cc = b7[b7.set.isin(["cdev", "ctest"])]
 check("v7-DL CinC better / worse (fig)", "", f"{int((cc.f1 > cc.f1_causal + 1).sum())} records improve by more than one point and {int((cc.f1 < cc.f1_causal - 1).sum())} get worse")
 check("v7-DL ctest >= 90%", int((c7.f1 >= 90).sum()), f"18 records reach $\\ge 90\\%$")
+# how much the failing records (F1 < 50%) pull the mean down (Sec. "Where the Remaining Error Is")
+for nm, g in [("ctest", c7), ("CinC all", cc), ("syn", b7[b7.set == "syn"])]:
+    short = 100 - g.f1
+    low = g.f1 < 50
+    check(f"v7-DL {nm}: median / records < 50% / their shortfall share", f"{g.f1.median():.1f}",
+          f"median is ${g.f1.median():.1f}\\%$", f"{int(low.sum())} records below $50\\%$",
+          f"${short[low].sum() / short.sum() * 100:.0f}\\%$")
+check("v7-DL ctest: points lost by records < 50%", f"{(100 - c7.f1)[c7.f1 < 50].sum() / len(c7):.1f}",
+      f"{(100 - c7.f1)[c7.f1 < 50].sum() / len(c7):.1f} of the {100 - c7.f1.mean():.1f} points",
+      f"(a{', a'.join(c7[c7.f1 < 50].sort_values('f1').rid.str[1:])};")
 s61 = pd.read_csv(ACC / "results_v61_synall.csv")
 sdl = pd.read_csv(ACC / "results_v7dl_synall.csv")
 sla = pd.read_csv(ACC / "results_v7la_synall.csv")
@@ -169,6 +179,16 @@ for nm, path, lut in (("v6.1", "v61", "18,986"), ("v7-DL", "v7", "26,701")):
     u = (ROOT / f"fpga_implementation/v6/build/{path}/util.rpt").read_text()
     got = re.search(r"\| Slice LUTs\s+\|\s+(\d+)", u).group(1)
     check(f"{nm} LUTs", got, f"{int(got):,}")
+# PC-in-the-loop section: link traffic per decision (tables/pc_link_traffic.csv, from tools/pc_link_traffic.py)
+tr = pd.read_csv(ROOT / "report/final_report/tables/pc_link_traffic.csv").set_index("decision")
+share = {k: float(tr.loc[k, "share_pct"]) for k in ["template basis", "track selection", "GEVD calibration"]}
+mat = float(tr.loc["maternal train", "share_pct"]) + float(tr.loc["maternal PCA", "share_pct"])
+check("PC traffic shares basis / selection / calibration / maternal", f"{share['template basis']:.1f}",
+      *[f"& {v:.1f}\\% &" for v in share.values()], f"& {mat:.1f}\\% &", f"{share['track selection']:.1f}\\% of the traffic")
+up, dn = float(tr.loc["uplink_Bps", "bytes"]), float(tr.loc["answers_Bps", "bytes"]) + float(tr.loc["samples_down_Bps", "bytes"])
+check("PC link load up / down (KB/s) and share of 92,160 B/s", f"{up / 1e3:.1f}/{dn / 1e3:.1f}",
+      f"{up / 1e3:.1f}\\,KB/s up and {dn / 1e3:.1f}\\,KB/s down",
+      f"{int(100 * up / 92160)}--{round(100 * dn / 92160)}\\%")
 
 print(f"\n{'ALL CHECKS PASSED' if not fails else f'{fails} CHECK(S) FAILED'}")
 sys.exit(1 if fails else 0)

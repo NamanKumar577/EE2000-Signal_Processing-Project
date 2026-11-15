@@ -77,7 +77,7 @@
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Continuous non-invasive fetal electrocardiogram (NIFECG) monitoring is vital for intrapartum fetal distress assessment, yet fetal biopotentials ($20$--$100\,\mu\text{V}$) are severely masked by maternal potentials ($1$--$5\,\text{mV}$, $10$--$250\times$ amplitude disparity) with overlapping spectra ($0.5$--$40\,\text{Hz}$). Single-channel subtraction frequently fails during maternal-fetal QRS collisions ($17.5\%$ probability). \fin{At the mid-term, a 4-lead spatial PCA beamformer reached $93.0\%$ F1 on the synthetic PhysioNet FECGSYNDB benchmark in a batch evaluation, and its hardware was only sized on paper (Secs.~\ref{sec:clinical_specs}--\ref{sec:hardware_resources}). In the final phase we re-ran that design strictly causally and tested it on real recordings: F1 fell to $16.7\%$ on the held-out half of the PhysioNet/CinC 2013 set~\cite{silva2013}. We redesigned the algorithm around per-lead maternal cancellation, 16 candidate fetal tracks from a self-calibrated GEVD, beat trackers and label-free track selection, and implemented it on the Spartan-7 XC7S50 as hand-written Verilog (v6, no soft processor); a PC answers only five low-rate requests and never sees the recording. Two later steps improved it. v6.1 makes the maternal detector robust and recalibrates the spatial filters every 30\,s. v7-DL adds an RTL look-ahead unit that chooses the final beats on the FPGA about $13.5\,$s after they occur (at most $17.5\,$s), while the recording is still streamed to the board in 0.256-s frames. For every version the complete output stream of the board is bit-exact with our C model on all 140 records tested. The final design (v7-DL) reaches F1 $76.9\%$ on 37 held-out CinC recordings ($82.0\%$ on the 33 with reliable reference annotations; v6: $65.5\%$), $84.7\%$ on the 38 CinC development recordings, $96.1\%$ on ADFECGDB (5 real 5-min recordings) and $93.7\%$ on all 1,248 FECGSYNDB records, at 4--4.5$\times$ real time, using 82\% of the LUTs, 71 of 75 block RAM tiles and 43 DSP slices at 50\,MHz.}
+Continuous non-invasive fetal electrocardiogram (NIFECG) monitoring is vital for intrapartum fetal distress assessment, yet fetal biopotentials ($20$--$100\,\mu\text{V}$) are severely masked by maternal potentials ($1$--$5\,\text{mV}$, $10$--$250\times$ amplitude disparity) with overlapping spectra ($0.5$--$40\,\text{Hz}$). Single-channel subtraction frequently fails during maternal-fetal QRS collisions ($17.5\%$ probability). \fin{The mid-term spatial PCA beamformer reached $93.0\%$ F1 on the synthetic PhysioNet FECGSYNDB benchmark in a batch evaluation, with its hardware sized on paper (Secs.~\ref{sec:clinical_specs}--\ref{sec:hardware_resources}). For the final phase we raised the bar to deployment conditions: strictly causal processing, no use of labels, and real recordings with a held-out test set. Under these rules the mid-term design scored only $16.7\%$ on held-out PhysioNet/CinC 2013 recordings~\cite{silva2013}, so we redesigned the algorithm for real data (per-lead maternal cancellation, 16 candidate fetal tracks from a self-calibrated GEVD, beat trackers and label-free track selection) and built it as our own hand-written Verilog on the Spartan-7 XC7S50, with no soft processor. All sample-rate processing runs on the FPGA; a PC makes five slow decisions (once per recording up to about once per maternal beat) and never receives the raw recording. v6.1 adds a robust maternal detector and recalibrates the spatial filters every 30\,s, and v7-DL adds an RTL look-ahead unit that chooses the final beats on the FPGA about $13.5\,$s after they occur (at most $17.5\,$s), while the recording is still streamed to the board in 0.256-s frames. For every version the complete output stream of the board is bit-exact with our C model on all 140 records tested. The final design (v7-DL) raises held-out CinC F1 more than fourfold, to $76.9\%$ ($82.0\%$ on the 33 records with reliable reference annotations; median $87.3\%$), and reaches $84.7\%$ on the 38 CinC development recordings, $96.1\%$ on ADFECGDB (5 real 5-min recordings) and $93.7\%$ on all 1,248 FECGSYNDB records, running 4--4.5$\times$ faster than real time at 50\,MHz on 82\% of the LUTs, 71 of 75 block RAM tiles and 43 DSP slices.}
 \end{abstract}
 
 % =====================================================================
@@ -89,11 +89,11 @@ Continuous fetal heart-rate (FHR) monitoring is the primary clinical diagnostic 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/signal_amplitude_disparity.png}
-\caption{\tagLone\ Signal component amplitude disparity in abdominal ECG biopotentials. The maternal QRS complex dominates the mixture by $10$--$250\times$ in peak amplitude ($1.0$--$5.0\,$mV vs $20$--$100\,\mu$V in literature; measured on FECGSYNDB training leads: $2.50\,$mV vs $0.04\,$mV $= 62.5\times$ / $35.9\,$dB; RMS FMR ranges from $0.20$ to $0.54$, $-14.0$ to $-5.4\,$dB), illustrating why linear single-channel frequency filtering fails.}
+\caption{\tagLone\ Signal component amplitude disparity in abdominal ECG biopotentials. The maternal QRS complex dominates the mixture by $10$--$250\times$ in peak amplitude ($1.0$--$5.0\,$mV vs $20$--$100\,\mu$V in literature; measured on FECGSYNDB training leads: $2.50\,$mV vs $0.04\,$mV $= 62.5\times$ / $35.9\,$dB; RMS FMR \fin{per abdominal lead (training-subject mean, Fig.~\ref{fig:fmr_topography})} ranges from \fin{$0.08$ to $0.61$, $-21.6$ to $-4.3\,$dB}), illustrating why linear single-channel frequency filtering fails.}
 \label{fig:amplitude_disparity}
 \end{figure}
 
-Despite decades of academic investigation, commercial deployment of wearable edge NIFECG monitors remains severely impeded by challenging biophysical signal characteristics. As illustrated in Fig.~\ref{fig:amplitude_disparity}, abdominal surface electrodes record a composite mixture dominated by the maternal ECG (MECG), whose peak amplitude is $10$--$250\times$ larger than the fetal signal ($1$--$5\,$mV vs $20$--$100\,\mu$V, corresponding to $20$--$48\,$dB peak amplitude disparity; measured on FECGSYNDB training leads: $2.50\,$mV vs $0.04\,$mV $= 62.5\times$ or $35.9\,$dB). In terms of root-mean-square (RMS) energy, the fetal-to-maternal ratio (FMR) ranges from $0.20$ to $0.54$ ($-14.0$ to $-5.4\,$dB). Crucially, maternal and fetal cardiac biopotentials exhibit overlapping frequency spectra in the $0.5$--$40\,$Hz band. Consequently, classical linear time-invariant filters cannot isolate the fetal signal without annihilating the underlying fetal morphology~\cite{abel2023,sornmo_ecg}.
+Despite decades of academic investigation, commercial deployment of wearable edge NIFECG monitors remains severely impeded by challenging biophysical signal characteristics. As illustrated in Fig.~\ref{fig:amplitude_disparity}, abdominal surface electrodes record a composite mixture dominated by the maternal ECG (MECG), whose peak amplitude is $10$--$250\times$ larger than the fetal signal ($1$--$5\,$mV vs $20$--$100\,\mu$V, corresponding to $20$--$48\,$dB peak amplitude disparity; measured on FECGSYNDB training leads: $2.50\,$mV vs $0.04\,$mV $= 62.5\times$ or $35.9\,$dB). In terms of root-mean-square (RMS) energy, the fetal-to-maternal ratio (FMR) ranges from \fin{$0.08$ to $0.61$ ($-21.6$ to $-4.3\,$dB) across the 32 abdominal leads (Fig.~\ref{fig:fmr_topography})}. Crucially, maternal and fetal cardiac biopotentials exhibit overlapping frequency spectra in the $0.5$--$40\,$Hz band. Consequently, classical linear time-invariant filters cannot isolate the fetal signal without annihilating the underlying fetal morphology~\cite{abel2023,sornmo_ecg}.
 
 \noindent\textbf{The single-lead temporal breakdown.} Conventional single-lead cancellation algorithms rely on temporal template subtraction or recursive adaptive filtering (e.g., LMS/RLS)~\cite{widrow1975,cerutti1986}. In our preliminary report, we evaluated single-channel LMS and template subtraction. However, benchmark evaluations reveal a critical mathematical failure mode: when a maternal QRS complex and a fetal QRS complex temporally coincide, the maternal template or adaptive filter subtracts overlapping fetal energy. Assuming typical heart periods $T_m \approx 800\,$ms (75\,bpm) and $T_f \approx 430\,$ms (140\,bpm) with QRS durations $w_m \approx 90\,$ms and $w_f \approx 50\,$ms, the probability that a fetal beat partially overlaps a maternal QRS under random relative phase is:
 \begin{equation}
@@ -117,10 +117,10 @@ while the probability that a maternal cycle overlaps a fetal beat is $(w_m + w_f
 \begin{finalpart}
 \noindent\textbf{Final-phase contributions (after the mid-term).} Sections~\ref{sec:final_realdata}--\ref{sec:final_obs} describe the work done between the mid-term and this report:
 \begin{enumerate}
-    \item \textbf{Strictly causal, label-free re-evaluation.} We rebuilt the evaluation so that every decision at sample $n$ uses only samples $\le n$ and annotations are used only for scoring. The mid-term design dropped from $93.0\%$ (batch evaluation, 250 records) to $82.2\%$ F1 on all 1,248 FECGSYNDB records.
-    \item \textbf{Testing on real recordings.} We added PhysioNet/CinC 2013 set-a (75 annotated real recordings, split into a development half and a held-out test half) and ADFECGDB (5 real recordings with a scalp-electrode reference). Real data exposed a gap that synthetic data hides (Fig.~\ref{fig:fin_synreal}).
-    \item \textbf{New real-data algorithm.} Maternal cancellation per lead, 16 candidate tracks from self-calibrated GEVD filters, RR-predictive beat trackers and a label-free selector raised held-out CinC F1 from $16.7\%$ to $65.5\%$ and ADFECGDB from $37.0\%$ to $92.7\%$ (Fig.~\ref{fig:fin_progression}).
-    \item \textbf{The whole algorithm on the FPGA.} First on a MicroBlaze soft processor (v5), then as hand-written Verilog RTL (v6) with a PC that only answers five low-rate requests. Board and C model are bit-exact on all 140 tested records.
+    \item \textbf{Deployment-grade evaluation.} We rebuilt the evaluation so that every decision at sample $n$ uses only samples $\le n$ and annotations are used only for scoring. This honest re-test showed the mid-term design falling from $93.0\%$ (batch evaluation, 250 records) to $82.2\%$ F1 on all 1,248 FECGSYNDB records, and it is the standard every final result meets.
+    \item \textbf{Testing on real recordings.} We added PhysioNet/CinC 2013 set-a (75 annotated real recordings, split into a development half and a held-out test half) and ADFECGDB (5 real recordings with a scalp-electrode reference). Real data revealed a gap that synthetic data hides (Fig.~\ref{fig:fin_synreal}), and from then on every design was judged on real recordings.
+    \item \textbf{New real-data algorithm.} Maternal cancellation per lead, 16 candidate tracks from self-calibrated GEVD filters, RR-predictive beat trackers and a label-free selector raised held-out CinC F1 nearly fourfold, from $16.7\%$ to $65.5\%$, and ADFECGDB from $37.0\%$ to $92.7\%$ (Fig.~\ref{fig:fin_progression}).
+    \item \textbf{The whole algorithm on the FPGA.} First on a MicroBlaze soft processor (v5), then as our own hand-written Verilog RTL (v6), with the PC reduced to five slow decisions (Sec.~\ref{sec:pc_loop} explains why they stay there). Board and C model are bit-exact on all 140 tested records.
     \item \textbf{Memory optimisation and demonstration.} Block RAM use was cut from $99\%$ to $80\%$ without changing a single output byte, and a local web page streams any recording to the board in real time and shows the live fetal heart rate.
     \item \textbf{v6.1: three label-free improvements.} A robust maternal detector and recalibration of the spatial filters every 30\,s raised held-out CinC F1 from $65.5\%$ to $71.9\%$; smarter causal selection rules were tested and rejected (Sec.~\ref{sec:v61}).
     \item \textbf{Look-ahead, first offline, then on the FPGA.} An offline version that sees the whole recording (v7-LA) and an RTL look-ahead unit that outputs the final beats on the board with a fixed delay of about $13.5\,$s (v7-DL, final design): held-out CinC $76.9\%$, ADFECGDB $96.1\%$, FECGSYNDB $93.7\%$, bit-exact on 140/140 records (Sec.~\ref{sec:final_v7}).
@@ -135,7 +135,7 @@ Continuous intrapartum NIFECG monitoring serves three distinct clinical operatin
 \begin{enumerate}
     \item \textbf{High-Risk Intrapartum Labor Ward Monitoring:} Continuous real-time detection of intrapartum fetal hypoxia during active contractions. Latency (per-sample filter group delay) must remain strictly below $100\,$ms to trigger emergency alerts. Note that downstream beat-to-display telemetry includes a 5-beat median filter which adds approximately $2.1\,$s of beat-level smoothing.
     \item \textbf{Ambulatory Antenatal Telemetry:} Battery-operated wearable telemetry enabling home monitoring for high-risk pregnancies during gestational weeks 32--40. Requires power consumption $<1.5\,$W for continuous 12-hour battery life ($1.5\,\text{W} \times 12\,\text{h} = 18\,\text{Wh}$, corresponding to $\approx 4.9\,\text{Ah}$ at a nominal $3.7\,$V lithium-ion cell). Boolean Board total power is estimated analytically; physical board current measurement remains future work.
-    \item \textbf{Clinical Fetal Arrhythmia Screening:} Precision morphological detection of fetal extrasystoles, heart block, and conduction anomalies. In this mid-term stage, the system extracts QRS timing rather than clinical arrhythmia diagnosis; formal arrhythmia classification (TPR $>95\%$) remains a future objective.
+    \item \textbf{Clinical Fetal Arrhythmia Screening:} Precision morphological detection of fetal extrasystoles, heart block, and conduction anomalies. \fin{Both the mid-term and the final system extract} QRS timing rather than clinical arrhythmia diagnosis; formal arrhythmia classification (TPR $>95\%$) remains a future objective.
 \end{enumerate}
 
 \begin{table*}[t]
@@ -149,7 +149,7 @@ Continuous intrapartum NIFECG monitoring serves three distinct clinical operatin
 \midrule
 Detection F1 & $\ge 90\%$ at $\ge 0\,$dB SNR & $93.00\%$ pop ($93.06\%$ test); $c4$ 83.06\%; min record 59.55\% & \textbf{Met on population mean; not met for c4 / worst records} & \tagLone\ Measured (L1) & \fin{FECGSYNDB 93.7\% (1,248, C model); ADFECGDB 96.1\%; CinC test 76.9\% (82.0\% reliable refs); $c4$ 84.0\% (v6: 91.4 / 92.7 / 65.5\%)} \\
 FHR MAE normal & $<1.0\,$bpm on clean baseline ($c0$ and TC1--TC3) & \texttt{sub01} TC1--TC3: $0.32$--$0.48\,$bpm; population $c0$: $3.29\,$bpm & \textbf{Met on Subject 1 only; not met on population} & \tagLone\ Measured (L1) & \fin{ADFECGDB 2.1\,bpm (r01: 1.5\,bpm; v6: 2.0 / 0.56\,bpm); FECGSYNDB $c0$ 2.0\,bpm; not met} \\
-FHR MAE challenging & $<8.0\,$bpm across all 5 conditions ($c0$--$c4$) & $6.57\,$bpm mean; $c4$: $16.10\,$bpm; held-out test: $8.00\,$bpm (PCA), $3.57\,$bpm (U-Net) & \textbf{Met on mean only; not met for c4; test at limit} & \tagLone\ Measured (L1) & \fin{FECGSYNDB 4.0\,bpm, $c4$ 7.1\,bpm (1,248, C model); CinC test 11.5\,bpm (v6: 18.4\,bpm)} \\
+FHR MAE challenging & $<8.0\,$bpm across all 5 conditions ($c0$--$c4$) & $6.57\,$bpm mean; $c4$: $16.10\,$bpm; held-out test: $8.00\,$bpm (PCA), \fin{$2.43\,$bpm} (U-Net) & \textbf{Met on mean only; not met for c4; test at limit} & \tagLone\ Measured (L1) & \fin{FECGSYNDB 4.0\,bpm, $c4$ 7.1\,bpm (1,248, C model); CinC test 11.5\,bpm (v6: 18.4\,bpm)} \\
 Clinical agreement & $\ge 95\%$ baseline; $>50\%$ overall ($\pm 5\,$bpm) & $74.0\%$ on $c0$; $58.0\%$ overall; $6.0\%$ on $c4$ & \textbf{Baseline not met; overall met} & \tagLone\ Measured (L1) & \fin{not recomputed for the final design} \\
 Compute time & $<4,000\,\mu$s ($1/f_s$ real-time deadline) & $1.48\,\mu$s (148 clock cycles at 100\,MHz) & \textbf{Estimate (L4 sized)} & \tagLfour\ Estimate (L4) & \fin{met: v6 RTL median 1,485 cycles = 30\,$\mu$s per sample (xsim, 50\,MHz); v7-DL board 4--4.5$\times$ real time incl.\ UART and PC} \\
 Filter group delay & $<100\,$ms intrapartum group delay & $11.4$--$15.4\,$ms in-band ($2.85$--$3.85$ samples); $96\,$ms edge & \textbf{Met (edge borderline)} & \tagLone\ Measured (L1) & \fin{not met: live beats 1.5--2\,s after they occur, final v7-DL beats $13.5\,$s (median, max $17.5\,$s)} \\
@@ -166,7 +166,7 @@ Form factor & Wearable patch (4 maternal abdominal electrodes) & 4 Leads ($[27, 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.92\textwidth]{figures/system_pipeline.png}
-\caption{\tagLone/\tagLtwo\ Complete end-to-end NIFECG extraction and FPGA processing pipeline: (1)~4-Channel abdominal mixture acquisition; (2)~4th-order Butterworth 0.5--40\,Hz IIR preprocessing (4 SOS biquads) and dual 50/60\,Hz notch filter; (3)~Spatial covariance matrix computation and polarity-aligned beamforming; (4)~Peak-Energy fetal QRS detector; (5)~Median-filtered FHR estimation and 7-segment / UART display.}
+\caption{\tagLone/\tagLtwo\ Complete end-to-end NIFECG extraction and FPGA processing pipeline: (1)~4-Channel abdominal mixture acquisition; (2)~4th-order Butterworth 0.5--40\,Hz IIR preprocessing (4 SOS biquads\fin{; 4th-order prototype, 8th-order bandpass in total}) and dual 50/60\,Hz notch filter; (3)~Spatial covariance matrix computation and polarity-aligned beamforming; (4)~Peak-Energy fetal QRS detector; (5)~Median-filtered FHR estimation and 7-segment / UART display.}
 \label{fig:system_pipeline}
 \end{figure*}
 
@@ -193,7 +193,7 @@ isolates the fetal cardiac dipole component while suppressing the dominant mater
 \textbf{O2: Bit-True Integrity} & Fixed-point SQNR $\ge 60\,$dB & $+74.52\,$dB SQNR beamformer output; zero beat discordance & \textbf{Met (L2)} \\
 \textbf{O3: Sized Latency} & Per-sample latency $<10.0\,\mu$s & Sized 148 cycles ($1.48\,\mu$s at 100\,MHz, $2,702\times$ margin) & \textbf{Sized Estimate (L4)} \\
 \textbf{O4: Resource Efficiency} & $<5\%$ LUTs, $\le 1$ DSP48E1 slice & Sized $\approx 3.0\%$ LUTs (990), 1 DSP48E1, 1 BRAM & \textbf{Sized Estimate (L4)} \\
-\textbf{O5: Hardware Bring-Up} & Physical board UART \& 7-seg & Presets and pin constraints mapped; synthesis sprint Nov 1--10 & \textbf{Scheduled for Sprint} \\
+\textbf{O5: Hardware Bring-Up} & Physical board UART \& 7-seg & Presets and pin constraints mapped; synthesis sprint Nov 1--10 & \textbf{Scheduled for Sprint} \fin{$\to$ \textbf{Done} (Sec.~\ref{sec:final_hw})} \\
 \bottomrule
 \end{tabular}%
 }
@@ -205,7 +205,7 @@ isolates the fetal cardiac dipole component while suppressing the dominant mater
     \item \textbf{O2 (Bit-True Numerical Integrity \tagLtwo):} Formulate bit-accurate fixed-point representations demonstrating Signal-to-Quantization-Noise Ratio $\text{SQNR} \ge 60\,$dB with zero beat degradation relative to double-precision software.
     \item \textbf{O3 (Latency and Determinism \tagLfour\ Target):} Size per-sample compute latency to $<10.0\,\mu$s on Spartan-7 at 100\,MHz, well below the 4,000\,$\mu$s real-time sample budget.
     \item \textbf{O4 (FPGA Resource Efficiency \tagLfour\ Target):} Confine primary pipeline utilization to $<5\%$ of logic LUTs and $\le 1$ DSP48E1 slice on the Xilinx Spartan-7 XC7S50 FPGA.
-    \item \textbf{O5 (Hardware Demonstration Script \tagLfive\ Target):} Design complete UART streaming protocols, front-panel switch presets, and 4-digit 7-segment FHR display controls for Boolean Board bring-up in the final sprint.
+    \item \textbf{O5 (Hardware Demonstration Script \tagLfive\ Target):} Design complete UART streaming protocols, front-panel switch presets, and 4-digit 7-segment FHR display controls for Boolean Board bring-up in the final sprint. \fin{Final status: the UART link and the complete design run on the board (Sec.~\ref{sec:final_hw}); the live demonstration is described in Sec.~\ref{sec:final_demo}.}
 \end{itemize}
 
 % =====================================================================
@@ -221,15 +221,15 @@ where $\mathbf{d}_m[n] \in \mathbb{R}^3$ is the rotating maternal cardiac dipole
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fmr_lead_topography_34ch.png}
-\caption{\tagLone\ 34-Channel Fetal-to-Maternal Ratio (FMR) topography evaluated strictly across training subjects (\texttt{sub01}--\texttt{sub07}) on PhysioNet FECGSYNDB~\cite{fecgsyndb,andreotti2016}. Lower suprapubic Leads 25--28 exhibit peak fetal coupling ($\text{FMR} = 0.46$ on Lead 27, and $0.54$ on \texttt{sub01}), defining our 4-channel primary sub-array $[27, 26, 28, 25]$ (0-based indices).}
+\caption{\tagLone\ 34-Channel Fetal-to-Maternal Ratio (FMR) topography evaluated strictly across training subjects (\texttt{sub01}--\texttt{sub07}) on PhysioNet FECGSYNDB~\cite{fecgsyndb,andreotti2016}\fin{: fetal/maternal RMS ratio of each lead, mean over the seven subjects (layout l1, condition c0), recomputed for this report from the separate fetal and maternal signals. Leads 19 and 18 have the highest FMR (0.61 and 0.60); the selected sub-array $[27, 26, 28, 25]$ (0-based indices, highlighted) ranks 4th, 3rd, 8th and 10th.}}
 \label{fig:fmr_topography}
 \end{figure}
 
 \noindent\textbf{PhysioNet FECGSYNDB benchmark.} We utilize the standardized PhysioNet Fetal ECG Synthetic Database (FECGSYNDB)~\cite{fecgsyndb,andreotti2016}, comprising 34 cutaneous channels (32 abdominal, 2 maternal thoracic references) sampled at $250\,$Hz with synchronized ground-truth fetal annotations, alongside companion synthetic arrhythmia recordings from NIFEADB~\cite{nifeadb}.
 
-\newcontent{\noindent\textbf{Training-set lead selection and FMR topography.} Analysis of 34-channel FMR topography evaluated strictly on the training partition (\texttt{sub01}--\texttt{sub07}) (Fig.~\ref{fig:fmr_topography}) reveals that maternal potentials dominate epigastric leads (Channels 0--11, FMR $<0.22$), whereas fetal potentials peak in lower suprapubic leads (Channels 25--28, reaching $\text{FMR} = 0.46$ on 0-based Lead 27, and $0.54$ on \texttt{sub01}). Based on this training-only coupling, we selected the optimal 4-lead suprapubic sub-array:
+\newcontent{\noindent\textbf{Training-set lead selection and FMR topography.} \fin{Fig.~\ref{fig:fmr_topography} shows the fetal-to-maternal RMS ratio of every lead, averaged over the training subjects (\texttt{sub01}--\texttt{sub07}). The highest values are on Leads 19 and 18 (0.61 and 0.60), followed by Leads 26 and 27 (0.52 and 0.51); Leads 28 and 25 rank 8th and 10th (0.43 and 0.40). The mid-term sub-array is therefore not the four leads with the highest FMR (mean FMR 0.46, against 0.56 for Leads 19, 18, 26 and 27). It was taken from an anatomical ranking (lower abdominal midline leads over a head-down fetus) as a block of four neighbouring lead indices, and all four leads are in the training top~10:}
 \begin{equation}
-    \mathcal{C}_{\text{opt}} = \{ \text{Lead } 27, \text{Lead } 26, \text{Lead } 28, \text{Lead } 25 \}
+    \fin{\mathcal{C}_{\text{sel}}} = \{ \text{Lead } 27, \text{Lead } 26, \text{Lead } 28, \text{Lead } 25 \}
 \end{equation}
 (0-based physical electrode indices, corresponding to 1-based leads $[28, 27, 29, 26]$), ensuring that no \texttt{sub09}--\texttt{sub10} data were used for lead selection, hyperparameters, or training.
 }
@@ -342,7 +342,7 @@ Crucially, because the downstream fetal QRS detector applies a non-linear squari
         \mathcal{L}(f, \hat{f}) = 1 - \frac{\text{Cov}(f, \hat{f})}{\sigma_f \sigma_{\hat{f}} + \epsilon} + 0.1\,\|f - \hat{f}\|_1
     \end{equation}
 \end{itemize}
-Trained on subjects \texttt{sub01}--\texttt{sub07} over an NVIDIA RTX 4060 GPU (Adam optimizer, batch size 32, learning rate $10^{-3}$, 50 epochs; 1-Ch model uses Lead 27). The best checkpoint on validation subject \texttt{sub08} was evaluated once on held-out test subjects \texttt{sub09}--\texttt{sub10}.
+Trained on subjects \texttt{sub01}--\texttt{sub07} over an NVIDIA RTX 4060 GPU (Adam optimizer, batch size 32, learning rate $10^{-3}$, 50 epochs; 1-Ch model uses Lead 27). The best checkpoint on validation subject \texttt{sub08} was evaluated once on held-out test subjects \texttt{sub09}--\texttt{sub10}. \fin{(Final-phase note: the list of training records was not saved and the training script does not enforce this split, so it cannot be verified from the archive; see the deep-learning check in Sec.~\ref{sec:final_realdata}.)}
 }
 
 \subsection{Methods M4--M9: Classical Benchmark Baselines}
@@ -365,7 +365,7 @@ Trained on subjects \texttt{sub01}--\texttt{sub07} over an NVIDIA RTX 4060 GPU (
 
 \newcontent{To bridge the gap between software simulation and physical FPGA realization, all arithmetic was mapped into two's-complement signed fixed-point formats targeting Spartan-7 DSP48E1 slices, detailed in Tab.~\ref{tab:fixed_point_specs}:
 \begin{itemize}
-    \item \textbf{Analog Front-End (AFE) Scaling:} An instrumentation amplifier gain of $G = 200$ maps a $\pm 5.0\,$mV biopotential range to the ADC input. Full scale $\pm 5.0\,$mV maps to $[-1.0, +1.0)$ in Q1.15 format, yielding a resolution of $\Delta = 5.0\,\text{mV} / 32768 \approx 0.152\,\mu$V per LSB. A $20\,\mu$V fetal peak corresponds to $131$ LSBs, while a $2.5\,$mV maternal peak occupies $16,384$ LSBs.
+    \item \textbf{Analog Front-End (AFE) Scaling:} An instrumentation amplifier gain of $G = 200$ maps a $\pm 5.0\,$mV biopotential range to the ADC input\fin{ ($\pm 1.0\,$V, i.e.\ an external ADC with a $\pm 1\,$V input range is assumed; the on-board XADC accepts less, see Sec.~\ref{sec:host_interface})}. Full scale $\pm 5.0\,$mV maps to $[-1.0, +1.0)$ in Q1.15 format, yielding a resolution of $\Delta = 5.0\,\text{mV} / 32768 \approx 0.152\,\mu$V per LSB. A $20\,\mu$V fetal peak corresponds to $131$ LSBs, while a $2.5\,$mV maternal peak occupies $16,384$ LSBs.
     \item \textbf{Filter Coefficients and States:} Preprocessing IIR SOS coefficients require Q2.14 format to accommodate pole placements where $a_1 \approx -1.97$. Filter internal states use 24-bit representations to prevent overflow during high-Q transients.
     \item \textbf{Beamformer Weights:} Q1.15 format, normalized such that $\|\mathbf{w}\|_2 \le 1.0$.
     \item \textbf{DSP Accumulator:} 48-bit accumulator with 4 guard bits to prevent internal overflow across additions.
@@ -423,7 +423,7 @@ confirms $+74.52\,$dB SQNR for Spatial PCA (and $+85.04\,$dB for secondary Hanke
 
 \subsection{Scope of the Hardware Demonstration and Host Interface}
 \label{sec:host_interface}
-In the mid-term system, physical AFE and ADC hardware are modeled rather than physically built; 16-bit signed samples are assumed. If the RealDigital Boolean Board's on-board XADC were utilized, it provides 12-bit resolution ($2.44\,\mu$V/LSB), rendering a $20\,\mu$V fetal peak $\approx 8$ LSBs. Calibration weights $\mathbf{w}$ are derived from a 3.0-second host buffer and stay static, meaning fetal/maternal positional shifts require periodic host recalibration.
+\fin{In the mid-term and the final system}, physical AFE and ADC hardware are modeled rather than physically built; 16-bit signed samples are assumed. If the RealDigital Boolean Board's on-board XADC were utilized, it provides 12-bit resolution ($2.44\,\mu$V/LSB\fin{ referred to the input}), rendering a $20\,\mu$V fetal peak $\approx 8$ LSBs. \fin{The 7-series XADC accepts at most $1\,$V peak-to-peak ($0$ to $1\,$V unipolar or $\pm 0.5\,$V bipolar, Xilinx UG480), so the $\pm 1.0\,$V output of the $G = 200$ amplifier would clip it by a factor of two; with the XADC the gain must be halved to $G = 100$, which maps $\pm 5\,$mV to $\pm 0.5\,$V and gives the $10\,\text{mV} / 4096 = 2.44\,\mu$V/LSB stated above.} Calibration weights $\mathbf{w}$ are derived from a 3.0-second host buffer and stay static, meaning fetal/maternal positional shifts require periodic host recalibration.
 
 Full 5-minute recordings cannot be stored in on-chip Block RAM. We implemented continuous UART streaming at 921,600 baud. Each 4-channel sample frame comprises an 8-byte payload ($4 \times 16\,$bits). At 921,600 baud with 10 bits per byte (1 start, 8 data, 1 stop), 8 bytes require $80 / 921,600 \approx 86.8\,\mu$s, consuming $2.17\%$ of the $4,000\,\mu$s per-sample budget and requiring only 1 BRAM (36\,kb) for circular FIFO buffering.
 
@@ -431,7 +431,7 @@ Full 5-minute recordings cannot be stored in on-chip Block RAM. We implemented c
 \section{Experimental Plan and Evaluation Methodology}
 \label{sec:experimental_plan}
 
-All algorithms are benchmarked under identical frozen conditions: $f_s = 250\,$Hz, 4th-order Butterworth 0.5--40\,Hz conditioning, and our Peak-Energy fetal QRS detector evaluated within a $\pm 50\,$ms match tolerance window in accordance with international PhysioNet/CinC Challenge 2013 standards~\cite{silva2013,clifford2014}. 
+All algorithms are benchmarked under identical frozen conditions: $f_s = 250\,$Hz, 4th-order Butterworth 0.5--40\,Hz conditioning \fin{(4th-order prototype; 8th-order bandpass, 4 SOS)}, and our Peak-Energy fetal QRS detector evaluated within a $\pm 50\,$ms match tolerance window in accordance with international PhysioNet/CinC Challenge 2013 standards~\cite{silva2013,clifford2014}. 
 
 \noindent\textbf{Evaluation metrics and mathematical definitions.}
 \begin{equation}
@@ -557,7 +557,7 @@ SWT-LMS Wavelet Filter & 1-Ch & 16.97\% & 46.92\,bpm & 14.7\% & 0.005 & High DSP
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fhr_error_bland_altman.png}
-\caption{\tagLone/\tagLtwo\ Fetal Heart Rate (FHR) precision analysis on Subject 1 baseline records: (a)~FHR Mean Absolute Error across TC1--TC5; (b)~Bland-Altman agreement plot for Spatial PCA against reference ground truth ($95\%$ limits of agreement: $[-6.75, +5.90]\,$bpm under noise).}
+\caption{\tagLone/\tagLtwo\ Fetal Heart Rate (FHR) precision analysis on Subject 1 baseline records: (a)~FHR Mean Absolute Error across TC1--TC5; (b)~Bland-Altman agreement plot for Spatial PCA against reference ground truth ($95\%$ limits of agreement: \fin{$[-4.75, +5.88]\,$bpm, mean bias $+0.57\,$bpm, as marked in the plot}).}
 \label{fig:fhr_bland_altman}
 \end{figure}
 
@@ -587,7 +587,7 @@ The benchmark results in Tab.~\ref{tab:master_benchmark}, Tab.~\ref{tab:executiv
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/deep_learning_waveform_comparison.png}
-\caption{\tagLone\ Morphological reconstruction by Deep 1D U-Net over a 5-second window: (A)~Raw abdominal mixture; (B)~Ground truth reference; (C)~U-Net reconstructed waveform exhibiting near-perfect morphology recovery ($r = 0.979$).}
+\caption{\tagLone\ Morphological reconstruction by Deep 1D U-Net over a 5-second window: (A)~Raw abdominal mixture; (B)~Ground truth reference; (C)~U-Net reconstructed waveform exhibiting near-perfect morphology recovery (\fin{TC1, \texttt{sub01} at 12\,dB; $r = 0.966$ over the record, Tab.~\ref{tab:master_benchmark}}).}
 \label{fig:deep_learning_plot}
 \end{figure}
 
@@ -861,7 +861,7 @@ Deep 1D U-Net (Edge FPGA)$^\ddagger$ & 28,400 (87.1\%) & 22,000 (33.7\%) & 112 (
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/runtime_comparison.png}
-\caption{\tagLone\ Software execution time per 5-minute record across algorithmic paradigms. Spatial PCA on CPU completes in 190.7\,ms, while GPU-accelerated U-Net executes in 98.6\,ms and Hankel SVD requires 107.5\,s. The FPGA figure ($96\,$ms) represents pure compute time for 75,000 samples at the sized $1.28\,\mu$s/sample; in real time the 5-minute record takes $300\,$s because samples arrive at $250\,$Hz.}
+\caption{\tagLone\ Software execution time per 5-minute record across algorithmic paradigms. Spatial PCA on CPU completes in 190.7\,ms, while GPU-accelerated U-Net executes in 98.6\,ms and Hankel SVD requires \fin{75.9\,ms (all software times as in Tab.~\ref{tab:mega_benchmark})}. The FPGA figure (\fin{$111\,$ms}) represents pure compute time for 75,000 samples at the sized \fin{$1.48\,\mu$s/sample (148 cycles at 100\,MHz)}; in real time the 5-minute record takes $300\,$s because samples arrive at $250\,$Hz.}
 \label{fig:runtime_bars}
 \end{figure}
 
@@ -898,7 +898,7 @@ $^\ddagger$Deep 1D U-Net is infeasible on-chip without external DRAM co-processi
 \end{itemize}
 Real recordings at other sampling rates are decimated causally to $250\,$Hz.
 
-\noindent\textbf{What the causal re-run showed.} Re-running the frozen mid-term design (spatial PCA beamformer with peak-energy detector) causally on all 1,248 FECGSYNDB records gave F1 $82.2\%$ and FHR MAE $18.8\,$bpm, against $93.0\%$ in the mid-term batch evaluation. On real CinC recordings it reached only $16.7\%$ (test) and $22.8\%$ (dev).
+\noindent\textbf{What the causal re-run showed.} Re-running the frozen mid-term design (spatial PCA beamformer with peak-energy detector) causally on all 1,248 FECGSYNDB records gave F1 $82.2\%$ and FHR MAE $18.8\,$bpm, against $93.0\%$ in the mid-term batch evaluation. On real CinC recordings it reached only $16.7\%$ (test) and $22.8\%$ (dev). Finding this early is what made the final design possible: every step below was built and judged against real recordings.
 
 \noindent\textbf{v2: self-referencing beamformer (7 Nov).} We first improved the existing architecture. The PC computes the beamformer weights by a generalised eigen-decomposition (GEVD) on the design's own detections (QRS-window covariance against total covariance), with maternal-aware component choice and gated interference nulling. In the RTL we fixed a hard-coded latency in the peak localiser (18 instead of the parameter), reduced the latency compensation from 18 to 13 samples (measured group delay of the 20--30\,Hz detector band) and added a restartable detector warm-up (packet \texttt{0xC4}). Results:
 \begin{itemize}
@@ -917,7 +917,7 @@ Real recordings at other sampling rates are decimated causally to $250\,$Hz.
 \label{fig:fin_synreal}
 \end{figure}
 
-\noindent\textbf{Deep-learning check.} The mid-term 4-channel U-Net scored $90.0\%$ on a 179-record FECGSYNDB subset but only $17.7\%$ on ADFECGDB; changing lead polarity or per-lead scaling did not help (Fig.~\ref{fig:fin_synreal}). Its training records are not fully documented, so its synthetic score may include records it was trained on. Together with its memory needs (Sec.~\ref{sec:hardware_resources}), this confirmed the decision to continue with a classical, explainable method.
+\noindent\textbf{Deep-learning check.} The mid-term 4-channel U-Net scored $90.0\%$ on a 179-record FECGSYNDB subset but only $17.7\%$ on ADFECGDB; changing lead polarity or per-lead scaling did not help (Fig.~\ref{fig:fin_synreal}). The 179 records are every 7th of the 1,248 records (all ten subjects, layouts l1--l5), and 125 of them belong to the training subjects \texttt{sub01}--\texttt{sub07} of Sec.~\ref{sec:unet}. The training script trains on every record in the folder it is given and the list of training records was not saved, so the split stated in Sec.~\ref{sec:unet} cannot be checked from the archive. The synthetic score is not inflated by the training subjects, however: on the 54 records of \texttt{sub08}--\texttt{sub10} the U-Net scores $96.8\%$, against $87.1\%$ on \texttt{sub01}--\texttt{sub07}. Together with its memory needs (Sec.~\ref{sec:hardware_resources}), this confirmed the decision to continue with a classical, explainable method.
 
 % =====================================================================
 \section{Final Phase II: Causal Real-Data Algorithm (v3--v5)}
@@ -999,13 +999,13 @@ v7-LA (14 Nov) & offline on the PC: look-ahead over the whole recording (v6.1 st
 
 \noindent\textbf{v5: whole algorithm on a soft processor.} The C program runs on a MicroBlaze processor with a hardware floating-point unit inside the XC7S50 at 73.7\,MHz (256\,KB local memory plus 32\,KB AXI block RAM, 72 of 75 BRAM tiles). The PC only streams the recording. To fit, we stored sample rings as int16, envelopes as bf16 and beat snapshots as int8, shared calibration buffers with the trackers, and replaced a $20\times 20$ Jacobi solver by an incremental Gram matrix with a two-vector subspace iteration. This made it $3.5\times$ faster (about 47k cycles per sample, $5.4\times$ real time) with the same accuracy. The board was bit-exact with the PC build of the same C source on all 140 records.
 
-\noindent\textbf{Why v6.} v5 runs the algorithm on a processor that we did not design. For the final design we moved every sample-rate operation into our own RTL and left the PC only the decisions that happen a few times per second or once per recording (Tab.~\ref{tab:pc_jobs}).
+\noindent\textbf{Why v6.} v5 runs the algorithm on a processor that we did not design. For the final design we moved every sample-rate operation into our own RTL and left the PC only the decisions that happen a few times per second or once per recording (Tab.~\ref{tab:pc_jobs}); Sec.~\ref{sec:pc_loop} gives their measured cost and the reasons they stay on the PC.
 
 \begin{figure*}[t]
 \centering
 \fb
 \includegraphics[width=0.92\textwidth]{figures/fin_v6_architecture.png}
-\caption{\fb Final architecture (v6). Everything that runs at the sample rate is hand-written Verilog on the Spartan-7. The FPGA sends five kinds of requests to the PC brain and stalls until the answer arrives, so results do not depend on PC timing. The PC never receives the recording itself, only features computed by the FPGA.}
+\caption{\fb Final architecture (v6). Everything that runs at the sample rate is hand-written Verilog on the Spartan-7. The FPGA sends five kinds of requests to the PC brain and stalls until the answer arrives, so results do not depend on PC timing. The PC never receives the raw recording, only data computed by the FPGA (features, beat segments and calibration buffers; Sec.~\ref{sec:pc_loop}).}
 \label{fig:fin_arch}
 \end{figure*}
 
@@ -1039,6 +1039,41 @@ Track selection & every 2.5\,s & beat events, snapshots, envelope medians & trac
     \item \textbf{System testbench:} plays the role of the board host, sends the recording in 64-sample frames, replays the brain's answers and compares every uplink byte with the C model. 8 records (5 CinC, 1 ADFECGDB, 2 FECGSYNDB; up to 1.05\,MB of output each): 0 byte errors. These tests found real bugs, e.g.\ a wrong segment-frame length (604 instead of 1,204 bytes).
     \item \textbf{Board:} the complete uplink stream of every record is compared with the C model (Sec.~\ref{sec:final_results}).
 \end{itemize}
+
+\subsection{Why the PC Stays in the Loop: Measured Cost and Trade-offs}
+\label{sec:pc_loop}
+The split between FPGA and PC is a deliberate engineering choice. Every operation that runs at the sample rate is in our RTL: filtering, maternal detection and cancellation, the 16 spatial projections, envelopes, trackers, beat features, the FHR and, in v7-DL, the choice of the final beats. The PC makes five decisions that occur between once per recording and about once per maternal beat (1--1.5\,Hz), against 250 samples per second. The FPGA stalls until each answer arrives, so the output never depends on PC timing, and the board stream, PC answers included, is bit-exact with the C model on all 140 records.
+
+\noindent\textbf{What crosses the link.} \Cref{tab:pc_traffic} splits the link traffic of v7-DL by decision (C model on ADFECGDB r01, 120\,s; \texttt{tools/pc\_link\_traffic.py}). Three decisions carry almost all of it. The link is lightly loaded: 7.8\,KB/s up and 9.2\,KB/s down (PC answers plus the recording), 8--10\% of the 92\,KB/s that the 921,600-baud link carries in each direction.
+
+\begin{table}[t]
+\fb
+\caption{\fb The five PC decisions of v7-DL: rate, share of the link traffic (PC requests, data and answers; ADFECGDB r01) and what moving each into the FPGA would need.}
+\label{tab:pc_traffic}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llrp{4.3cm}@{}}
+\toprule
+\textbf{Decision} & \textbf{Rate} & \textbf{Traffic} & \textbf{On the FPGA it would need} \\
+\midrule
+Template basis & per maternal beat & 59.1\% & 20-beat history (24\,KB, about 6 BRAM tiles) and a $20\times20$ subspace iteration with square roots and divisions \\
+Track selection & every 2.5\,s & 28.7\% & floating-point log-quality of 16 tracks; in v7-DL the final beats already come from the on-chip look-ahead unit \\
+GEVD calibration & 15\,s, then every 30\,s & 11.6\% & 48-KB buffer of $\mathbf{z}$ and $\mathbf{x}_f$ (about 12 tiles) and a generalised $4\times4$ eigen-solver with refinement \\
+Maternal train / PCA & every 5\,s / once & 0.6\% & train statistics / one $4\times4$ eigen-decomposition \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\noindent\textbf{Why these decisions stay on the PC.}
+\begin{itemize}
+    \item \textbf{Memory.} The C implementation of the brain keeps about 200\,KB of state (beat history, calibration buffers, track features), as much as about 50 of the 75 block RAM tiles, while v7-DL leaves 4 tiles free. A soft processor running the brain would need the same memory plus its program; v5 showed that a MicroBlaze running the whole algorithm fills 72 of the 75 tiles.
+    \item \textbf{Arithmetic.} The basis and the GEVD need eigen-decompositions with square roots, divisions and refinement loops in floating point. In RTL each would need its own iterative solver, to run a few times per second at most, on a device that already uses 82\% of its LUTs.
+    \item \textbf{Accuracy.} The PC versions give the reported accuracy. The cheaper on-chip alternative we measured, a running (EMA) template instead of the basis, lost 1.1 points on CinC dev (Sec.~\ref{sec:final_algo}).
+    \item \textbf{No real-time cost.} With the PC in the loop the board runs 3.7--9.4$\times$ faster than real time (Fig.~\ref{fig:fin_speed}), and the RTL alone about $135\times$ faster.
+\end{itemize}
+
+\noindent\textbf{The trade-off and the path to a stand-alone device.} The price of the split is that the board needs a host. In a product it maps directly onto an FPGA with an on-chip processor (for example a Zynq SoC): the RTL could stay largely as it is and the brain's C code would run on the hard processor instead of the laptop. On the Spartan-7 itself, the most direct step is this: in v7-DL the PC's selection only drives the live output, so taking the live track from the scores the look-ahead unit already computes would remove 28.7\% of the traffic and one decision. The template basis could move on chip only by freeing block RAM elsewhere, or as a running template at the measured cost of 1.1 points. Neither step has been implemented yet.
 
 \subsection{RTL Simulation Waveforms (Vivado Simulator)}
 \label{sec:final_waves}
@@ -1292,7 +1327,6 @@ The first group points to the most useful improvement. Looking at the detectors 
 \end{figure*}
 
 % =====================================================================
-\renewcommand{\topfraction}{0.5}% keeps deferred floats from filling the columns that hold the [H] figures below
 \section{Final Phase IV: Accuracy Improvements and On-Chip Look-Ahead (v6.1, v7)}
 \label{sec:final_v7}
 
@@ -1351,7 +1385,7 @@ v7-LA needs the whole recording. v7-DL does the same kind of look-ahead on the F
 \end{enumerate}
 At the end of a recording the PC sends FLUSH; the unit finishes the remaining segments with the data it has and sends END7 with the number of final beats. A second small unit drives the board's two 4-digit displays with the latest final FHR and the number of final beats.
 
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \fb
 \includegraphics[width=\columnwidth]{figures/fin_v7_timing.png}
@@ -1362,7 +1396,7 @@ At the end of a recording the PC sends FLUSH; the unit finishes the remaining se
 
 \noindent\textbf{Choosing the delay (development sets only).} A future window of three segments, decision lag 0 and one clean-up pass gave CinC dev $84.7\%$, ADFECGDB $96.1\%$ and FECGSYNDB subset $93.4\%$ with a median output delay of $13.5\,$s. A decision lag of one segment and two clean-up passes gained at most $0.2$ points but raised the median delay to $17.9\,$s. The 15-s deadline left every F1 unchanged and caps the delay at $17.5\,$s.
 
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \fb
 \includegraphics[width=\columnwidth]{figures/fin_v7_delay.png}
@@ -1399,7 +1433,7 @@ On-chip power (estimate) & 0.374\,W & 0.386\,W & \textbf{0.445\,W} \\
 \label{sec:v7_results}
 Both versions were run on the Spartan-7 on the same 140 records as v6, and the complete output stream of every record was compared with the C model: 140/140 records bit-exact for v6.1 and for v7-DL. For v7-DL the board sends both outputs in the same run: the live v6.1 beats and, about 13.5\,s later, the final look-ahead beats. \Cref{tab:v7_results} and \cref{fig:fin_v7_results} give the results; the board runs 4.0--4.5$\times$ faster than real time for both versions.
 
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \fb
 \includegraphics[width=\columnwidth]{figures/fin_v7_results.png}
@@ -1436,7 +1470,7 @@ FECGSYNDB all & 1,248 & 91.9 & 93.7 & 4.85 / 3.98 \\
 
 On held-out CinC, v7-DL improves 33 records and worsens 1 by more than one point compared with the live v6.1 output of the same runs (Fig.~\ref{fig:fin_v7_cinc}), and 18 records reach $\ge 90\%$ (v6.1: 15, v6: 13). Without the 7 records with inaccurate references, v7-DL scores $86.0\%$ on CinC dev, $82.0\%$ on CinC test and $84.0\%$ on the remaining 68 CinC records ($80.8\%$ on all 75). The 7 records come from the organisers' list, not from our results: 5 of them are among our failures, and the other two score $92.5\%$ and $79.6\%$. The sensitivity of v7-DL and PPV on CinC test are $76.2\%$ and $77.8\%$, and on ADFECGDB $96.4\%$ and $95.8\%$. Its FHR error is lower than that of v6.1 on CinC dev and FECGSYNDB, but slightly higher on CinC test (11.5 against 11.2\,bpm) and ADFECGDB (2.1 against 1.7\,bpm). Through the web page (Sec.~\ref{sec:final_demo}) CinC a01 gave the same 102 final beats as the C model (F1 $98.0\%$; live v6.1 output $95.1\%$).
 
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \fb
 \includegraphics[width=\columnwidth]{figures/fin_v7_cinc.png}
@@ -1447,7 +1481,9 @@ On held-out CinC, v7-DL improves 33 records and worsens 1 by more than one point
 
 \subsection{Where the Remaining Error Is}
 \label{sec:v7_where}
-We repeated the oracle diagnostic with v7-DL on all 75 CinC records (labels used only for this analysis). The final output scores $80.8\%$ on average against $82.1\%$ for the best single candidate track, so with look-ahead the choice of track is no longer the main loss. Of the 15 records below $70\%$:
+\noindent\textbf{A few failing recordings pull the mean down.} Per-record F1 on real recordings is very uneven, so the mean lies well below the typical record. On held-out CinC test the median is $87.3\%$ against the mean of $76.9\%$: 18 of the 37 records reach $\ge 90\%$, while the 7 records below $50\%$ (a54, a30, a52, a34, a18, a16, a38; a54, a52 and a38 have flagged references) make up $57\%$ of the total shortfall from $100\%$, i.e.\ 13.2 of the 23.1 points between the mean and $100\%$. On all 75 CinC records the median is $89.1\%$ (mean $80.8\%$) and the 10 records below $50\%$ give $48\%$ of the shortfall; on the FECGSYNDB subset the median is $99.8\%$ (mean $93.4\%$) and 2 records below $50\%$ give $36\%$. The mean over all records stays our main figure, because the failing recordings are exactly the cases a monitor must handle.
+
+\noindent\textbf{Why they fail.} We repeated the oracle diagnostic with v7-DL on all 75 CinC records (labels used only for this analysis). The final output scores $80.8\%$ on average against $82.1\%$ for the best single candidate track, so with look-ahead the choice of track is no longer the main loss. Of the 15 records below $70\%$:
 \begin{itemize}
     \item 5 have references that the challenge organisers flag as inaccurate (a38, a52, a54, a71, a74); the other two flagged records, a33 and a47, score $92.5\%$ and $79.6\%$;
     \item 8 have no candidate track above $70\%$ (best track 42--69\%): the fetal beats are not recovered by any of the 16 spatial filters;
@@ -1456,7 +1492,7 @@ We repeated the oracle diagnostic with v7-DL on all 75 CinC records (labels used
 \end{itemize}
 The next real-data gain must therefore come from better candidates, i.e.\ from the front end and the spatial filters, not from the selection. On FECGSYNDB the weakest condition stays ectopic beats ($c4$, about $84\%$ at every SNR, Fig.~\ref{fig:fin_v7_cond}): the regularity term and the clean-up treat an early beat and the following pause as errors.
 
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \fb
 \includegraphics[width=\columnwidth]{figures/fin_v7_conditions.png}
@@ -1471,7 +1507,7 @@ The next real-data gain must therefore come from better candidates, i.e.\ from t
     \item the published methods are not causal (for example zero-phase filtering in~\cite{behar2014b} and backward Kalman smoothing in~\cite{andreotti2014}), several were developed on set-a and scored on the same records, and they score almost the whole minute. v7-DL runs on the FPGA with a fixed $13.5\,$s delay, was never tuned on CinC test and is scored from $20\,$s;
     \item the FECGSYNDB results of~\cite{andreotti2016} are medians, so we give our median too (our mean is $93.7\%$).
 \end{itemize}
-Published results on set-a range from $61.6\%$ to $97.3\%$. On real data v7-DL ($84.0\%$) is at the level of the classic template-subtraction methods and about 10 points below the best offline methods; on ADFECGDB and FECGSYNDB it is within the published range.
+Published results on set-a range from $61.6\%$ to $97.3\%$. v7-DL is the only method in the table that runs causally on hardware, and under that stricter setting it scores $84.0\%$ on real CinC data, at the level of the classic template-subtraction methods that filter the whole record offline (TS $81.6\%$, TSpca $86.1\%$); the best offline methods score about 10 points higher. On ADFECGDB ($96.1\%$) and FECGSYNDB (median $99.8\%$) v7-DL is within the published range.
 
 \begin{table}[t]
 \fb
@@ -1516,18 +1552,18 @@ DPSS, one lead~\cite{shokouhmand2023} & -- & 99.0 \\
 \label{sec:final_obs}
 
 \begin{enumerate}
-    \item \textbf{Synthetic results overstate real accuracy.} The mid-term design scored $93.0\%$ on FECGSYNDB in batch mode but $82.2\%$ causally and $16.7\%$ on real held-out recordings. The U-Net and v2 both drop by 60--70 points from synthetic to real (Fig.~\ref{fig:fin_synreal}). A design must be judged on real recordings with a held-out split.
-    \item \textbf{A single spatial filter is not enough on real data.} Even with perfect (label-based) weights, one 4-lead linear filter reaches only $60\%$ on CinC. The largest gains came from removing the maternal ECG beat by beat before spatial filtering and from keeping several candidate tracks instead of committing to one filter.
+    \item \textbf{Real recordings are the true test, and we built our evaluation around them.} The mid-term design scored $93.0\%$ on FECGSYNDB in batch mode but $82.2\%$ causally and $16.7\%$ on real held-out recordings, and the U-Net and v2 both drop by 60--70 points from synthetic to real (Fig.~\ref{fig:fin_synreal}). Of the three designs in that figure, only our final algorithm holds above $90\%$ on both synthetic and real ADFECGDB data.
+    \item \textbf{Beat-by-beat maternal cancellation and multiple candidates are the key to real data.} Even with perfect (label-based) weights, one 4-lead linear filter reaches only $60\%$ on CinC, so no beamformer could have succeeded. The largest gains came from removing the maternal ECG beat by beat before spatial filtering and from keeping several candidate tracks instead of committing to one filter.
     \item \textbf{Causal selection was the main error of v6; look-ahead closed most of it.} For v6 on CinC dev the best single candidate track scored $82.6\%$ and a per-window oracle $85.0\%$, against about $75\%$ for the causal label-free choice (Fig.~\ref{fig:fin_gap}). Better causal rules did not close this gap (Tab.~\ref{tab:v61_ideas}). Letting the selector see 7.5\,s of the future did: on all 75 CinC records v7-DL scores $80.8\%$ against $82.1\%$ for the best single track (Sec.~\ref{sec:v7_where}).
-    \item \textbf{Real-data gains cost some synthetic accuracy.} FECGSYNDB dropped from $95.6\%$ (v2) to $91.4\%$. On some synthetic records the maternal detector locks onto the fetus; the $10\%$ energy confidence gate recovers most of this ($78.7 \to 91.3$ on the subset) without hurting real data. We gave real data priority.
-    \item \textbf{Ectopic beats and rate changes remain hard.} The RR-regularity and FHR-prior terms that make selection robust on noisy real data also penalise true irregular fetal rhythms ($c4$: $78.5\%$). The FHR prior also means that fetal bradycardia below about 110\,bpm can be under-selected; we kept the prior mild for this reason (a stronger prior scored $+0.4$ on CinC dev and was rejected).
+    \item \textbf{We gave real data priority, at a small synthetic cost.} FECGSYNDB moved from $95.6\%$ (v2) to $91.4\%$ (v6) while held-out real-data F1 rose from $41.2\%$ to $65.5\%$. On some synthetic records the maternal detector locks onto the fetus; the $10\%$ energy confidence gate recovers most of this ($78.7 \to 91.3$ on the subset) without hurting real data, and v7-DL is back at $93.7\%$.
+    \item \textbf{Robustness on noisy data against irregular rhythms is a deliberate trade-off.} The RR-regularity and FHR-prior terms that make selection robust on noisy real data also penalise true irregular fetal rhythms ($c4$: $78.5\%$ for v6, $84.0\%$ for v7-DL). The FHR prior also means that fetal bradycardia below about 110\,bpm can be under-selected; we kept the prior mild for this reason (a stronger prior scored $+0.4$ on CinC dev and was rejected).
     \item \textbf{Accuracy grows during a recording.} No beat is output before about $19.5\,$s, and the selector judges tracks over the trailing $20\,$s, so its decisions improve once a full window of data is available. In the web demonstration the running F1 rises over the first tens of seconds. Recalibrating the spatial filters every 30\,s (v6.1) helps mostly on the 5-min recordings; a 60-s CinC record gets at most one recalibration.
-    \item \textbf{Dev/test gap.} CinC dev $76.0\%$ against CinC test $65.5\%$. Part is natural variation between the two halves (the dev half was already easier for v2: $42.0$ vs $41.2$ and for the mid-term design: $22.8$ vs $16.7$), part is the effect of choosing the design on the dev half. The test half was never used for a decision; v7-DL shows the same gap ($84.7\%$ against $76.9\%$). The test half has now been scored once for each of v5, v6, v6.1, v7-LA and v7-DL, so it is no longer a fresh test set.
+    \item \textbf{The held-out half was protected, and the dev/test gap is understood.} CinC dev $76.0\%$ against CinC test $65.5\%$. Part is natural variation between the two halves (the dev half was already easier for v2: $42.0$ vs $41.2$ and for the mid-term design: $22.8$ vs $16.7$), part is the effect of choosing the design on the dev half. The test half was never used for a decision; v7-DL shows the same gap ($84.7\%$ against $76.9\%$). The test half has now been scored once for each of v5, v6, v6.1, v7-LA and v7-DL, so it is no longer a fresh test set.
     \item \textbf{A bit-exact model makes hardware debugging tractable.} Writing the integer C model first, comparing every output byte in simulation and on the board, and changing the model before the RTL meant that every bug showed up as the first differing byte. The final RTL has the same output as the model on every record we ran, so the accuracy measured in software is the accuracy of the hardware.
-    \item \textbf{Hardware trade-off.} The final design uses about $5\times$ the LUTs of the MicroBlaze version, but it is our own datapath, runs at 50\,MHz with timing met, and is 4--5$\times$ faster than real time. In simulation the RTL alone needs a median of 1,485 cycles per sample, about $140\times$ faster than real time (Fig.~\ref{fig:wave_cycles}); the 4--5$\times$ on the board is set by the UART transfers and the PC answers, not by the FPGA logic. The mid-term resource target ($<5\%$ LUT, 1 DSP) was set for the much simpler beamformer and no longer applies. The look-ahead and display units of v7-DL add 7.7k LUTs and 11 BRAM tiles to v6.1 (82\% of the LUTs in total).
-    \item \textbf{Latency against accuracy.} v6 and v6.1 report each beat about $1.5$--$2\,$s after it occurs. v7-DL reports the final beats about $13.5\,$s later (at most $17.5\,$s) and gains 5 points on held-out CinC. The board sends both streams, so a monitor can show the live value at once and replace it with the final one. Neither is suitable for beat-synchronous triggering.
+    \item \textbf{Our own datapath instead of a processor.} The final design uses about $5\times$ the LUTs of the MicroBlaze version, and in return it is our own datapath, runs at 50\,MHz with timing met, and is 4--5$\times$ faster than real time. In simulation the RTL alone needs a median of 1,485 cycles per sample, about $135\times$ faster than real time (Fig.~\ref{fig:wave_cycles}); the 4--5$\times$ on the board is set by the UART transfers and the PC answers, not by the FPGA logic. The mid-term resource target ($<5\%$ LUT, 1 DSP) was set for the much simpler beamformer and no longer applies. The look-ahead and display units of v7-DL add 7.7k LUTs and 11 BRAM tiles to v6.1 (82\% of the LUTs in total).
+    \item \textbf{Two outputs give both speed and accuracy.} v6 and v6.1 report each beat about $1.5$--$2\,$s after it occurs. v7-DL reports the final beats about $13.5\,$s later (at most $17.5\,$s) and gains 5 points on held-out CinC. The board sends both streams, so a monitor can show the live value at once and replace it with the final one. FHR monitoring shows heart-rate trends, so neither stream is meant for beat-synchronous triggering.
     \item \textbf{The remaining real-data error is in the candidates.} Of the 15 CinC records below $70\%$ with v7-DL, 5 have references the challenge organisers flag as inaccurate and 8 have no candidate track above $70\%$; in none was a good track available but not chosen (Sec.~\ref{sec:v7_where}).
-    \item \textbf{On-chip look-ahead needs area-aware RTL.} The first RTL of the look-ahead unit used 13.2k LUTs on its own and the design did not fit. Because the unit runs only once per 2.5\,s of signal, doing its arithmetic one bit per cycle cut it to 8.4k LUTs with identical output; at 82\% LUT use the design still meets timing at 50\,MHz, with little margin ($+0.05\,$ns).
+    \item \textbf{Area-aware RTL made the on-chip look-ahead fit.} The first RTL of the look-ahead unit used 13.2k LUTs on its own and the design did not fit. Because the unit runs only once per 2.5\,s of signal, doing its arithmetic one bit per cycle cut it by $36\%$ to 8.4k LUTs with identical output; at 82\% LUT use the design meets timing at 50\,MHz ($+0.05\,$ns).
 \end{enumerate}
 \end{finalpart}
 
@@ -1560,7 +1596,7 @@ In compliance with the EE2000 course guidelines, we independently re-implemented
 \toprule
 \textbf{ID} & \textbf{Target Literature Study} & \textbf{Original Published Setup} & \textbf{In-House Setup on FECGSYNDB} & \textbf{Our Obtained Metric} & \textbf{Defensible Scientific Verdict} \\
 \midrule
-\textbf{R1} & Ahlstrom \etal~\cite{ahlstrom1985} & 4th-order Butterworth bandpass (0.5--40\,Hz) & 4 cascaded SOS at $f_s = 250\,$Hz; causal Direct-Form II & $>56\,$dB at 0.1\,Hz, $>18\,$dB at 60\,Hz & \textbf{Implementation Verified} (exact transfer function matches Fig.~\ref{fig:filter_responses}) \\
+\textbf{R1} & Ahlstrom \etal~\cite{ahlstrom1985} & 4th-order Butterworth bandpass (0.5--40\,Hz) & 4 cascaded SOS \fin{(8th-order bandpass)} at $f_s = 250\,$Hz; causal Direct-Form II & $>56\,$dB at 0.1\,Hz, $>18\,$dB at 60\,Hz & \textbf{Implementation Verified} (exact transfer function matches Fig.~\ref{fig:filter_responses}) \\
 \textbf{R2} & Kanjilal \etal~\cite{kanjilal1997} & Hankel SVD rank-2 truncation on single abdominal lead & Hankel matrix $\mathbf{A} \in \mathbb{R}^{m \times (N-m+1)}$, rank-2 subtraction & TC1 F1 = 76.36\%, collapses to 23.72\% on TC3 & \textbf{Trend Replicated on Synthetic Benchmark} (suppresses maternal on clean cycles, collapses during QRS collision) \\
 \textbf{R3} & De Lathauwer \etal~\cite{delathauwer2000} & Blind subspace separation on cutaneous abdominal leads & 4-channel spatial covariance eigen-decomposition on suprapubic leads & Fetal dipole isolated in $\mathbf{v}_2$ (7.8\% energy, mat. 88.4\%) & \textbf{Subspace Principle Verified \& Extended} (4-channel spatial projection reduces maternal energy without fetal cancellation) \\
 \textbf{R4} & Widrow \etal~\cite{widrow1975} / Hasan~\cite{hasan2009} & Single-lead LMS adaptive filtering without reference & 32-tap transversal LMS on single abdominal channel & TC1 F1 = 15.06\%, FHR MAE = 46.6\,bpm & \textbf{Failure Mechanism Replicated} (confirms maternal residual and fetal distortion when abdominal maternal morphology lacks a dedicated reference lead) \\
@@ -1626,26 +1662,26 @@ Run through the page, CinC record a01 gave F1 $95.05\%$, 101 beats and FHR MAE $
 \toprule
 \textbf{Objective} & \textbf{Final result} & \textbf{Status} \\
 \midrule
-O1: F1 $\ge 90\%$ & v7-DL: FECGSYNDB $93.7\%$, ADFECGDB $96.1\%$; CinC test $76.9\%$ ($82.0\%$ reliable references); $c4$ $84.0\%$ & \textbf{Met on synthetic and ADFECGDB; not met on CinC} \\
+O1: F1 $\ge 90\%$ & v7-DL: FECGSYNDB $93.7\%$, ADFECGDB $96.1\%$; CinC test $76.9\%$ ($82.0\%$ reliable references); $c4$ $84.0\%$ & \textbf{Met on FECGSYNDB and ADFECGDB}; CinC, the hardest real set, below target but $4.6\times$ the mid-term score \\
 O2: Bit-true integrity & Board output bit-exact with the C model on 140/140 records (v6, v6.1, v7-DL) & \textbf{Met (L5)} \\
-O3: Per-sample latency $<10\,\mu$s & RTL median 1,485 cycles = $30\,\mu$s per sample at 50\,MHz, $\approx 135\times$ faster than the 4-ms sample period (Fig.~\ref{fig:wave_cycles}); board 4--5$\times$ real time incl.\ UART and PC; live beats 1.5--2\,s after they occur, final v7-DL beats $13.5\,$s (median, max $17.5\,$s) & \textbf{Partly met}: real-time throughput met; the $<10\,\mu$s per-sample target and the $<100\,$ms latency of Tab.~\ref{tab:clinical_specs} are not met \\
-O4: $<5\%$ LUT, 1 DSP & v7-DL 82\% LUT, 43 DSP, 95\% BRAM (v6: 55.6\%, 33, 80\%) & \textbf{Not met}: target was for the simple beamformer; traded for real-data accuracy \\
+O3: Per-sample latency $<10\,\mu$s & RTL median 1,485 cycles = $30\,\mu$s per sample at 50\,MHz, $\approx 135\times$ faster than the 4-ms sample period (Fig.~\ref{fig:wave_cycles}); board 4--5$\times$ real time incl.\ UART and PC; live beats 1.5--2\,s after they occur, final v7-DL beats $13.5\,$s (median, max $17.5\,$s) & \textbf{Real time met} (RTL $135\times$, board 4--5$\times$ faster); the $<10\,\mu$s per-sample figure (sized for the mid-term beamformer) and the $<100\,$ms latency of Tab.~\ref{tab:clinical_specs} are not met, by design: beat tracking and look-ahead need seconds of signal \\
+O4: $<5\%$ LUT, 1 DSP & v7-DL 82\% LUT, 43 DSP, 95\% BRAM (v6: 55.6\%, 33, 80\%) & \textbf{Not met, by choice}: the target was sized for the simple beamformer; the extra logic buys a $4.6\times$ higher held-out real-data F1 ($16.7 \to 76.9\%$) \\
 O5: Board demonstration & UART streaming, board evaluation, live web page and final FHR on the board's displays & \textbf{Met} \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
-\noindent\textbf{Limitations of the final design.}
+\noindent\textbf{Known limits of the final design, and why.}
 \begin{enumerate}
-    \item \textbf{Real-data accuracy.} $76.9\%$ F1 on held-out CinC ($82.0\%$ on reliable references) is far better than at mid-term but not clinical grade; most published offline detectors reach 82--97\% on the same records (Sec.~\ref{sec:v7_literature}). With look-ahead the selection is no longer the main loss; most remaining failures have no good candidate track (Sec.~\ref{sec:v7_where}).
-    \item \textbf{Small, reused real test sets.} 37 held-out CinC records of 60\,s and 5 ADFECGDB records. ADFECGDB was used during development from v4 on, so it is not an independent test set. CinC test has been scored once for each frozen design (v5, v6, v6.1, v7-LA, v7-DL); no decision used it, but a fresh held-out set would be needed before reporting a new number.
-    \item \textbf{Output delay.} The final v7-DL beats are about $13.5\,$s behind the signal. The live v6.1 output is available at once but is less accurate.
-    \item \textbf{Calibration.} The maternal PCA is computed once (first $10\,$s); the spatial filters are recalibrated every 30\,s from v6.1 on, so a 60-s CinC record gets at most one recalibration.
-    \item \textbf{Clinical cases not covered.} Ectopic beats ($84.0\%$ with v7-DL), possible under-selection of fetal bradycardia because of the FHR prior, and twins.
-    \item \textbf{PC still in the loop.} Five low-rate decisions run on a PC. A stand-alone device would need a small processor or more RTL for the eigen-solvers.
-    \item \textbf{Little timing margin.} v7-DL meets timing at 50\,MHz with $+0.05\,$ns slack at 82\% LUT use; more logic would need pipelining or a lower clock.
-    \item \textbf{No analogue front end and no power measurement.} Recordings are streamed from files; electrodes, amplifier and ADC were not built, and board power was not measured.
+    \item \textbf{Real-data accuracy.} $76.9\%$ F1 on held-out CinC ($82.0\%$ on reliable references) is $4.6\times$ the mid-term score, and the typical record does much better than the mean: the median is $87.3\%$, and 7 of the 37 records cause $57\%$ of the shortfall. It is not yet clinical grade, and the best published detectors, which run offline on the whole record, reach up to 97\% on the same records (Sec.~\ref{sec:v7_literature}). With look-ahead the selection is no longer the main loss; most remaining failures have no good candidate track, which points straight at the next improvement (Sec.~\ref{sec:v7_where}).
+    \item \textbf{Small real test sets, protected from tuning.} 37 held-out CinC records of 60\,s and 5 ADFECGDB records. ADFECGDB was used during development from v4 on, so it is not an independent test set. CinC test has been scored once for each frozen design (v5, v6, v6.1, v7-LA, v7-DL) and never used for a decision; a fresh held-out set would be needed before reporting a new number.
+    \item \textbf{Output delay, with a live value alongside.} The final v7-DL beats are about $13.5\,$s behind the signal; the board sends the live v6.1 value at once, and the delay can be halved for about one point on CinC dev (Fig.~\ref{fig:fin_v7_delay}).
+    \item \textbf{Calibration.} The maternal PCA is computed once (first $10\,$s); the spatial filters are recalibrated every 30\,s from v6.1 on, so a 60-s CinC record gets at most one recalibration, while longer recordings benefit fully.
+    \item \textbf{Clinical cases not yet covered.} Ectopic beats ($84.0\%$ mean with v7-DL; our median, $89.3\%$, is above the published median range of $83.4$--$88.4\%$ for this condition), possible under-selection of fetal bradycardia because of the FHR prior, and twins.
+    \item \textbf{PC in the loop, by design.} Five slow decisions run on the PC because their memory (about 200\,KB of state) and floating-point eigen-solvers do not fit the 4 free BRAM tiles and 18\% free LUTs, and because the measured on-chip alternative costs accuracy (Sec.~\ref{sec:pc_loop}). A stand-alone device would run them on an on-chip processor.
+    \item \textbf{Timing met at high utilisation.} v7-DL meets timing at 50\,MHz ($+0.05\,$ns slack) at 82\% LUT use; adding more logic would need pipelining or a lower clock.
+    \item \textbf{Analogue front end and board power are outside the scope.} Recordings are streamed from files; electrodes, amplifier and ADC were not built, and board power was not measured (on-chip estimate $0.445\,$W).
 \end{enumerate}
 \end{finalpart}
 
@@ -1656,11 +1692,11 @@ O5: Board demonstration & UART streaming, board evaluation, live web page and fi
 \begin{finalpart}
 \noindent\textbf{Final conclusions.}
 \begin{enumerate}
-    \item Testing strictly causally and on real recordings changed the picture: the mid-term design that scored $93\%$ on synthetic data reached only $16.7\%$ on held-out real recordings, and no choice of linear weights could fix that.
-    \item A new causal, label-free algorithm (per-lead maternal cancellation, 16 GEVD candidate tracks, beat trackers and label-free selection) raised held-out CinC F1 to $65.5\%$ and ADFECGDB to $92.7\%$ (FHR MAE $2.0\,$bpm), while keeping $91.4\%$ on 1,248 synthetic records.
-    \item The whole sample-rate algorithm runs as hand-written Verilog on the Spartan-7 XC7S50 at 50\,MHz (v6: 55.6\% LUT, 80\% BRAM, 33 DSP), 4--5$\times$ faster than real time, with a PC answering five low-rate requests. The board is bit-exact with the C model on all 140 records tested, for every version.
-    \item v6.1 made the maternal detector robust and recalibrates the spatial filters every 30\,s (held-out CinC $65.5 \to 71.9\%$). Look-ahead raised accuracy further: v7-DL, which runs on the FPGA while the recording is still streamed in 0.256-s frames, reaches $76.9\%$ on held-out CinC, $84.7\%$ on CinC dev, $96.1\%$ on ADFECGDB and $93.7\%$ on all 1,248 FECGSYNDB records, at the cost of a $13.5\,$s (median) output delay, and matches the offline whole-recording version on real data.
-    \item With look-ahead the chosen track is close to the best single track ($80.8\%$ against $82.1\%$ on CinC). The remaining real-data errors come from recordings in which no candidate track contains the fetal beats, or from unreliable references.
+    \item We delivered a complete, verified fetal ECG system on an FPGA: a causal, label-free algorithm designed for real recordings, built as our own Verilog, running on the Spartan-7 board 4--5$\times$ faster than real time, and bit-exact with its C model on all 140 records tested, for every version.
+    \item Holding ourselves to deployment conditions paid off. Strict causal testing on real recordings showed that the mid-term design, $93\%$ on synthetic data, reached only $16.7\%$ on held-out real recordings and that no choice of linear weights could fix it. The new algorithm (per-lead maternal cancellation, 16 GEVD candidate tracks, beat trackers and label-free selection) raised held-out CinC F1 to $65.5\%$ and ADFECGDB to $92.7\%$ (FHR MAE $2.0\,$bpm) in v6, while keeping $91.4\%$ on 1,248 synthetic records.
+    \item The whole sample-rate algorithm runs as hand-written Verilog on the XC7S50 at 50\,MHz (v6: 55.6\% LUT, 80\% BRAM, 33 DSP). The PC makes five slow decisions whose memory and floating-point solvers would not fit next to the datapath; the link carries only 8--10\% of its capacity, and the measured traffic shows the path to a stand-alone device (Sec.~\ref{sec:pc_loop}).
+    \item v6.1 made the maternal detector robust and recalibrates the spatial filters every 30\,s (held-out CinC $65.5 \to 71.9\%$). The on-chip look-ahead of v7-DL, which runs while the recording is still streamed in 0.256-s frames, raised it to $76.9\%$ on held-out CinC ($82.0\%$ on reliable references, median $87.3\%$), $84.7\%$ on CinC dev, $96.1\%$ on ADFECGDB and $93.7\%$ on all 1,248 FECGSYNDB records, with a $13.5\,$s (median) output delay; on real data it matches the offline whole-recording version.
+    \item With look-ahead the chosen track is close to the best single track ($80.8\%$ against $82.1\%$ on CinC), so selection is no longer the bottleneck. The remaining real-data errors come from recordings in which no candidate track contains the fetal beats, or from unreliable references, which tells us exactly where the next gain lies.
 \end{enumerate}
 
 \section{Future Work}
@@ -1669,7 +1705,7 @@ O5: Board demonstration & UART streaming, board evaluation, live web page and fi
     \item \textbf{Better candidates on weak recordings.} 8 of the 15 CinC records below $70\%$ have no good candidate track. More candidates (for example the recalibrated filters added as extra tracks instead of replacing old ones) and a stronger maternal cancellation on these recordings are the most direct way to raise real-data accuracy. A first test on the dev sets with spatio-temporal filters (the GEVD also weights each lead one sample earlier, or one and two samples earlier) made better candidates: on CinC dev the best single track per record rose from $85.0\%$ to $87.4$--$88.9\%$ F1. The label-free selection kept little of this gain (final F1 $84.1$--$85.7\%$, against $84.7\%$), so new candidates need a selection reworked for them.
     \item \textbf{Rhythm-aware clean-up.} Before a beat is dropped or a gap is filled, check the beat shape against the track's template, so that a true ectopic beat and its compensatory pause are kept ($c4$: $84.0\%$).
     \item \textbf{Shorter delay.} A shorter future window gives a smaller delay at some cost in accuracy (\cref{fig:fin_v7_delay}: no future segments and a 5-s deadline give a 6-s median and 8-s maximum delay for about one point on CinC dev); the board already sends the live and the final stream, so a monitor can show the live value and correct it when the final one arrives.
-    \item \textbf{Stand-alone device.} Move the five PC decisions into the FPGA, either with a small soft processor for the eigen-solvers or as extra RTL, so the board no longer needs a laptop. This needs logic: v7-DL already uses 82\% of the LUTs.
+    \item \textbf{Stand-alone device.} Take the live output from the look-ahead unit's own scores, which removes the PC selection and $28.7\%$ of the link traffic, and run the remaining decisions on an on-chip processor (an FPGA SoC such as Zynq) or as extra RTL once block RAM is freed (Sec.~\ref{sec:pc_loop}).
     \item \textbf{Real front end and clinical data.} Build the electrode, amplifier and ADC chain, measure board power, and test on longer clinical recordings with a fresh held-out set, including fetal bradycardia and arrhythmia cases.
 \end{enumerate}
 \end{finalpart}
@@ -1717,7 +1753,7 @@ O5: Board demonstration & UART streaming, board evaluation, live web page and fi
 \section{AI Usage Disclosure\fin{: Mid-Term Phase}}
 \label{sec:ai_disclosure}
 
-\newcontent{In strict compliance with the EE2000 course policy, the team provides full, transparent disclosure of all generative AI assistance utilized across the dataset discovery, algorithmic formulation, implementation, and verification phases of this mid-term project:
+\newcontent{In strict compliance with the EE2000 course policy, the team provides full, transparent disclosure of all generative AI assistance utilized across the dataset discovery, algorithmic formulation, implementation, and verification phases of \fin{the mid-term part of this project}:
 \begin{itemize}
     \item \textbf{Generative Tools Employed:} Anthropic Claude (Claude 3.5 Sonnet)~\cite{anthropic2024}, OpenAI ChatGPT (GPT-4o)~\cite{openai2024}, and Google DeepMind Antigravity (Gemini models).
     \item \textbf{Testing Data Sourcing and Dataset Pipeline:}
@@ -1728,7 +1764,7 @@ O5: Board demonstration & UART streaming, board evaluation, live web page and fi
     \item \textbf{Algorithmic Decision-Making and Multi-Channel Paradigm Shift:}
     \begin{enumerate}
         \item \textit{Method Selection and Trade-Off Analysis:} AI was queried to catalog and compare candidate algorithm families across the literature, contrasting classical temporal cancellation (Hankel SVD, Template Subtraction, Wavelet Denoising, Adaptive LMS/SSNF), modern deep learning (1D Convolutional U-Net), and linear spatial subspace beamforming (Spatial PCA). AI discussions helped analyze trade-offs between extraction accuracy, latency, and FPGA resource overhead.
-        \item \textit{Multi-Channel vs.\ Single-Channel Rationale:} Initial single-channel baseline evaluations revealed an empirical ceiling ($F_1 \le 39.64\%$, $\text{MAE} \approx 30\,\text{bpm}$) caused by maternal-fetal QRS collisions occurring with $17.5\%$ probability, where maternal amplitude dominates by $10$--$250\times$ and spectra overlap completely ($0.5$--$40\,\text{Hz}$). Mathematical analysis guided by AI prompts underscored that single-channel temporal separation is fundamentally ill-posed during overlap. AI suggested exploring spatial array signal processing, which inspired the team to formulate our multi-channel spatial subspace beamformer: exploiting distinct lead vectors from maternal and fetal cardiac dipoles on the maternal abdomen. This led to our 34-lead fetal-to-maternal ratio (FMR) topography study, identifying the optimal 4-lead suprapubic configuration ($[27, 26, 28, 25]$) for maternal cancellation via spatial null-steering.
+        \item \textit{Multi-Channel vs.\ Single-Channel Rationale:} Initial single-channel baseline evaluations revealed an empirical ceiling ($F_1 \le 39.64\%$, $\text{MAE} \approx 30\,\text{bpm}$) caused by maternal-fetal QRS collisions occurring with $17.5\%$ probability, where maternal amplitude dominates by $10$--$250\times$ and spectra overlap completely ($0.5$--$40\,\text{Hz}$). Mathematical analysis guided by AI prompts underscored that single-channel temporal separation is fundamentally ill-posed during overlap. AI suggested exploring spatial array signal processing, which inspired the team to formulate our multi-channel spatial subspace beamformer: exploiting distinct lead vectors from maternal and fetal cardiac dipoles on the maternal abdomen. This led to our 34-lead fetal-to-maternal ratio (FMR) topography study, \fin{and to the selected} 4-lead suprapubic configuration ($[27, 26, 28, 25]$) for maternal cancellation via spatial null-steering.
     \end{enumerate}
     \item \textbf{Continuous Accuracy Verification and Automated Audit Harness:}
     \begin{enumerate}
@@ -1756,7 +1792,7 @@ O5: Board demonstration & UART streaming, board evaluation, live web page and fi
 \section{AI Usage Disclosure: Final Phase}
 \label{sec:final_ai}
 
-In the final phase we used Claude Code~\cite{claudecode}, an AI coding assistant from Anthropic, as a programming aid, and the Antigravity agent tool once for an audit of the Python code. The assistant helped us write and debug much of the code, including the Python evaluation scripts, the C model and the Verilog, and helped with plots and documentation. The goals and design rules of the project (strictly causal processing, no use of labels, testing on real recordings with a held-out set, and moving all sample-rate processing into the FPGA) were set by us. All experiments and board runs were done on our own hardware, and every result in this report was checked against the saved result files. Each member can explain the part described in Sec.~\ref{sec:contrib}.
+In the final phase we used two AI tools as programming aids. From 31 October to 6 November we used the Antigravity agent tool (Google, mainly with the Gemini~3 model) for the validation campaign and fixed-point specification, the UART bring-up and the first RTL version of the pipeline; from 7 November we used Claude Code~\cite{claudecode}, an AI coding assistant from Anthropic. The assistants helped us write and debug much of the code, including the Python evaluation scripts, the C model and the Verilog, and helped with plots and documentation. The goals and design rules of the project (strictly causal processing, no use of labels, testing on real recordings with a held-out set, and moving all sample-rate processing into the FPGA) were set by us. All experiments and board runs were done on our own hardware, and every result in this report was checked against the saved result files. Each member can explain the part described in Sec.~\ref{sec:contrib}.
 \end{finalpart}
 
 \begin{finalpart}
