@@ -52,14 +52,30 @@ def local_excludes():
 
 
 # agent configuration and the logs of the earlier agent sessions: not needed to run or check the project
-SKIP = [".agents/", "archive/agent_sessions/"]
+SKIP = [".agents/", "archive/agent_sessions/",
+        # old material not needed to run or present the final design (still in the repository):
+        "archive/",                                   # old code, scratch, packages, earlier zips, timing bundles
+        "results/benchmarks/", "results/validation_reports/",   # copy of code/results; old validation reports
+        "docs/literature/",                           # PDFs of papers (cited in the report)
+        "validation/",                                # pre-FPGA / v1-v4 validation runs
+        "fpga_implementation/rtl/", "fpga_implementation/simulation/", "fpga_implementation/testbenches/",
+        "fpga_implementation/bitstream/", "fpga_implementation/build/", "fpga_implementation/python_model/",
+        "fpga_implementation/test_data/", "fpga_implementation/constraints/",   # first (v1-v4) RTL flow
+        "tools/pre_fpga", "tools/improvements/", "tools/final_verification/",
+        "tools/qrs_timing_correction/", "tools/validation/",                    # pre-FPGA analysis tools
+        "report/mid_term/mtr-22.pdf",                 # another team's report, used only as a reference
+        "tools/report_stats/ws5/vivado/run.out"]
+# files inside skipped folders that tests, scripts or the report still use
+KEEP = ["archive/timing_bundles/QRS_RESIDUAL_TIMING_ANALYSIS/FIXED_ASSOCIATION_TIMING_RESULTS.csv",
+        "results/benchmarks/models/", "validation/v2_hardware_20261107/README.md"]
 
 
 def repo_files():
     out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=ROOT,
                          capture_output=True, text=True, check=True).stdout.splitlines()
     skip = SKIP + local_excludes()
-    return [f for f in out if (ROOT / f).is_file() and not f.endswith(".zip") and not any(f.startswith(d) for d in skip)]
+    return [f for f in out if (ROOT / f).is_file() and not f.endswith(".zip")
+            and (not any(f.startswith(d) for d in skip) or any(f.startswith(k) for k in KEEP))]
 
 
 def main():
