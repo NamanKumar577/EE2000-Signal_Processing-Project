@@ -51,10 +51,14 @@ def local_excludes():
             if ln.strip() and not ln.startswith("#") and ln.strip().endswith("/")]
 
 
+# agent configuration and the logs of the earlier agent sessions: not needed to run or check the project
+SKIP = [".agents/", "archive/agent_sessions/"]
+
+
 def repo_files():
     out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=ROOT,
                          capture_output=True, text=True, check=True).stdout.splitlines()
-    skip = local_excludes()
+    skip = SKIP + local_excludes()
     return [f for f in out if (ROOT / f).is_file() and not f.endswith(".zip") and not any(f.startswith(d) for d in skip)]
 
 

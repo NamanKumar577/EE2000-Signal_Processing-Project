@@ -71,7 +71,8 @@ fpga_implementation/
   v5/                   MicroBlaze version (C algorithm in algo/)
   rtl/, bitstream/ ...  v2 RTL
 tools/accuracy/         data loaders, causal scoring harness, Python prototypes v2-v4, v6.1/v7 studies (devbench_v6.py,
-                        v7_offline.py, v7_live.py), per-record result CSVs
+                        v7_offline.py, v7_live.py, v7_delay_sweep.py; exp_taps.py with its model copy in _taps/),
+                        per-record result CSVs
 src/fecg/               mid-term Python package (methods, preprocessing, detection, fixed-point models)
 tests/                  pytest suite (unit, integration, hardware, regression)
 scripts/                mid-term benchmark and training scripts
@@ -157,10 +158,11 @@ venv/Scripts/python.exe report/final_report/tools/make_final_figures.py      # r
 venv/Scripts/python.exe report/final_report/tools/plot_waves.py              # simulation figures (wave_*.png), needs step 4's wave.vcd
 venv/Scripts/python.exe report/final_report/tools/final_analysis.py          # confidence intervals, failure analysis, timeline
 venv/Scripts/python.exe report/final_report/tools/make_v7_figures.py         # v6.1 / v7 figures and confidence intervals
+venv/Scripts/python.exe report/final_report/tools/make_delay_figure.py       # v7-DL F1 against output delay (input: tools/accuracy/v7_delay_sweep.py)
 venv/Scripts/python.exe report/final_report/tools/check_final_numbers.py     # checks the numbers in the text against the result files
 cd report/final_report && pdflatex fpr-8.tex && pdflatex fpr-8.tex && pdflatex fpr-8.tex
 ```
-`tools/extract_ai_prompts.py` rebuilds `AI_PROMPTS.md` from the Claude Code session logs, and `tools/package_submission.py` builds the submission archive `fpr-8.zip` (code, data, PDF) in the repository root.
+`tools/package_submission.py` builds the submission archive `fpr-8.zip` (code, data, PDF) in the repository root. `AI_PROMPTS.md` is kept as it is; do not run `tools/extract_ai_prompts.py` again, because it would overwrite the file.
 
 ### 8. Tests
 ```bash
@@ -177,7 +179,7 @@ venv/Scripts/python.exe -m pytest tests -q        # 270 passed, 3 skipped (RUN_R
 
 | Where | What |
 |---|---|
-| `report/v61_v7/LOG.md` | v6.1, v7-LA and v7-DL: experiments, RTL, board results |
+| `report/v61_v7/LOG.md` | v6.1, v7-LA and v7-DL: experiments, RTL, board results, F1 against delay, delay-tap filter study |
 | `report/v61_v7/board_v61/`, `board_v7/` | per-record board results of v6.1 and v7-DL |
 | `report/rtl_pc_split/LOG.md` | v6 design, verification, board results, BRAM change |
 | `report/night_20261109/LOG.md`, `RESULTS.md` | v5 experiments, every accepted and rejected idea with numbers |

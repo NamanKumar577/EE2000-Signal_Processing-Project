@@ -267,3 +267,48 @@ Dev FHR MAE (frozen v7-DL): CinC dev 6.45, ADFECGDB 2.13, FECGSYNDB subset 4.23 
   - ADFECGDB guard ≥ 95.5.
 - `tests/hardware/test_v6_rtl_regression.py` runs the v7 RTL as well (`RUN_RTL=1`).
 - Full suite: 270 passed, 3 skipped.
+
+## Part 5 — F1 against output delay (2026-11-15, dev sets only)
+
+**Request:** a reviewer asked for F1 against output delay, so a reader can pick the trade-off.
+
+**Method:** `tools/accuracy/v7_delay_sweep.py` builds the v7 C model with the future window `V7_WF` = 0…5 segments (2.5 s each), everything else frozen, and a few shorter deadlines `V7_DL`. Delay comes from the model's own histogram (`V7_DELAY=1`): median of the per-record medians, maximum of the per-record maxima. Sets: FECGSYNDB subset (60), CinC dev (38), ADFECGDB (5). CinC test was not used. Per-record results: `tools/accuracy/results_v7_delay_sweep.csv`; summary: `report/final_report/tables/v7_delay_sweep.csv`; figure: `report/final_report/figures/fin_v7_delay.png` (`tools/make_delay_figure.py`).
+
+| Future window | Median delay | Max delay (15-s deadline) | Max delay (shorter deadline) | CinC dev | ADFECGDB | FECGSYNDB subset |
+|---|---|---|---|---|---|---|
+| v6.1 live | 1.5–2 s | | | 80.41 | 92.87 | 91.64 |
+| 0 | 6.0 s | 16.6 s | 8.0 s (5-s deadline) | 83.53 | 95.58 | 93.32 |
+| 1 (2.5 s) | 8.5 s | 17.4 s | 12.5 s (10-s) | 84.22 | 96.14 | 93.32 |
+| 2 (5 s) | 11.0 s | 17.4 s | 14.7 s (12-s) | 84.17 | 96.16 | 93.39 |
+| **3 (7.5 s, frozen)** | **13.5 s** | **17.5 s** | | **84.68** | **96.10** | **93.39** |
+| 4 (10 s) | 16.0 s | 18.0 s | | 84.59 | 96.17 | 93.51 |
+| 5 (12.5 s) | 16.2 s | 18.2 s | | 84.68 | 96.12 | 93.55 |
+
+- The frozen point reproduces the v7-DL numbers exactly.
+- Most of the gain needs little future: no future segments already gives +3.1 points on CinC dev over v6.1 at a 6-s median delay.
+- The deadline only sets the maximum delay; it changed no F1 by more than 0.01 points.
+
+## Part 6 — Delay-tap (spatio-temporal) GEVD candidates (2026-11-15, dev sets only)
+
+**Request:** a reviewer suggested spatio-temporal GEVD (each filter also weights delayed copies of the leads) to get better candidate tracks on weak CinC recordings.
+
+**Method:** `tools/accuracy/exp_taps.py` on a copy of the C model in `tools/accuracy/_taps/model/` (originals untouched). Switches `TAPS` = K and `TAPD` = D: every GEVD track (the 12 Z and Xf GEVD tracks) gets 4·K weights, lead l at tap j applied to sample s − j·D. The self-referencing GEVD in `brain.c` solves the 4K×4K problem the same way as the 4×4 one. The 4 raw-lead tracks, the selector and the v7 look-ahead are unchanged. Sets: FECGSYNDB subset (60), CinC dev (38), ADFECGDB (5). CinC test was not used. Labels are used only for scoring and for the two diagnostics below. "Best track" = per record, the F1 of the best single track; "oracle" = per 5-s window, the best track. `base` (K = 1) gives byte-identical output to the original model on all 103 records. Per-record results: `tools/accuracy/_taps/results.csv`.
+
+| Variant | CinC dev F1 | ADFECGDB F1 | FECGSYNDB F1 | CinC dev best track | CinC dev oracle | CinC dev FHR MAE |
+|---|---|---|---|---|---|---|
+| **K=1 (frozen v7-DL)** | **84.68** | **96.10** | **93.39** | **84.98** | **87.82** | **6.45** |
+| K=2, D=1 | 85.66 | 96.52 | 93.29 | 87.44 | 90.12 | 6.25 |
+| K=2, D=2 | 84.68 | 96.59 | 93.45 | 87.50 | 89.92 | 6.34 |
+| K=2, D=4 | 77.93 | 97.55 | 95.66 | 87.13 | 89.30 | 11.10 |
+| K=2, D=8 | 77.99 | 96.93 | 95.56 | 85.88 | 88.79 | 10.95 |
+| K=3, D=1 | 84.14 | 97.71 | 94.29 | 88.89 | 91.00 | 7.49 |
+| K=3, D=2 | 84.02 | 97.05 | 93.51 | 87.78 | 90.23 | 7.70 |
+
+**Findings:**
+- The taps make better candidates: on CinC dev the best track rises from 85.0 to 87.4–88.9 and the per-window oracle from 87.8 to 89.3–91.0; ADFECGDB and FECGSYNDB rise too.
+- The label-free selector does not keep the gain on CinC dev. K=3, D=1 has the best candidates (oracle 91.0) but a lower final F1 (84.1 against 84.7). Per record it is 13 better and 8 worse by more than 1 point, with changes from −60 to +22.
+- Wider spacing (D = 4, 8) helps FECGSYNDB (+2.2) but drops CinC dev by 6.7 points.
+- K=2, D=1 is the only variant that is not worse on any set (+1.0 / +0.4 / −0.1). Per record on CinC dev it is 11 better and 5 worse, median change 0, with changes from −17 to +20. This is the best of 6 variants picked on the same 38 records, so the +1.0 is not reliable evidence.
+- **Verdict:** the frozen design is unchanged. Delay taps are a good source of candidates, but they only pay off once the selection is reworked to use them. That is a larger dev-set study, not a switch to flip.
+
+**RTL cost (estimate, not built):** the delayed samples are already in the 4096-sample Z/Xf rings, so no new memory is needed. Each GEVD track needs 4(K−1) more multiply-adds per sample: 48 for K = 2 and 96 for K = 3 over 12 tracks. That is well inside the 200,000-cycle sample period (median use 1,485 cycles). The calibration message grows from 4 to 4K weights per track. The PC eigen-solve grows from 4×4 to 4K×4K.

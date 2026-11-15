@@ -163,11 +163,11 @@ def ci_table():
     for ver, path in [("v6.1", B61), ("v7-DL", B7)]:
         d = board(path)
         rng = np.random.default_rng(2026)
-        for s, nm in [("syn", "FECGSYNDB subset"), ("ad", "ADFECGDB"), ("cdev", "CinC dev"), ("ctest", "CinC test")]:
+        for s, nm in [("syn", "FECGSYNDB subset"), ("ad", "ADFECGDB"), ("cdev", "CinC dev"), ("ctest", "CinC test"), ("all", "CinC all")]:
             for rel in (False, True):
-                g = d[d.set == s]
+                g = d[d.set.isin(["cdev", "ctest"])] if s == "all" else d[d.set == s]
                 if rel:
-                    if s not in ("cdev", "ctest"):
+                    if s not in ("cdev", "ctest", "all"):
                         continue
                     g = g[~g.rid.isin(UNREL)]
                 f = g.f1.values

@@ -127,6 +127,22 @@ for ver, d in (("v6.1", b61), ("v7-DL", b7)):
     g = d[(d.set == "ctest") & ~d.rid.isin(UNREL)]
     r = ci.loc[(ver, "CinC test reliable")]
     check(f"{ver} ctest reliable F1 [CI]", f"{g.f1.mean():.2f}", f"{f1(g.f1.mean())} [{r.ci_low:.1f}, {r.ci_high:.1f}]")
+for ver, d in (("v6.1", b61), ("v7-DL", b7)):
+    for nm, sets in (("CinC dev", ["cdev"]), ("CinC all", ["cdev", "ctest"])):
+        g = d[d.set.isin(sets)]
+        gr = g[~g.rid.isin(UNREL)]
+        r, rr = ci.loc[(ver, nm)], ci.loc[(ver, nm + " reliable")]
+        check(f"{ver} {nm} all / reliable F1 [CI]", f"{g.f1.mean():.2f}/{gr.f1.mean():.2f}",
+              f"{f1(g.f1.mean())} [{r.ci_low:.1f}, {r.ci_high:.1f}]", f"{f1(gr.f1.mean())} [{rr.ci_low:.1f}, {rr.ci_high:.1f}]")
+mae = {}
+for nm, sets in (("cdev", ["cdev"]), ("ctest", ["ctest"]), ("all", ["cdev", "ctest"])):
+    for rel in (False, True):
+        a, b = (x[x.set.isin(sets) & (~x.rid.isin(UNREL) if rel else True)].fhr_mae.mean() for x in (b61, b7))
+        mae[nm, rel] = f"{f2(a)} / {f2(b)}"
+check("CinC FHR MAE rows (all / reliable)", "", mae["cdev", True], mae["ctest", True], mae["all", False], mae["all", True])
+ar7 = b7[b7.set.isin(["cdev", "ctest"])].set_index("rid").f1
+check("v7-DL flagged records a33 / a47", f"{ar7['a33']:.1f} / {ar7['a47']:.1f}",
+      f"a33 and a47, score ${ar7['a33']:.1f}\\%$ and ${ar7['a47']:.1f}\\%$")
 c7 = b7[b7.set == "ctest"]
 check("v7-DL ctest better / worse than live v6.1", "", f"improves {int((c7.f1 > c7.f1_causal + 1).sum())} records and worsens {int((c7.f1 < c7.f1_causal - 1).sum())}")
 cc = b7[b7.set.isin(["cdev", "ctest"])]
@@ -138,6 +154,11 @@ sla = pd.read_csv(ACC / "results_v7la_synall.csv")
 check("FECGSYNDB all: v6.1 / v7-DL / v7-LA", "", f"& 1,248 & {f1(s61[s61.variant == 'v61'].f1.mean())} & {f1(sdl.f1.mean())} &",
       f"{f2(s61[s61.variant == 'v61'].fhr_mae.mean())} / {f2(sdl.fhr_mae.mean())}", f"$94.3\\%$ on all 1,248 FECGSYNDB")
 cond = sdl.rid.str.extract(r"_(c\d)$")[0]
+check("literature table: v7-DL CinC reliable / ctest reliable / FECGSYNDB median / c4 median", "",
+      f"v7-DL (ours, board) & 68 & {f1(b7[b7.set.isin(['cdev', 'ctest']) & ~b7.rid.isin(UNREL)].f1.mean())}",
+      f"held-out half only & 33 & {f1(b7[(b7.set == 'ctest') & ~b7.rid.isin(UNREL)].f1.mean())}",
+      f"& {len(sdl):,} & {f1(sdl.f1.median())}",
+      f"& {(cond == 'c4').sum()} & {f1(sdl[cond == 'c4'].f1.median())}")
 check("v7-DL by condition", "", ", ".join(f"${c}$ {sdl[cond == c].f1.mean():.1f}" for c in ["c0", "c1", "c2", "c3", "c4"]))
 la_t = pd.read_csv(ACC / "results_v7la_ctest.csv")
 la_d = pd.read_csv(ACC / "results_v7la_dev.csv")

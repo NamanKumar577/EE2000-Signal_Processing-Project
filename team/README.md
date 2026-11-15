@@ -9,7 +9,6 @@ Private notes for the 4 of us. Files in this folder:
 | `02_PRESENTATION_QA.md` | likely questions with short answers |
 | `03_KEY_NUMBERS.md` | one-page cheat sheet of numbers |
 
-| `tools/cut_prompt.py` | run after regenerating `AI_PROMPTS.md` (section 12) |
 
 > **This folder is for the team only.** It is committed to our private GitHub repository, but it is also listed in `.git\info\exclude` (a local file), and `package_submission.py` leaves every folder listed there out of `fpr-8.zip`. On a fresh clone, add the line `team/` to `.git\info\exclude` before packaging. Do not mention this folder in the report or the repository READMEs.
 
@@ -543,7 +542,7 @@ Set-Location D:\signal_project
 - Run it twice so the references are right. No BibTeX is needed, because the bibliography is inside the `.tex` file.
 - If pdflatex stops at a `?` prompt, type `x` and Enter, or use `pdflatex -interaction=nonstopmode fpr-8.tex`.
 
-Everything (figures, checks, PDF, prompts file, zip), from the repository root:
+Everything (figures, checks, PDF, zip), from the repository root:
 
 ```powershell
 Set-Location D:\signal_project
@@ -553,13 +552,12 @@ venv\Scripts\python.exe report\final_report\tools\plot_waves.py              # w
 venv\Scripts\python.exe report\final_report\tools\final_analysis.py          # CIs, CinC failure table, timeline (runs the C model)
 venv\Scripts\python.exe report\final_report\tools\check_final_numbers.py     # last line should be: ALL CHECKS PASSED
 Set-Location report\final_report; pdflatex fpr-8.tex; pdflatex fpr-8.tex; pdflatex fpr-8.tex; Set-Location D:\signal_project
-venv\Scripts\python.exe report\final_report\tools\extract_ai_prompts.py "$env:USERPROFILE\.claude\projects\D--signal-project" report\final_report\AI_PROMPTS.md
-venv\Scripts\python.exe team\tools\cut_prompt.py report\final_report\AI_PROMPTS.md   # ALWAYS right after the line above
-venv\Scripts\python.exe report\final_report\tools\package_submission.py      # writes D:\signal_project\fpr-8.zip (~257 MB)
+venv\Scripts\python.exe report\final_report\tools\package_submission.py      # writes D:\signal_project\fpr-8.zip (~255 MB)
 ```
 
 - The figure scripts overwrite the PNGs in `report\final_report\figures\`.
-- **`cut_prompt.py` must run after every regeneration of `AI_PROMPTS.md`.** It removes the part of one prompt (and the answer to the follow-up question) that asked for this `team` folder, and marks the cut with "[rest of this prompt omitted: not about the project or the report]". Without it, the prompts file would mention this folder.
+- **Do not regenerate `AI_PROMPTS.md`.** It is the final, hand-edited version. `extract_ai_prompts.py` would overwrite it, so never run it again, and do not add new prompts to the file.
+- The zip leaves out `.agents\` and `archive\agent_sessions\` (agent configuration and old agent session logs), as well as this folder.
 - This folder is committed to git, but it is also listed in `.git\info\exclude` (a local file, not part of the repository), and `package_submission.py` leaves the folders listed there out of the zip. On a fresh clone, add the line `team/` to `.git\info\exclude` again before packaging, or the folder goes into `fpr-8.zip`.
 - The zip script adds the v6, v6.1 and v7 model programs (`v6_sim.exe`, `v61_sim.exe`, `v7_sim.exe` and the matching `*_brain.exe`) from the model folder.
 
