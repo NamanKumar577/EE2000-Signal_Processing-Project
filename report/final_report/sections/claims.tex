@@ -17,10 +17,10 @@ v7-DL ADFECGDB F1 $96.1\%$ [$92.8$, $98.9$] & \ref{sec:v7_results} & \ref{tab:v7
 v7-DL FECGSYNDB (1,248) $93.7\%$ [$90.0$, $96.5$] subject-clustered & \ref{sec:stats} & \ref{tab:v7_results} & \path{tools/accuracy/results_v7dl_synall.csv}; \path{out/cluster.csv} & L2 \\
 v7-DL better than v6.1 on CinC test ($+5.0$ [$3.9$, $6.1$], $p = 2\cdot10^{-10}$) & \ref{sec:stats} & \ref{tab:paired} & \path{tools/report_stats/out/paired.csv} & L5 \\
 v6.1 gain over v6 not significant ($p = 0.12$, CinC all) & \ref{sec:stats} & \ref{tab:paired} & \path{tools/report_stats/out/paired.csv} & L5 \\
-Timing met at 50\,MHz (worst slack $+0.05\,$ns, v7-DL) & \ref{sec:v7dl} & \ref{tab:v7_hw} & \path{fpga_implementation/v6/build/v7/timing.rpt} & L4 \\
+Timing met at 50\,MHz with the Default strategy (worst slack $+0.05\,$ns, v7-DL; Explore fails at $-0.078\,$ns) & \ref{sec:v7dl} & \ref{tab:v7_hw} & \path{fpga_implementation/v6/build/v7/timing.rpt} & L4 \\
 v7-DL uses 26,701 LUTs (81.9\%), 71/75 BRAM, 43 DSP & \ref{sec:v7dl} & \ref{tab:v7_hw} & \path{fpga_implementation/v6/build/v7/util.rpt} & L4 \\
 Block RAM cut from 74.5 to 60 tiles with byte-identical output & \ref{sec:final_hw} & \ref{tab:final_resources} & \path{build/util.rpt}; board MD5 in \path{board_umem/...csv} & L4/L5 \\
-Look-ahead unit cut from 13.2k to 8.4k LUTs with identical output & \ref{sec:v7dl} & -- & synthesis logs (\path{report/v61_v7/LOG.md}); xsim regression & L3/L4 \\
+Look-ahead unit cut from 13.2k to 8.4k LUTs with identical output & \ref{sec:v7dl} & -- & \path{report/v61_v7/LOG.md} line 215 (no Vivado report of the 13.2k build on disk); xsim regression & L3/L4 \\
 RTL median 1,485 cycles per sample (budget 200,000) & \ref{sec:final_waves} & -- & \path{fpga_implementation/v6/sim/wave/wave.vcd} via \texttt{plot\_waves.py} & L3 \\
 Board (v7-DL) 3.4--5.6$\times$ faster than real time incl.\ UART and PC, mean $4.35\times$ (v6: 3.7--9.4$\times$, mean $4.81\times$) & \ref{sec:final_results} & -- & \path{board_*/...csv} (\texttt{stream\_s}, \texttt{record\_s}) & L5 \\
 PC link traffic: basis $59.1\%$, selection $28.7\%$, calibration $11.6\%$ & \ref{sec:pc_loop} & \ref{tab:pc_traffic} & \path{report/final_report/tables/pc_link_traffic.csv} & L2 \\
