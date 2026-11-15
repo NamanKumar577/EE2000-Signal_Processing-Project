@@ -1,24 +1,15 @@
 #!/usr/bin/env python3
 """WS5 patches (missing checks). Applies exact, unique string replacements to fpr-8.tex and section files.
 Run from anywhere:  venv/Scripts/python.exe report/final_report/fixes/WS5/apply.py
-Vivado wording is taken from tools/report_stats/out/ws5/vivado_wns.csv if it exists."""
-import csv
+The Vivado strategy sweep is described as not yet available; apply_vivado.py replaces that sentence once
+tools/report_stats/out/ws5/vivado_wns.csv exists."""
 from pathlib import Path
 
 R = Path(__file__).resolve().parents[2]            # report/final_report
 ROOT = R.parents[1]
-OUT = ROOT / "tools/report_stats/out/ws5"
-
-viv = OUT / "vivado_wns.csv"
-if viv.exists():
-    rows = list(csv.DictReader(open(viv)))
-    wns = [float(r["wns_ns"]) for r in rows]
-    viv_txt = (f"Three placement/routing strategies of v7-DL ({', '.join(r['strategy'] for r in rows)}; same RTL and constraints) "
-               f"gave worst setup slack {', '.join(f'{w:+.3f}' for w in wns)}\\,ns (\\texttt{{tools/report_stats/out/ws5/vivado\\_wns.csv}}); "
-               f"{'all meet' if min(wns) >= 0 else 'not all meet'} timing at 50\\,MHz.")
-    seeds_done = True
-else:
-    viv_txt, seeds_done = "", False
+viv_txt, seeds_done = "", False
+VIV_PENDING = (r"\noindent\textbf{Implementation strategies.} A sweep of three placement and routing strategies for v7-DL "
+               r"(\texttt{tools/report\_stats/ws5/vivado/strategies\_v7.tcl}) was started; its results are not yet available.")
 
 P = {
  "fpr-8.tex": [
@@ -40,10 +31,8 @@ P = {
  "sections/hardware.tex": [
   (r"\noindent\textbf{Not done.} Vivado seed or strategy sweeps, a word-length study for the final design, a negative control on the bit-exact test (a deliberately corrupted model or bitstream to show that the comparison can fail) and a measurement of board power were not done.",
    (r"\noindent\textbf{Negative controls of the bit-exact test.} (a) Flipping one bit of the v7-DL model stream of ADFECGDB r01 (2,466,548 bytes, MD5 equal to the saved board stream) makes the board-evaluation comparison report a mismatch, first at the flipped byte (\texttt{tools/report\_stats/out/ws5/negctrl\_board.txt}). (b) Changing the latency compensation from 13 to 12 samples in a copy of the C model makes the xsim system testbench report byte mismatches from byte 99,258 (an OUT frame whose beat time is one sample off) and stop after 20 errors, while the unchanged model gives 0 errors (\texttt{negctrl\_xsim\_lat12.log}, \texttt{negctrl\_xsim\_baseline.log}). The comparison can therefore fail and does detect a one-sample model change."
-    + ("\n\n\\noindent\\textbf{Implementation strategies.} " + viv_txt if seeds_done else "")
-    + "\n\n\\noindent\\textbf{Not done.} "
-    + ("A word-length study for the final design" if seeds_done else "Vivado seed or strategy sweeps, a word-length study for the final design")
-    + " and a measurement of board power were not done.")),
+    + "\n\n" + VIV_PENDING
+    + "\n\n\\noindent\\textbf{Not done.} A word-length study for the final design and a measurement of board power were not done.")),
  ],
  "sections/limitations_items.tex": [
   (r"clinical agreement ($\pm 5\,$bpm) for the final design; board power (only the Vivado on-chip estimate, $0.445\,$W); per-record GEVD output SNR; template-subtraction residual power; Vivado seed sweeps; a word-length study of the final RTL; a negative control for the bit-exact test (a deliberately changed model that the comparison must reject); twins and fetal bradycardia cases.",
