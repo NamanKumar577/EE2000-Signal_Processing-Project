@@ -68,3 +68,6 @@ tools/accuracy/v7c_dev*.log
 report/final_report/*.log
 report/final_report/*.aux
 report/final_report/*.out
+
+# Vivado checkpoints of the WS5 strategy sweep (timing reports are kept)
+tools/report_stats/ws5/vivado/*.dcp
