@@ -1,0 +1,8 @@
+data,version,subjects,records,mean,ci_low,ci_high
+FECGSYNDB all (C model),v6,10,1248,91.44,87.38,94.39
+FECGSYNDB all (C model),v6.1,10,1248,91.89,87.91,94.89
+FECGSYNDB all (C model),v7-DL,10,1248,93.69,90.04,96.48
+FECGSYNDB subset (board),v6,10,60,91.83,86.53,95.62
+FECGSYNDB subset (board),v6.1,10,60,91.64,86.57,95.50
+FECGSYNDB subset (board),v7-DL,10,60,93.39,88.47,96.94
+FECGSYNDB c4 (C model),v7-DL,10,250,84.00,79.56,88.07

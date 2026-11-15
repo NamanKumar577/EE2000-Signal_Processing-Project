@@ -161,7 +161,11 @@ check("v7-DL ctest: points lost by records < 50%", f"{(100 - c7.f1)[c7.f1 < 50].
 s61 = pd.read_csv(ACC / "results_v61_synall.csv")
 sdl = pd.read_csv(ACC / "results_v7dl_synall.csv")
 sla = pd.read_csv(ACC / "results_v7la_synall.csv")
-check("FECGSYNDB all: v6.1 / v7-DL / v7-LA", "", f"& 1,248 & {f1(s61[s61.variant == 'v61'].f1.mean())} & {f1(sdl.f1.mean())} &",
+cl = pd.read_csv(ROOT / "tools/report_stats/out/cluster.csv").set_index(["data", "version"])
+c61, cdl = cl.loc[("FECGSYNDB all (C model)", "v6.1")], cl.loc[("FECGSYNDB all (C model)", "v7-DL")]
+check("FECGSYNDB all: v6.1 / v7-DL / v7-LA (subject-clustered CIs)", "",
+      f"& 1,248 & {f1(s61[s61.variant == 'v61'].f1.mean())} [{c61.ci_low:.1f}, {c61.ci_high:.1f}] & {f1(sdl.f1.mean())} [{cdl.ci_low:.1f}, {cdl.ci_high:.1f}] &",
+      f"$93.7\\%$ [$90.0$, $96.5$, subject-clustered]",
       f"{f2(s61[s61.variant == 'v61'].fhr_mae.mean())} / {f2(sdl.fhr_mae.mean())}", f"$94.3\\%$ on all 1,248 FECGSYNDB")
 cond = sdl.rid.str.extract(r"_(c\d)$")[0]
 check("literature table: v7-DL CinC reliable / ctest reliable / FECGSYNDB median / c4 median", "",
@@ -179,6 +183,12 @@ for nm, path, lut in (("v6.1", "v61", "18,986"), ("v7-DL", "v7", "26,701")):
     u = (ROOT / f"fpga_implementation/v6/build/{path}/util.rpt").read_text()
     got = re.search(r"\| Slice LUTs\s+\|\s+(\d+)", u).group(1)
     check(f"{nm} LUTs", got, f"{int(got):,}")
+# statistics subsection: paired v7-DL - v6.1 and v6.1 - v6 rows (tools/report_stats/out/paired.csv)
+pr = pd.read_csv(ROOT / "tools/report_stats/out/paired.csv").set_index(["set", "comparison"])
+for st, cmp_, lab in [("CinC test", "v7-DL - v6.1", "CinC test (37)"), ("CinC all", "v6.1 - v6", "CinC all (75)")]:
+    r = pr.loc[(st, cmp_)]
+    check(f"paired {cmp_} {st}", f"{r.mean_diff:+.1f}",
+          f"{lab} & ${r.mean_diff:+.1f}$ [${r.ci_low:.1f}$, ${r.ci_high:.1f}$] & {int(r.better)} / {int(r.worse)}")
 # PC-in-the-loop section: link traffic per decision (tables/pc_link_traffic.csv, from tools/pc_link_traffic.py)
 tr = pd.read_csv(ROOT / "report/final_report/tables/pc_link_traffic.csv").set_index("decision")
 share = {k: float(tr.loc[k, "share_pct"]) for k in ["template basis", "track selection", "GEVD calibration"]}

@@ -77,7 +77,7 @@
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Continuous non-invasive fetal electrocardiogram (NIFECG) monitoring is vital for intrapartum fetal distress assessment, yet fetal biopotentials ($20$--$100\,\mu\text{V}$) are severely masked by maternal potentials ($1$--$5\,\text{mV}$, $10$--$250\times$ amplitude disparity) with overlapping spectra ($0.5$--$40\,\text{Hz}$). Single-channel subtraction frequently fails during maternal-fetal QRS collisions ($17.5\%$ probability). \fin{The mid-term spatial PCA beamformer reached $93.0\%$ F1 on the synthetic PhysioNet FECGSYNDB benchmark in a batch evaluation, with its hardware sized on paper (App.~\ref{app:midterm}). For the final phase we raised the bar to deployment conditions: strictly causal processing, no use of labels, and real recordings with a held-out test set. Under these rules the mid-term design scored only $16.7\%$ on held-out PhysioNet/CinC 2013 recordings~\cite{silva2013}, so we redesigned the algorithm for real data (per-lead maternal cancellation, 16 candidate fetal tracks from a self-calibrated GEVD, beat trackers and label-free track selection) and built it as our own hand-written Verilog on the Spartan-7 XC7S50, with no soft processor. All sample-rate processing runs on the FPGA; a PC makes five slow decisions (once per recording up to about once per maternal beat) and never receives the raw recording. v6.1 adds a robust maternal detector and recalibrates the spatial filters every 30\,s, and v7-DL adds an RTL look-ahead unit that chooses the final beats on the FPGA about $13.5\,$s after they occur (at most $17.5\,$s), while the recording is still streamed to the board in 0.256-s frames. For every version the complete output stream of the board is bit-exact with our C model on all 140 records tested. The final design (v7-DL) raises held-out CinC F1 more than fourfold, to $76.9\%$ ($82.0\%$ on the 33 records with reliable reference annotations; median $87.3\%$), and reaches $84.7\%$ on the 38 CinC development recordings, $96.1\%$ on ADFECGDB (5 real 5-min recordings) and $93.7\%$ on all 1,248 FECGSYNDB records, running 4--4.5$\times$ faster than real time at 50\,MHz on 82\% of the LUTs, 71 of 75 block RAM tiles and 43 DSP slices.}
+Continuous non-invasive fetal electrocardiogram (NIFECG) monitoring is vital for intrapartum fetal distress assessment, yet fetal biopotentials ($20$--$100\,\mu\text{V}$) are severely masked by maternal potentials ($1$--$5\,\text{mV}$, $10$--$250\times$ amplitude disparity) with overlapping spectra ($0.5$--$40\,\text{Hz}$). Single-channel subtraction frequently fails during maternal-fetal QRS collisions ($17.5\%$ probability). \fin{The mid-term spatial PCA beamformer reached $93.0\%$ F1 on the synthetic PhysioNet FECGSYNDB benchmark in a batch evaluation, with its hardware sized on paper (App.~\ref{app:midterm}). For the final phase we raised the bar to deployment conditions: strictly causal processing, no use of labels, and real recordings with a held-out test set. Under these rules the mid-term design scored only $16.7\%$ on held-out PhysioNet/CinC 2013 recordings~\cite{silva2013}, so we redesigned the algorithm for real data (per-lead maternal cancellation, 16 candidate fetal tracks from a self-calibrated GEVD, beat trackers and label-free track selection) and built it as our own hand-written Verilog on the Spartan-7 XC7S50, with no soft processor. All sample-rate processing runs on the FPGA; a PC makes five slow decisions (once per recording up to about once per maternal beat) and never receives the raw recording. v6.1 adds a robust maternal detector and recalibrates the spatial filters every 30\,s, and v7-DL adds an RTL look-ahead unit that chooses the final beats on the FPGA about $13.5\,$s after they occur (at most $17.5\,$s), while the recording is still streamed to the board in 0.256-s frames. For every version the complete output stream of the board is bit-exact with our C model on all 140 records tested. The final design (v7-DL) raises held-out CinC F1 more than fourfold, to $76.9\%$ [95\% CI $68.3$, $84.7$] ($82.0\%$ [$74.7$, $88.5$] on the 33 records with reliable reference annotations; median $87.3\%$), and reaches $84.7\%$ [$78.6$, $89.8$] on the 38 CinC development recordings, $96.1\%$ [$92.8$, $98.9$] on ADFECGDB (5 real 5-min recordings) and $93.7\%$ [$90.0$, $96.5$, subject-clustered] on all 1,248 FECGSYNDB records, running 4--4.5$\times$ faster than real time at 50\,MHz on 82\% of the LUTs, 71 of 75 block RAM tiles and 43 DSP slices.}
 \end{abstract}
 
 % =====================================================================
@@ -140,7 +140,7 @@ Continuous intrapartum NIFECG monitoring serves three distinct clinical operatin
 \textbf{Parameter} & \textbf{Target} & \textbf{Final design v7-DL (measured)} & \textbf{Status} & \textbf{Level} & \textbf{Mid-term beamformer (reference)} \\
 \midrule
 % sources: report/v61_v7/board_v7/board_cdev_ad_ctest_syn.csv; tools/accuracy/results_v7dl_synall.csv; CIs: tools/report_stats/out/ci.csv
-Detection F1 & $\ge 90\%$ at $\ge 0\,$dB SNR & FECGSYNDB $93.7\%$ (1,248 records); ADFECGDB $96.1\%$; CinC test $76.9\%$ ($82.0\%$ reliable refs); $c4$ $84.0\%$ & Met on FECGSYNDB and ADFECGDB; below target on CinC & L5 (FECGSYNDB L2) & $93.00\%$, 250 records, batch (L1) \\
+Detection F1 [95\% CI] & $\ge 90\%$ at $\ge 0\,$dB SNR & FECGSYNDB $93.7\%$ [$90.0$, $96.5$] (1,248 records, subject-clustered); ADFECGDB $96.1\%$ [$92.8$, $98.9$]; CinC test $76.9\%$ [$68.3$, $84.7$] ($82.0\%$ [$74.7$, $88.5$] reliable refs); $c4$ $84.0\%$ [$79.6$, $88.1$] & Met on FECGSYNDB and ADFECGDB; below target on CinC & L5 (FECGSYNDB L2) & $93.00\%$, 250 records, batch (L1) \\
 FHR MAE, normal rhythm & $<1.0\,$bpm & ADFECGDB $2.1\,$bpm; FECGSYNDB $c0$ $2.0\,$bpm & Not met & L5 / L2 & \texttt{sub01} TC1--TC3 $0.32$--$0.48\,$bpm; $c0$ $3.29\,$bpm \\
 FHR MAE, all conditions & $<8.0\,$bpm & FECGSYNDB $4.0\,$bpm ($c4$ $7.1\,$bpm); CinC test $11.5\,$bpm & Met on FECGSYNDB; not met on CinC & L2 / L5 & $6.57\,$bpm; $c4$ $16.10\,$bpm \\
 Clinical agreement ($\pm 5\,$bpm) & $\ge 95\%$ baseline, $>50\%$ overall & not measured for the final design & -- & -- & $74.0\%$ on $c0$; $58.0\%$ overall \\
@@ -778,7 +778,7 @@ The first group points to the most useful improvement. Looking at the detectors 
 \section{Final Phase IV: Accuracy Improvements and On-Chip Look-Ahead (v6.1, v7)}
 \label{sec:final_v7}
 
-The failure analysis and the oracle study of v6 (Sec.~\ref{sec:final_fail}, Fig.~\ref{fig:fin_gap}) pointed to three label-free improvements. We implemented them on the C model first (v6.1) and then built two versions that may use future samples: an offline reference on the PC (v7-LA) and a look-ahead unit inside the FPGA that keeps the recording streamed in small frames (v7-DL, the final design). The rules of Sec.~\ref{sec:final_realdata} still apply: all decisions were made on the development sets, annotations are used only for scoring, and CinC test was scored once per frozen design. CinC test had already been scored for v5 and v6, so it is not a fresh test set for these versions, but no decision used it.
+The failure analysis and the oracle study of v6 (Sec.~\ref{sec:final_fail}, Fig.~\ref{fig:fin_gap}) pointed to three label-free improvements. We implemented them on the C model first (v6.1) and then built two versions that may use future samples: an offline reference on the PC (v7-LA) and a look-ahead unit inside the FPGA that keeps the recording streamed in small frames (v7-DL, the final design). The rules of Sec.~\ref{sec:final_realdata} still apply: all decisions were made on the development sets, annotations are used only for scoring, and CinC test was scored once per frozen design. CinC test had already been scored for six earlier designs (the mid-term design to v6, Tab.~\ref{tab:ledger}), so it is not a fresh test set for these versions, but no decision used it.
 
 \subsection{v6.1: Three Label-Free Improvements}
 \label{sec:v61}
@@ -891,7 +891,7 @@ Both versions were run on the Spartan-7 on the same 140 records as v6, and the c
 
 \begin{table}[H]
 \fb
-\caption{\fb v6.1 and v7-DL on the board (every record bit-exact with the C model): mean F1 with 95\% bootstrap confidence intervals (records resampled 10,000 times) and FHR MAE. \emph{Reliable refs}: without the 7 flagged records~\cite{behar2014b}. The last row is the C model on all FECGSYNDB records.}
+\caption{\fb v6.1 and v7-DL on the board (every record bit-exact with the C model): mean F1 with 95\% bootstrap confidence intervals (records resampled 10,000 times) and FHR MAE. \emph{Reliable refs}: without the 7 flagged records~\cite{behar2014b}. The last row is the C model on all FECGSYNDB records; $^c$its CIs resample the 10 subjects (Sec.~\ref{sec:stats}).}
 \label{tab:v7_results}
 \centering
 \resizebox{\columnwidth}{!}{%
@@ -909,7 +909,7 @@ CinC dev & 38 & 80.4 [73.9, 85.8] & 84.7 [78.6, 89.8] & 8.91 / 6.45 \\
 CinC all & 75 & 76.2 [70.7, 81.4] & 80.8 [75.5, 85.7] & 10.02 / 8.96 \\
 \quad reliable refs & 68 & 79.5 [74.3, 84.1] & 84.0 [79.2, 88.3] & 8.83 / 8.20 \\
 \midrule
-FECGSYNDB all & 1,248 & 91.9 & 93.7 & 4.85 / 3.98 \\
+FECGSYNDB all$^c$ & 1,248 & 91.9 [87.9, 94.9] & 93.7 [90.0, 96.5] & 4.85 / 3.98 \\ % CIs: tools/report_stats/out/cluster.csv
 \bottomrule
 \end{tabular}%
 }
@@ -927,9 +927,75 @@ On held-out CinC, v7-DL improves 33 records and worsens 1 by more than one point
 \end{figure}
 
 
+\subsection{Statistical Analysis}
+\label{sec:stats}
+All numbers in this subsection come from the per-record result files through \texttt{tools/report\_stats/stats.py} (outputs in \texttt{tools/report\_stats/out/}); no algorithm was re-run.
+
+\noindent\textbf{Check of the published intervals.} Recomputing every board CI (10,000 bootstrap resamples over records, percentile intervals) reproduces all means exactly and all CI limits within $0.31$ points (\texttt{out/ci.csv}). The differences come from the random draws (the earlier scripts reuse one random stream across data sets), not from an error, so the intervals in Tabs.~\ref{tab:final_ci} and~\ref{tab:v7_results} are kept.
+
+\noindent\textbf{Records of one subject are not independent.} FECGSYNDB has 10 simulated subjects with 125 records each. Resampling the 10 subjects instead of the records widens the v7-DL interval on all 1,248 records from $[93.0, 94.4]$ to $[90.0, 96.5]$ (v6.1: $[87.9, 94.9]$; v6: $[87.4, 94.4]$; $c4$: $84.0\%$ $[79.6, 88.1]$). We quote the subject-clustered interval for FECGSYNDB. % sources: out/ci.csv, out/cluster.csv
+
+\noindent\textbf{Paired comparisons.} \Cref{tab:paired} compares the versions on the same records. v7-DL is better than v6.1 on every data set, with 34 of 37 held-out CinC records improved by more than zero and a Wilcoxon signed-rank $p < 10^{-9}$. The v6.1 gain over v6 is less certain: its mean gain on CinC is positive (all 75: $+5.4$ $[1.5, 9.8]$), but as many records get worse as better (28 against 33) and the Wilcoxon test is not significant ($p = 0.12$). The gain comes from a few records where the robust maternal detector turned a failure into a success (Sec.~\ref{sec:v61}). On ADFECGDB the smallest possible two-sided Wilcoxon $p$ with 5 records is $0.0625$, so no test there can reach $p < 0.05$.
+
+\begin{table}[t]
+\fb
+\caption{\fb Paired differences in F1 on the same records (points; board, FECGSYNDB all: C model): mean with 95\% paired bootstrap CI, records better / worse, two-sided Wilcoxon signed-rank $p$ (zero differences dropped). Source: \texttt{tools/report\_stats/out/paired.csv}.}
+\label{tab:paired}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llrcr@{}}
+\toprule
+\textbf{Comparison} & \textbf{Data set} & \textbf{Mean [95\% CI]} & \textbf{Better / worse} & \textbf{$p$} \\
+\midrule
+v6.1 $-$ v6 & CinC test (37) & $+6.5$ [$0.5$, $13.1$] & 16 / 14 & 0.37 \\
+ & CinC all (75) & $+5.4$ [$1.5$, $9.8$] & 33 / 28 & 0.12 \\
+ & ADFECGDB (5) & $+0.1$ [$-0.1$, $0.3$] & 4 / 1 & 0.44 \\
+ & FECGSYNDB subset (60) & $-0.2$ [$-1.4$, $0.9$] & 17 / 24 & 0.53 \\
+ & FECGSYNDB all (1,248) & $+0.5$ [$0.2$, $0.8$] & 408 / 456 & 0.64 \\
+\midrule
+v7-DL $-$ v6.1 & CinC test (37) & $+5.0$ [$3.9$, $6.1$] & 34 / 2 & $2\cdot10^{-10}$ \\
+ & CinC all (75) & $+4.6$ [$3.7$, $5.5$] & 67 / 4 & $1\cdot10^{-12}$ \\
+ & ADFECGDB (5) & $+3.2$ [$2.4$, $4.2$] & 5 / 0 & 0.0625 \\
+ & FECGSYNDB subset (60) & $+1.8$ [$0.6$, $3.0$] & 33 / 8 & $7\cdot10^{-5}$ \\
+ & FECGSYNDB all (1,248) & $+1.8$ [$1.6$, $2.0$] & 761 / 135 & $<10^{-50}$ \\
+\midrule
+v7-DL $-$ v6 & CinC test (37) & $+11.4$ [$5.6$, $18.0$] & 32 / 4 & $3\cdot10^{-7}$ \\
+ & CinC all (75) & $+10.0$ [$6.1$, $14.4$] & 65 / 6 & $1\cdot10^{-10}$ \\
+ & ADFECGDB (5) & $+3.4$ [$2.6$, $4.3$] & 5 / 0 & 0.0625 \\
+ & FECGSYNDB subset (60) & $+1.6$ [$0.1$, $3.0$] & 31 / 9 & 0.0012 \\
+ & FECGSYNDB all (1,248) & $+2.2$ [$1.9$, $2.6$] & 737 / 148 & $<10^{-50}$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\noindent\textbf{Data-use ledger.} \Cref{tab:ledger} lists which data informed which decisions and how often each set was scored. Only CinC test was never used for a design decision; it has been scored once for each of nine designs, so the final CinC test numbers are not a first look at unseen data.
+
+\begin{table*}[t]
+\fb
+\caption{\fb Data-use ledger. ``Scored'' counts the frozen designs scored on the set (Tab.~\ref{tab:final_versions}); development sets were also scored repeatedly during development, which was not counted.}
+\label{tab:ledger}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lrp{5.6cm}p{4.6cm}p{4.2cm}r@{}}
+\toprule
+\textbf{Data} & \textbf{Rec.} & \textbf{Development (design decisions)} & \textbf{Selection of variants} & \textbf{Final scoring} & \textbf{Scored} \\
+\midrule
+FECGSYNDB l1 (mid-term) & 250 & mid-term methods; U-Net trained on \texttt{sub01}--\texttt{sub07} (split not verifiable, Sec.~\ref{sec:final_realdata}) & mid-term method comparison & mid-term only & -- \\
+FECGSYNDB all & 1,248 & v2 (tuned on synthetic data) & -- & mid-term (causal), v2, v3, v5, v6, v6.1, v7-LA, v7-DL & 8 \\
+FECGSYNDB subset (every 21st) & 60 & v3--v7 & v6.1 ideas, v7 window, delay and clean-up & board: v6, v6.1, v7-DL & 3 (board) \\
+CinC dev (odd records) & 38 & v3--v7 & v6.1 ideas, v7 window, delay and clean-up & all designs & 9 \\
+ADFECGDB & 5 & v4--v7 & v6.1 ideas, v7 window & v2--v7-DL & 8 \\
+CinC test (even records) & 37 & none & none & mid-term (causal), v2, v3, v4, v5, v6, v6.1, v7-LA, v7-DL & 9 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
 \subsection{Where the Remaining Error Is}
 \label{sec:v7_where}
-\noindent\textbf{A few failing recordings pull the mean down.} Per-record F1 on real recordings is very uneven, so the mean lies well below the typical record. On held-out CinC test the median is $87.3\%$ against the mean of $76.9\%$: 18 of the 37 records reach $\ge 90\%$, while the 7 records below $50\%$ (a54, a30, a52, a34, a18, a16, a38; a54, a52 and a38 have flagged references) make up $57\%$ of the total shortfall from $100\%$, i.e.\ 13.2 of the 23.1 points between the mean and $100\%$. On all 75 CinC records the median is $89.1\%$ (mean $80.8\%$) and the 10 records below $50\%$ give $48\%$ of the shortfall; on the FECGSYNDB subset the median is $99.8\%$ (mean $93.4\%$) and 2 records below $50\%$ give $36\%$. The mean over all records stays our main figure, because the failing recordings are exactly the cases a monitor must handle.
+\noindent\textbf{A few failing recordings pull the mean down.} Per-record F1 on real recordings is very uneven, so the mean lies well below the typical record. On held-out CinC test the median is $87.3\%$ against the mean of $76.9\%$: 18 of the 37 records reach $\ge 90\%$, while the 7 records below $50\%$ (a54, a30, a52, a34, a18, a16, a38; a54, a52 and a38 have flagged references) make up $57\%$ of the total shortfall from $100\%$, i.e.\ 13.2 of the 23.1 points between the mean and $100\%$. On all 75 CinC records the median is $89.1\%$ (mean $80.8\%$) and the 10 records below $50\%$ give $48\%$ of the shortfall; on the FECGSYNDB subset the median is $99.8\%$ (mean $93.4\%$) and 2 records below $50\%$ give $36\%$; on all 1,248 FECGSYNDB records (C model) 40 records below $50\%$ give $31\%$ of the shortfall and the 270 records below $90\%$ give $84\%$; on ADFECGDB no record is below $70\%$ and the one record below $90\%$ gives $53\%$ of the 3.9-point gap. % source: tools/report_stats/out/shortfall.csv
+The mean over all records stays our main figure, because the failing recordings are exactly the cases a monitor must handle.
 
 \noindent\textbf{Why they fail.} We repeated the oracle diagnostic with v7-DL on all 75 CinC records (labels used only for this analysis). The final output scores $80.8\%$ on average against $82.1\%$ for the best single candidate track, so with look-ahead the choice of track is no longer the main loss. Of the 15 records below $70\%$:
 \begin{itemize}
@@ -1006,7 +1072,7 @@ DPSS, one lead~\cite{shokouhmand2023} & -- & 99.0 \\
     \item \textbf{Real data had priority, at a small synthetic cost.} FECGSYNDB moved from $95.6\%$ (v2) to $91.4\%$ (v6) while held-out CinC rose from $41.2\%$ to $65.5\%$; the $10\%$ maternal-energy gate recovered most of the synthetic loss ($78.7 \to 91.3$ on the subset) and v7-DL is back at $93.7\%$.
     \item \textbf{Robustness against irregular rhythms is a deliberate trade-off.} The RR-regularity and FHR-prior terms penalise true irregular rhythms ($c4$: $78.5\%$ for v6, $84.0\%$ for v7-DL) and may under-select bradycardia below about 110\,bpm; a stronger prior ($+0.4$ on CinC dev) was rejected for this reason.
     \item \textbf{Accuracy grows during a recording.} No beat is output before about $19.5\,$s and selection uses the trailing $20\,$s, so the running F1 rises over the first tens of seconds; a 60-s CinC record gets at most one 30-s recalibration.
-    \item \textbf{Dev/test gap.} CinC dev $76.0\%$ against test $65.5\%$ (v6) and $84.7\%$ against $76.9\%$ (v7-DL). Part is natural variation (the dev half was already easier for v2, $42.0$ vs $41.2$, and for the mid-term design, $22.8$ vs $16.7$), part is the effect of developing on the dev half; the test half was never used for a decision but has been scored once for each of five designs.
+    \item \textbf{Dev/test gap.} CinC dev $76.0\%$ against test $65.5\%$ (v6) and $84.7\%$ against $76.9\%$ (v7-DL). Part is natural variation (the dev half was already easier for v2, $42.0$ vs $41.2$, and for the mid-term design, $22.8$ vs $16.7$), part is the effect of developing on the dev half; the test half was never used for a decision but has been scored once for each of nine designs (Tab.~\ref{tab:ledger}).
     \item \textbf{Bit-exactness makes the hardware result the software result.} Model first, every output byte compared in simulation and on the board: each bug appeared as the first differing byte, and the accuracy measured on the C model is that of the hardware. The RTL alone runs about $135\times$ faster than real time (Fig.~\ref{fig:wave_cycles}); the 4--5$\times$ on the board is set by the UART and the PC, not by the logic.
 \end{enumerate}
 \end{finalpart}
@@ -1119,7 +1185,7 @@ O5: Board demonstration & UART streaming, board evaluation, live web page and fi
 \noindent\textbf{Known limits of the final design, and why.}
 \begin{enumerate}
     \item \textbf{Real-data accuracy.} $76.9\%$ F1 on held-out CinC ($82.0\%$ on reliable references) is $4.6\times$ the mid-term score, and the typical record does much better than the mean: the median is $87.3\%$, and 7 of the 37 records cause $57\%$ of the shortfall. It is not yet clinical grade, and the best published detectors, which run offline on the whole record, reach up to 97\% on the same records (Sec.~\ref{sec:v7_literature}). With look-ahead the selection is no longer the main loss; most remaining failures have no good candidate track, which points straight at the next improvement (Sec.~\ref{sec:v7_where}).
-    \item \textbf{Small real test sets, protected from tuning.} 37 held-out CinC records of 60\,s and 5 ADFECGDB records. ADFECGDB was used during development from v4 on, so it is not an independent test set. CinC test has been scored once for each frozen design (v5, v6, v6.1, v7-LA, v7-DL) and never used for a decision; a fresh held-out set would be needed before reporting a new number.
+    \item \textbf{Small real test sets, protected from tuning.} 37 held-out CinC records of 60\,s and 5 ADFECGDB records. ADFECGDB was used during development from v4 on, so it is not an independent test set. CinC test has been scored once for each of nine frozen designs (mid-term design, v2--v6, v6.1, v7-LA, v7-DL; Tab.~\ref{tab:ledger}) and never used for a decision; a fresh held-out set would be needed before reporting a new number.
     \item \textbf{Output delay, with a live value alongside.} The final v7-DL beats are about $13.5\,$s behind the signal; the board sends the live v6.1 value at once, and the delay can be halved for about one point on CinC dev (Fig.~\ref{fig:fin_v7_delay}).
     \item \textbf{Calibration.} The maternal PCA is computed once (first $10\,$s); the spatial filters are recalibrated every 30\,s from v6.1 on, so a 60-s CinC record gets at most one recalibration, while longer recordings benefit fully.
     \item \textbf{Clinical cases not yet covered.} Ectopic beats ($84.0\%$ mean with v7-DL; our median, $89.3\%$, is above the published median range of $83.4$--$88.4\%$ for this condition), possible under-selection of fetal bradycardia because of the FHR prior, and twins.
