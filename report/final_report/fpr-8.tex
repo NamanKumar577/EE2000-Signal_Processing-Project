@@ -77,7 +77,7 @@
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Continuous non-invasive fetal electrocardiogram (NIFECG) monitoring is vital for intrapartum fetal distress assessment, yet fetal biopotentials ($20$--$100\,\mu\text{V}$) are severely masked by maternal potentials ($1$--$5\,\text{mV}$, $10$--$250\times$ amplitude disparity) with overlapping spectra ($0.5$--$40\,\text{Hz}$). Single-channel subtraction frequently fails during maternal-fetal QRS collisions ($17.5\%$ probability). \fin{The mid-term spatial PCA beamformer reached $93.0\%$ F1 on the synthetic PhysioNet FECGSYNDB benchmark in a batch evaluation, with its hardware sized on paper (Secs.~\ref{sec:clinical_specs}--\ref{sec:hardware_resources}). For the final phase we raised the bar to deployment conditions: strictly causal processing, no use of labels, and real recordings with a held-out test set. Under these rules the mid-term design scored only $16.7\%$ on held-out PhysioNet/CinC 2013 recordings~\cite{silva2013}, so we redesigned the algorithm for real data (per-lead maternal cancellation, 16 candidate fetal tracks from a self-calibrated GEVD, beat trackers and label-free track selection) and built it as our own hand-written Verilog on the Spartan-7 XC7S50, with no soft processor. All sample-rate processing runs on the FPGA; a PC makes five slow decisions (once per recording up to about once per maternal beat) and never receives the raw recording. v6.1 adds a robust maternal detector and recalibrates the spatial filters every 30\,s, and v7-DL adds an RTL look-ahead unit that chooses the final beats on the FPGA about $13.5\,$s after they occur (at most $17.5\,$s), while the recording is still streamed to the board in 0.256-s frames. For every version the complete output stream of the board is bit-exact with our C model on all 140 records tested. The final design (v7-DL) raises held-out CinC F1 more than fourfold, to $76.9\%$ ($82.0\%$ on the 33 records with reliable reference annotations; median $87.3\%$), and reaches $84.7\%$ on the 38 CinC development recordings, $96.1\%$ on ADFECGDB (5 real 5-min recordings) and $93.7\%$ on all 1,248 FECGSYNDB records, running 4--4.5$\times$ faster than real time at 50\,MHz on 82\% of the LUTs, 71 of 75 block RAM tiles and 43 DSP slices.}
+Continuous non-invasive fetal electrocardiogram (NIFECG) monitoring is vital for intrapartum fetal distress assessment, yet fetal biopotentials ($20$--$100\,\mu\text{V}$) are severely masked by maternal potentials ($1$--$5\,\text{mV}$, $10$--$250\times$ amplitude disparity) with overlapping spectra ($0.5$--$40\,\text{Hz}$). Single-channel subtraction frequently fails during maternal-fetal QRS collisions ($17.5\%$ probability). \fin{The mid-term spatial PCA beamformer reached $93.0\%$ F1 on the synthetic PhysioNet FECGSYNDB benchmark in a batch evaluation, with its hardware sized on paper (App.~\ref{app:midterm}). For the final phase we raised the bar to deployment conditions: strictly causal processing, no use of labels, and real recordings with a held-out test set. Under these rules the mid-term design scored only $16.7\%$ on held-out PhysioNet/CinC 2013 recordings~\cite{silva2013}, so we redesigned the algorithm for real data (per-lead maternal cancellation, 16 candidate fetal tracks from a self-calibrated GEVD, beat trackers and label-free track selection) and built it as our own hand-written Verilog on the Spartan-7 XC7S50, with no soft processor. All sample-rate processing runs on the FPGA; a PC makes five slow decisions (once per recording up to about once per maternal beat) and never receives the raw recording. v6.1 adds a robust maternal detector and recalibrates the spatial filters every 30\,s, and v7-DL adds an RTL look-ahead unit that chooses the final beats on the FPGA about $13.5\,$s after they occur (at most $17.5\,$s), while the recording is still streamed to the board in 0.256-s frames. For every version the complete output stream of the board is bit-exact with our C model on all 140 records tested. The final design (v7-DL) raises held-out CinC F1 more than fourfold, to $76.9\%$ ($82.0\%$ on the 33 records with reliable reference annotations; median $87.3\%$), and reaches $84.7\%$ on the 38 CinC development recordings, $96.1\%$ on ADFECGDB (5 real 5-min recordings) and $93.7\%$ on all 1,248 FECGSYNDB records, running 4--4.5$\times$ faster than real time at 50\,MHz on 82\% of the LUTs, 71 of 75 block RAM tiles and 43 DSP slices.}
 \end{abstract}
 
 % =====================================================================
@@ -103,16 +103,7 @@ while the probability that a maternal cycle overlaps a fetal beat is $(w_m + w_f
 
 \noindent\textbf{Research gap.} Modern literature predominantly evaluates complex floating-point signal processing algorithms in high-level software environments (Python/MATLAB) without addressing physical hardware implementation constraints~\cite{abel2023,hasan2009}. These studies often ignore fixed-point coefficient quantization noise, accumulator word-length growth, DSP time-multiplexing, memory bandwidth, and deterministic real-time latency. Furthermore, while embedded and FPGA implementations of fetal ECG extraction have been explored~\cite{edwin2022,pani2016}, they frequently depend on multi-DSP architectures or require dedicated maternal thoracic reference leads. This project works toward realizing an end-to-end, bit-accurate, and latency-deterministic NIFECG extraction pipeline targeting the Xilinx Spartan-7 FPGA (XC7S50) on the RealDigital Boolean Board~\cite{realdigital_boolean} (\fin{all five validation levels, from the bit-true model to the board, are now complete; Tab.~\ref{tab:final_status}}).
 
-\newcontent{\noindent\textbf{Mid-term contributions and engineering achievements.} Since the preliminary proposal, our team has executed significant empirical, theoretical, and architectural expansions:
-\begin{enumerate}
-    \item \textbf{Transition to Spatial Subspace Beamforming:} We transitioned from vulnerable single-channel temporal cancellation to 4-channel spatial subspace beamforming, achieving 100.0\% F1 across TC1--TC3 on Subject 1 baseline records ($12\,$dB down to $0\,$dB SNR) and 92.15\% overall on the Subject 1 stress benchmark.
-    \item \textbf{Strict Disjoint Cross-Subject Data Split:} We established a clean subject-wise split on FECGSYNDB (70\% train \texttt{sub01}--\texttt{sub07}, 10\% val \texttt{sub08}, 20\% test \texttt{sub09}--\texttt{sub10}) to eliminate data leakage. We verified that Spatial PCA achieves $93.06\%$ F1 on untouched held-out test subjects and $93.00\% \pm 2.35\%$ population mean ($95\%$ subject-clustered CI $[90.65\%, 95.34\%]$, Student-$t$ $df=9$; run-level SE $0.55\%$, 95\% CI half-width $\pm 1.08\%$) without requiring any offline training weights.
-    \item \textbf{Population Mega-Benchmark (250 Records, 2,250 Runs):} Deployed an automated mega-benchmark across all 10 simulated subjects, 5 SNRs ($0$--$12\,$dB), and 5 clinical conditions ($c0$--$c4$), establishing cross-subject consistency and statistical confidence intervals (where 1 run = 1 method evaluated on 1 5-minute record; 250 records $\times$ 9 methods = 2,250 runs).
-    \item \textbf{Deep Learning at Scale:} Implemented and evaluated a multi-scale 1D Convolutional U-Net ($1.42\times 10^6$ parameters) trained on the 7-subject training partition over an RTX 4060 GPU, obtaining 97.48\% F1 on unseen test subjects ($90.76\%$ population mean across all 10 subjects, $r=0.982$).
-    \item \textbf{Bit-True Fixed-Point Model [L2]:} Designed a cycle-accurate fixed-point software emulator, proving $+74.52\,$dB SQNR for Spatial PCA and $+85.04\,$dB SQNR for secondary Hankel SVD across 5,000 verified golden test vectors with zero beat detection degradation.
-    \item \textbf{Analytical Hardware Sizing [L4 Target]:} Sized a single-DSP48E1 time-multiplexed schedule executing in 148 clock cycles ($1.48\,\mu$s at 100\,MHz), utilizing $\approx 3.0\%$ LUTs (990 of 32,600) and 1 BRAM, providing an estimated $2,702\times$ compute margin against the $4.0\,$ms sample interval. \fin{(Superseded: this was a paper estimate for the mid-term beamformer. The final RTL runs at 50\,MHz and needs a median of 1,485 cycles per sample; Sec.~\ref{sec:final_hw}.)}
-\end{enumerate}
-}
+\fin{\noindent The mid-term contributions (4-lead spatial beamformer, 250-record population benchmark, 1D U-Net, bit-true fixed-point model and paper sizing) are kept with their results in App.~\ref{app:midterm}.}
 
 \begin{finalpart}
 \noindent\textbf{Final-phase contributions (after the mid-term).} Sections~\ref{sec:final_realdata}--\ref{sec:final_obs} describe the work done between the mid-term and this report:
@@ -139,36 +130,31 @@ Continuous intrapartum NIFECG monitoring serves three distinct clinical operatin
 \end{enumerate}
 
 \begin{table*}[t]
-\caption{Target clinical engineering specifications and verification status for real-time edge NIFECG monitoring. \fin{The last column gives the final measured value of the final design v7-DL (board unless noted; v6 in parentheses where it differs).}}
+\fb
+\caption{\fb Clinical engineering targets and the measured values of the final design v7-DL. The last column gives the mid-term value of the superseded beamformer for reference only (App.~\ref{app:midterm}). Levels: L2 bit-true C model, L3 RTL simulation, L4 Vivado implementation, L5 board.}
 \label{tab:clinical_specs}
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}llp{5.0cm}p{5.5cm}lp{5.2cm}@{}}
+\begin{tabular}{@{}llp{5.6cm}p{3.6cm}lp{4.4cm}@{}}
 \toprule
-\textbf{Parameter} & \textbf{Project Engineering Target / Standard} & \textbf{Our Value / Number} & \textbf{Status vs Target} & \textbf{Evidence Level} & \fin{\textbf{Final (v7-DL, measured)}} \\
+\textbf{Parameter} & \textbf{Target} & \textbf{Final design v7-DL (measured)} & \textbf{Status} & \textbf{Level} & \textbf{Mid-term beamformer (reference)} \\
 \midrule
-Detection F1 & $\ge 90\%$ at $\ge 0\,$dB SNR & $93.00\%$ pop ($93.06\%$ test); $c4$ 83.06\%; min record 59.55\% & \textbf{Met on population mean; not met for c4 / worst records} & \tagLone\ Measured (L1) & \fin{FECGSYNDB 93.7\% (1,248, C model); ADFECGDB 96.1\%; CinC test 76.9\% (82.0\% reliable refs); $c4$ 84.0\% (v6: 91.4 / 92.7 / 65.5\%)} \\
-FHR MAE normal & $<1.0\,$bpm on clean baseline ($c0$ and TC1--TC3) & \texttt{sub01} TC1--TC3: $0.32$--$0.48\,$bpm; population $c0$: $3.29\,$bpm & \textbf{Met on Subject 1 only; not met on population} & \tagLone\ Measured (L1) & \fin{ADFECGDB 2.1\,bpm (r01: 1.5\,bpm; v6: 2.0 / 0.56\,bpm); FECGSYNDB $c0$ 2.0\,bpm; not met} \\
-FHR MAE challenging & $<8.0\,$bpm across all 5 conditions ($c0$--$c4$) & $6.57\,$bpm mean; $c4$: $16.10\,$bpm; held-out test: $8.00\,$bpm (PCA), \fin{$2.43\,$bpm} (U-Net) & \textbf{Met on mean only; not met for c4; test at limit} & \tagLone\ Measured (L1) & \fin{FECGSYNDB 4.0\,bpm, $c4$ 7.1\,bpm (1,248, C model); CinC test 11.5\,bpm (v6: 18.4\,bpm)} \\
-Clinical agreement & $\ge 95\%$ baseline; $>50\%$ overall ($\pm 5\,$bpm) & $74.0\%$ on $c0$; $58.0\%$ overall; $6.0\%$ on $c4$ & \textbf{Baseline not met; overall met} & \tagLone\ Measured (L1) & \fin{not recomputed for the final design} \\
-Compute time & $<4,000\,\mu$s ($1/f_s$ real-time deadline) & $1.48\,\mu$s (148 clock cycles at 100\,MHz) & \textbf{Estimate (L4 sized)} & \tagLfour\ Estimate (L4) & \fin{met: v6 RTL median 1,485 cycles = 30\,$\mu$s per sample (xsim, 50\,MHz); v7-DL board 4--4.5$\times$ real time incl.\ UART and PC} \\
-Filter group delay & $<100\,$ms intrapartum group delay & $11.4$--$15.4\,$ms in-band ($2.85$--$3.85$ samples); $96\,$ms edge & \textbf{Met (edge borderline)} & \tagLone\ Measured (L1) & \fin{not met: live beats 1.5--2\,s after they occur, final v7-DL beats $13.5\,$s (median, max $17.5\,$s)} \\
-FPGA power budget & Low power wearable target ($<1.5\,$W total board) & $<0.15\,$W core logic (estimate; board unmeasured) & \textbf{Estimate only} & \tagLfour\ Estimate (L4) & \fin{0.445\,W on-chip (Vivado estimate); board not measured} \\
-Sampling rate ($f_s$) & $\ge 250\,$Hz (PhysioNet Challenge 2013~\cite{silva2013}) & 250\,Hz & \textbf{Met} & \tagLone\ Measured (L1) & \fin{250\,Hz; 1\,kHz recordings decimated causally} \\
-Input dynamic range & $20\,\mu$V (fetal) to $5\,$mV (maternal), $\pm 5\,$mV AFE & 16-bit Q1.15 ($0.152\,\mu$V/LSB, 131 to 16,384 LSBs) & \textbf{Met} & \tagLtwo\ Bit-True (L2) & \fin{int16 input; filter data Q8 in int32, Q28 coefficients} \\
-Target clock frequency & Target clock on Boolean Board~\cite{realdigital_boolean} & 100\,MHz (board oscillator); timing closure to be shown at L4 & \textbf{Target Sized} & \tagLfour\ Estimate (L4) & \fin{50\,MHz (PLL), worst slack $+0.05\,$ns} \\
-Form factor & Wearable patch (4 maternal abdominal electrodes) & 4 Leads ($[27, 26, 28, 25]$, 0-based physical leads) & \textbf{Design Intent} & Design Intent & \fin{4 abdominal leads of each recording} \\
+% sources: report/v61_v7/board_v7/board_cdev_ad_ctest_syn.csv; tools/accuracy/results_v7dl_synall.csv; CIs: tools/report_stats/out/ci.csv
+Detection F1 & $\ge 90\%$ at $\ge 0\,$dB SNR & FECGSYNDB $93.7\%$ (1,248 records); ADFECGDB $96.1\%$; CinC test $76.9\%$ ($82.0\%$ reliable refs); $c4$ $84.0\%$ & Met on FECGSYNDB and ADFECGDB; below target on CinC & L5 (FECGSYNDB L2) & $93.00\%$, 250 records, batch (L1) \\
+FHR MAE, normal rhythm & $<1.0\,$bpm & ADFECGDB $2.1\,$bpm; FECGSYNDB $c0$ $2.0\,$bpm & Not met & L5 / L2 & \texttt{sub01} TC1--TC3 $0.32$--$0.48\,$bpm; $c0$ $3.29\,$bpm \\
+FHR MAE, all conditions & $<8.0\,$bpm & FECGSYNDB $4.0\,$bpm ($c4$ $7.1\,$bpm); CinC test $11.5\,$bpm & Met on FECGSYNDB; not met on CinC & L2 / L5 & $6.57\,$bpm; $c4$ $16.10\,$bpm \\
+Clinical agreement ($\pm 5\,$bpm) & $\ge 95\%$ baseline, $>50\%$ overall & not measured for the final design & -- & -- & $74.0\%$ on $c0$; $58.0\%$ overall \\
+Compute time per sample & $<4{,}000\,\mu$s & $30\,\mu$s (median 1,485 cycles at 50\,MHz); board 4--4.5$\times$ real time incl.\ UART and PC & Met & L3 / L5 & $1.48\,\mu$s, paper sizing (L4 target) \\
+Output latency & $<100\,$ms & live beats 1.5--2\,s; final beats $13.5\,$s median (max $17.5\,$s) & Not met (tracking and look-ahead need seconds) & L5 & $11.4$--$15.4\,$ms filter group delay (L1) \\
+Power & $<1.5\,$W board & $0.445\,$W on-chip (Vivado estimate); board not measured & Estimate only & L4 & $<0.15\,$W core (estimate) \\
+Sampling rate & $\ge 250\,$Hz & $250\,$Hz; 1\,kHz recordings decimated causally & Met & L5 & $250\,$Hz \\
+Number formats & $20\,\mu$V--$5\,$mV input & int16 input; filter data Q8 in int32, Q28 coefficients; no overflow on any record & Met & L2 & Q1.15 (L2) \\
+Clock & Boolean Board & $50\,$MHz (PLL), worst slack $+0.05\,$ns & Met & L4 & $100\,$MHz target (sized) \\
+Leads & 4 abdominal electrodes & 4 abdominal leads of each recording & Met & L5 & leads $[27, 26, 28, 25]$ of FECGSYNDB \\
 \bottomrule
 \end{tabular}%
 }
 \end{table*}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.92\textwidth]{figures/system_pipeline.png}
-\caption{\tagLone/\tagLtwo\ Complete end-to-end NIFECG extraction and FPGA processing pipeline: (1)~4-Channel abdominal mixture acquisition; (2)~4th-order Butterworth 0.5--40\,Hz IIR preprocessing (4 SOS biquads\fin{; 4th-order prototype, 8th-order bandpass in total}) and dual 50/60\,Hz notch filter; (3)~Spatial covariance matrix computation and polarity-aligned beamforming; (4)~Peak-Energy fetal QRS detector; (5)~Median-filtered FHR estimation and 7-segment / UART display.}
-\label{fig:system_pipeline}
-\end{figure*}
 
 % =====================================================================
 \section{Problem Statement and Formal Engineering Objectives}
@@ -179,25 +165,6 @@ Form factor & Wearable patch (4 maternal abdominal electrodes) & 4 Leads ($[27, 
     \hat{f}[n] = \mathbf{w}^T \mathbf{x}[n]
 \end{equation}
 isolates the fetal cardiac dipole component while suppressing the dominant maternal interference direction $\mathbf{v}_1$. Under our spatial principal component heuristic, $\mathbf{w}$ is selected as the unit-norm second principal eigenvector ($\mathbf{w} = \mathbf{v}_2$) of the 4-channel mixture covariance matrix. Rather than achieving full mathematical nulling of the 3-dimensional maternal dipole subspace, this heuristic projection suppresses the dominant maternal axis $\mathbf{v}_1$ while preserving fetal biopotential energy.
-
-\begin{table}[t]
-\caption{Mid-term objective status summary against formal project targets.}
-\label{tab:objective_status}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}llp{3.8cm}l@{}}
-\toprule
-\textbf{Objective} & \textbf{Description} & \textbf{Mid-Term Milestone Achievement} & \textbf{Formal Status} \\
-\midrule
-\textbf{O1: Algorithmic Resilience} & F1 $\ge 90\%$, MAE $<1.0\,$bpm baseline & F1 $93.00\%$ pop ($93.06\%$ test); MAE $0.32-0.48\,$bpm on \texttt{sub01}, $3.29\,$bpm on $c0$ & \textbf{Partially Met} \\
-\textbf{O2: Bit-True Integrity} & Fixed-point SQNR $\ge 60\,$dB & $+74.52\,$dB SQNR beamformer output; zero beat discordance & \textbf{Met (L2)} \\
-\textbf{O3: Sized Latency} & Per-sample latency $<10.0\,\mu$s & Sized 148 cycles ($1.48\,\mu$s at 100\,MHz, $2,702\times$ margin) & \textbf{Sized Estimate (L4)} \\
-\textbf{O4: Resource Efficiency} & $<5\%$ LUTs, $\le 1$ DSP48E1 slice & Sized $\approx 3.0\%$ LUTs (990), 1 DSP48E1, 1 BRAM & \textbf{Sized Estimate (L4)} \\
-\textbf{O5: Hardware Bring-Up} & Physical board UART \& 7-seg & Presets and pin constraints mapped; synthesis sprint Nov 1--10 & \textbf{Scheduled for Sprint} \fin{$\to$ \textbf{Done} (Sec.~\ref{sec:final_hw})} \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
 
 \noindent\textbf{Formal engineering objectives (O1--O5):}
 \begin{itemize}
@@ -357,527 +324,6 @@ Trained on subjects \texttt{sub01}--\texttt{sub07} over an NVIDIA RTX 4060 GPU (
 \end{itemize}
 }
 
-% =====================================================================
-\section{Fixed-Point Implementation and Word-Length Design}
-\label{sec:fixed_point}
-
-\fin{\noindent\textit{Note.} Sections~\ref{sec:fixed_point}--\ref{sec:hardware_resources} describe the mid-term design (Q1.15 data and weights, a 100-MHz single-DSP schedule sized on paper). The final RTL uses different formats: int16 input samples, filter data in Q8 inside int32 with Q28 filter coefficients, and Q14 spatial weights, at 50\,MHz (Sec.~\ref{sec:final_hw}).}
-
-\newcontent{To bridge the gap between software simulation and physical FPGA realization, all arithmetic was mapped into two's-complement signed fixed-point formats targeting Spartan-7 DSP48E1 slices, detailed in Tab.~\ref{tab:fixed_point_specs}:
-\begin{itemize}
-    \item \textbf{Analog Front-End (AFE) Scaling:} An instrumentation amplifier gain of $G = 200$ maps a $\pm 5.0\,$mV biopotential range to the ADC input\fin{ ($\pm 1.0\,$V, i.e.\ an external ADC with a $\pm 1\,$V input range is assumed; the on-board XADC accepts less, see Sec.~\ref{sec:host_interface})}. Full scale $\pm 5.0\,$mV maps to $[-1.0, +1.0)$ in Q1.15 format, yielding a resolution of $\Delta = 5.0\,\text{mV} / 32768 \approx 0.152\,\mu$V per LSB. A $20\,\mu$V fetal peak corresponds to $131$ LSBs, while a $2.5\,$mV maternal peak occupies $16,384$ LSBs.
-    \item \textbf{Filter Coefficients and States:} Preprocessing IIR SOS coefficients require Q2.14 format to accommodate pole placements where $a_1 \approx -1.97$. Filter internal states use 24-bit representations to prevent overflow during high-Q transients.
-    \item \textbf{Beamformer Weights:} Q1.15 format, normalized such that $\|\mathbf{w}\|_2 \le 1.0$.
-    \item \textbf{DSP Accumulator:} 48-bit accumulator with 4 guard bits to prevent internal overflow across additions.
-\end{itemize}
-Quantization is modeled via round-to-nearest-even with two's-complement saturation:
-\begin{equation}
-    x_{q} = \text{clip}\left(\text{round}(x \cdot 2^{15}), -32768, 32767\right) \cdot 2^{-15}
-\end{equation}
-}
-
-\begin{table}[t]
-\caption{Fixed-point word-length specifications across pipeline processing stages.}
-\label{tab:fixed_point_specs}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}llccp{2.6cm}@{}}
-\toprule
-\textbf{Pipeline Stage} & \textbf{Data Element} & \textbf{Width} & \textbf{Format} & \textbf{Overflow / Rounding} \\
-\midrule
-Input ADC Stream & 4-Lead Abdominal Samples & 16-bit & Q1.15 & Two's-complement saturation \\
-IIR SOS Biquads & Numerator/Denominator ($b_i, a_i$) & 16-bit & Q2.14 & Round-to-nearest-even \\
-IIR Filter States & Direct-Form II Delay Registers & 24-bit & Q8.16 & Saturation on transient \\
-Spatial Beamformer & Eigenvector Weights ($w_k$) & 16-bit & Q1.15 & $\|\mathbf{w}\|_2 \le 1.0$, Round-even \\
-DSP48E1 Multiplier & Sample $\times$ Weight Products & 32-bit & Q3.29 & Full-precision product \\
-DSP48E1 Accumulator& 4-Channel Beamformed Sum & 48-bit & Q16.32 & 4 guard bits; no overflow \\
-Beamformer Output & Scaled Fetal Scalar ($\hat{f}$) & 16-bit & Q1.15 & Round-to-nearest-even \\
-Derivative Filter & 5-Point Slope Output & 16-bit & Q1.15 & Saturated arithmetic \\
-Squaring Stage & Energy Operator ($z[n] = y^2$) & 32-bit & Q2.30 & Exact non-negative \\
-Moving Integrator & 15-Sample Running Sum & 32-bit & Q6.26 & Accumulator subtraction \\
-Adaptive Threshold & Running SPKI / NPKI & 32-bit & Q6.26 & Bit-shift EMA ($\alpha = 0.125$) \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/quantization_null_depth.png}
-\caption{\tagLtwo\ Quantization word-length design sweep: Maternal subspace null depth vs weight word length $B$, comparing theoretical bound (Eq.~\ref{eq:null_bound}) against bit-true simulation. Target format ($B=16$) achieves $95.1\,$dB nulling, safely exceeding the $55\,$dB clinical requirement.}
-\label{fig:quantization_sweep}
-\end{figure}
-
-\noindent\textbf{Theoretical null depth quantization analysis.} Under finite word length $B$, quantized weight vectors $\mathbf{w}_q = \mathbf{w} + \mathbf{e}_w$ introduce an upper bound on achievable maternal null rejection. Assuming uniform rounding noise of variance $\sigma_q^2 = \Delta^2 / 12 = 2^{-2(B-1)} / 12$ across $C$ channels:
-\begin{equation}
-    R_{\text{null}} \approx 20 \log_{10} \left( \frac{\sqrt{12} \cdot 2^{B-1}}{\sqrt{C}} \right) \quad \text{[dB]}
-    \label{eq:null_bound}
-\end{equation}
-At our target format ($B=16$, Q1.15) with $C=4$ channels, Eq.~\eqref{eq:null_bound} evaluates to $95.1\,$dB. In bit-accurate simulation, empirical null depth reaches $95.0\,$dB (Fig.~\ref{fig:quantization_sweep}), safely exceeding the $55\,$dB requirement derived from suppressing $20$--$35\,$dB maternal amplitude excess with $\ge 20\,$dB margin below the fetal biopotential. At $B=12$, null depth is $71.0\,$dB; at $B=10$, it is $59.0\,$dB.
-
-\newcontent{\noindent\textbf{Bit-true verification on 5,000 golden vectors [L2].} We implemented a cycle-accurate Python fixed-point emulator (\texttt{fixed\_point\_model.py}) modeling DSP48E1 arithmetic, intermediate rounding, and saturation. Evaluating Signal-to-Quantization-Noise Ratio at the beamformer output node $\hat{f}[n]$ across 5,000 continuous golden samples:
-\begin{equation}
-    \text{SQNR} = 10 \log_{10} \frac{\sum_{n=1}^{5000} |f_{\text{float}}[n]|^2}{\sum_{n=1}^{5000} |f_{\text{float}}[n] - f_{\text{fixed}}[n]|^2}
-\end{equation}
-confirms $+74.52\,$dB SQNR for Spatial PCA (and $+85.04\,$dB for secondary Hankel SVD), with $100.0\%$ beat detection concordance and zero degraded peaks relative to double-precision software.}
-
-\subsection{Scope of the Hardware Demonstration and Host Interface}
-\label{sec:host_interface}
-\fin{In the mid-term and the final system}, physical AFE and ADC hardware are modeled rather than physically built; 16-bit signed samples are assumed. If the RealDigital Boolean Board's on-board XADC were utilized, it provides 12-bit resolution ($2.44\,\mu$V/LSB\fin{ referred to the input}), rendering a $20\,\mu$V fetal peak $\approx 8$ LSBs. \fin{The 7-series XADC accepts at most $1\,$V peak-to-peak ($0$ to $1\,$V unipolar or $\pm 0.5\,$V bipolar, Xilinx UG480), so the $\pm 1.0\,$V output of the $G = 200$ amplifier would clip it by a factor of two; with the XADC the gain must be halved to $G = 100$, which maps $\pm 5\,$mV to $\pm 0.5\,$V and gives the $10\,\text{mV} / 4096 = 2.44\,\mu$V/LSB stated above.} Calibration weights $\mathbf{w}$ are derived from a 3.0-second host buffer and stay static, meaning fetal/maternal positional shifts require periodic host recalibration.
-
-Full 5-minute recordings cannot be stored in on-chip Block RAM. We implemented continuous UART streaming at 921,600 baud. Each 4-channel sample frame comprises an 8-byte payload ($4 \times 16\,$bits). At 921,600 baud with 10 bits per byte (1 start, 8 data, 1 stop), 8 bytes require $80 / 921,600 \approx 86.8\,\mu$s, consuming $2.17\%$ of the $4,000\,\mu$s per-sample budget and requiring only 1 BRAM (36\,kb) for circular FIFO buffering.
-
-% =====================================================================
-\section{Experimental Plan and Evaluation Methodology}
-\label{sec:experimental_plan}
-
-All algorithms are benchmarked under identical frozen conditions: $f_s = 250\,$Hz, 4th-order Butterworth 0.5--40\,Hz conditioning \fin{(4th-order prototype; 8th-order bandpass, 4 SOS)}, and our Peak-Energy fetal QRS detector evaluated within a $\pm 50\,$ms match tolerance window in accordance with international PhysioNet/CinC Challenge 2013 standards~\cite{silva2013,clifford2014}. 
-
-\noindent\textbf{Evaluation metrics and mathematical definitions.}
-\begin{equation}
-    \text{Sensitivity (Se)} = \frac{\text{TP}}{\text{TP} + \text{FN}}, \quad \text{PPV} = \frac{\text{TP}}{\text{TP} + \text{FP}}
-\end{equation}
-\begin{equation}
-    \text{F1-Score} = 2 \times \frac{\text{PPV} \times \text{Se}}{\text{PPV} + \text{Se}}
-\end{equation}
-\begin{equation}
-    \text{FHR MAE} = \frac{1}{K} \sum_{k=1}^K |\text{FHR}_{\text{est}}[k] - \text{FHR}_{\text{ref}}[k]| \quad \text{[bpm]}
-\end{equation}
-\begin{equation}
-    \text{FHR RMSE} = \sqrt{\frac{1}{K} \sum_{k=1}^K (\text{FHR}_{\text{est}}[k] - \text{FHR}_{\text{ref}}[k])^2} \quad \text{[bpm]}
-\end{equation}
-\newcontent{
-Instantaneous fetal heart rate is computed from detected peak timestamps:
-\begin{equation}
-    \text{FHR}[k] = \frac{60 \times f_s}{t_{\text{peak}}[k] - t_{\text{peak}}[k-1]} \quad \text{[bpm]}
-\end{equation}
-smoothed by a 5-beat moving median filter to eliminate single-beat ectopic outliers. Ground truth $\text{FHR}_{\text{ref}}[k]$ is computed identically from reference annotations. We report the \textbf{Clinical Agreement Percentage} ($\% \le \pm 5\,$bpm) representing the proportion of beats where $|\text{FHR}_{\text{est}} - \text{FHR}_{\text{ref}}| \le 5.0\,$bpm.
-
-\noindent\textbf{Confidence interval methodology and intra-cluster correlation.} Statistical uncertainty across the 250 evaluation recordings is analyzed at two distinct methodological levels:
-\begin{enumerate}
-    \item \textbf{Run-Level Dispersion:} Evaluated across all $N_{\text{run}} = 250$ records under the standard independent-run assumption:
-    \begin{equation}
-        \text{CI}_{95\%}^{\text{run}} = \bar{F}_1 \pm 1.96 \cdot \frac{s_{\text{run}}}{\sqrt{N_{\text{run}}}}
-    \end{equation}
-    yielding $\pm 1.08\%$ for Spatial PCA ($s_{\text{run}} = 8.67\%$, $\text{SE} = 0.55\%$) and $\pm 1.97\%$ for Deep U-Net ($s_{\text{run}} = 15.84\%$, $\text{SE} = 1.00\%$).
-    \item \textbf{Subject-Level Clustered Confidence Intervals:} In FECGSYNDB, the 250 records originate from 10 distinct simulated maternal-fetal anatomical geometries (25 records per subject across 5 SNRs and 5 conditions). Recordings from the same subject share identical maternal dipole loop orientations and volume conduction transfer matrices, creating positive intra-cluster correlation. Treating all 250 runs as independent underestimates uncertainty. We therefore compute clustered confidence intervals using Student's $t$-distribution with $N_{\text{subj}} - 1 = 9$ degrees of freedom ($t_{0.025, 9} = 2.262$):
-    \begin{equation}
-        \text{CI}_{95\%}^{\text{subj}} = \bar{F}_{1, \text{subj}} \pm t_{0.025, N_{\text{subj}}-1} \cdot \frac{s_{\text{subj}}}{\sqrt{N_{\text{subj}}}}
-        \label{eq:clustered_ci}
-    \end{equation}
-    where $N_{\text{subj}} = 10$, $s_{\text{subj}}$ is the standard deviation across per-subject mean performances ($s_{\text{subj}} = 3.28\%$ for Spatial PCA, yielding $\text{CI}_{95\%}^{\text{subj}} = 93.00\% \pm 2.35\%$, CI $[90.65\%, 95.34\%]$; for Deep U-Net, $s_{\text{subj}} = 10.16\%$, yielding $90.76\% \pm 7.27\%$, CI $[83.48\%, 98.03\%]$). Clustered intervals provide a rigorous measure of between-subject variability across synthetic anatomies.
-\end{enumerate}
-}
-
-% =====================================================================
-\section{Empirical Performance Evaluation and Benchmark Analysis}
-\label{sec:results}
-
-\begin{table*}[t]
-\caption{\tagLone/\tagLtwo\ Controlled In-Sample Stress Benchmark on Subject 1 across all five standardized PhysioNet FECGSYNDB stress test cases (TC1--TC5, 75,000 samples each). Evaluated at $\pm 50\,$ms tolerance window across 35 benchmark evaluations. Methods are ordered consistently across all test cases. Note: Under TC1--TC3 on Lead 27, single-channel Template Subtraction (Fixed) and Hankel-SVD V1 yield identical beat counts (546 TP, 168 FP, 170 FN in TC1) because both algorithms isolate identical dominant maternal QRS complexes, leaving identical residual noise profiles passed to the same downstream Peak-Energy detector. Deep U-Net (1-Ch) is evaluated in-sample on \texttt{sub01}. Runtime is wall-clock time per 5-second window.}
-\label{tab:master_benchmark}
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}llccccccrrrrrcrr@{}}
-\toprule
-\textbf{Test Case} & \textbf{Algorithm / Method} & \textbf{Config} & \textbf{Det.} & \textbf{Ref.} & \textbf{TP} & \textbf{FP} & \textbf{FN} & \textbf{PPV (\%)} & \textbf{Se (\%)} & \textbf{F1 (\%)} & \textbf{FHR MAE} & \textbf{FHR RMSE} & \textbf{Agr. ($\le \pm 5\,$bpm)} & \textbf{Corr.} & \textbf{Runtime} \\
-\midrule
-\textbf{TC1} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 716 & 716 & \textbf{716} & \textbf{0} & \textbf{0} & \textbf{100.0} & \textbf{100.0} & \textbf{100.00} & \textbf{0.32\,bpm} & \textbf{0.48\,bpm} & \textbf{100.0\%} & \textbf{0.998} & \textbf{0.003\,s} \\
-(12\,dB $c0$) & Deep 1D U-Net (Neural) & 1-Ch & 712 & 716 & 712 & 0 & 4 & 100.0 & 99.4 & \textbf{99.72} & 0.45\,bpm & 0.62\,bpm & 99.7\% & 0.966 & 0.082\,s \\
-& Multi-Lead Template Fusion & 4-Ch & 716 & 716 & 700 & 16 & 16 & 97.8 & 97.8 & 97.77 & 1.85\,bpm & 2.45\,bpm & 95.8\% & 0.884 & 0.012\,s \\
-& Wavelet-Threshold Hybrid & 1-Ch & 715 & 716 & 553 & 162 & 163 & 77.3 & 77.2 & 77.29 & 18.30\,bpm & 24.12\,bpm & 62.4\% & 0.270 & 0.020\,s \\
-& Template Subtraction (Fixed) & 1-Ch & 714 & 716 & 546 & 168 & 170 & 76.5 & 76.3 & 76.36 & 19.54\,bpm & 25.80\,bpm & 61.2\% & 0.270 & 0.018\,s \\
-& Hankel-SVD V1 (Fixed Period) & 1-Ch & 714 & 716 & 546 & 168 & 170 & 76.5 & 76.3 & 76.36 & 19.52\,bpm & 25.75\,bpm & 61.2\% & 0.270 & 0.026\,s \\
-& SWT-LMS Wavelet Filter & 1-Ch & 373 & 716 & 82 & 291 & 634 & 22.0 & 11.5 & 15.06 & 46.64\,bpm & 58.20\,bpm & 14.2\% & 0.001 & 1.772\,s \\
-\midrule
-\textbf{TC2} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 716 & 716 & \textbf{716} & \textbf{0} & \textbf{0} & \textbf{100.0} & \textbf{100.0} & \textbf{100.00} & \textbf{0.41\,bpm} & \textbf{0.58\,bpm} & \textbf{100.0\%} & \textbf{0.997} & \textbf{0.003\,s} \\
-(6\,dB $c0$)  & Deep 1D U-Net (Neural) & 1-Ch & 713 & 716 & 713 & 0 & 3 & 100.0 & 99.6 & \textbf{99.79} & 0.42\,bpm & 0.59\,bpm & 99.8\% & 0.991 & 0.082\,s \\
-& Multi-Lead Template Fusion & 4-Ch & 751 & 716 & 690 & 61 & 26 & 91.9 & 96.4 & 94.07 & 2.45\,bpm & 3.20\,bpm & 93.4\% & 0.825 & 0.012\,s \\
-& Wavelet-Threshold Hybrid & 1-Ch & 749 & 716 & 230 & 519 & 486 & 30.7 & 32.1 & 31.40 & 32.99\,bpm & 41.50\,bpm & 38.6\% & 0.109 & 0.020\,s \\
-& Template Subtraction (Fixed) & 1-Ch & 717 & 716 & 221 & 496 & 495 & 30.8 & 30.9 & 30.84 & 34.33\,bpm & 42.95\,bpm & 37.4\% & 0.106 & 0.018\,s \\
-& Hankel-SVD V1 (Fixed Period) & 1-Ch & 743 & 716 & 226 & 517 & 490 & 30.4 & 31.6 & 30.98 & 34.47\,bpm & 43.10\,bpm & 37.2\% & 0.109 & 0.027\,s \\
-& SWT-LMS Wavelet Filter & 1-Ch & 446 & 716 & 102 & 344 & 614 & 22.9 & 14.2 & 17.56 & 42.65\,bpm & 52.80\,bpm & 18.5\% & 0.009 & 1.805\,s \\
-\midrule
-\textbf{TC3} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 715 & 715 & \textbf{715} & \textbf{0} & \textbf{0} & \textbf{100.0} & \textbf{100.0} & \textbf{100.00} & \textbf{0.48\,bpm} & \textbf{0.65\,bpm} & \textbf{100.0\%} & \textbf{0.994} & \textbf{0.003\,s} \\
-(0\,dB $c0$)  & Deep 1D U-Net (Neural) & 1-Ch & 706 & 715 & 706 & 0 & 9 & 100.0 & 98.7 & \textbf{99.37} & 0.65\,bpm & 0.88\,bpm & 99.2\% & 0.963 & 0.082\,s \\
-& Multi-Lead Template Fusion & 4-Ch & 819 & 715 & 241 & 578 & 474 & 29.4 & 33.7 & 31.42 & 31.20\,bpm & 39.40\,bpm & 41.2\% & 0.145 & 0.012\,s \\
-& Wavelet-Threshold Hybrid & 1-Ch & 746 & 715 & 180 & 566 & 535 & 24.1 & 25.2 & 24.64 & 33.39\,bpm & 42.10\,bpm & 35.8\% & 0.017 & 0.026\,s \\
-& Template Subtraction (Fixed) & 1-Ch & 734 & 715 & 173 & 561 & 542 & 23.6 & 24.2 & 23.88 & 33.16\,bpm & 41.80\,bpm & 36.2\% & 0.017 & 0.019\,s \\
-& Hankel-SVD V1 (Fixed Period) & 1-Ch & 752 & 715 & 174 & 578 & 541 & 23.1 & 24.3 & 23.72 & 32.82\,bpm & 41.40\,bpm & 36.5\% & 0.017 & 0.026\,s \\
-& SWT-LMS Wavelet Filter & 1-Ch & 392 & 715 & 106 & 286 & 609 & 27.0 & 14.8 & 19.15 & 48.92\,bpm & 59.40\,bpm & 12.8\% & 0.000 & 1.792\,s \\
-\midrule
-\textbf{TC4} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 721 & 716 & 523 & 198 & 193 & 72.5 & 73.0 & \textbf{72.79} & 8.42\,bpm & 11.20\,bpm & 82.5\% & 0.742 & \textbf{0.003\,s} \\
-(6\,dB $c1$)  & Deep 1D U-Net (Neural) & 1-Ch & 710 & 716 & 710 & 0 & 6 & 100.0 & 99.2 & \textbf{99.58} & \textbf{0.58\,bpm} & \textbf{0.80\,bpm} & \textbf{99.4\%} & \textbf{0.979} & 0.082\,s \\
-& Multi-Lead Template Fusion & 4-Ch & 790 & 716 & 441 & 349 & 275 & 55.8 & 61.6 & 58.57 & 14.20\,bpm & 18.60\,bpm & 71.8\% & 0.420 & 0.012\,s \\
-& Wavelet-Threshold Hybrid & 1-Ch & 750 & 716 & 270 & 480 & 446 & 36.0 & 37.7 & 36.83 & 31.22\,bpm & 39.80\,bpm & 42.1\% & 0.199 & 0.022\,s \\
-& Template Subtraction (Fixed) & 1-Ch & 695 & 716 & 252 & 443 & 464 & 36.3 & 35.2 & 35.72 & 32.28\,bpm & 40.90\,bpm & 41.0\% & 0.189 & 0.018\,s \\
-& Hankel-SVD V1 (Fixed Period) & 1-Ch & 733 & 716 & 261 & 472 & 455 & 35.6 & 36.5 & 36.02 & 31.70\,bpm & 40.20\,bpm & 41.5\% & 0.199 & 0.026\,s \\
-& SWT-LMS Wavelet Filter & 1-Ch & 419 & 716 & 105 & 314 & 611 & 25.1 & 14.7 & 18.50 & 47.20\,bpm & 57.60\,bpm & 16.4\% & 0.006 & 1.767\,s \\
-\midrule
-\textbf{TC5} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 662 & 716 & 606 & 56 & 110 & 91.5 & 84.6 & \textbf{87.95} & 3.15\,bpm & 4.45\,bpm & 91.2\% & 0.812 & \textbf{0.003\,s} \\
-(6\,dB $c4$)  & Deep 1D U-Net (Neural) & 1-Ch & 713 & 716 & 675 & 38 & 41 & 94.7 & 94.3 & \textbf{94.47} & \textbf{2.10\,bpm} & \textbf{3.10\,bpm} & \textbf{93.8\%} & \textbf{0.995} & 0.082\,s \\
-& Multi-Lead Template Fusion & 4-Ch & 833 & 716 & 519 & 314 & 197 & 62.3 & 72.5 & 67.01 & 12.80\,bpm & 16.90\,bpm & 74.5\% & 0.490 & 0.012\,s \\
-& Wavelet-Threshold Hybrid & 1-Ch & 774 & 716 & 209 & 565 & 507 & 27.0 & 29.2 & 28.05 & 31.89\,bpm & 40.60\,bpm & 40.8\% & 0.113 & 0.018\,s \\
-& Template Subtraction (Fixed) & 1-Ch & 766 & 716 & 211 & 555 & 505 & 27.5 & 29.5 & 28.48 & 31.88\,bpm & 40.50\,bpm & 41.2\% & 0.113 & 0.017\,s \\
-& Hankel-SVD V1 (Fixed Period) & 1-Ch & 772 & 716 & 206 & 566 & 510 & 26.7 & 28.8 & 27.69 & 30.95\,bpm & 39.70\,bpm & 42.0\% & 0.107 & 0.025\,s \\
-& SWT-LMS Wavelet Filter & 1-Ch & 355 & 716 & 78 & 277 & 638 & 22.0 & 10.9 & 14.57 & 49.21\,bpm & 60.10\,bpm & 11.5\% & 0.011 & 1.812\,s \\
-\bottomrule
-\end{tabular}%
-}
-\end{table*}
-
-\begin{table}[t]
-\caption{\tagLone\ Subject 1 Stress Benchmark Performance Summary (TC1--TC5), generated programmatically by unweighted average of Tab.~\ref{tab:master_benchmark}.}
-\label{tab:executive_summary}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}llccccr@{}}
-\toprule
-\textbf{Algorithm} & \textbf{Config} & \textbf{Avg F1} & \textbf{FHR MAE} & \textbf{Agr. ($\pm 5$bpm)} & \textbf{Corr.} & \textbf{FPGA Viability} \\
-\midrule
-\textbf{Deep 1D U-Net} & 1-Ch & \textbf{98.59\%} & \textbf{0.84\,bpm} & \textbf{98.4\%} & \textbf{0.979} & Edge NPU / Host Co-proc. \\
-\textbf{Spatial PCA (4-Ch)} & 4-Ch & \textbf{92.15\%} & \textbf{2.56\,bpm} & \textbf{94.7\%} & \textbf{0.909} & \textbf{Spartan-7 ($\approx$3.0\% LUT, 1 DSP)} \\
-MC Template Fusion & 4-Ch & 69.77\% & 12.50\,bpm & 75.3\% & 0.553 & Spartan-7 (5.1\% LUT, 4 DSPs) \\
-Wavelet-Threshold Hybrid & 1-Ch & 39.64\% & 29.56\,bpm & 43.9\% & 0.141 & Spartan-7 (4.1\% LUT, 4 DSPs) \\
-Template Sub. (Fixed) & 1-Ch & 39.06\% & 30.24\,bpm & 43.4\% & 0.139 & Spartan-7 (3.1\% LUT, 2 DSPs) \\
-Hankel-SVD V1 & 1-Ch & 38.96\% & 29.89\,bpm & 43.7\% & 0.140 & Spartan-7 (12.9\% LUT, 48 DSPs) \\
-SWT-LMS Wavelet Filter & 1-Ch & 16.97\% & 46.92\,bpm & 14.7\% & 0.005 & High DSP ($>$100\% on XC7S50) \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/f1_comparison_all_methods.png}
-\caption{\tagLone\ Comparative F1-score performance across all seven extraction architectures on the five frozen PhysioNet stress test cases (TC1--TC5). Spatial PCA Beamforming and Deep U-Net achieve near-perfect detection on baseline cases, whereas single-channel temporal subtraction algorithms collapse under severe noise and arrhythmia. Deep U-Net bars represent in-sample baseline on Subject 1.}
-\label{fig:f1_comparison}
-\end{figure*}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fhr_error_bland_altman.png}
-\caption{\tagLone/\tagLtwo\ Fetal Heart Rate (FHR) precision analysis on Subject 1 baseline records: (a)~FHR Mean Absolute Error across TC1--TC5; (b)~Bland-Altman agreement plot for Spatial PCA against reference ground truth ($95\%$ limits of agreement: \fin{$[-4.75, +5.88]\,$bpm, mean bias $+0.57\,$bpm, as marked in the plot}).}
-\label{fig:fhr_bland_altman}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/snr_degradation_curve.png}
-\caption{\tagLone\ Algorithm robustness under input SNR degradation ($12\,\text{dB} \to 6\,\text{dB} \to 0\,\text{dB}$). Spatial PCA maintains $100\%$ detection down to $0\,$dB on Subject 1, while single-channel baselines degrade to $<25\%$.}
-\label{fig:snr_curve}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/f1_heatmap.png}
-\caption{\tagLone\ Heatmap matrix of F1-scores across all methods and stress cases, confirming Spatial PCA and Deep U-Net dominance on Subject 1.}
-\label{fig:heatmap}
-\end{figure}
-
-\subsection{Performance Analysis on Subject 1}
-The benchmark results in Tab.~\ref{tab:master_benchmark}, Tab.~\ref{tab:executive_summary}, and Figs.~\ref{fig:f1_comparison}--\ref{fig:heatmap} provide crucial insights:
-\begin{enumerate}
-    \item \textbf{In-Sample Subject 1 Baseline:} On \texttt{sub01}, Deep 1D U-Net (1-Ch) scores 98.59\% because the network was optimized on that subject's anatomical transfer function. In Tab.~\ref{tab:partition_breakdown}, its population mean F1 across all 10 subjects is 90.76\% (4-Ch) and 80.79\% (1-Ch).
-    \item \textbf{Single-Lead Temporal Breakdown:} Single-channel subtraction reaches only 76.36\% F1 at 12\,dB (failing the $\ge 90\%$ clinical target), and collapses to 23.88\% at 0\,dB and 28.48\% under arrhythmia. Temporal QRS collisions cause the subtraction filter to destroy fetal morphology.
-    \item \textbf{Spatial Subspace Nulling Power:} 4-Lead Spatial PCA maintains 100.0\% F1 across TC1, TC2, and TC3 ($12\,$dB down to $0\,$dB on Subject 1), with FHR MAE $<0.5\,$bpm and 100.0\% of beats within $\pm 5\,$bpm under clean baseline conditions. Spatial projection reduces the dependence on temporal coincidence of maternal/fetal QRS; it still degrades under fetal movement ($c1$: 72.79\% on TC4) and arrhythmia ($c4$).
-    \item \textbf{Wavelet Adaptive LMS Failure:} The SWT-LMS baseline collapses to 15.06\% F1 because single-channel abdominal mixtures lack a pure maternal reference lead, forcing LMS to actively cancel fetal complexes.
-\end{enumerate}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/deep_learning_waveform_comparison.png}
-\caption{\tagLone\ Morphological reconstruction by Deep 1D U-Net over a 5-second window: (A)~Raw abdominal mixture; (B)~Ground truth reference; (C)~U-Net reconstructed waveform exhibiting near-perfect morphology recovery (\fin{TC1, \texttt{sub01} at 12\,dB; $r = 0.966$ over the record, Tab.~\ref{tab:master_benchmark}}).}
-\label{fig:deep_learning_plot}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/multichannel_accuracy_scaling.png}
-\caption{\tagLone\ F1-score accuracy scaling from 1 to 34 leads. Spatial PCA converges to 100\% accuracy on TC1--TC3 with just 4 channels, saturating beyond 8 leads.}
-\label{fig:accuracy_scaling}
-\end{figure}
-
-\subsection{Multichannel Scaling and Lead Redundancy}
-Fig.~\ref{fig:accuracy_scaling} illustrates scaling behavior across channel counts:
-\begin{itemize}
-    \item \textbf{1 Lead (Lead 27):} Raw Lead 27 yields only 20.6--35.8\% F1 due to zero spatial degrees of freedom.
-    \item \textbf{2 Leads ([27, 26]):} F1 jumps to 95.3\% on TC1 as the primary maternal projection is cancelled.
-    \item \textbf{4 Leads ([27, 26, 28, 25]):} F1 reaches \textbf{100.0\%} on TC1--TC3 and \textbf{92.15\% average} across Subject 1 stress cases.
-    \item \textbf{8 to 34 Leads:} Performance plateaus between 90\% and 93.4\%, confirming that our 4-lead suprapubic sub-array provides a highly favorable balance between detection accuracy and hardware complexity.
-\end{itemize}
-
-\subsection{Population Mega-Benchmark (250 Records, 2,250 Runs)}
-To establish statistical significance across diverse maternal anatomies, we executed our automated mega-benchmark across all 10 simulated subjects (\texttt{sub01}--\texttt{sub10}), 5 SNRs ($0$--$12\,$dB), and 5 conditions ($c0$--$c4$), totaling 250 records (75,000 samples each) and 2,250 runs (Tab.~\ref{tab:mega_benchmark}, Tab.~\ref{tab:partition_breakdown}, Tab.~\ref{tab:subject_consistency}, Tab.~\ref{tab:condition_breakdown}, and Figs.~\ref{fig:mega_f1}--\ref{fig:mega_subjects}).
-
-\begin{table}[t]
-\caption{\tagLone\ Population Benchmark across the Full 250-Record FECGSYNDB Database ($N_{\text{subj}}=10$, 25 runs/subject). Reported intervals are 95\% Subject-Level Clustered Confidence Intervals (Student-$t$, $df=9$, $t_{\text{crit}}=2.262$); corresponding 95\% run-level CI half-widths across all $N=250$ records are $\pm 1.08\%$ for Spatial PCA and $\pm 1.97\%$ for Deep U-Net. Speed indicates single-thread CPU execution time per 5-minute record (75,000 samples), with Deep U-Net running on an NVIDIA RTX 4060 GPU.}
-\label{tab:mega_benchmark}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}llccccccr@{}}
-\toprule
-\textbf{Algorithm} & \textbf{Mode} & \textbf{Mean F1 (95\% Clustered CI)} & \textbf{Min F1} & \textbf{Max F1} & \textbf{FHR MAE} & \textbf{Agr. ($\pm 5\,$bpm)} & \textbf{$|\rho|$} & \textbf{Speed} \\
-\midrule
-\textbf{Spatial PCA (4-Ch)} & \textbf{Multi-Ch} & \textbf{93.00\%} [90.65, 95.34] & 59.55\% & \textbf{100.0\%} & 6.57\,bpm & 58.0\% & 0.513 & 190.7\,ms \\
-\textbf{Deep 1D U-Net (4-Ch)} & \textbf{Multi-Ch} & \textbf{90.76\%} [83.48, 98.03] & 27.16\% & \textbf{100.0\%} & \textbf{3.57\,bpm} & \textbf{69.2\%} & \textbf{0.982} & \textbf{98.6\,ms} \\
-Deep 1D U-Net (1-Ch) & Single-Ch & 80.79\% [72.63, 88.96] & 7.94\% & 100.0\% & 8.18\,bpm & 46.4\% & 0.811 & 84.5\,ms \\
-Wavelet-Threshold Hybrid & Single-Ch & 60.52\% [53.43, 67.60] & 8.23\% & 99.45\% & 25.16\,bpm & 10.4\% & 0.342 & 57.3\,ms \\
-Template Sub. (Fixed) & Single-Ch & 59.41\% [51.83, 66.99] & 17.21\% & 99.37\% & 25.41\,bpm & 10.0\% & 0.330 & 35.5\,ms \\
-Template Sub. (Adapt.) & Single-Ch & 56.83\% [49.83, 63.82] & 12.87\% & 97.31\% & 27.44\,bpm & 2.0\% & 0.308 & 44.7\,ms \\
-MC Template Fusion & Multi-Ch & 56.80\% [50.78, 62.82] & 18.50\% & 99.23\% & 28.29\,bpm & 8.8\% & 0.286 & 218.6\,ms \\
-Hankel-SVD V1 (Fixed) & Single-Ch & 55.55\% [47.21, 63.89] & 11.94\% & 99.01\% & 26.84\,bpm & 6.0\% & 0.291 & 75.9\,ms \\
-Hankel-SVD V3 (Moving)& Single-Ch & 46.69\% [40.80, 52.59] & 18.98\% & 87.75\% & 32.59\,bpm & 0.0\% & 0.235 & 30.3\,ms \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{table}[t]
-\caption{\tagLone\ Cross-Subject Partition Breakdown across Training (7 subjects, 175 records), Validation (1 subject, 25 records), Held-Out Test (2 subjects, 50 records), and All Data (10 subjects, 250 records). FHR MAE reported in parentheses. All partition values are exact weighted means from mega\_benchmark\_results.csv.}
-\label{tab:partition_breakdown}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-\textbf{Algorithm} & \textbf{Train (sub01--07)} & \textbf{Val (sub08)} & \textbf{Held-Out Test (sub09--10)} & \textbf{All (sub01--10)} \\
-\midrule
-\textbf{Spatial PCA (4-Ch)} & \textbf{92.90\%} (6.43\,bpm) & 93.51\% (4.66\,bpm) & 93.06\% (8.00\,bpm) & \textbf{93.00\%} (6.57\,bpm) \\
-\textbf{Deep 1D U-Net (4-Ch)} & 88.13\% (3.97\,bpm) & \textbf{95.69\%} (3.03\,bpm) & \textbf{97.48\%} (2.43\,bpm) & 90.76\% (3.57\,bpm) \\
-Deep 1D U-Net (1-Ch) & 79.17\% (8.48\,bpm) & 85.89\% (7.37\,bpm) & 83.93\% (7.51\,bpm) & 80.79\% (8.18\,bpm) \\
-Wavelet-Threshold Hybrid & 60.47\% & 60.93\% & 60.46\% & 60.52\% \\
-Template Sub. (Fixed) & 59.26\% & 61.32\% & 59.01\% & 59.41\% \\
-Template Sub. (Adapt.) & 56.81\% & 58.11\% & 56.24\% & 56.83\% \\
-MC Template Fusion & 57.47\% & 55.45\% & 55.14\% & 56.80\% \\
-Hankel-SVD V1 (Fixed) & 57.20\% & 55.56\% & 49.76\% & 55.55\% \\
-Hankel-SVD V3 (Moving) & 47.57\% & 46.75\% & 43.60\% & 46.69\% \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{table}[t]
-\caption{\tagLone\ Per-Subject Consistency Table across all 10 simulated anatomical subjects (25 records per subject, varying SNRs and clinical stress cases) comparing Spatial PCA (4-Ch) and Deep U-Net (4-Ch), reproduced directly from benchmark logs.}
-\label{tab:subject_consistency}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lcccccccccc@{}}
-\toprule
-\textbf{Method / Metric} & \textbf{sub01} & \textbf{sub02} & \textbf{sub03} & \textbf{sub04} & \textbf{sub05} & \textbf{sub06} & \textbf{sub07} & \textbf{sub08} & \textbf{sub09} & \textbf{sub10} \\
-\midrule
-\textbf{Spatial PCA F1 (\%)} & 94.67 & 94.59 & 95.60 & 85.90 & 89.11 & 96.61 & 93.87 & 93.51 & 94.66 & 91.45 \\
-\textbf{Spatial PCA MAE (bpm)} & 5.47 & 5.07 & 5.38 & 11.39 & 7.73 & 4.48 & 5.49 & 4.66 & 8.76 & 7.25 \\
-\midrule
-\textbf{Deep U-Net F1 (\%)} & 97.61 & 95.84 & 97.77 & 75.39 & 79.98 & 96.85 & 73.47 & 95.69 & 99.06 & 95.91 \\
-\textbf{Deep U-Net MAE (bpm)} & 1.95 & 2.65 & 2.80 & 7.21 & 8.12 & 3.10 & 3.56 & 3.03 & 2.10 & 2.76 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{table}[t]
-\caption{\tagLone\ Performance Breakdown by Clinical Condition and Noise SNR Tier for Spatial PCA (4-Ch) and Deep U-Net (4-Ch) across 250 records (50 records per condition, 50 records per SNR).}
-\label{tab:condition_breakdown}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lcccccccc@{}}
-\toprule
-\textbf{Subset Partition} & \multicolumn{4}{c}{\textbf{Spatial PCA (4-Ch)}} & \multicolumn{4}{c}{\textbf{Deep U-Net (4-Ch)}} \\
-\cmidrule(lr){2-5} \cmidrule(lr){6-9}
-& \textbf{F1 (\%)} & \textbf{MAE} & \textbf{RMSE} & \textbf{Agr. (\%)} & \textbf{F1 (\%)} & \textbf{MAE} & \textbf{RMSE} & \textbf{Agr. (\%)} \\
-\midrule
-\textbf{Condition Partition:} & & & & & & & & \\
-$c0$: Baseline Normal & 96.94 & 3.29 & 8.50 & 74.0 & 99.33 & 0.96 & 2.21 & 98.0 \\
-$c1$: Fetal Movement & 90.80 & 7.19 & 16.60 & 46.0 & 93.52 & 3.14 & 5.38 & 76.0 \\
-$c2$: Heart-Rate Dynamics & 97.36 & 2.99 & 8.38 & 82.0 & 92.32 & 1.99 & 3.83 & 86.0 \\
-$c3$: Uterine Contractions& 96.82 & 3.27 & 7.45 & 82.0 & 87.60 & 2.35 & 4.84 & 72.0 \\
-$c4$: Arrhythmia / PVCs & 83.06 & 16.10 & 27.32 & 6.0 & 81.02 & 9.39 & 16.14 & 14.0 \\
-\midrule
-\textbf{Noise SNR Tier:} & & & & & & & & \\
-0\,dB (High Noise) & 93.68 & 6.05 & 12.79 & 54.0 & 91.06 & 3.75 & 6.84 & 68.0 \\
-3\,dB & 91.95 & 7.45 & 14.95 & 58.0 & 90.35 & 3.78 & 6.78 & 66.0 \\
-6\,dB (Moderate Noise) & 92.73 & 6.51 & 13.86 & 56.0 & 91.14 & 3.42 & 6.12 & 70.0 \\
-9\,dB & 91.40 & 7.72 & 15.34 & 56.0 & 90.18 & 3.71 & 6.75 & 68.0 \\
-12\,dB (Low Noise) & 95.22 & 5.11 & 11.31 & 66.0 & 91.05 & 3.20 & 5.91 & 74.0 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/mega_f1_by_method.png}
-\caption{\tagLone\ Population F1 distributions across all 250 evaluation recordings. Spatial PCA achieves an overall population mean of 93.00\%, followed by 4-channel Deep U-Net at 90.76\%.}
-\label{fig:mega_f1}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/mega_snr_degradation.png}
-\caption{\tagLone\ Robustness across SNR levels ($0$--$12\,$dB) averaged over 50 records per point. Spatial PCA maintains $>91\%$ and 4-Ch U-Net maintains $>90\%$ across all noise tiers, whereas single-channel baselines drop to $35$--$46\%$.}
-\label{fig:mega_snr}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/mega_case_breakdown.png}
-\caption{\tagLone\ Performance across clinical conditions ($c0$: baseline, $c1$: motion, $c2$: HR dynamics, $c3$: contractions, $c4$: arrhythmia). Spatial PCA retains 96.82\% under uterine contractions.}
-\label{fig:mega_cases}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/mega_subject_consistency.png}
-\caption{\tagLone\ Cross-subject consistency across all 10 simulated anatomies (\texttt{sub01}--\texttt{sub10}). Spatial PCA achieves $>85\%$ performance across diverse lead orientations (averaging $93.00\%$).}
-\label{fig:mega_subjects}
-\end{figure}
-
-\noindent\textbf{Traceability and Consistency Across Partitions.}
-As a formal consistency check, the overall population mean ($93.00\%$) exactly reproduces the unweighted arithmetic mean across both orthogonal axes of the balanced 250-record database:
-\begin{itemize}
-    \item \textbf{Condition Means:} $c0$ (96.94\%), $c1$ (90.80\%), $c2$ (97.36\%), $c3$ (96.82\%), $c4$ (83.06\%) $\implies$ Mean = $93.00\%$.
-    \item \textbf{SNR Means:} 0\,dB (93.68\%), 3\,dB (91.95\%), 6\,dB (92.73\%), 9\,dB (91.40\%), 12\,dB (95.22\%) $\implies$ Mean = $93.00\%$.
-\end{itemize}
-Tab.~\ref{tab:condition_breakdown} clarifies why population FHR MAE is 6.57\,bpm and clinical agreement is 58.0\%: under normal rhythms ($c0, c2, c3$), Spatial PCA achieves MAE $\approx 3.0$--$3.3\,$bpm and agreement $74$--$82\%$. The overall MAE is driven by condition $c4$ (arrhythmia/extrasystoles), where irregular ectopic coupling increases MAE to 16.10\,bpm. Deep U-Net achieves 3.57\,bpm population MAE (69.2\% agreement) by learning non-linear morphology representations.
-
-\noindent\textbf{SNR tier behavior and statistical uncertainty.} In Tab.~\ref{tab:condition_breakdown}, Spatial PCA F1 fluctuates non-monotonically across SNR tiers ($93.68\%$ at 0\,dB, $91.95\%$ at 3\,dB, $92.73\%$ at 6\,dB, $91.40\%$ at 9\,dB, $95.22\%$ at 12\,dB). Computing per-tier standard errors shows that tier-to-tier differences ($\approx 1.5\%$) fall well within the standard error of clustered subject anatomies ($\text{SE} \approx 1.0\%$). In FECGSYNDB, noise types vary between maternal muscle artifacts and electrode motion, and clinical condition ($c4$ arrhythmia) dominates total performance variance rather than additive Gaussian noise.
-
-\noindent\textbf{Generalization and anatomical variation.} On held-out test subjects (\texttt{sub09}--\texttt{sub10}), U-Net scores $97.48\%$ F1 compared to $88.13\%$ on the training set. However, held-out test estimates have $n=2$ subjects with wide statistical uncertainty. Furthermore, U-Net exhibits underfitting on certain training anatomies (\texttt{sub04}: $75.39\%$, \texttt{sub05}: $79.98\%$, \texttt{sub07}: $73.47\%$) across its 50 training epochs. Consequently, whether U-Net or Spatial PCA is ranked higher depends on the evaluation slice: on held-out test data, U-Net leads ($97.48\%$ vs $93.06\%$), while on the full 10-subject population mean, Spatial PCA achieves higher detection accuracy ($93.00\%$ vs $90.76\%$) while consuming three orders of magnitude fewer hardware resources.
-
-% =====================================================================
-\section{Theoretical Foundation and Analytical Predictions}
-\label{sec:theory}
-
-\subsection{Torso Subspace Dimensionality and Maternal Dipole}
-A fundamental theoretical question is: \textit{Why do 4 channels saturate performance while 1 or 2 channels fail?} Under the classical cardiac volume conduction model, the primary maternal electrical source is approximated as an equivalent rotating 3-dimensional cardiac dipole vector $\mathbf{d}_m[n] \in \mathbb{R}^3$ traversing an elliptical loop in torso coordinate space over the P-QRS-T cycle~\cite{sornmo_ecg,sameni2010}. Under the lead-field projection $\mathbf{x}[n] = \mathbf{A}_m \mathbf{d}_m[n] + \mathbf{b}_f f[n]$, the maternal contribution spans a 3-dimensional subspace:
-\begin{equation}
-    \text{rank}\left(\mathbb{E}\left[\mathbf{x}_{\text{mat}}\,\mathbf{x}_{\text{mat}}^T\right]\right) = \min(C, 3)
-\end{equation}
-For $C < 4$, any spatial projection seeking to suppress maternal energy either has zero non-trivial solutions ($C \le 3$) or severely attenuates the fetal dipole biopotential. With $C=4$, the maternal subspace occupies 3 dimensions, leaving a 1-dimensional orthogonal complement into which the fetal dipole projects with maternal interference minimized. Under clean baseline conditions (TC1), 2 leads can cancel the planar projection ($95.3\%$), but 4 leads are required during physiological non-idealities (fetal motion, breathing, uterine contractions) where maternal dipole axes rotate in 3-D space.
-
-Crucially, our beamformer employs a heuristic second-principal-component projection ($\mathbf{w} = \mathbf{v}_2$) that suppresses the dominant maternal direction $\mathbf{v}_1$; it does not achieve a complete mathematical null of the full 3-D maternal subspace. Empirical evaluation on training records confirms that $\mathbf{v}_1$ accounts for $88.4\%$ of total mixture variance and holds $82.6\%$ of overlapping maternal energy, whereas $\mathbf{v}_2$ (capturing $7.8\%$ of total variance) contains $15.0\%$ of fetal signal energy while attenuating $\mathbf{v}_1$ maternal spikes. Eigenvectors $\mathbf{v}_3$ ($2.6\%$) and $\mathbf{v}_4$ ($1.2\%$) are dominated by high-frequency EMG noise. The first two components together capture $96.2\%$ of total energy (Fig.~\ref{fig:eigen_spectrum}).
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/eigenvalue_subspace_spectrum.png}
-\caption{\tagLone\ Covariance eigen-spectrum and torso subspace dimensionality: (a)~4-Lead covariance eigen-spectrum ($[27, 26, 28, 25]$), showing maternal dipole energy concentrated in $\mathbf{v}_1$ ($88.4\%$) and fetal signal in $\mathbf{v}_2$ ($7.8\%$); (b)~Cumulative explained variance across 4-lead and 8-lead arrays, confirming that the first two components capture $>96\%$ of mixture variance.}
-\label{fig:eigen_spectrum}
-\end{figure}
-
-\subsection{Single-DSP Time-Multiplexed Execution Schedule}
-\label{sec:dsp_schedule}
-Rather than instantiating parallel multipliers, we designed a time-multiplexed schedule utilizing a single DSP48E1 slice (Fig.~\ref{fig:dsp_schedule}). Tab.~\ref{tab:cycle_schedule} details the stage-by-stage cycle breakdown:
-\begin{itemize}
-    \item \textbf{4-Channel Butterworth Bandpass (4 SOS):} 4 channels $\times$ 4 SOS sections $\times$ 5 multiply-accumulate operations = \textbf{80 clock cycles}.
-    \item \textbf{4-Channel Dual Notch Filtering (1 SOS):} 4 channels $\times$ 1 notch SOS $\times$ 5 operations = \textbf{20 clock cycles}.
-    \item \textbf{4-Lead Spatial PCA Beamforming:} $\sum_{k=1}^4 w_k x_k[n]$ inner product = \textbf{4 clock cycles}.
-    \item \textbf{5-Point Pan-Tompkins Derivative:} 5 multiply-adds = \textbf{5 clock cycles}.
-    \item \textbf{Nonlinear Squaring Operator:} 1 multiply operation = \textbf{1 clock cycle}.
-    \item \textbf{15-Sample Moving Integrator:} Running sum update = \textbf{2 clock cycles}.
-    \item \textbf{Adaptive Dual-Thresholding \& Comparison:} Threshold tracking = \textbf{4 clock cycles}.
-    \item \textbf{Refractory Counter \& Offset Blanking:} State updates = \textbf{2 clock cycles}.
-    \item \textbf{DSP48E1 Pipelining \& Control Handshaking:} Pipelining latency and staging = \textbf{30 clock cycles}.
-    \item \textbf{Total Deterministic Latency:} Budgeted \textbf{148 clock cycles} ($1.48\,\mu$s at 100\,MHz).
-\end{itemize}
-At $f_s = 250\,$Hz, each sampling period provides $T_s = 4,000\,\mu$s ($400,000$ clock cycles). Executing the pipeline in 148 cycles utilizes only $0.037\%$ of the available clock budget, yielding an estimated compute margin of $400,000 / 148 = 2,702\times$.
-
-\begin{table}[t]
-\caption{Stage-by-stage cycle derivation for single-DSP time-multiplexed schedule.}
-\label{tab:cycle_schedule}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}llccp{2.6cm}@{}}
-\toprule
-\textbf{Pipeline Stage} & \textbf{Mathematical Operation} & \textbf{Cycles} & \textbf{Hardware Resource} & \textbf{Derivation Method} \\
-\midrule
-Butterworth Bandpass & 4 ch $\times$ 4 SOS $\times$ 5 MACs & 80 & DSP48E1 slice & Direct Form II biquad \\
-Dual 50/60\,Hz Notch & 4 ch $\times$ 1 SOS $\times$ 5 MACs & 20 & DSP48E1 slice & 2nd-order IIR biquad \\
-Spatial PCA Beamformer & 4-point dot product $\mathbf{w}^T \mathbf{x}$ & 4 & DSP48E1 slice & 4 multiply-accumulate \\
-Pan-Tompkins Derivative & 5-point slope FIR filter & 5 & DSP48E1 slice & 5 multiply-adds \\
-Nonlinear Squaring & Energy operator $y^2[n]$ & 1 & DSP48E1 slice & Single 16-bit square \\
-Moving Integrator & 15-sample window add/sub & 2 & Fabric LUT logic & Delay line FIFO update \\
-Adaptive Thresholding & Dual SPKI / NPKI EMA update & 4 & Fabric LUT logic & Arithmetic bit-shifts \\
-Refractory Logic & 50-sample blanking counter & 2 & Fabric LUT logic & Up-counter comparator \\
-DSP48E1 Latency & Pipeline registers \& staging & 30 & DSP internal registers & UG479 latency stages \\
-\midrule
-\textbf{Total Per Sample} & \textbf{Complete extraction chain} & \textbf{148} & \textbf{1 DSP48E1 + Fabric} & \textbf{1.48\,$\mu$s at 100\,MHz} \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/dsp_time_multiplexing_schedule.png}
-\caption{\tagLtwo/\tagLfour\ Single-DSP48E1 time-multiplexed execution schedule [L4 Target]. All five IIR sections (bandpass $\times 4$ + notch), the 4-lead beamformer, derivative, squaring, and integration execute in 148 clock cycles ($1.48\,\mu$s at 100\,MHz), consuming $0.037\%$ of the $400,000$-cycle per-sample budget.}
-\label{fig:dsp_schedule}
-\end{figure}
-
-% =====================================================================
-\section{Hardware Sizing, Synthesis Targets, and Trade-Offs}
-\label{sec:hardware_resources}
-
-\begin{table}[t]
-\caption{\tagLfour\ Hardware resource sizing and comparison on Spartan-7 (XC7S50-CSGA324) at 100\,MHz.}
-\label{tab:hardware_resources}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lcccccr@{}}
-\toprule
-\textbf{Architecture} & \textbf{LUTs} & \textbf{FFs} & \textbf{DSP48E1} & \textbf{BRAM36k} & \textbf{Cycles} & \textbf{Compute Time} \\
-\midrule
-\textbf{Spatial PCA (4-Ch) [Ours]} & \textbf{990 (3.0\%)} & \textbf{720 (1.1\%)} & \textbf{1 (0.8\%)} & \textbf{1 (1.3\%)} & \textbf{148} & \textbf{1.48\,$\mu$s} \\
-Multi-Lead Template Fusion & 1,650 (5.1\%) & 1,280 (2.0\%) & 4 (3.3\%) & 8 (10.7\%) & 320 & 3.20\,$\mu$s \\
-Template Sub. (Fixed) & 1,020 (3.1\%) & 850 (1.3\%) & 2 (1.7\%) & 2 (2.7\%) & 210 & 2.10\,$\mu$s \\
-Wavelet-Threshold Hybrid & 1,320 (4.1\%) & 1,100 (1.7\%) & 4 (3.3\%) & 4 (5.3\%) & 280 & 2.80\,$\mu$s \\
-Single-Lead Hankel SVD (V1)$^\dagger$ & 4,200 (12.9\%) & 3,600 (5.5\%) & 48 (40.0\%) & 16 (21.3\%) & 1,840 & 18.40\,$\mu$s \\
-Deep 1D U-Net (Edge FPGA)$^\ddagger$ & 28,400 (87.1\%) & 22,000 (33.7\%) & 112 (93.3\%) & 65 (86.7\%) & 45,000 & 450.00\,$\mu$s \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/multichannel_fpga_resource_scaling.png}
-\caption{\tagLtwo/\tagLfour\ Hardware resource scaling and UART bus utilization across lead counts on Spartan-7 at 100\,MHz target clock. A 4-lead array requires only 1 DSP slice and consumes $<2.2\%$ of UART throughput at 921,600 baud.}
-\label{fig:fpga_scaling}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/hw_accuracy_tradeoff.png}
-\caption{\tagLone/\tagLtwo\ Hardware cost vs detection accuracy Pareto trade-off. Spatial PCA (4-Ch) provides the optimal trade-off: 93.00\% population mean F1 consuming $\approx 3.0\%$ LUTs (990 of 32,600) and 1 DSP slice on XC7S50.}
-\label{fig:hw_tradeoff}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/method_radar_comparison.png}
-\caption{\tagLone\ Multi-dimensional radar chart comparing six operational dimensions (F1 accuracy, noise robustness, arrhythmia resilience on $c4$, execution speed, hardware efficiency, and clinical agreement). Spatial PCA offers the most balanced profile for edge FPGA implementation.}
-\label{fig:radar_chart}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/runtime_comparison.png}
-\caption{\tagLone\ Software execution time per 5-minute record across algorithmic paradigms. Spatial PCA on CPU completes in 190.7\,ms, while GPU-accelerated U-Net executes in 98.6\,ms and Hankel SVD requires \fin{75.9\,ms (all software times as in Tab.~\ref{tab:mega_benchmark})}. The FPGA figure (\fin{$111\,$ms}) represents pure compute time for 75,000 samples at the sized \fin{$1.48\,\mu$s/sample (148 cycles at 100\,MHz)}; in real time the 5-minute record takes $300\,$s because samples arrive at $250\,$Hz.}
-\label{fig:runtime_bars}
-\end{figure}
-
-\noindent\textbf{How hardware resources were estimated.} Tab.~\ref{tab:hardware_resources} details the analytical architectural sizing [L4 Target] derived from the Xilinx 7-Series DSP48E1 Slice User Guide (UG479) and word-length optimization models~\cite{xilinx_dsp48,constantinides2004}. For Spatial PCA, logic resource counts account for the 4-channel input multiplexer, 8th-order bandpass filter state registers, dual notch registers, circular FIFO UART buffer, and the Peak-Energy peak detector with refractory timing counters:
-\begin{itemize}
-    \item \textbf{Logic Utilization:} 990 LUTs ($\approx 3.0\%$ of XC7S50, exactly $3.04\%$) and 720 Flip-Flops ($1.1\%$).
-    \item \textbf{DSP Efficiency:} Exactly 1 DSP48E1 slice ($0.8\%$ of available 120 slices).
-    \item \textbf{Power Footprint:} Estimated dynamic power is $<0.15\,$W at 100\,MHz.
-\end{itemize}
-\noindent\textit{Notes on comparative baselines in Tab.~\ref{tab:hardware_resources}:}
-$^\dagger$Single-Lead Hankel SVD (V1) is an analytical sizing estimate based on Jacobi SVD systolic arrays; it is not directly comparable to our streaming pipeline.
-$^\ddagger$Deep 1D U-Net is infeasible on-chip without external DRAM co-processing: the model contains $1.42\times 10^6$ parameters, which at 16-bit precision requires $\approx 2.84\,$MB of storage, exceeding the entire on-chip Block RAM capacity of the XC7S50 ($75 \times 36\,\text{kb} \approx 0.34\,$MB). It is included strictly as an upper-bound comparison baseline.
-
-% =====================================================================
-% FINAL REPORT: NEW SECTIONS (all blue)
-% =====================================================================
 \begin{finalpart}
 \section{Final Phase I: From Synthetic Benchmarks to Real Recordings}
 \label{sec:final_realdata}
@@ -898,7 +344,9 @@ $^\ddagger$Deep 1D U-Net is infeasible on-chip without external DRAM co-processi
 \end{itemize}
 Real recordings at other sampling rates are decimated causally to $250\,$Hz.
 
-\noindent\textbf{What the causal re-run showed.} Re-running the frozen mid-term design (spatial PCA beamformer with peak-energy detector) causally on all 1,248 FECGSYNDB records gave F1 $82.2\%$ and FHR MAE $18.8\,$bpm, against $93.0\%$ in the mid-term batch evaluation. On real CinC recordings it reached only $16.7\%$ (test) and $22.8\%$ (dev). Finding this early is what made the final design possible: every step below was built and judged against real recordings.
+\subsection{Mid-term Baseline}
+\label{sec:midterm_baseline}
+The mid-term design (spatial PCA beamformer with peak-energy detector; full description in App.~\ref{app:midterm}) scored F1 $93.0\%$ on 250 FECGSYNDB records in a batch evaluation, $82.2\%$ when re-run causally on all 1,248 FECGSYNDB records, and $16.7\%$ on the held-out real CinC recordings ($22.8\%$ on CinC dev). Every step below was built and judged against real recordings. % sources: tools/accuracy/results_cinc2013.csv (old_f1), tools/accuracy/README.md results table (frozen v1 causal, 1,248 records: 82.2), mid-term Tab. mega_benchmark (93.0)
 
 \noindent\textbf{v2: self-referencing beamformer (7 Nov).} We first improved the existing architecture. The PC computes the beamformer weights by a generalised eigen-decomposition (GEVD) on the design's own detections (QRS-window covariance against total covariance), with maternal-aware component choice and gated interference nulling. In the RTL we fixed a hard-coded latency in the peak localiser (18 instead of the parameter), reduced the latency compensation from 18 to 13 samples (measured group delay of the 20--30\,Hz detector band) and added a restartable detector warm-up (packet \texttt{0xC4}). Results:
 \begin{itemize}
@@ -1552,18 +1000,14 @@ DPSS, one lead~\cite{shokouhmand2023} & -- & 99.0 \\
 \label{sec:final_obs}
 
 \begin{enumerate}
-    \item \textbf{Real recordings are the true test, and we built our evaluation around them.} The mid-term design scored $93.0\%$ on FECGSYNDB in batch mode but $82.2\%$ causally and $16.7\%$ on real held-out recordings, and the U-Net and v2 both drop by 60--70 points from synthetic to real (Fig.~\ref{fig:fin_synreal}). Of the three designs in that figure, only our final algorithm holds above $90\%$ on both synthetic and real ADFECGDB data.
-    \item \textbf{Beat-by-beat maternal cancellation and multiple candidates are the key to real data.} Even with perfect (label-based) weights, one 4-lead linear filter reaches only $60\%$ on CinC, so no beamformer could have succeeded. The largest gains came from removing the maternal ECG beat by beat before spatial filtering and from keeping several candidate tracks instead of committing to one filter.
-    \item \textbf{Causal selection was the main error of v6; look-ahead closed most of it.} For v6 on CinC dev the best single candidate track scored $82.6\%$ and a per-window oracle $85.0\%$, against about $75\%$ for the causal label-free choice (Fig.~\ref{fig:fin_gap}). Better causal rules did not close this gap (Tab.~\ref{tab:v61_ideas}). Letting the selector see 7.5\,s of the future did: on all 75 CinC records v7-DL scores $80.8\%$ against $82.1\%$ for the best single track (Sec.~\ref{sec:v7_where}).
-    \item \textbf{We gave real data priority, at a small synthetic cost.} FECGSYNDB moved from $95.6\%$ (v2) to $91.4\%$ (v6) while held-out real-data F1 rose from $41.2\%$ to $65.5\%$. On some synthetic records the maternal detector locks onto the fetus; the $10\%$ energy confidence gate recovers most of this ($78.7 \to 91.3$ on the subset) without hurting real data, and v7-DL is back at $93.7\%$.
-    \item \textbf{Robustness on noisy data against irregular rhythms is a deliberate trade-off.} The RR-regularity and FHR-prior terms that make selection robust on noisy real data also penalise true irregular fetal rhythms ($c4$: $78.5\%$ for v6, $84.0\%$ for v7-DL). The FHR prior also means that fetal bradycardia below about 110\,bpm can be under-selected; we kept the prior mild for this reason (a stronger prior scored $+0.4$ on CinC dev and was rejected).
-    \item \textbf{Accuracy grows during a recording.} No beat is output before about $19.5\,$s, and the selector judges tracks over the trailing $20\,$s, so its decisions improve once a full window of data is available. In the web demonstration the running F1 rises over the first tens of seconds. Recalibrating the spatial filters every 30\,s (v6.1) helps mostly on the 5-min recordings; a 60-s CinC record gets at most one recalibration.
-    \item \textbf{The held-out half was protected, and the dev/test gap is understood.} CinC dev $76.0\%$ against CinC test $65.5\%$. Part is natural variation between the two halves (the dev half was already easier for v2: $42.0$ vs $41.2$ and for the mid-term design: $22.8$ vs $16.7$), part is the effect of choosing the design on the dev half. The test half was never used for a decision; v7-DL shows the same gap ($84.7\%$ against $76.9\%$). The test half has now been scored once for each of v5, v6, v6.1, v7-LA and v7-DL, so it is no longer a fresh test set.
-    \item \textbf{A bit-exact model makes hardware debugging tractable.} Writing the integer C model first, comparing every output byte in simulation and on the board, and changing the model before the RTL meant that every bug showed up as the first differing byte. The final RTL has the same output as the model on every record we ran, so the accuracy measured in software is the accuracy of the hardware.
-    \item \textbf{Our own datapath instead of a processor.} The final design uses about $5\times$ the LUTs of the MicroBlaze version, and in return it is our own datapath, runs at 50\,MHz with timing met, and is 4--5$\times$ faster than real time. In simulation the RTL alone needs a median of 1,485 cycles per sample, about $135\times$ faster than real time (Fig.~\ref{fig:wave_cycles}); the 4--5$\times$ on the board is set by the UART transfers and the PC answers, not by the FPGA logic. The mid-term resource target ($<5\%$ LUT, 1 DSP) was set for the much simpler beamformer and no longer applies. The look-ahead and display units of v7-DL add 7.7k LUTs and 11 BRAM tiles to v6.1 (82\% of the LUTs in total).
-    \item \textbf{Two outputs give both speed and accuracy.} v6 and v6.1 report each beat about $1.5$--$2\,$s after it occurs. v7-DL reports the final beats about $13.5\,$s later (at most $17.5\,$s) and gains 5 points on held-out CinC. The board sends both streams, so a monitor can show the live value at once and replace it with the final one. FHR monitoring shows heart-rate trends, so neither stream is meant for beat-synchronous triggering.
-    \item \textbf{The remaining real-data error is in the candidates.} Of the 15 CinC records below $70\%$ with v7-DL, 5 have references the challenge organisers flag as inaccurate and 8 have no candidate track above $70\%$; in none was a good track available but not chosen (Sec.~\ref{sec:v7_where}).
-    \item \textbf{Area-aware RTL made the on-chip look-ahead fit.} The first RTL of the look-ahead unit used 13.2k LUTs on its own and the design did not fit. Because the unit runs only once per 2.5\,s of signal, doing its arithmetic one bit per cycle cut it by $36\%$ to 8.4k LUTs with identical output; at 82\% LUT use the design meets timing at 50\,MHz ($+0.05\,$ns).
+    \item \textbf{Real recordings are the true test.} The U-Net and v2 both lose 60--70 points from synthetic to real data (Fig.~\ref{fig:fin_synreal}); of the three designs in that figure only our final algorithm stays above $90\%$ on both FECGSYNDB and ADFECGDB.
+    \item \textbf{Beat-by-beat maternal cancellation and multiple candidates are the key to real data.} Even with label-based weights, one 4-lead linear filter reaches only $60\%$ on CinC, so no beamformer could have succeeded.
+    \item \textbf{Look-ahead closed the selection gap.} For v6 on CinC dev the best single track scored $82.6\%$ and a per-window oracle $85.0\%$, against about $75\%$ for the causal choice (Fig.~\ref{fig:fin_gap}); better causal rules did not help (Tab.~\ref{tab:v61_ideas}), 7.5\,s of future did (v7-DL $80.8\%$ against $82.1\%$ for the best track on all CinC).
+    \item \textbf{Real data had priority, at a small synthetic cost.} FECGSYNDB moved from $95.6\%$ (v2) to $91.4\%$ (v6) while held-out CinC rose from $41.2\%$ to $65.5\%$; the $10\%$ maternal-energy gate recovered most of the synthetic loss ($78.7 \to 91.3$ on the subset) and v7-DL is back at $93.7\%$.
+    \item \textbf{Robustness against irregular rhythms is a deliberate trade-off.} The RR-regularity and FHR-prior terms penalise true irregular rhythms ($c4$: $78.5\%$ for v6, $84.0\%$ for v7-DL) and may under-select bradycardia below about 110\,bpm; a stronger prior ($+0.4$ on CinC dev) was rejected for this reason.
+    \item \textbf{Accuracy grows during a recording.} No beat is output before about $19.5\,$s and selection uses the trailing $20\,$s, so the running F1 rises over the first tens of seconds; a 60-s CinC record gets at most one 30-s recalibration.
+    \item \textbf{Dev/test gap.} CinC dev $76.0\%$ against test $65.5\%$ (v6) and $84.7\%$ against $76.9\%$ (v7-DL). Part is natural variation (the dev half was already easier for v2, $42.0$ vs $41.2$, and for the mid-term design, $22.8$ vs $16.7$), part is the effect of developing on the dev half; the test half was never used for a decision but has been scored once for each of five designs.
+    \item \textbf{Bit-exactness makes the hardware result the software result.} Model first, every output byte compared in simulation and on the board: each bug appeared as the first differing byte, and the accuracy measured on the C model is that of the hardware. The RTL alone runs about $135\times$ faster than real time (Fig.~\ref{fig:wave_cycles}); the 4--5$\times$ on the board is set by the UART and the PC, not by the logic.
 \end{enumerate}
 \end{finalpart}
 
@@ -2068,5 +1512,564 @@ Anthropic.
 }
 \end{thebibliography}
 }
+
+
+\clearpage
+\appendix
+\begin{finalpart}
+\section{Mid-term Design (Superseded)}
+\label{app:midterm}
+None of the resource, cycle or clock figures in this appendix describe the final hardware; they are the paper sizing of the mid-term beamformer, kept for the record. The final hardware is described in Secs.~\ref{sec:final_hw}--\ref{sec:final_v7} and Tab.~\ref{tab:v7_hw}.
+\end{finalpart}
+
+\noindent \textbf{Analytical Hardware Sizing [L4 Target]:} Sized a single-DSP48E1 time-multiplexed schedule executing in 148 clock cycles ($1.48\,\mu$s at 100\,MHz), utilizing $\approx 3.0\%$ LUTs (990 of 32,600) and 1 BRAM, providing an estimated $2,702\times$ compute margin against the $4.0\,$ms sample interval. \fin{(Superseded: this was a paper estimate for the mid-term beamformer. The final RTL runs at 50\,MHz and needs a median of 1,485 cycles per sample; Sec.~\ref{sec:final_hw}.)}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/system_pipeline.png}
+\caption{\tagLone/\tagLtwo\ Complete end-to-end NIFECG extraction and FPGA processing pipeline: (1)~4-Channel abdominal mixture acquisition; (2)~4th-order Butterworth 0.5--40\,Hz IIR preprocessing (4 SOS biquads\fin{; 4th-order prototype, 8th-order bandpass in total}) and dual 50/60\,Hz notch filter; (3)~Spatial covariance matrix computation and polarity-aligned beamforming; (4)~Peak-Energy fetal QRS detector; (5)~Median-filtered FHR estimation and 7-segment / UART display.}
+\label{fig:system_pipeline}
+\end{figure*}
+
+\begin{table}[t]
+\caption{Mid-term objective status summary against formal project targets.}
+\label{tab:objective_status}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llp{3.8cm}l@{}}
+\toprule
+\textbf{Objective} & \textbf{Description} & \textbf{Mid-Term Milestone Achievement} & \textbf{Formal Status} \\
+\midrule
+\textbf{O1: Algorithmic Resilience} & F1 $\ge 90\%$, MAE $<1.0\,$bpm baseline & F1 $93.00\%$ pop ($93.06\%$ test); MAE $0.32-0.48\,$bpm on \texttt{sub01}, $3.29\,$bpm on $c0$ & \textbf{Partially Met} \\
+\textbf{O2: Bit-True Integrity} & Fixed-point SQNR $\ge 60\,$dB & $+74.52\,$dB SQNR beamformer output; zero beat discordance & \textbf{Met (L2)} \\
+\textbf{O3: Sized Latency} & Per-sample latency $<10.0\,\mu$s & Sized 148 cycles ($1.48\,\mu$s at 100\,MHz, $2,702\times$ margin) & \textbf{Sized Estimate (L4)} \\
+\textbf{O4: Resource Efficiency} & $<5\%$ LUTs, $\le 1$ DSP48E1 slice & Sized $\approx 3.0\%$ LUTs (990), 1 DSP48E1, 1 BRAM & \textbf{Sized Estimate (L4)} \\
+\textbf{O5: Hardware Bring-Up} & Physical board UART \& 7-seg & Presets and pin constraints mapped; synthesis sprint Nov 1--10 & \textbf{Scheduled for Sprint} \fin{$\to$ \textbf{Done} (Sec.~\ref{sec:final_hw})} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+% =====================================================================
+\subsection{Fixed-Point Implementation and Word-Length Design}
+\label{sec:fixed_point}
+
+\fin{\noindent\textit{Note.} Sections~\ref{sec:fixed_point}--\ref{sec:hardware_resources} describe the mid-term design (Q1.15 data and weights, a 100-MHz single-DSP schedule sized on paper). The final RTL uses different formats: int16 input samples, filter data in Q8 inside int32 with Q28 filter coefficients, and Q14 spatial weights, at 50\,MHz (Sec.~\ref{sec:final_hw}).}
+
+\newcontent{To bridge the gap between software simulation and physical FPGA realization, all arithmetic was mapped into two's-complement signed fixed-point formats targeting Spartan-7 DSP48E1 slices, detailed in Tab.~\ref{tab:fixed_point_specs}:
+\begin{itemize}
+    \item \textbf{Analog Front-End (AFE) Scaling:} An instrumentation amplifier gain of $G = 200$ maps a $\pm 5.0\,$mV biopotential range to the ADC input\fin{ ($\pm 1.0\,$V, i.e.\ an external ADC with a $\pm 1\,$V input range is assumed; the on-board XADC accepts less, see Sec.~\ref{sec:host_interface})}. Full scale $\pm 5.0\,$mV maps to $[-1.0, +1.0)$ in Q1.15 format, yielding a resolution of $\Delta = 5.0\,\text{mV} / 32768 \approx 0.152\,\mu$V per LSB. A $20\,\mu$V fetal peak corresponds to $131$ LSBs, while a $2.5\,$mV maternal peak occupies $16,384$ LSBs.
+    \item \textbf{Filter Coefficients and States:} Preprocessing IIR SOS coefficients require Q2.14 format to accommodate pole placements where $a_1 \approx -1.97$. Filter internal states use 24-bit representations to prevent overflow during high-Q transients.
+    \item \textbf{Beamformer Weights:} Q1.15 format, normalized such that $\|\mathbf{w}\|_2 \le 1.0$.
+    \item \textbf{DSP Accumulator:} 48-bit accumulator with 4 guard bits to prevent internal overflow across additions.
+\end{itemize}
+Quantization is modeled via round-to-nearest-even with two's-complement saturation:
+\begin{equation}
+    x_{q} = \text{clip}\left(\text{round}(x \cdot 2^{15}), -32768, 32767\right) \cdot 2^{-15}
+\end{equation}
+}
+
+\begin{table}[t]
+\caption{Fixed-point word-length specifications across pipeline processing stages.}
+\label{tab:fixed_point_specs}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llccp{2.6cm}@{}}
+\toprule
+\textbf{Pipeline Stage} & \textbf{Data Element} & \textbf{Width} & \textbf{Format} & \textbf{Overflow / Rounding} \\
+\midrule
+Input ADC Stream & 4-Lead Abdominal Samples & 16-bit & Q1.15 & Two's-complement saturation \\
+IIR SOS Biquads & Numerator/Denominator ($b_i, a_i$) & 16-bit & Q2.14 & Round-to-nearest-even \\
+IIR Filter States & Direct-Form II Delay Registers & 24-bit & Q8.16 & Saturation on transient \\
+Spatial Beamformer & Eigenvector Weights ($w_k$) & 16-bit & Q1.15 & $\|\mathbf{w}\|_2 \le 1.0$, Round-even \\
+DSP48E1 Multiplier & Sample $\times$ Weight Products & 32-bit & Q3.29 & Full-precision product \\
+DSP48E1 Accumulator& 4-Channel Beamformed Sum & 48-bit & Q16.32 & 4 guard bits; no overflow \\
+Beamformer Output & Scaled Fetal Scalar ($\hat{f}$) & 16-bit & Q1.15 & Round-to-nearest-even \\
+Derivative Filter & 5-Point Slope Output & 16-bit & Q1.15 & Saturated arithmetic \\
+Squaring Stage & Energy Operator ($z[n] = y^2$) & 32-bit & Q2.30 & Exact non-negative \\
+Moving Integrator & 15-Sample Running Sum & 32-bit & Q6.26 & Accumulator subtraction \\
+Adaptive Threshold & Running SPKI / NPKI & 32-bit & Q6.26 & Bit-shift EMA ($\alpha = 0.125$) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/quantization_null_depth.png}
+\caption{\tagLtwo\ Quantization word-length design sweep: Maternal subspace null depth vs weight word length $B$, comparing theoretical bound (Eq.~\ref{eq:null_bound}) against bit-true simulation. Target format ($B=16$) achieves $95.1\,$dB nulling, safely exceeding the $55\,$dB clinical requirement.}
+\label{fig:quantization_sweep}
+\end{figure}
+
+\noindent\textbf{Theoretical null depth quantization analysis.} Under finite word length $B$, quantized weight vectors $\mathbf{w}_q = \mathbf{w} + \mathbf{e}_w$ introduce an upper bound on achievable maternal null rejection. Assuming uniform rounding noise of variance $\sigma_q^2 = \Delta^2 / 12 = 2^{-2(B-1)} / 12$ across $C$ channels:
+\begin{equation}
+    R_{\text{null}} \approx 20 \log_{10} \left( \frac{\sqrt{12} \cdot 2^{B-1}}{\sqrt{C}} \right) \quad \text{[dB]}
+    \label{eq:null_bound}
+\end{equation}
+At our target format ($B=16$, Q1.15) with $C=4$ channels, Eq.~\eqref{eq:null_bound} evaluates to $95.1\,$dB. In bit-accurate simulation, empirical null depth reaches $95.0\,$dB (Fig.~\ref{fig:quantization_sweep}), safely exceeding the $55\,$dB requirement derived from suppressing $20$--$35\,$dB maternal amplitude excess with $\ge 20\,$dB margin below the fetal biopotential. At $B=12$, null depth is $71.0\,$dB; at $B=10$, it is $59.0\,$dB.
+
+\newcontent{\noindent\textbf{Bit-true verification on 5,000 golden vectors [L2].} We implemented a cycle-accurate Python fixed-point emulator (\texttt{fixed\_point\_model.py}) modeling DSP48E1 arithmetic, intermediate rounding, and saturation. Evaluating Signal-to-Quantization-Noise Ratio at the beamformer output node $\hat{f}[n]$ across 5,000 continuous golden samples:
+\begin{equation}
+    \text{SQNR} = 10 \log_{10} \frac{\sum_{n=1}^{5000} |f_{\text{float}}[n]|^2}{\sum_{n=1}^{5000} |f_{\text{float}}[n] - f_{\text{fixed}}[n]|^2}
+\end{equation}
+confirms $+74.52\,$dB SQNR for Spatial PCA (and $+85.04\,$dB for secondary Hankel SVD), with $100.0\%$ beat detection concordance and zero degraded peaks relative to double-precision software.}
+
+\subsubsection{Scope of the Hardware Demonstration and Host Interface}
+\label{sec:host_interface}
+\fin{In the mid-term and the final system}, physical AFE and ADC hardware are modeled rather than physically built; 16-bit signed samples are assumed. If the RealDigital Boolean Board's on-board XADC were utilized, it provides 12-bit resolution ($2.44\,\mu$V/LSB\fin{ referred to the input}), rendering a $20\,\mu$V fetal peak $\approx 8$ LSBs. \fin{The 7-series XADC accepts at most $1\,$V peak-to-peak ($0$ to $1\,$V unipolar or $\pm 0.5\,$V bipolar, Xilinx UG480), so the $\pm 1.0\,$V output of the $G = 200$ amplifier would clip it by a factor of two; with the XADC the gain must be halved to $G = 100$, which maps $\pm 5\,$mV to $\pm 0.5\,$V and gives the $10\,\text{mV} / 4096 = 2.44\,\mu$V/LSB stated above.} Calibration weights $\mathbf{w}$ are derived from a 3.0-second host buffer and stay static, meaning fetal/maternal positional shifts require periodic host recalibration.
+
+Full 5-minute recordings cannot be stored in on-chip Block RAM. We implemented continuous UART streaming at 921,600 baud. Each 4-channel sample frame comprises an 8-byte payload ($4 \times 16\,$bits). At 921,600 baud with 10 bits per byte (1 start, 8 data, 1 stop), 8 bytes require $80 / 921,600 \approx 86.8\,\mu$s, consuming $2.17\%$ of the $4,000\,\mu$s per-sample budget and requiring only 1 BRAM (36\,kb) for circular FIFO buffering.
+
+% =====================================================================
+\subsection{Experimental Plan and Evaluation Methodology}
+\label{sec:experimental_plan}
+
+All algorithms are benchmarked under identical frozen conditions: $f_s = 250\,$Hz, 4th-order Butterworth 0.5--40\,Hz conditioning \fin{(4th-order prototype; 8th-order bandpass, 4 SOS)}, and our Peak-Energy fetal QRS detector evaluated within a $\pm 50\,$ms match tolerance window in accordance with international PhysioNet/CinC Challenge 2013 standards~\cite{silva2013,clifford2014}. 
+
+\noindent\textbf{Evaluation metrics and mathematical definitions.}
+\begin{equation}
+    \text{Sensitivity (Se)} = \frac{\text{TP}}{\text{TP} + \text{FN}}, \quad \text{PPV} = \frac{\text{TP}}{\text{TP} + \text{FP}}
+\end{equation}
+\begin{equation}
+    \text{F1-Score} = 2 \times \frac{\text{PPV} \times \text{Se}}{\text{PPV} + \text{Se}}
+\end{equation}
+\begin{equation}
+    \text{FHR MAE} = \frac{1}{K} \sum_{k=1}^K |\text{FHR}_{\text{est}}[k] - \text{FHR}_{\text{ref}}[k]| \quad \text{[bpm]}
+\end{equation}
+\begin{equation}
+    \text{FHR RMSE} = \sqrt{\frac{1}{K} \sum_{k=1}^K (\text{FHR}_{\text{est}}[k] - \text{FHR}_{\text{ref}}[k])^2} \quad \text{[bpm]}
+\end{equation}
+\newcontent{
+Instantaneous fetal heart rate is computed from detected peak timestamps:
+\begin{equation}
+    \text{FHR}[k] = \frac{60 \times f_s}{t_{\text{peak}}[k] - t_{\text{peak}}[k-1]} \quad \text{[bpm]}
+\end{equation}
+smoothed by a 5-beat moving median filter to eliminate single-beat ectopic outliers. Ground truth $\text{FHR}_{\text{ref}}[k]$ is computed identically from reference annotations. We report the \textbf{Clinical Agreement Percentage} ($\% \le \pm 5\,$bpm) representing the proportion of beats where $|\text{FHR}_{\text{est}} - \text{FHR}_{\text{ref}}| \le 5.0\,$bpm.
+
+\noindent\textbf{Confidence interval methodology and intra-cluster correlation.} Statistical uncertainty across the 250 evaluation recordings is analyzed at two distinct methodological levels:
+\begin{enumerate}
+    \item \textbf{Run-Level Dispersion:} Evaluated across all $N_{\text{run}} = 250$ records under the standard independent-run assumption:
+    \begin{equation}
+        \text{CI}_{95\%}^{\text{run}} = \bar{F}_1 \pm 1.96 \cdot \frac{s_{\text{run}}}{\sqrt{N_{\text{run}}}}
+    \end{equation}
+    yielding $\pm 1.08\%$ for Spatial PCA ($s_{\text{run}} = 8.67\%$, $\text{SE} = 0.55\%$) and $\pm 1.97\%$ for Deep U-Net ($s_{\text{run}} = 15.84\%$, $\text{SE} = 1.00\%$).
+    \item \textbf{Subject-Level Clustered Confidence Intervals:} In FECGSYNDB, the 250 records originate from 10 distinct simulated maternal-fetal anatomical geometries (25 records per subject across 5 SNRs and 5 conditions). Recordings from the same subject share identical maternal dipole loop orientations and volume conduction transfer matrices, creating positive intra-cluster correlation. Treating all 250 runs as independent underestimates uncertainty. We therefore compute clustered confidence intervals using Student's $t$-distribution with $N_{\text{subj}} - 1 = 9$ degrees of freedom ($t_{0.025, 9} = 2.262$):
+    \begin{equation}
+        \text{CI}_{95\%}^{\text{subj}} = \bar{F}_{1, \text{subj}} \pm t_{0.025, N_{\text{subj}}-1} \cdot \frac{s_{\text{subj}}}{\sqrt{N_{\text{subj}}}}
+        \label{eq:clustered_ci}
+    \end{equation}
+    where $N_{\text{subj}} = 10$, $s_{\text{subj}}$ is the standard deviation across per-subject mean performances ($s_{\text{subj}} = 3.28\%$ for Spatial PCA, yielding $\text{CI}_{95\%}^{\text{subj}} = 93.00\% \pm 2.35\%$, CI $[90.65\%, 95.34\%]$; for Deep U-Net, $s_{\text{subj}} = 10.16\%$, yielding $90.76\% \pm 7.27\%$, CI $[83.48\%, 98.03\%]$). Clustered intervals provide a rigorous measure of between-subject variability across synthetic anatomies.
+\end{enumerate}
+}
+
+% =====================================================================
+\subsection{Empirical Performance Evaluation and Benchmark Analysis}
+\label{sec:results}
+
+\begin{table*}[t]
+\caption{\tagLone/\tagLtwo\ Controlled In-Sample Stress Benchmark on Subject 1 across all five standardized PhysioNet FECGSYNDB stress test cases (TC1--TC5, 75,000 samples each). Evaluated at $\pm 50\,$ms tolerance window across 35 benchmark evaluations. Methods are ordered consistently across all test cases. Note: Under TC1--TC3 on Lead 27, single-channel Template Subtraction (Fixed) and Hankel-SVD V1 yield identical beat counts (546 TP, 168 FP, 170 FN in TC1) because both algorithms isolate identical dominant maternal QRS complexes, leaving identical residual noise profiles passed to the same downstream Peak-Energy detector. Deep U-Net (1-Ch) is evaluated in-sample on \texttt{sub01}. Runtime is wall-clock time per 5-second window.}
+\label{tab:master_benchmark}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llccccccrrrrrcrr@{}}
+\toprule
+\textbf{Test Case} & \textbf{Algorithm / Method} & \textbf{Config} & \textbf{Det.} & \textbf{Ref.} & \textbf{TP} & \textbf{FP} & \textbf{FN} & \textbf{PPV (\%)} & \textbf{Se (\%)} & \textbf{F1 (\%)} & \textbf{FHR MAE} & \textbf{FHR RMSE} & \textbf{Agr. ($\le \pm 5\,$bpm)} & \textbf{Corr.} & \textbf{Runtime} \\
+\midrule
+\textbf{TC1} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 716 & 716 & \textbf{716} & \textbf{0} & \textbf{0} & \textbf{100.0} & \textbf{100.0} & \textbf{100.00} & \textbf{0.32\,bpm} & \textbf{0.48\,bpm} & \textbf{100.0\%} & \textbf{0.998} & \textbf{0.003\,s} \\
+(12\,dB $c0$) & Deep 1D U-Net (Neural) & 1-Ch & 712 & 716 & 712 & 0 & 4 & 100.0 & 99.4 & \textbf{99.72} & 0.45\,bpm & 0.62\,bpm & 99.7\% & 0.966 & 0.082\,s \\
+& Multi-Lead Template Fusion & 4-Ch & 716 & 716 & 700 & 16 & 16 & 97.8 & 97.8 & 97.77 & 1.85\,bpm & 2.45\,bpm & 95.8\% & 0.884 & 0.012\,s \\
+& Wavelet-Threshold Hybrid & 1-Ch & 715 & 716 & 553 & 162 & 163 & 77.3 & 77.2 & 77.29 & 18.30\,bpm & 24.12\,bpm & 62.4\% & 0.270 & 0.020\,s \\
+& Template Subtraction (Fixed) & 1-Ch & 714 & 716 & 546 & 168 & 170 & 76.5 & 76.3 & 76.36 & 19.54\,bpm & 25.80\,bpm & 61.2\% & 0.270 & 0.018\,s \\
+& Hankel-SVD V1 (Fixed Period) & 1-Ch & 714 & 716 & 546 & 168 & 170 & 76.5 & 76.3 & 76.36 & 19.52\,bpm & 25.75\,bpm & 61.2\% & 0.270 & 0.026\,s \\
+& SWT-LMS Wavelet Filter & 1-Ch & 373 & 716 & 82 & 291 & 634 & 22.0 & 11.5 & 15.06 & 46.64\,bpm & 58.20\,bpm & 14.2\% & 0.001 & 1.772\,s \\
+\midrule
+\textbf{TC2} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 716 & 716 & \textbf{716} & \textbf{0} & \textbf{0} & \textbf{100.0} & \textbf{100.0} & \textbf{100.00} & \textbf{0.41\,bpm} & \textbf{0.58\,bpm} & \textbf{100.0\%} & \textbf{0.997} & \textbf{0.003\,s} \\
+(6\,dB $c0$)  & Deep 1D U-Net (Neural) & 1-Ch & 713 & 716 & 713 & 0 & 3 & 100.0 & 99.6 & \textbf{99.79} & 0.42\,bpm & 0.59\,bpm & 99.8\% & 0.991 & 0.082\,s \\
+& Multi-Lead Template Fusion & 4-Ch & 751 & 716 & 690 & 61 & 26 & 91.9 & 96.4 & 94.07 & 2.45\,bpm & 3.20\,bpm & 93.4\% & 0.825 & 0.012\,s \\
+& Wavelet-Threshold Hybrid & 1-Ch & 749 & 716 & 230 & 519 & 486 & 30.7 & 32.1 & 31.40 & 32.99\,bpm & 41.50\,bpm & 38.6\% & 0.109 & 0.020\,s \\
+& Template Subtraction (Fixed) & 1-Ch & 717 & 716 & 221 & 496 & 495 & 30.8 & 30.9 & 30.84 & 34.33\,bpm & 42.95\,bpm & 37.4\% & 0.106 & 0.018\,s \\
+& Hankel-SVD V1 (Fixed Period) & 1-Ch & 743 & 716 & 226 & 517 & 490 & 30.4 & 31.6 & 30.98 & 34.47\,bpm & 43.10\,bpm & 37.2\% & 0.109 & 0.027\,s \\
+& SWT-LMS Wavelet Filter & 1-Ch & 446 & 716 & 102 & 344 & 614 & 22.9 & 14.2 & 17.56 & 42.65\,bpm & 52.80\,bpm & 18.5\% & 0.009 & 1.805\,s \\
+\midrule
+\textbf{TC3} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 715 & 715 & \textbf{715} & \textbf{0} & \textbf{0} & \textbf{100.0} & \textbf{100.0} & \textbf{100.00} & \textbf{0.48\,bpm} & \textbf{0.65\,bpm} & \textbf{100.0\%} & \textbf{0.994} & \textbf{0.003\,s} \\
+(0\,dB $c0$)  & Deep 1D U-Net (Neural) & 1-Ch & 706 & 715 & 706 & 0 & 9 & 100.0 & 98.7 & \textbf{99.37} & 0.65\,bpm & 0.88\,bpm & 99.2\% & 0.963 & 0.082\,s \\
+& Multi-Lead Template Fusion & 4-Ch & 819 & 715 & 241 & 578 & 474 & 29.4 & 33.7 & 31.42 & 31.20\,bpm & 39.40\,bpm & 41.2\% & 0.145 & 0.012\,s \\
+& Wavelet-Threshold Hybrid & 1-Ch & 746 & 715 & 180 & 566 & 535 & 24.1 & 25.2 & 24.64 & 33.39\,bpm & 42.10\,bpm & 35.8\% & 0.017 & 0.026\,s \\
+& Template Subtraction (Fixed) & 1-Ch & 734 & 715 & 173 & 561 & 542 & 23.6 & 24.2 & 23.88 & 33.16\,bpm & 41.80\,bpm & 36.2\% & 0.017 & 0.019\,s \\
+& Hankel-SVD V1 (Fixed Period) & 1-Ch & 752 & 715 & 174 & 578 & 541 & 23.1 & 24.3 & 23.72 & 32.82\,bpm & 41.40\,bpm & 36.5\% & 0.017 & 0.026\,s \\
+& SWT-LMS Wavelet Filter & 1-Ch & 392 & 715 & 106 & 286 & 609 & 27.0 & 14.8 & 19.15 & 48.92\,bpm & 59.40\,bpm & 12.8\% & 0.000 & 1.792\,s \\
+\midrule
+\textbf{TC4} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 721 & 716 & 523 & 198 & 193 & 72.5 & 73.0 & \textbf{72.79} & 8.42\,bpm & 11.20\,bpm & 82.5\% & 0.742 & \textbf{0.003\,s} \\
+(6\,dB $c1$)  & Deep 1D U-Net (Neural) & 1-Ch & 710 & 716 & 710 & 0 & 6 & 100.0 & 99.2 & \textbf{99.58} & \textbf{0.58\,bpm} & \textbf{0.80\,bpm} & \textbf{99.4\%} & \textbf{0.979} & 0.082\,s \\
+& Multi-Lead Template Fusion & 4-Ch & 790 & 716 & 441 & 349 & 275 & 55.8 & 61.6 & 58.57 & 14.20\,bpm & 18.60\,bpm & 71.8\% & 0.420 & 0.012\,s \\
+& Wavelet-Threshold Hybrid & 1-Ch & 750 & 716 & 270 & 480 & 446 & 36.0 & 37.7 & 36.83 & 31.22\,bpm & 39.80\,bpm & 42.1\% & 0.199 & 0.022\,s \\
+& Template Subtraction (Fixed) & 1-Ch & 695 & 716 & 252 & 443 & 464 & 36.3 & 35.2 & 35.72 & 32.28\,bpm & 40.90\,bpm & 41.0\% & 0.189 & 0.018\,s \\
+& Hankel-SVD V1 (Fixed Period) & 1-Ch & 733 & 716 & 261 & 472 & 455 & 35.6 & 36.5 & 36.02 & 31.70\,bpm & 40.20\,bpm & 41.5\% & 0.199 & 0.026\,s \\
+& SWT-LMS Wavelet Filter & 1-Ch & 419 & 716 & 105 & 314 & 611 & 25.1 & 14.7 & 18.50 & 47.20\,bpm & 57.60\,bpm & 16.4\% & 0.006 & 1.767\,s \\
+\midrule
+\textbf{TC5} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & 662 & 716 & 606 & 56 & 110 & 91.5 & 84.6 & \textbf{87.95} & 3.15\,bpm & 4.45\,bpm & 91.2\% & 0.812 & \textbf{0.003\,s} \\
+(6\,dB $c4$)  & Deep 1D U-Net (Neural) & 1-Ch & 713 & 716 & 675 & 38 & 41 & 94.7 & 94.3 & \textbf{94.47} & \textbf{2.10\,bpm} & \textbf{3.10\,bpm} & \textbf{93.8\%} & \textbf{0.995} & 0.082\,s \\
+& Multi-Lead Template Fusion & 4-Ch & 833 & 716 & 519 & 314 & 197 & 62.3 & 72.5 & 67.01 & 12.80\,bpm & 16.90\,bpm & 74.5\% & 0.490 & 0.012\,s \\
+& Wavelet-Threshold Hybrid & 1-Ch & 774 & 716 & 209 & 565 & 507 & 27.0 & 29.2 & 28.05 & 31.89\,bpm & 40.60\,bpm & 40.8\% & 0.113 & 0.018\,s \\
+& Template Subtraction (Fixed) & 1-Ch & 766 & 716 & 211 & 555 & 505 & 27.5 & 29.5 & 28.48 & 31.88\,bpm & 40.50\,bpm & 41.2\% & 0.113 & 0.017\,s \\
+& Hankel-SVD V1 (Fixed Period) & 1-Ch & 772 & 716 & 206 & 566 & 510 & 26.7 & 28.8 & 27.69 & 30.95\,bpm & 39.70\,bpm & 42.0\% & 0.107 & 0.025\,s \\
+& SWT-LMS Wavelet Filter & 1-Ch & 355 & 716 & 78 & 277 & 638 & 22.0 & 10.9 & 14.57 & 49.21\,bpm & 60.10\,bpm & 11.5\% & 0.011 & 1.812\,s \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\begin{table}[t]
+\caption{\tagLone\ Subject 1 Stress Benchmark Performance Summary (TC1--TC5), generated programmatically by unweighted average of Tab.~\ref{tab:master_benchmark}.}
+\label{tab:executive_summary}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llccccr@{}}
+\toprule
+\textbf{Algorithm} & \textbf{Config} & \textbf{Avg F1} & \textbf{FHR MAE} & \textbf{Agr. ($\pm 5$bpm)} & \textbf{Corr.} & \textbf{FPGA Viability} \\
+\midrule
+\textbf{Deep 1D U-Net} & 1-Ch & \textbf{98.59\%} & \textbf{0.84\,bpm} & \textbf{98.4\%} & \textbf{0.979} & Edge NPU / Host Co-proc. \\
+\textbf{Spatial PCA (4-Ch)} & 4-Ch & \textbf{92.15\%} & \textbf{2.56\,bpm} & \textbf{94.7\%} & \textbf{0.909} & \textbf{Spartan-7 ($\approx$3.0\% LUT, 1 DSP)} \\
+MC Template Fusion & 4-Ch & 69.77\% & 12.50\,bpm & 75.3\% & 0.553 & Spartan-7 (5.1\% LUT, 4 DSPs) \\
+Wavelet-Threshold Hybrid & 1-Ch & 39.64\% & 29.56\,bpm & 43.9\% & 0.141 & Spartan-7 (4.1\% LUT, 4 DSPs) \\
+Template Sub. (Fixed) & 1-Ch & 39.06\% & 30.24\,bpm & 43.4\% & 0.139 & Spartan-7 (3.1\% LUT, 2 DSPs) \\
+Hankel-SVD V1 & 1-Ch & 38.96\% & 29.89\,bpm & 43.7\% & 0.140 & Spartan-7 (12.9\% LUT, 48 DSPs) \\
+SWT-LMS Wavelet Filter & 1-Ch & 16.97\% & 46.92\,bpm & 14.7\% & 0.005 & High DSP ($>$100\% on XC7S50) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/f1_comparison_all_methods.png}
+\caption{\tagLone\ Comparative F1-score performance across all seven extraction architectures on the five frozen PhysioNet stress test cases (TC1--TC5). Spatial PCA Beamforming and Deep U-Net achieve near-perfect detection on baseline cases, whereas single-channel temporal subtraction algorithms collapse under severe noise and arrhythmia. Deep U-Net bars represent in-sample baseline on Subject 1.}
+\label{fig:f1_comparison}
+\end{figure*}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fhr_error_bland_altman.png}
+\caption{\tagLone/\tagLtwo\ Fetal Heart Rate (FHR) precision analysis on Subject 1 baseline records: (a)~FHR Mean Absolute Error across TC1--TC5; (b)~Bland-Altman agreement plot for Spatial PCA against reference ground truth ($95\%$ limits of agreement: \fin{$[-4.75, +5.88]\,$bpm, mean bias $+0.57\,$bpm, as marked in the plot}).}
+\label{fig:fhr_bland_altman}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/snr_degradation_curve.png}
+\caption{\tagLone\ Algorithm robustness under input SNR degradation ($12\,\text{dB} \to 6\,\text{dB} \to 0\,\text{dB}$). Spatial PCA maintains $100\%$ detection down to $0\,$dB on Subject 1, while single-channel baselines degrade to $<25\%$.}
+\label{fig:snr_curve}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/f1_heatmap.png}
+\caption{\tagLone\ Heatmap matrix of F1-scores across all methods and stress cases, confirming Spatial PCA and Deep U-Net dominance on Subject 1.}
+\label{fig:heatmap}
+\end{figure}
+
+\subsubsection{Performance Analysis on Subject 1}
+The benchmark results in Tab.~\ref{tab:master_benchmark}, Tab.~\ref{tab:executive_summary}, and Figs.~\ref{fig:f1_comparison}--\ref{fig:heatmap} provide crucial insights:
+\begin{enumerate}
+    \item \textbf{In-Sample Subject 1 Baseline:} On \texttt{sub01}, Deep 1D U-Net (1-Ch) scores 98.59\% because the network was optimized on that subject's anatomical transfer function. In Tab.~\ref{tab:partition_breakdown}, its population mean F1 across all 10 subjects is 90.76\% (4-Ch) and 80.79\% (1-Ch).
+    \item \textbf{Single-Lead Temporal Breakdown:} Single-channel subtraction reaches only 76.36\% F1 at 12\,dB (failing the $\ge 90\%$ clinical target), and collapses to 23.88\% at 0\,dB and 28.48\% under arrhythmia. Temporal QRS collisions cause the subtraction filter to destroy fetal morphology.
+    \item \textbf{Spatial Subspace Nulling Power:} 4-Lead Spatial PCA maintains 100.0\% F1 across TC1, TC2, and TC3 ($12\,$dB down to $0\,$dB on Subject 1), with FHR MAE $<0.5\,$bpm and 100.0\% of beats within $\pm 5\,$bpm under clean baseline conditions. Spatial projection reduces the dependence on temporal coincidence of maternal/fetal QRS; it still degrades under fetal movement ($c1$: 72.79\% on TC4) and arrhythmia ($c4$).
+    \item \textbf{Wavelet Adaptive LMS Failure:} The SWT-LMS baseline collapses to 15.06\% F1 because single-channel abdominal mixtures lack a pure maternal reference lead, forcing LMS to actively cancel fetal complexes.
+\end{enumerate}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/deep_learning_waveform_comparison.png}
+\caption{\tagLone\ Morphological reconstruction by Deep 1D U-Net over a 5-second window: (A)~Raw abdominal mixture; (B)~Ground truth reference; (C)~U-Net reconstructed waveform exhibiting near-perfect morphology recovery (\fin{TC1, \texttt{sub01} at 12\,dB; $r = 0.966$ over the record, Tab.~\ref{tab:master_benchmark}}).}
+\label{fig:deep_learning_plot}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/multichannel_accuracy_scaling.png}
+\caption{\tagLone\ F1-score accuracy scaling from 1 to 34 leads. Spatial PCA converges to 100\% accuracy on TC1--TC3 with just 4 channels, saturating beyond 8 leads.}
+\label{fig:accuracy_scaling}
+\end{figure}
+
+\subsubsection{Multichannel Scaling and Lead Redundancy}
+Fig.~\ref{fig:accuracy_scaling} illustrates scaling behavior across channel counts:
+\begin{itemize}
+    \item \textbf{1 Lead (Lead 27):} Raw Lead 27 yields only 20.6--35.8\% F1 due to zero spatial degrees of freedom.
+    \item \textbf{2 Leads ([27, 26]):} F1 jumps to 95.3\% on TC1 as the primary maternal projection is cancelled.
+    \item \textbf{4 Leads ([27, 26, 28, 25]):} F1 reaches \textbf{100.0\%} on TC1--TC3 and \textbf{92.15\% average} across Subject 1 stress cases.
+    \item \textbf{8 to 34 Leads:} Performance plateaus between 90\% and 93.4\%, confirming that our 4-lead suprapubic sub-array provides a highly favorable balance between detection accuracy and hardware complexity.
+\end{itemize}
+
+\subsubsection{Population Mega-Benchmark (250 Records, 2,250 Runs)}
+To establish statistical significance across diverse maternal anatomies, we executed our automated mega-benchmark across all 10 simulated subjects (\texttt{sub01}--\texttt{sub10}), 5 SNRs ($0$--$12\,$dB), and 5 conditions ($c0$--$c4$), totaling 250 records (75,000 samples each) and 2,250 runs (Tab.~\ref{tab:mega_benchmark}, Tab.~\ref{tab:partition_breakdown}, Tab.~\ref{tab:subject_consistency}, Tab.~\ref{tab:condition_breakdown}, and Figs.~\ref{fig:mega_f1}--\ref{fig:mega_subjects}).
+
+\begin{table}[t]
+\caption{\tagLone\ Population Benchmark across the Full 250-Record FECGSYNDB Database ($N_{\text{subj}}=10$, 25 runs/subject). Reported intervals are 95\% Subject-Level Clustered Confidence Intervals (Student-$t$, $df=9$, $t_{\text{crit}}=2.262$); corresponding 95\% run-level CI half-widths across all $N=250$ records are $\pm 1.08\%$ for Spatial PCA and $\pm 1.97\%$ for Deep U-Net. Speed indicates single-thread CPU execution time per 5-minute record (75,000 samples), with Deep U-Net running on an NVIDIA RTX 4060 GPU.}
+\label{tab:mega_benchmark}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llccccccr@{}}
+\toprule
+\textbf{Algorithm} & \textbf{Mode} & \textbf{Mean F1 (95\% Clustered CI)} & \textbf{Min F1} & \textbf{Max F1} & \textbf{FHR MAE} & \textbf{Agr. ($\pm 5\,$bpm)} & \textbf{$|\rho|$} & \textbf{Speed} \\
+\midrule
+\textbf{Spatial PCA (4-Ch)} & \textbf{Multi-Ch} & \textbf{93.00\%} [90.65, 95.34] & 59.55\% & \textbf{100.0\%} & 6.57\,bpm & 58.0\% & 0.513 & 190.7\,ms \\
+\textbf{Deep 1D U-Net (4-Ch)} & \textbf{Multi-Ch} & \textbf{90.76\%} [83.48, 98.03] & 27.16\% & \textbf{100.0\%} & \textbf{3.57\,bpm} & \textbf{69.2\%} & \textbf{0.982} & \textbf{98.6\,ms} \\
+Deep 1D U-Net (1-Ch) & Single-Ch & 80.79\% [72.63, 88.96] & 7.94\% & 100.0\% & 8.18\,bpm & 46.4\% & 0.811 & 84.5\,ms \\
+Wavelet-Threshold Hybrid & Single-Ch & 60.52\% [53.43, 67.60] & 8.23\% & 99.45\% & 25.16\,bpm & 10.4\% & 0.342 & 57.3\,ms \\
+Template Sub. (Fixed) & Single-Ch & 59.41\% [51.83, 66.99] & 17.21\% & 99.37\% & 25.41\,bpm & 10.0\% & 0.330 & 35.5\,ms \\
+Template Sub. (Adapt.) & Single-Ch & 56.83\% [49.83, 63.82] & 12.87\% & 97.31\% & 27.44\,bpm & 2.0\% & 0.308 & 44.7\,ms \\
+MC Template Fusion & Multi-Ch & 56.80\% [50.78, 62.82] & 18.50\% & 99.23\% & 28.29\,bpm & 8.8\% & 0.286 & 218.6\,ms \\
+Hankel-SVD V1 (Fixed) & Single-Ch & 55.55\% [47.21, 63.89] & 11.94\% & 99.01\% & 26.84\,bpm & 6.0\% & 0.291 & 75.9\,ms \\
+Hankel-SVD V3 (Moving)& Single-Ch & 46.69\% [40.80, 52.59] & 18.98\% & 87.75\% & 32.59\,bpm & 0.0\% & 0.235 & 30.3\,ms \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[t]
+\caption{\tagLone\ Cross-Subject Partition Breakdown across Training (7 subjects, 175 records), Validation (1 subject, 25 records), Held-Out Test (2 subjects, 50 records), and All Data (10 subjects, 250 records). FHR MAE reported in parentheses. All partition values are exact weighted means from mega\_benchmark\_results.csv.}
+\label{tab:partition_breakdown}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Algorithm} & \textbf{Train (sub01--07)} & \textbf{Val (sub08)} & \textbf{Held-Out Test (sub09--10)} & \textbf{All (sub01--10)} \\
+\midrule
+\textbf{Spatial PCA (4-Ch)} & \textbf{92.90\%} (6.43\,bpm) & 93.51\% (4.66\,bpm) & 93.06\% (8.00\,bpm) & \textbf{93.00\%} (6.57\,bpm) \\
+\textbf{Deep 1D U-Net (4-Ch)} & 88.13\% (3.97\,bpm) & \textbf{95.69\%} (3.03\,bpm) & \textbf{97.48\%} (2.43\,bpm) & 90.76\% (3.57\,bpm) \\
+Deep 1D U-Net (1-Ch) & 79.17\% (8.48\,bpm) & 85.89\% (7.37\,bpm) & 83.93\% (7.51\,bpm) & 80.79\% (8.18\,bpm) \\
+Wavelet-Threshold Hybrid & 60.47\% & 60.93\% & 60.46\% & 60.52\% \\
+Template Sub. (Fixed) & 59.26\% & 61.32\% & 59.01\% & 59.41\% \\
+Template Sub. (Adapt.) & 56.81\% & 58.11\% & 56.24\% & 56.83\% \\
+MC Template Fusion & 57.47\% & 55.45\% & 55.14\% & 56.80\% \\
+Hankel-SVD V1 (Fixed) & 57.20\% & 55.56\% & 49.76\% & 55.55\% \\
+Hankel-SVD V3 (Moving) & 47.57\% & 46.75\% & 43.60\% & 46.69\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[t]
+\caption{\tagLone\ Per-Subject Consistency Table across all 10 simulated anatomical subjects (25 records per subject, varying SNRs and clinical stress cases) comparing Spatial PCA (4-Ch) and Deep U-Net (4-Ch), reproduced directly from benchmark logs.}
+\label{tab:subject_consistency}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccccccccc@{}}
+\toprule
+\textbf{Method / Metric} & \textbf{sub01} & \textbf{sub02} & \textbf{sub03} & \textbf{sub04} & \textbf{sub05} & \textbf{sub06} & \textbf{sub07} & \textbf{sub08} & \textbf{sub09} & \textbf{sub10} \\
+\midrule
+\textbf{Spatial PCA F1 (\%)} & 94.67 & 94.59 & 95.60 & 85.90 & 89.11 & 96.61 & 93.87 & 93.51 & 94.66 & 91.45 \\
+\textbf{Spatial PCA MAE (bpm)} & 5.47 & 5.07 & 5.38 & 11.39 & 7.73 & 4.48 & 5.49 & 4.66 & 8.76 & 7.25 \\
+\midrule
+\textbf{Deep U-Net F1 (\%)} & 97.61 & 95.84 & 97.77 & 75.39 & 79.98 & 96.85 & 73.47 & 95.69 & 99.06 & 95.91 \\
+\textbf{Deep U-Net MAE (bpm)} & 1.95 & 2.65 & 2.80 & 7.21 & 8.12 & 3.10 & 3.56 & 3.03 & 2.10 & 2.76 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[t]
+\caption{\tagLone\ Performance Breakdown by Clinical Condition and Noise SNR Tier for Spatial PCA (4-Ch) and Deep U-Net (4-Ch) across 250 records (50 records per condition, 50 records per SNR).}
+\label{tab:condition_breakdown}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\textbf{Subset Partition} & \multicolumn{4}{c}{\textbf{Spatial PCA (4-Ch)}} & \multicolumn{4}{c}{\textbf{Deep U-Net (4-Ch)}} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+& \textbf{F1 (\%)} & \textbf{MAE} & \textbf{RMSE} & \textbf{Agr. (\%)} & \textbf{F1 (\%)} & \textbf{MAE} & \textbf{RMSE} & \textbf{Agr. (\%)} \\
+\midrule
+\textbf{Condition Partition:} & & & & & & & & \\
+$c0$: Baseline Normal & 96.94 & 3.29 & 8.50 & 74.0 & 99.33 & 0.96 & 2.21 & 98.0 \\
+$c1$: Fetal Movement & 90.80 & 7.19 & 16.60 & 46.0 & 93.52 & 3.14 & 5.38 & 76.0 \\
+$c2$: Heart-Rate Dynamics & 97.36 & 2.99 & 8.38 & 82.0 & 92.32 & 1.99 & 3.83 & 86.0 \\
+$c3$: Uterine Contractions& 96.82 & 3.27 & 7.45 & 82.0 & 87.60 & 2.35 & 4.84 & 72.0 \\
+$c4$: Arrhythmia / PVCs & 83.06 & 16.10 & 27.32 & 6.0 & 81.02 & 9.39 & 16.14 & 14.0 \\
+\midrule
+\textbf{Noise SNR Tier:} & & & & & & & & \\
+0\,dB (High Noise) & 93.68 & 6.05 & 12.79 & 54.0 & 91.06 & 3.75 & 6.84 & 68.0 \\
+3\,dB & 91.95 & 7.45 & 14.95 & 58.0 & 90.35 & 3.78 & 6.78 & 66.0 \\
+6\,dB (Moderate Noise) & 92.73 & 6.51 & 13.86 & 56.0 & 91.14 & 3.42 & 6.12 & 70.0 \\
+9\,dB & 91.40 & 7.72 & 15.34 & 56.0 & 90.18 & 3.71 & 6.75 & 68.0 \\
+12\,dB (Low Noise) & 95.22 & 5.11 & 11.31 & 66.0 & 91.05 & 3.20 & 5.91 & 74.0 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/mega_f1_by_method.png}
+\caption{\tagLone\ Population F1 distributions across all 250 evaluation recordings. Spatial PCA achieves an overall population mean of 93.00\%, followed by 4-channel Deep U-Net at 90.76\%.}
+\label{fig:mega_f1}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/mega_snr_degradation.png}
+\caption{\tagLone\ Robustness across SNR levels ($0$--$12\,$dB) averaged over 50 records per point. Spatial PCA maintains $>91\%$ and 4-Ch U-Net maintains $>90\%$ across all noise tiers, whereas single-channel baselines drop to $35$--$46\%$.}
+\label{fig:mega_snr}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/mega_case_breakdown.png}
+\caption{\tagLone\ Performance across clinical conditions ($c0$: baseline, $c1$: motion, $c2$: HR dynamics, $c3$: contractions, $c4$: arrhythmia). Spatial PCA retains 96.82\% under uterine contractions.}
+\label{fig:mega_cases}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/mega_subject_consistency.png}
+\caption{\tagLone\ Cross-subject consistency across all 10 simulated anatomies (\texttt{sub01}--\texttt{sub10}). Spatial PCA achieves $>85\%$ performance across diverse lead orientations (averaging $93.00\%$).}
+\label{fig:mega_subjects}
+\end{figure}
+
+\noindent\textbf{Traceability and Consistency Across Partitions.}
+As a formal consistency check, the overall population mean ($93.00\%$) exactly reproduces the unweighted arithmetic mean across both orthogonal axes of the balanced 250-record database:
+\begin{itemize}
+    \item \textbf{Condition Means:} $c0$ (96.94\%), $c1$ (90.80\%), $c2$ (97.36\%), $c3$ (96.82\%), $c4$ (83.06\%) $\implies$ Mean = $93.00\%$.
+    \item \textbf{SNR Means:} 0\,dB (93.68\%), 3\,dB (91.95\%), 6\,dB (92.73\%), 9\,dB (91.40\%), 12\,dB (95.22\%) $\implies$ Mean = $93.00\%$.
+\end{itemize}
+Tab.~\ref{tab:condition_breakdown} clarifies why population FHR MAE is 6.57\,bpm and clinical agreement is 58.0\%: under normal rhythms ($c0, c2, c3$), Spatial PCA achieves MAE $\approx 3.0$--$3.3\,$bpm and agreement $74$--$82\%$. The overall MAE is driven by condition $c4$ (arrhythmia/extrasystoles), where irregular ectopic coupling increases MAE to 16.10\,bpm. Deep U-Net achieves 3.57\,bpm population MAE (69.2\% agreement) by learning non-linear morphology representations.
+
+\noindent\textbf{SNR tier behavior and statistical uncertainty.} In Tab.~\ref{tab:condition_breakdown}, Spatial PCA F1 fluctuates non-monotonically across SNR tiers ($93.68\%$ at 0\,dB, $91.95\%$ at 3\,dB, $92.73\%$ at 6\,dB, $91.40\%$ at 9\,dB, $95.22\%$ at 12\,dB). Computing per-tier standard errors shows that tier-to-tier differences ($\approx 1.5\%$) fall well within the standard error of clustered subject anatomies ($\text{SE} \approx 1.0\%$). In FECGSYNDB, noise types vary between maternal muscle artifacts and electrode motion, and clinical condition ($c4$ arrhythmia) dominates total performance variance rather than additive Gaussian noise.
+
+\noindent\textbf{Generalization and anatomical variation.} On held-out test subjects (\texttt{sub09}--\texttt{sub10}), U-Net scores $97.48\%$ F1 compared to $88.13\%$ on the training set. However, held-out test estimates have $n=2$ subjects with wide statistical uncertainty. Furthermore, U-Net exhibits underfitting on certain training anatomies (\texttt{sub04}: $75.39\%$, \texttt{sub05}: $79.98\%$, \texttt{sub07}: $73.47\%$) across its 50 training epochs. Consequently, whether U-Net or Spatial PCA is ranked higher depends on the evaluation slice: on held-out test data, U-Net leads ($97.48\%$ vs $93.06\%$), while on the full 10-subject population mean, Spatial PCA achieves higher detection accuracy ($93.00\%$ vs $90.76\%$) while consuming three orders of magnitude fewer hardware resources.
+
+% =====================================================================
+\subsection{Theoretical Foundation and Analytical Predictions}
+\label{sec:theory}
+
+\subsubsection{Torso Subspace Dimensionality and Maternal Dipole}
+A fundamental theoretical question is: \textit{Why do 4 channels saturate performance while 1 or 2 channels fail?} Under the classical cardiac volume conduction model, the primary maternal electrical source is approximated as an equivalent rotating 3-dimensional cardiac dipole vector $\mathbf{d}_m[n] \in \mathbb{R}^3$ traversing an elliptical loop in torso coordinate space over the P-QRS-T cycle~\cite{sornmo_ecg,sameni2010}. Under the lead-field projection $\mathbf{x}[n] = \mathbf{A}_m \mathbf{d}_m[n] + \mathbf{b}_f f[n]$, the maternal contribution spans a 3-dimensional subspace:
+\begin{equation}
+    \text{rank}\left(\mathbb{E}\left[\mathbf{x}_{\text{mat}}\,\mathbf{x}_{\text{mat}}^T\right]\right) = \min(C, 3)
+\end{equation}
+For $C < 4$, any spatial projection seeking to suppress maternal energy either has zero non-trivial solutions ($C \le 3$) or severely attenuates the fetal dipole biopotential. With $C=4$, the maternal subspace occupies 3 dimensions, leaving a 1-dimensional orthogonal complement into which the fetal dipole projects with maternal interference minimized. Under clean baseline conditions (TC1), 2 leads can cancel the planar projection ($95.3\%$), but 4 leads are required during physiological non-idealities (fetal motion, breathing, uterine contractions) where maternal dipole axes rotate in 3-D space.
+
+Crucially, our beamformer employs a heuristic second-principal-component projection ($\mathbf{w} = \mathbf{v}_2$) that suppresses the dominant maternal direction $\mathbf{v}_1$; it does not achieve a complete mathematical null of the full 3-D maternal subspace. Empirical evaluation on training records confirms that $\mathbf{v}_1$ accounts for $88.4\%$ of total mixture variance and holds $82.6\%$ of overlapping maternal energy, whereas $\mathbf{v}_2$ (capturing $7.8\%$ of total variance) contains $15.0\%$ of fetal signal energy while attenuating $\mathbf{v}_1$ maternal spikes. Eigenvectors $\mathbf{v}_3$ ($2.6\%$) and $\mathbf{v}_4$ ($1.2\%$) are dominated by high-frequency EMG noise. The first two components together capture $96.2\%$ of total energy (Fig.~\ref{fig:eigen_spectrum}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/eigenvalue_subspace_spectrum.png}
+\caption{\tagLone\ Covariance eigen-spectrum and torso subspace dimensionality: (a)~4-Lead covariance eigen-spectrum ($[27, 26, 28, 25]$), showing maternal dipole energy concentrated in $\mathbf{v}_1$ ($88.4\%$) and fetal signal in $\mathbf{v}_2$ ($7.8\%$); (b)~Cumulative explained variance across 4-lead and 8-lead arrays, confirming that the first two components capture $>96\%$ of mixture variance.}
+\label{fig:eigen_spectrum}
+\end{figure}
+
+\subsubsection{Single-DSP Time-Multiplexed Execution Schedule}
+\label{sec:dsp_schedule}
+Rather than instantiating parallel multipliers, we designed a time-multiplexed schedule utilizing a single DSP48E1 slice (Fig.~\ref{fig:dsp_schedule}). Tab.~\ref{tab:cycle_schedule} details the stage-by-stage cycle breakdown:
+\begin{itemize}
+    \item \textbf{4-Channel Butterworth Bandpass (4 SOS):} 4 channels $\times$ 4 SOS sections $\times$ 5 multiply-accumulate operations = \textbf{80 clock cycles}.
+    \item \textbf{4-Channel Dual Notch Filtering (1 SOS):} 4 channels $\times$ 1 notch SOS $\times$ 5 operations = \textbf{20 clock cycles}.
+    \item \textbf{4-Lead Spatial PCA Beamforming:} $\sum_{k=1}^4 w_k x_k[n]$ inner product = \textbf{4 clock cycles}.
+    \item \textbf{5-Point Pan-Tompkins Derivative:} 5 multiply-adds = \textbf{5 clock cycles}.
+    \item \textbf{Nonlinear Squaring Operator:} 1 multiply operation = \textbf{1 clock cycle}.
+    \item \textbf{15-Sample Moving Integrator:} Running sum update = \textbf{2 clock cycles}.
+    \item \textbf{Adaptive Dual-Thresholding \& Comparison:} Threshold tracking = \textbf{4 clock cycles}.
+    \item \textbf{Refractory Counter \& Offset Blanking:} State updates = \textbf{2 clock cycles}.
+    \item \textbf{DSP48E1 Pipelining \& Control Handshaking:} Pipelining latency and staging = \textbf{30 clock cycles}.
+    \item \textbf{Total Deterministic Latency:} Budgeted \textbf{148 clock cycles} ($1.48\,\mu$s at 100\,MHz).
+\end{itemize}
+At $f_s = 250\,$Hz, each sampling period provides $T_s = 4,000\,\mu$s ($400,000$ clock cycles). Executing the pipeline in 148 cycles utilizes only $0.037\%$ of the available clock budget, yielding an estimated compute margin of $400,000 / 148 = 2,702\times$.
+
+\begin{table}[t]
+\caption{Stage-by-stage cycle derivation for single-DSP time-multiplexed schedule.}
+\label{tab:cycle_schedule}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llccp{2.6cm}@{}}
+\toprule
+\textbf{Pipeline Stage} & \textbf{Mathematical Operation} & \textbf{Cycles} & \textbf{Hardware Resource} & \textbf{Derivation Method} \\
+\midrule
+Butterworth Bandpass & 4 ch $\times$ 4 SOS $\times$ 5 MACs & 80 & DSP48E1 slice & Direct Form II biquad \\
+Dual 50/60\,Hz Notch & 4 ch $\times$ 1 SOS $\times$ 5 MACs & 20 & DSP48E1 slice & 2nd-order IIR biquad \\
+Spatial PCA Beamformer & 4-point dot product $\mathbf{w}^T \mathbf{x}$ & 4 & DSP48E1 slice & 4 multiply-accumulate \\
+Pan-Tompkins Derivative & 5-point slope FIR filter & 5 & DSP48E1 slice & 5 multiply-adds \\
+Nonlinear Squaring & Energy operator $y^2[n]$ & 1 & DSP48E1 slice & Single 16-bit square \\
+Moving Integrator & 15-sample window add/sub & 2 & Fabric LUT logic & Delay line FIFO update \\
+Adaptive Thresholding & Dual SPKI / NPKI EMA update & 4 & Fabric LUT logic & Arithmetic bit-shifts \\
+Refractory Logic & 50-sample blanking counter & 2 & Fabric LUT logic & Up-counter comparator \\
+DSP48E1 Latency & Pipeline registers \& staging & 30 & DSP internal registers & UG479 latency stages \\
+\midrule
+\textbf{Total Per Sample} & \textbf{Complete extraction chain} & \textbf{148} & \textbf{1 DSP48E1 + Fabric} & \textbf{1.48\,$\mu$s at 100\,MHz} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/dsp_time_multiplexing_schedule.png}
+\caption{\tagLtwo/\tagLfour\ Single-DSP48E1 time-multiplexed execution schedule [L4 Target]. All five IIR sections (bandpass $\times 4$ + notch), the 4-lead beamformer, derivative, squaring, and integration execute in 148 clock cycles ($1.48\,\mu$s at 100\,MHz), consuming $0.037\%$ of the $400,000$-cycle per-sample budget.}
+\label{fig:dsp_schedule}
+\end{figure}
+
+% =====================================================================
+\subsection{Hardware Sizing, Synthesis Targets, and Trade-Offs}
+\label{sec:hardware_resources}
+
+\begin{table}[t]
+\caption{\tagLfour\ Hardware resource sizing and comparison on Spartan-7 (XC7S50-CSGA324) at 100\,MHz.}
+\label{tab:hardware_resources}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccccr@{}}
+\toprule
+\textbf{Architecture} & \textbf{LUTs} & \textbf{FFs} & \textbf{DSP48E1} & \textbf{BRAM36k} & \textbf{Cycles} & \textbf{Compute Time} \\
+\midrule
+\textbf{Spatial PCA (4-Ch) [Ours]} & \textbf{990 (3.0\%)} & \textbf{720 (1.1\%)} & \textbf{1 (0.8\%)} & \textbf{1 (1.3\%)} & \textbf{148} & \textbf{1.48\,$\mu$s} \\
+Multi-Lead Template Fusion & 1,650 (5.1\%) & 1,280 (2.0\%) & 4 (3.3\%) & 8 (10.7\%) & 320 & 3.20\,$\mu$s \\
+Template Sub. (Fixed) & 1,020 (3.1\%) & 850 (1.3\%) & 2 (1.7\%) & 2 (2.7\%) & 210 & 2.10\,$\mu$s \\
+Wavelet-Threshold Hybrid & 1,320 (4.1\%) & 1,100 (1.7\%) & 4 (3.3\%) & 4 (5.3\%) & 280 & 2.80\,$\mu$s \\
+Single-Lead Hankel SVD (V1)$^\dagger$ & 4,200 (12.9\%) & 3,600 (5.5\%) & 48 (40.0\%) & 16 (21.3\%) & 1,840 & 18.40\,$\mu$s \\
+Deep 1D U-Net (Edge FPGA)$^\ddagger$ & 28,400 (87.1\%) & 22,000 (33.7\%) & 112 (93.3\%) & 65 (86.7\%) & 45,000 & 450.00\,$\mu$s \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/multichannel_fpga_resource_scaling.png}
+\caption{\tagLtwo/\tagLfour\ Hardware resource scaling and UART bus utilization across lead counts on Spartan-7 at 100\,MHz target clock. A 4-lead array requires only 1 DSP slice and consumes $<2.2\%$ of UART throughput at 921,600 baud.}
+\label{fig:fpga_scaling}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/hw_accuracy_tradeoff.png}
+\caption{\tagLone/\tagLtwo\ Hardware cost vs detection accuracy Pareto trade-off. Spatial PCA (4-Ch) provides the optimal trade-off: 93.00\% population mean F1 consuming $\approx 3.0\%$ LUTs (990 of 32,600) and 1 DSP slice on XC7S50.}
+\label{fig:hw_tradeoff}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/method_radar_comparison.png}
+\caption{\tagLone\ Multi-dimensional radar chart comparing six operational dimensions (F1 accuracy, noise robustness, arrhythmia resilience on $c4$, execution speed, hardware efficiency, and clinical agreement). Spatial PCA offers the most balanced profile for edge FPGA implementation.}
+\label{fig:radar_chart}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/runtime_comparison.png}
+\caption{\tagLone\ Software execution time per 5-minute record across algorithmic paradigms. Spatial PCA on CPU completes in 190.7\,ms, while GPU-accelerated U-Net executes in 98.6\,ms and Hankel SVD requires \fin{75.9\,ms (all software times as in Tab.~\ref{tab:mega_benchmark})}. The FPGA figure (\fin{$111\,$ms}) represents pure compute time for 75,000 samples at the sized \fin{$1.48\,\mu$s/sample (148 cycles at 100\,MHz)}; in real time the 5-minute record takes $300\,$s because samples arrive at $250\,$Hz.}
+\label{fig:runtime_bars}
+\end{figure}
+
+\noindent\textbf{How hardware resources were estimated.} Tab.~\ref{tab:hardware_resources} details the analytical architectural sizing [L4 Target] derived from the Xilinx 7-Series DSP48E1 Slice User Guide (UG479) and word-length optimization models~\cite{xilinx_dsp48,constantinides2004}. For Spatial PCA, logic resource counts account for the 4-channel input multiplexer, 8th-order bandpass filter state registers, dual notch registers, circular FIFO UART buffer, and the Peak-Energy peak detector with refractory timing counters:
+\begin{itemize}
+    \item \textbf{Logic Utilization:} 990 LUTs ($\approx 3.0\%$ of XC7S50, exactly $3.04\%$) and 720 Flip-Flops ($1.1\%$).
+    \item \textbf{DSP Efficiency:} Exactly 1 DSP48E1 slice ($0.8\%$ of available 120 slices).
+    \item \textbf{Power Footprint:} Estimated dynamic power is $<0.15\,$W at 100\,MHz.
+\end{itemize}
+\noindent\textit{Notes on comparative baselines in Tab.~\ref{tab:hardware_resources}:}
+$^\dagger$Single-Lead Hankel SVD (V1) is an analytical sizing estimate based on Jacobi SVD systolic arrays; it is not directly comparable to our streaming pipeline.
+$^\ddagger$Deep 1D U-Net is infeasible on-chip without external DRAM co-processing: the model contains $1.42\times 10^6$ parameters, which at 16-bit precision requires $\approx 2.84\,$MB of storage, exceeding the entire on-chip Block RAM capacity of the XC7S50 ($75 \times 36\,\text{kb} \approx 0.34\,$MB). It is included strictly as an upper-bound comparison baseline.
+
+% =====================================================================
+% FINAL REPORT: NEW SECTIONS (all blue)
+% =====================================================================
 
 \end{document}
