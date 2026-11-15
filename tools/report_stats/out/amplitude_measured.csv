@@ -1,0 +1,2 @@
+maternal_pp_mV,fetal_pp_mV,ratio,ratio_dB,fmr_min,fmr_max,fmr_min_dB,fmr_max_dB,top_lead,top_fmr
+1.9771,0.5417,3.6498,11.2454,0.0831,0.6108,-21.6101,-4.2821,19,0.6108

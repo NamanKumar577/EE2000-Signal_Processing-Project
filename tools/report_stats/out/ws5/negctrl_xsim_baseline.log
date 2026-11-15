@@ -1,0 +1,20 @@
+
+****** xsim v2025.2 (64-bit)
+  **** SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+  **** IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+  **** SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+  **** Start of session at: Sun Nov 15 22:01:50 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/tb_core/xsim_script.tcl
+# xsim {tb_core} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+  2000 frames, 120227 bytes, t=144105190000
+RESULT: 164447 uplink bytes, 2721 frames, 0 byte errors, expected next byte xx (x = end)
+$finish called at time : 210615700 ns : File "D:/signal_project/tools/report_stats/ws5/neg/sim/tb_core.v" Line 78
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:13 . Memory (MB): peak = 195.629 ; gain = 0.043
+exit
+INFO: xsimkernel Simulation Memory Usage: 21108 KB (Peak: 21108 KB), Simulation CPU Usage: 13358 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov 15 22:02:05 2026...

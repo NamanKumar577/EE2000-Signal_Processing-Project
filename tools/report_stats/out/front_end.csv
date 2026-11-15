@@ -1,0 +1,5 @@
+filter,sections,order,f_low_3dB_Hz,f_high_3dB_Hz,peak_Hz
+HP one-pole (shift 6),-,1,0.627,,
+LP,2,4,0.00,60.00,0.00
+BP,4,8,15.00,40.00,25.52
+MAT,2,4,5.00,25.00,11.32

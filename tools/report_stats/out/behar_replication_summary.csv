@@ -1,0 +1,5 @@
+method,records,n,mean_f1,median_f1,pooled_f1
+TS,68 records (paper set),68,63.88,89.30,68.53
+TS,all 75,75,62.11,83.33,66.13
+TSpca,68 records (paper set),68,67.78,89.79,70.60
+TSpca,all 75,75,65.85,88.41,68.11

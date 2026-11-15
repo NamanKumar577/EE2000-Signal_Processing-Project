@@ -1,0 +1,25 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_uart.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_uart_rx
+INFO: [VRFC 10-311] analyzing module v6_uart_tx
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_link.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_link
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_sos.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_sos
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_mwi.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_mwi
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_det.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_det
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_fe.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_fe
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_mat.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_mat
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_canc.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_canc
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_trk.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_trk
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v6_core.v" into library work
+INFO: [VRFC 10-311] analyzing module v6_core
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/rtl/v7_la.v" into library work
+INFO: [VRFC 10-311] analyzing module v7_la
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/signal_project/tools/report_stats/ws5/neg/sim/tb_core.v" into library work
+INFO: [VRFC 10-311] analyzing module tb_core

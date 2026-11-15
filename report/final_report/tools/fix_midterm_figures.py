@@ -316,11 +316,10 @@ def fig21_runtime():
 
 def main():
     fmr = measured_fmr()
-    fig1_amplitude(fmr)
+    # Fig. 1 and the heatmap (Fig. 9) are now drawn from result files by ws4_figures.py (run after this script)
     fig2_pipeline()
     fig3_fmr(fmr)
     fig7_legend()
-    fig9_heatmap()
     fig12_mega()
     fig17_dsp()
     fig19_tradeoff()

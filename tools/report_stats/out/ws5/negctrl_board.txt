@@ -1,0 +1,7 @@
+model stream: 2466548 bytes, MD5 ee796356737555b9ccc06fa4a7fb6a84
+board CSV   : 2466548 bytes, MD5 ee796356737555b9ccc06fa4a7fb6a84, bit_exact=True
+model == board (MD5): True
+flipped bit 3 of byte 1233274
+comparison exact = up == upm -> False
+first differing byte reported at 1233274 (expected 1233274); MD5 now a04093908275c4e8ae29c492343bfdb1
+NEGATIVE CONTROL PASSED

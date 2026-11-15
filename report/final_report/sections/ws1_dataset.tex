@@ -1,0 +1,22 @@
+% WS1: new Sec. 4 (data sets and the final front end). Filter cut-offs computed from the Q28
+% coefficients by tools/report_stats/front_end_check.py -> tools/report_stats/out/front_end.csv
+\begin{finalpart}
+\section{Data Sets and Signal Model}
+\label{sec:dataset}
+\noindent\textbf{Signal model.} Under the cardiac volume-conduction model, abdominal surface potentials are linear combinations of equivalent cardiac source dipoles~\cite{sornmo_ecg,sameni2010}:
+\begin{equation}
+    \mathbf{x}[n] = \mathbf{A}_m\,\mathbf{d}_m[n] + \mathbf{b}_f\,f[n] + \mathbf{v}[n]
+\end{equation}
+where $\mathbf{d}_m[n] \in \mathbb{R}^3$ is the maternal cardiac dipole, $\mathbf{A}_m \in \mathbb{R}^{C \times 3}$ the maternal lead-field matrix, $\mathbf{b}_f \in \mathbb{R}^C$ the fetal lead-field vector, $f[n]$ the scalar fetal source and $\mathbf{v}[n]$ noise ($C = 4$ leads).
+
+\noindent\textbf{Data sets.} FECGSYNDB~\cite{fecgsyndb,andreotti2016}: simulated 34-channel recordings at $250\,$Hz with separate maternal, fetal and noise signals and reference beats; 1,248 usable records (10 subjects $\times$ 5 SNRs $\times$ 5 conditions $\times$ 5 repetitions). PhysioNet/CinC Challenge 2013 set-a~\cite{silva2013}: 75 real 60-s recordings with 4 abdominal leads at $1\,$kHz, split into odd (development) and even (held-out test) records. ADFECGDB~\cite{jezewski2012}: 5 real 5-min recordings with a direct scalp-electrode reference. Details and the data-use ledger are in Sec.~\ref{sec:final_realdata} and \cref{tab:ledger}.
+
+\noindent\textbf{Final front end (per lead).} As implemented in \texttt{fpga\_implementation/v6/model/fpga\_model.c} (coefficients in \texttt{coef\_q28.h}, Q28) and identically in the RTL:
+\begin{enumerate}
+    \item one-pole baseline high-pass, $B \leftarrow B + (x - B)/64$, $y = x - B$ (\texttt{hp\_q}; $-3\,$dB at $0.63\,$Hz);
+    \item 4th-order Butterworth low-pass at $60\,$Hz (2 SOS) giving the wide-band signal $\mathbf{x}_f[n]$;
+    \item in parallel, a 4th-order Butterworth band-pass at 5--25\,Hz (2 SOS) on the high-passed signal for the maternal R-peak detectors;
+    \item later in the chain, an 8th-order Butterworth band-pass at 15--40\,Hz (4 SOS) feeds the fetal energy envelopes of each track.
+\end{enumerate}
+There is no notch filter in the final design. The mid-term preprocessing (0.5--40\,Hz band-pass and 50/60\,Hz notch) and the mid-term lead selection on FECGSYNDB are in App.~\ref{app:midterm}.
+\end{finalpart}

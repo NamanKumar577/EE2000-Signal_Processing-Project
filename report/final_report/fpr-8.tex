@@ -84,24 +84,24 @@ Continuous non-invasive fetal electrocardiogram (NIFECG) monitoring is vital for
 \section{Introduction}
 \label{sec:intro}
 
-Continuous fetal heart-rate (FHR) monitoring is the primary clinical diagnostic tool for assessing intrapartum fetal oxygenation, detecting acute hypoxia, and preventing metabolic acidosis or stillbirth during late gestation and active labor~\cite{hasan2009,sameni2010}. Conventional clinical practice relies on Doppler cardiotocography (CTG) or direct fetal scalp electrodes (FSE). While CTG is non-invasive, it suffers from severe acoustic attenuation in overweight mothers, continuous repositioning requirements due to fetal movement, and lack of true morphological ECG features~\cite{abel2023,behar2014}. Conversely, FSE provides gold-standard morphological biopotentials but requires ruptured membranes and carries significant risks of trans-vaginal infection and fetal trauma~\cite{clifford2014}. Non-invasive fetal electrocardiography (NIFECG) acquired from maternal abdominal surface electrodes offers the ideal clinical alternative: it delivers continuous morphological telemetry, passive long-term wearability, and complete safety for mother and fetus.
+Continuous fetal heart-rate (FHR) monitoring is the primary clinical diagnostic tool for assessing intrapartum fetal oxygenation, detecting acute hypoxia, and preventing metabolic acidosis or stillbirth during late gestation and active labor~\cite{hasan2009,sameni2010}. Conventional clinical practice relies on Doppler cardiotocography (CTG) or direct fetal scalp electrodes (FSE). While CTG is non-invasive, it suffers from severe acoustic attenuation in overweight mothers, continuous repositioning requirements due to fetal movement, and lack of true morphological ECG features~\cite{abel2023,behar2014}. Conversely, FSE provides gold-standard morphological biopotentials but requires ruptured membranes and carries significant risks of trans-vaginal infection and fetal trauma~\cite{clifford2014}. Non-invasive fetal electrocardiography (NIFECG) acquired from maternal abdominal surface electrodes offers \fin{an alternative}: it delivers continuous morphological telemetry, passive long-term wearability, and \fin{no invasive risk} for mother and fetus.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/signal_amplitude_disparity.png}
-\caption{\tagLone\ Signal component amplitude disparity in abdominal ECG biopotentials. The maternal QRS complex dominates the mixture by $10$--$250\times$ in peak amplitude ($1.0$--$5.0\,$mV vs $20$--$100\,\mu$V in literature; measured on FECGSYNDB training leads: $2.50\,$mV vs $0.04\,$mV $= 62.5\times$ / $35.9\,$dB; RMS FMR \fin{per abdominal lead (training-subject mean, Fig.~\ref{fig:fmr_topography})} ranges from \fin{$0.08$ to $0.61$, $-21.6$ to $-4.3\,$dB}), illustrating why linear single-channel frequency filtering fails.}
+\caption{\tagLone\ Signal component amplitude disparity in abdominal ECG biopotentials. The maternal QRS complex dominates the mixture by $10$--$250\times$ in peak amplitude ($1.0$--$5.0\,$mV vs $20$--$100\,\mu$V in literature; \fin{measured on the FECGSYNDB training leads (median beat peak-to-peak, normalised units): maternal $1.98$ vs fetal $0.54$, $3.6\times$ / $11.2\,$dB}; RMS FMR \fin{per abdominal lead (training-subject mean, Fig.~\ref{fig:fmr_topography})} ranges from \fin{$0.08$ to $0.61$, $-21.6$ to $-4.3\,$dB}), illustrating why linear single-channel frequency filtering fails. \fin{The synthetic database has a far smaller amplitude disparity than the literature range. [L1] Source: \texttt{tools/report\_stats/out/amplitude\_measured.csv} (\texttt{tools/report\_stats/fmr\_measured.py}); figure by \texttt{report/final\_report/tools/ws4\_figures.py}.}}
 \label{fig:amplitude_disparity}
 \end{figure}
 
-Despite decades of academic investigation, commercial deployment of wearable edge NIFECG monitors remains severely impeded by challenging biophysical signal characteristics. As illustrated in Fig.~\ref{fig:amplitude_disparity}, abdominal surface electrodes record a composite mixture dominated by the maternal ECG (MECG), whose peak amplitude is $10$--$250\times$ larger than the fetal signal ($1$--$5\,$mV vs $20$--$100\,\mu$V, corresponding to $20$--$48\,$dB peak amplitude disparity; measured on FECGSYNDB training leads: $2.50\,$mV vs $0.04\,$mV $= 62.5\times$ or $35.9\,$dB). In terms of root-mean-square (RMS) energy, the fetal-to-maternal ratio (FMR) ranges from \fin{$0.08$ to $0.61$ ($-21.6$ to $-4.3\,$dB) across the 32 abdominal leads (Fig.~\ref{fig:fmr_topography})}. Crucially, maternal and fetal cardiac biopotentials exhibit overlapping frequency spectra in the $0.5$--$40\,$Hz band. Consequently, classical linear time-invariant filters cannot isolate the fetal signal without annihilating the underlying fetal morphology~\cite{abel2023,sornmo_ecg}.
+Despite decades of academic investigation, commercial deployment of wearable edge NIFECG monitors remains severely impeded by challenging biophysical signal characteristics. As illustrated in Fig.~\ref{fig:amplitude_disparity}, abdominal surface electrodes record a composite mixture dominated by the maternal ECG (MECG), whose peak amplitude is $10$--$250\times$ larger than the fetal signal ($1$--$5\,$mV vs $20$--$100\,\mu$V, corresponding to $20$--$48\,$dB peak amplitude disparity; \fin{on the FECGSYNDB training leads the median beat peak-to-peak ratio is only $3.6\times$, $11.2\,$dB, in the database's normalised units; Fig.~\ref{fig:amplitude_disparity}}). In terms of root-mean-square (RMS) energy, the fetal-to-maternal ratio (FMR) ranges from \fin{$0.08$ to $0.61$ ($-21.6$ to $-4.3\,$dB) across the 32 abdominal leads (Fig.~\ref{fig:fmr_topography})}. Maternal and fetal cardiac biopotentials exhibit overlapping frequency spectra in the $0.5$--$40\,$Hz band. Consequently, classical linear time-invariant filters cannot isolate the fetal signal without annihilating the underlying fetal morphology~\cite{abel2023,sornmo_ecg}.
 
-\noindent\textbf{The single-lead temporal breakdown.} Conventional single-lead cancellation algorithms rely on temporal template subtraction or recursive adaptive filtering (e.g., LMS/RLS)~\cite{widrow1975,cerutti1986}. In our preliminary report, we evaluated single-channel LMS and template subtraction. However, benchmark evaluations reveal a critical mathematical failure mode: when a maternal QRS complex and a fetal QRS complex temporally coincide, the maternal template or adaptive filter subtracts overlapping fetal energy. Assuming typical heart periods $T_m \approx 800\,$ms (75\,bpm) and $T_f \approx 430\,$ms (140\,bpm) with QRS durations $w_m \approx 90\,$ms and $w_f \approx 50\,$ms, the probability that a fetal beat partially overlaps a maternal QRS under random relative phase is:
+\noindent\textbf{The single-lead temporal breakdown.} Conventional single-lead cancellation algorithms rely on temporal template subtraction or recursive adaptive filtering (e.g., LMS/RLS)~\cite{widrow1975,cerutti1986}. In our preliminary report, we evaluated single-channel LMS and template subtraction. \fin{Our benchmark evaluations showed a failure mode}: when a maternal QRS complex and a fetal QRS complex temporally coincide, the maternal template or adaptive filter subtracts overlapping fetal energy. Assuming typical heart periods $T_m \approx 800\,$ms (75\,bpm) and $T_f \approx 430\,$ms (140\,bpm) with QRS durations $w_m \approx 90\,$ms and $w_f \approx 50\,$ms, the probability that a fetal beat partially overlaps a maternal QRS under random relative phase is:
 \begin{equation}
     P(\text{overlap}_{\text{fetal}}) = \frac{w_m + w_f}{T_m} = \frac{90 + 50}{800} = 17.5\%
 \end{equation}
 while the probability that a maternal cycle overlaps a fetal beat is $(w_m + w_f)/T_f = 140/430 = 32.6\%$. Complete containment of the fetal QRS entirely inside the maternal complex occurs with probability $(w_m - w_f)/T_m = 40/800 = 5.0\%$. Under such collisions, single-channel subtraction produces severe waveform clipping and detector dropout.
 
-\noindent\textbf{Research gap.} Modern literature predominantly evaluates complex floating-point signal processing algorithms in high-level software environments (Python/MATLAB) without addressing physical hardware implementation constraints~\cite{abel2023,hasan2009}. These studies often ignore fixed-point coefficient quantization noise, accumulator word-length growth, DSP time-multiplexing, memory bandwidth, and deterministic real-time latency. Furthermore, while embedded and FPGA implementations of fetal ECG extraction have been explored~\cite{edwin2022,pani2016}, they frequently depend on multi-DSP architectures or require dedicated maternal thoracic reference leads. This project works toward realizing an end-to-end, bit-accurate, and latency-deterministic NIFECG extraction pipeline targeting the Xilinx Spartan-7 FPGA (XC7S50) on the RealDigital Boolean Board~\cite{realdigital_boolean} (\fin{all five validation levels, from the bit-true model to the board, are now complete; Tab.~\ref{tab:final_status}}).
+\noindent\textbf{Research gap.} Modern literature predominantly evaluates complex floating-point signal processing algorithms in high-level software environments (Python/MATLAB) without addressing physical hardware implementation constraints~\cite{abel2023,hasan2009}. These studies often ignore fixed-point coefficient quantization noise, accumulator word-length growth, DSP time-multiplexing, memory bandwidth, and deterministic real-time latency. Furthermore, while embedded and FPGA implementations of fetal ECG extraction have been explored~\cite{edwin2022,muceli2007}, \fin{they often require a dedicated maternal thoracic reference lead. Our final design uses 43 DSP slices (Tab.~\ref{tab:hw_summary}) and no reference lead. This project builds an end-to-end, bit-accurate and deterministic} NIFECG extraction pipeline \fin{on} the Xilinx Spartan-7 FPGA (XC7S50) on the RealDigital Boolean Board~\cite{realdigital_boolean} (\fin{all five validation levels, from the bit-true model to the board, are now complete; Tab.~\ref{tab:final_status}}).
 
 \fin{\noindent The mid-term contributions (4-lead spatial beamformer, 250-record population benchmark, 1D U-Net, bit-true fixed-point model and paper sizing) are kept with their results in App.~\ref{app:midterm}.}
 
@@ -124,8 +124,8 @@ while the probability that a maternal cycle overlaps a fetal beat is $(w_m + w_f
 
 Continuous intrapartum NIFECG monitoring serves three distinct clinical operating modes:
 \begin{enumerate}
-    \item \textbf{High-Risk Intrapartum Labor Ward Monitoring:} Continuous real-time detection of intrapartum fetal hypoxia during active contractions. Latency (per-sample filter group delay) must remain strictly below $100\,$ms to trigger emergency alerts. Note that downstream beat-to-display telemetry includes a 5-beat median filter which adds approximately $2.1\,$s of beat-level smoothing.
-    \item \textbf{Ambulatory Antenatal Telemetry:} Battery-operated wearable telemetry enabling home monitoring for high-risk pregnancies during gestational weeks 32--40. Requires power consumption $<1.5\,$W for continuous 12-hour battery life ($1.5\,\text{W} \times 12\,\text{h} = 18\,\text{Wh}$, corresponding to $\approx 4.9\,\text{Ah}$ at a nominal $3.7\,$V lithium-ion cell). Boolean Board total power is estimated analytically; physical board current measurement remains future work.
+    \item \textbf{High-Risk Intrapartum Labor Ward Monitoring:} Continuous real-time detection of intrapartum fetal hypoxia during active contractions. \fin{The original (mid-term) target was a per-sample latency below $100\,$ms; the final design reports live beats after 1.5--2\,s and final beats after about $13.5\,$s, and the target is re-baselined in \cref{tab:o3o4}.}
+    \item \textbf{Ambulatory Antenatal Telemetry:} Battery-operated wearable telemetry enabling home monitoring for high-risk pregnancies during gestational weeks 32--40. Requires power consumption $<1.5\,$W for continuous 12-hour battery life ($1.5\,\text{W} \times 12\,\text{h} = 18\,\text{Wh}$, corresponding to $\approx 4.9\,\text{Ah}$ at a nominal $3.7\,$V lithium-ion cell). \fin{The on-chip power of the final design is a Vivado estimate ($0.445\,$W, \cref{tab:hw_summary}); the board current was not measured.}
     \item \textbf{Clinical Fetal Arrhythmia Screening:} Precision morphological detection of fetal extrasystoles, heart block, and conduction anomalies. \fin{Both the mid-term and the final system extract} QRS timing rather than clinical arrhythmia diagnosis; formal arrhythmia classification (TPR $>95\%$) remains a future objective.
 \end{enumerate}
 
@@ -157,172 +157,10 @@ Leads & 4 abdominal electrodes & 4 abdominal leads of each recording & Met & L5 
 \end{table*}
 
 % =====================================================================
-\section{Problem Statement and Formal Engineering Objectives}
-\label{sec:problem_statement}
-
-\noindent\textbf{Formal problem formulation.} Given $C=4$ continuous abdominal biopotential mixtures $\mathbf{x}[n] \in \mathbb{R}^C$ corrupted by maternal cardiac potentials $\mathbf{A}_m \mathbf{d}_m[n]$, ambient noise, and powerline interference, synthesize a spatial beamforming weight vector $\mathbf{w} \in \mathbb{R}^C$ such that the extracted fetal scalar estimate:
-\begin{equation}
-    \hat{f}[n] = \mathbf{w}^T \mathbf{x}[n]
-\end{equation}
-isolates the fetal cardiac dipole component while suppressing the dominant maternal interference direction $\mathbf{v}_1$. Under our spatial principal component heuristic, $\mathbf{w}$ is selected as the unit-norm second principal eigenvector ($\mathbf{w} = \mathbf{v}_2$) of the 4-channel mixture covariance matrix. Rather than achieving full mathematical nulling of the 3-dimensional maternal dipole subspace, this heuristic projection suppresses the dominant maternal axis $\mathbf{v}_1$ while preserving fetal biopotential energy.
-
-\noindent\textbf{Formal engineering objectives (O1--O5):}
-\begin{itemize}
-    \item \textbf{O1 (Algorithmic Resilience \tagLone/\tagLtwo):} Maintain fetal QRS F1-score $\ge 90\%$ down to $0\,$dB SNR and across uterine contraction stress, with FHR Mean Absolute Error $<1.0\,$bpm under clean baseline rhythm (\cref{tab:objective_status}).
-    \item \textbf{O2 (Bit-True Numerical Integrity \tagLtwo):} Formulate bit-accurate fixed-point representations demonstrating Signal-to-Quantization-Noise Ratio $\text{SQNR} \ge 60\,$dB with zero beat degradation relative to double-precision software.
-    \item \textbf{O3 (Latency and Determinism \tagLfour\ Target):} Size per-sample compute latency to $<10.0\,\mu$s on Spartan-7 at 100\,MHz, well below the 4,000\,$\mu$s real-time sample budget.
-    \item \textbf{O4 (FPGA Resource Efficiency \tagLfour\ Target):} Confine primary pipeline utilization to $<5\%$ of logic LUTs and $\le 1$ DSP48E1 slice on the Xilinx Spartan-7 XC7S50 FPGA.
-    \item \textbf{O5 (Hardware Demonstration Script \tagLfive\ Target):} Design complete UART streaming protocols, front-panel switch presets, and 4-digit 7-segment FHR display controls for Boolean Board bring-up in the final sprint. \fin{Final status: the UART link and the complete design run on the board (Sec.~\ref{sec:final_hw}); the live demonstration is described in Sec.~\ref{sec:final_demo}.}
-\end{itemize}
+\input{sections/ws1_problem}
 
 % =====================================================================
-\section{Physiological Signal Model and Dataset}
-\label{sec:dataset}
-
-Under the standard cardiac volume-conduction model, surface potentials are linear combinations of equivalent cardiac source dipole vectors~\cite{sornmo_ecg,sameni2010}:
-\begin{equation}
-    \mathbf{x}[n] = \mathbf{A}_m\,\mathbf{d}_m[n] + \mathbf{b}_f\,f[n] + \mathbf{v}[n]
-\end{equation}
-where $\mathbf{d}_m[n] \in \mathbb{R}^3$ is the rotating maternal cardiac dipole vector, $\mathbf{A}_m \in \mathbb{R}^{C \times 3}$ is the maternal lead-field mixing matrix, $\mathbf{b}_f \in \mathbb{R}^C$ is the fetal lead-field vector, $f[n] \in \mathbb{R}$ is the scalar fetal cardiac source, and $\mathbf{v}[n]$ represents additive noise.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fmr_lead_topography_34ch.png}
-\caption{\tagLone\ 34-Channel Fetal-to-Maternal Ratio (FMR) topography evaluated strictly across training subjects (\texttt{sub01}--\texttt{sub07}) on PhysioNet FECGSYNDB~\cite{fecgsyndb,andreotti2016}\fin{: fetal/maternal RMS ratio of each lead, mean over the seven subjects (layout l1, condition c0), recomputed for this report from the separate fetal and maternal signals. Leads 19 and 18 have the highest FMR (0.61 and 0.60); the selected sub-array $[27, 26, 28, 25]$ (0-based indices, highlighted) ranks 4th, 3rd, 8th and 10th.}}
-\label{fig:fmr_topography}
-\end{figure}
-
-\noindent\textbf{PhysioNet FECGSYNDB benchmark.} We utilize the standardized PhysioNet Fetal ECG Synthetic Database (FECGSYNDB)~\cite{fecgsyndb,andreotti2016}, comprising 34 cutaneous channels (32 abdominal, 2 maternal thoracic references) sampled at $250\,$Hz with synchronized ground-truth fetal annotations, alongside companion synthetic arrhythmia recordings from NIFEADB~\cite{nifeadb}.
-
-\newcontent{\noindent\textbf{Training-set lead selection and FMR topography.} \fin{Fig.~\ref{fig:fmr_topography} shows the fetal-to-maternal RMS ratio of every lead, averaged over the training subjects (\texttt{sub01}--\texttt{sub07}). The highest values are on Leads 19 and 18 (0.61 and 0.60), followed by Leads 26 and 27 (0.52 and 0.51); Leads 28 and 25 rank 8th and 10th (0.43 and 0.40). The mid-term sub-array is therefore not the four leads with the highest FMR (mean FMR 0.46, against 0.56 for Leads 19, 18, 26 and 27). It was taken from an anatomical ranking (lower abdominal midline leads over a head-down fetus) as a block of four neighbouring lead indices, and all four leads are in the training top~10:}
-\begin{equation}
-    \fin{\mathcal{C}_{\text{sel}}} = \{ \text{Lead } 27, \text{Lead } 26, \text{Lead } 28, \text{Lead } 25 \}
-\end{equation}
-(0-based physical electrode indices, corresponding to 1-based leads $[28, 27, 29, 26]$), ensuring that no \texttt{sub09}--\texttt{sub10} data were used for lead selection, hyperparameters, or training.
-}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/butterworth_sos_frequency_response.png}
-\caption{\tagLone\ Frequency response of the causal 4th-order Butterworth Second-Order Section (SOS) bandpass filter ($0.5$--$40\,$Hz, 4 SOS biquads, 8th-order total) at $f_s = 250\,$Hz: $>56\,$dB attenuation at $0.1\,$Hz baseline wander, $>18\,$dB attenuation at $60\,$Hz powerline mains; group delay in physiological QRS band ($10$--$30\,$Hz) is $11.4$--$15.4\,$ms ($2.85$--$3.85$ samples at 250\,Hz; maximum edge group delay reaches $96\,$ms near 0.5\,Hz).}
-\label{fig:filter_responses}
-\end{figure}
-
-\newcontent{\noindent\textbf{Preprocessing cascade.} Each raw biopotential channel is conditioned by:
-\begin{enumerate}
-    \item \textbf{Butterworth SOS Bandpass Filter (0.5--40\,Hz):} Implemented as four cascaded Second-Order Sections (SOS) in Direct Form II (8th-order total transfer function). Fig.~\ref{fig:filter_responses} confirms $>56\,$dB baseline attenuation at $0.1\,$Hz and $>18\,$dB attenuation at $60\,$Hz. In the physiological fetal QRS passband ($10$--$30\,$Hz), the group delay is $\tau_g \approx 11.4$--$15.4\,$ms ($2.85$--$3.85$ samples at $250\,$Hz), while maximum transition group delay reaches $96\,$ms ($24$ samples) near the $0.5\,$Hz lower cutoff.
-    \item \textbf{Dual-Mode Notch Filter (50/60\,Hz):} A 2nd-order IIR notch ($Q=30$) selectable via board switch \texttt{SW[3]} for 50\,Hz (Indian grid) or 60\,Hz (US grid).
-\end{enumerate}
-}
-
-\newcontent{\noindent\textbf{Strict Disjoint Cross-Subject Data Split Protocol.} To establish rigorous scientific validity and prevent data contamination, the 250 database records are partitioned strictly at the subject level:
-\begin{itemize}
-    \item \textbf{Training Partition (70\%):} 175 records from Subjects \texttt{sub01}--\texttt{sub07} (1.79\,GB in 32-bit float). Used exclusively for U-Net weight optimization and algorithm hyperparameter freezing ($N=750$, detector thresholds, lead array $\mathcal{C}_{\text{opt}}$).
-    \item \textbf{Validation Partition (10\%):} 25 records from Subject \texttt{sub08} (0.26\,GB). Used for early stopping.
-    \item \textbf{Held-Out Test Partition (20\%):} 50 records from Subjects \texttt{sub09}--\texttt{sub10} (0.51\,GB). Completely untouched during design and hyperparameter tuning; evaluated only once to verify anatomical generalization.
-\end{itemize}
-On disk, raw 16-bit WFDB files occupy 1.28\,GB ($250 \times 75,000 \times 34 \times 2\,$bytes); expanded to 32-bit single-precision floating point, the uncompressed database is 2.55\,GB.
-}
-
-% =====================================================================
-\section{Multi-Channel Signal Processing Architectures}
-\label{sec:architectures}
-
-We implemented, benchmarked, and profiled nine distinct signal processing paradigms, summarized in Tab.~\ref{tab:method_inventory}.
-
-\begin{table}[t]
-\caption{Comprehensive inventory of nine implemented and benchmarked fetal ECG extraction architectures. \fin{\textbf{[L1]} Source: mid-term method list (code/src/methods/).}}
-\label{tab:method_inventory}
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}llccl@{}}
-\toprule
-\textbf{ID} & \textbf{Algorithm Name} & \textbf{Leads} & \textbf{Paradigm} & \textbf{Description / Section} \\
-\midrule
-\textbf{M1} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & Statistical & Primary architecture (Sec.~\ref{sec:pca_beamformer}) \\
-\textbf{M2} & \textbf{Deep 1D U-Net (4-Ch)} & 4-Ch & Learned & Multi-channel neural extractor (Sec.~\ref{sec:unet}) \\
-\textbf{M3} & Deep 1D U-Net (1-Ch) & 1-Ch & Learned & Single-channel neural baseline (Sec.~\ref{sec:unet}) \\
-\textbf{M4} & Multi-Lead Template Fusion & 4-Ch & Spatial Voting & 4-lead template subtraction with voting \\
-\textbf{M5} & Wavelet-Threshold Hybrid & 1-Ch & Wavelet/SWT & Stationary wavelet thresholding + LMS \\
-\textbf{M6} & Fixed Template Subtraction & 1-Ch & Subtraction & Classical single-lead template subtraction \\
-\textbf{M7} & Adaptive Template Subtraction& 1-Ch & Subtraction & EMA adaptive template subtraction \\
-\textbf{M8} & Hankel-SVD Variant 1 & 1-Ch & Matrix SVD & Fixed-period Hankel matrix SVD~\cite{kanjilal1997} \\
-\textbf{M9} & Hankel-SVD Variant 3 & 1-Ch & Matrix SVD & Moving-window Hankel matrix SVD \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\subsection{Method 1: Multi-Channel Spatial PCA Beamforming (Primary Architecture)}
-\label{sec:pca_beamformer}
-For our 4-lead array, the sample covariance matrix $\mathbf{R}_{xx} \in \mathbb{R}^{4 \times 4}$ is computed over an observation calibration window ($N=750$ samples, $3.0\,$s):
-\begin{equation}
-    \mathbf{R}_{xx} = \frac{1}{N} \sum_{n=1}^N \mathbf{x}[n]\,\mathbf{x}^T[n] \quad \in \mathbb{R}^{4 \times 4}
-\end{equation}
-Eigen-decomposition yields orthonormal eigenvectors $\mathbf{V} = [\mathbf{v}_1, \dots, \mathbf{v}_4]$ and sorted eigenvalues $\lambda_1 \ge \lambda_2 \ge \lambda_3 \ge \lambda_4$. The dominant eigenvector $\mathbf{v}_1$ spans the maternal dipole direction (capturing $88.4\%$ of total mixture energy). Selecting the weight vector $\mathbf{w} = \mathbf{v}_2$ extracts the fetal scalar signal into the subspace orthogonal to $\mathbf{v}_1$:
-\begin{equation}
-    \hat{f}[n] = \mathbf{w}^T \mathbf{x}[n] = \sum_{k=1}^4 w_k\,x_k[n]
-    \label{eq:inner_product}
-\end{equation}
-
-\newcontent{\noindent\textbf{Polarity alignment and sign ambiguity.} Because eigenvector decomposition leaves sign arbitrary ($\mathbf{w} = \pm \mathbf{v}_2$), the raw signed correlation with the reference fetal ECG across all 250 records yields a mean of $-0.135$ and a positive correlation rate of $41.2\%$ (mean absolute correlation $|\rho| = 0.513$). Skewness sign alignment is evaluated:
-\begin{equation}
-    \mathbf{w} \leftarrow \text{sgn}\left(\frac{1}{N} \sum_{n=1}^N (\hat{f}[n] - \mu_{\hat{f}})^3\right)\,\mathbf{w}
-\end{equation}
-Crucially, because the downstream fetal QRS detector applies a non-linear squaring operator $z[n] = y^2[n]$, peak detection and FHR calculation are mathematically invariant to eigenvector sign inversion ($\mathbf{w} \to -\mathbf{w}$). Polarity alignment is therefore maintained purely for visual telemetry display.}
-
-\newcontent{\noindent\textbf{System Partitioning (Host vs FPGA).} To optimize resource efficiency, we adopt a two-phase architecture:
-\begin{enumerate}
-    \item \textbf{Calibration Phase (Host):} During initial start-up, a 3-second buffer of 4-channel data is streamed over UART to the host PC, which computes $\mathbf{R}_{xx}$, performs eigen-decomposition, aligns polarity, and transmits the four Q1.15 weights $\mathbf{w}$ back to the FPGA.
-    \item \textbf{Real-Time Streaming Phase (FPGA):} The Spartan-7 FPGA executes real-time SOS filtering, 4-MAC spatial beamforming, peak detection, and FHR calculation on every arriving sample without host intervention.
-\end{enumerate}
-}
-
-\subsection{Peak-Energy Fetal QRS Detector}
-\label{sec:detector}
-\newcontent{All fetal QRS detection is performed by our standardized Peak-Energy Detector inspired by the Pan-Tompkins topology~\cite{pan1985}:
-\begin{enumerate}
-    \item \textbf{5-Point Derivative Filter:} Attenuates P and T waves while highlighting steep QRS slopes:
-    \begin{equation}
-        y[n] = \frac{1}{8} \left( 2x[n] + x[n-1] - x[n-3] - 2x[n-4] \right)
-    \end{equation}
-    \item \textbf{Nonlinear Squaring:} $z[n] = y^2[n]$, amplifying large QRS complexes and rectifying the biopotential (rendering detection invariant to signal sign).
-    \item \textbf{Moving Integration Window:} A rectangular window of length $W = 15$ samples ($60\,$ms), optimized on the training partition (\texttt{sub01}--\texttt{sub07}) to match the compact fetal QRS duration ($50\,$ms) rather than adult QRS ($150\,$ms).
-    \item \textbf{Adaptive Dual-Thresholding:} Dual running thresholds track signal peak level $\text{SPKI}$ and noise peak level $\text{NPKI}$:
-    \begin{align}
-        \text{SPKI} &\leftarrow 0.125 \cdot PK + 0.875 \cdot \text{SPKI} \\
-        \text{NPKI} &\leftarrow 0.125 \cdot PK + 0.875 \cdot \text{NPKI}
-    \end{align}
-    where $\text{SPKI}$ is updated upon accepted fetal QRS peak detections, and $\text{NPKI}$ is updated on rejected candidate peaks ($PK$ denotes the current peak amplitude). A candidate peak triggers detection when $z[n] > \text{NPKI} + 0.25(\text{SPKI} - \text{NPKI})$. Detection runs continuously without window resets.
-    \item \textbf{Refractory Blanking \& Offset Correction:} A refractory blanking period $\tau_{\text{ref}} = 50$ samples ($200\,$ms at 250\,Hz) prevents double-counting of split peaks (up to 300\,bpm). A fixed compensation offset of $W/2 + 2 = 9.5$ samples ($38\,$ms) aligns detected peaks with true R-peak centers.
-\end{enumerate}
-}
-
-\subsection{Method 2: Deep 1D Convolutional U-Net (Neural Extractor)}
-\label{sec:unet}
-\newcontent{To establish an upper bound on non-linear feature representation, we implemented an end-to-end 1D Convolutional U-Net containing 1,417,073 trainable parameters (adapted from the 2D architecture of Ronneberger \etal~\cite{ronneberger2015}):
-\begin{itemize}
-    \item \textbf{Encoder:} 4 contracting stages (Conv1D $\to$ BatchNorm $\to$ LeakyReLU $\to$ MaxPool1D), doubling channel depths from 32 to 256.
-    \item \textbf{Decoder:} 4 expanding stages (TransposedConv1D $\to$ Concatenate skip connection $\to$ Conv1D).
-    \item \textbf{Loss Function:} Stabilized Pearson correlation loss combined with soft-L1 penalty:
-    \begin{equation}
-        \mathcal{L}(f, \hat{f}) = 1 - \frac{\text{Cov}(f, \hat{f})}{\sigma_f \sigma_{\hat{f}} + \epsilon} + 0.1\,\|f - \hat{f}\|_1
-    \end{equation}
-\end{itemize}
-Trained on subjects \texttt{sub01}--\texttt{sub07} over an NVIDIA RTX 4060 GPU (Adam optimizer, batch size 32, learning rate $10^{-3}$, 50 epochs; 1-Ch model uses Lead 27). The best checkpoint on validation subject \texttt{sub08} was evaluated once on held-out test subjects \texttt{sub09}--\texttt{sub10}. \fin{(Final-phase note: the list of training records was not saved and the training script does not enforce this split, so it cannot be verified from the archive; see the deep-learning check in Sec.~\ref{sec:final_realdata}.)}
-}
-
-\subsection{Methods M4--M9: Classical Benchmark Baselines}
-\label{sec:baselines}
-\newcontent{To establish comparative benchmarks, seven classical algorithms were re-implemented:
-\begin{itemize}
-    \item \textbf{Multi-Lead Template Fusion (M4):} Subtracts maternal templates independently across 4 leads using a dedicated maternal Pan-Tompkins detector on epigastric channels, then applies spatial cluster voting ($\ge 35\%$ coincidence) to fuse detected peaks.
-    \item \textbf{Wavelet-Threshold Hybrid (M5):} Combines 4-level Stationary Wavelet Transform (SWT, \texttt{sym4}) decomposition with adaptive subband LMS filtering and non-linear thresholding.
-    \item \textbf{Fixed Ensemble Template Subtraction (M6):} Averages 30 maternal QRS complexes into a fixed template subtracted from each aligned maternal cycle on Lead 27.
-    \item \textbf{Adaptive EMA Template Subtraction (M7):} Updates maternal template via exponential moving average ($\alpha = 0.10$) to track amplitude fluctuations.
-    \item \textbf{Hankel-SVD Subspace Variants (M8, M9):} Forms trajectory matrix $\mathbf{A} \in \mathbb{R}^{m \times (N - m + 1)}$ with modal period $m=174$; rank-2 truncated reconstruction eliminates dominant maternal components~\cite{kanjilal1997}.
-\end{itemize}
-}
+\input{sections/ws1_dataset}
 
 \begin{finalpart}
 \section{Final Phase I: From Synthetic Benchmarks to Real Recordings}
@@ -1076,48 +914,42 @@ DPSS, one lead~\cite{shokouhmand2023} & -- & 99.0 \\
 \end{finalpart}
 
 % =====================================================================
-\section{Extended Literature Survey and Taxonomic Positioning}
-\label{sec:literature_survey}
-
-Published NIFECG extraction literature spans six major algorithmic and implementation paradigms:
-\begin{enumerate}
-    \item \textbf{Linear Adaptive Filtering (LMS/RLS):} Widrow \etal~\cite{widrow1975} established adaptive noise cancelling (ANC), showing that without a pure maternal reference, single-lead LMS distorts fetal morphology.
-    \item \textbf{Subspace Decomposition (SVD/Hankel):} Kanjilal \etal~\cite{kanjilal1997} and Callaerts \etal~\cite{callaerts1990} applied SVD to Hankel trajectory matrices. While effective on clean cycles, Hankel SVD requires high DSP overhead and degrades during QRS collisions.
-    \item \textbf{Blind Source Separation (ICA/BSS):} De Lathauwer \etal~\cite{delathauwer2000}, Cardoso~\cite{cardoso1999}, and Hyv{\"a}rinen~\cite{hyvarinen2000} explored ICA. While statistically powerful, iterative ICA algorithms exhibit convergence latency incompatible with real-time FPGA execution.
-    \item \textbf{Nonlinear Bayesian Filtering:} Sameni \etal~\cite{sameni2007} developed nonlinear Bayesian filtering frameworks for ECG denoising, demonstrating high noise suppression at the expense of computational complexity.
-    \item \textbf{Deep Learning (CNN/U-Net):} Ronneberger \etal~\cite{ronneberger2015} demonstrated biomedical segmentation networks that can be adapted to 1D ECG. However, 1D U-Net requires millions of MACs and exceeds on-chip BRAM capacity.
-    \item \textbf{Hardware and Embedded Implementations:} Edwin Dhas and Suchetha~\cite{edwin2022} implemented neural coprocessor adaptive filters on FPGA for fetal ECG extraction. Pani \etal~\cite{pani2016} investigated real-time embedded JADE for fetal ECG. Our architecture builds upon De Lathauwer~\cite{delathauwer2000} and Sameni~\cite{sameni2010}, delivering deterministic single-DSP edge execution.
-\end{enumerate}
+\input{sections/ws2_literature}
 
 % =====================================================================
 \section{Results Replicated from the Literature}
 \label{sec:replications}
 
 \begin{finalpart}
-We re-implemented seven published methods or ideas from their descriptions (no third-party code) during the mid-term phase. \Cref{tab:replication_scorecard} compares each with the published value where one exists on a comparable metric and data set.
+We re-implemented seven published methods or ideas from their descriptions (no third-party code) during the mid-term phase, and in this revision added one replication on real data (R8) and recomputed R3 and R5. \Cref{tab:replication_scorecard} compares each with the published value where one exists on a comparable metric and data set.
 
-\noindent\textbf{Tolerance rule.} A result is within tolerance if our beat F1 is within $\pm 2$ points of the published F1 for the same data set and the same statistic (mean or median). Rows without a published number on a comparable metric and data set are \emph{qualitative only}. The rule was fixed after all results below were known; no tolerance was set per row. Our values come from \texttt{code/results/metrics.csv} (Subject 1 test cases) and \texttt{code/results/mega\_benchmark\_results.csv} (250 records); published values from the cited papers (table or page numbers not verified by us).
+\noindent\textbf{Tolerance rules.} A result is within tolerance if our beat F1 is within the stated distance of the published F1 for the same data set and the same statistic (mean or median). Rows without a published number on a comparable metric and data set are \emph{qualitative only}. For the original rows R1--R7 the rule was $\pm 2$ points and was fixed after their results were known. For the results added in this revision (R3 recomputation, R5 median, R8) the rule, $\pm 5$ points with the same statistic, record set and $\pm 50\,$ms matching, was written down and committed (\texttt{report/final\_report/fixes/WS3/preregistration.md}, commit \texttt{6e5e0cd}) before the new results were computed. Our values come from \texttt{code/results/metrics.csv}, \texttt{code/results/mega\_benchmark\_results.csv}, \texttt{tools/report\_stats/out/r3\_eigen.csv}, \texttt{r5\_median.csv} and \texttt{behar\_replication\_summary.csv}; published values from the cited papers.
 
-\noindent\textbf{Summary: 0 of 7 within tolerance, 0 explained, 1 outside tolerance (R5), 5 qualitative only, 1 not run (R7).}
+\noindent\textbf{R8: template subtraction on real data.} We re-implemented TS and TSpca from the description in~\cite{behar2013cinc} (same method family as~\cite{behar2014b}): 10--99\,Hz filtering, maternal QRS detection on each channel, a template from 20 aligned maternal cycles (TS) or from the first 2 principal components of 20 cycles (TSpca), fetal QRS detection on each residual and selection of the channel with the smoothest FHR (\texttt{tools/report\_stats/replicate\_behar.py}). On the paper's 68 set-a records (2--58\,s, $\pm 50\,$ms) the mean F1 is $63.9\%$ (TS) and $67.8\%$ (TSpca), against the published $81.6\%$ and $86.0\%$ (\cite{behar2013cinc}, Tab.~2): both are outside tolerance. The result is bimodal: the medians are $89.3\%$ and $89.8\%$, the records that work score $91$--$94\%$ on average, and 27 (TS) and 24 (TSpca) of the 68 records fall below $50\%$. The paper does not specify the QRS detector bands, thresholds, cycle window or template scaling; our choices for these make whole records fail (wrong channel or a detector locked onto the maternal residual), so R8 does not test the published result itself. For comparison, v7-DL scores $84.0\%$ on the same 68 records. % sources: tools/report_stats/out/behar_replication_summary.csv, behar_replication_per_record.csv
+
+\noindent\textbf{R3 recomputed.} On the training subjects (\texttt{sub01}--\texttt{sub07}, 12\,dB, l1, c0) the 4-lead covariance of leads $[27, 26, 28, 25]$ puts $94.0\%$, $5.3\%$, $0.7\%$ and $0.0\%$ of the variance in $\mathbf{v}_1$--$\mathbf{v}_4$ (the mid-term figure used typed-in values $88.4\%$ and $7.8\%$), and the fetal component's energy falls $70.7\%$ in $\mathbf{v}_1$ and $25.6\%$ in $\mathbf{v}_2$. The data therefore do not support the mid-term statement that the fetal signal is isolated in $\mathbf{v}_2$. % source: tools/report_stats/out/r3_eigen.csv
+
+\noindent\textbf{Summary: 0 of 8 within tolerance, 0 explained, 2 outside tolerance (R5, R8), 5 qualitative only, 1 not run (R7).}
 \end{finalpart}
 
 \begin{table*}[t]
 \fb
-\caption{\fb Replication scorecard (mid-term re-implementations, \tagLone). Verdicts follow the $\pm 2$-point rule stated in Sec.~\ref{sec:replications}, which was fixed after the results were known.}
+\caption{\fb Replication scorecard. R1--R7: mid-term re-implementations, verdicts by the $\pm 2$-point rule fixed after the results were known; R3 (recomputed), R5 (median) and R8: added in this revision, verdicts by the $\pm 5$-point rule committed before these results were computed (Sec.~\ref{sec:replications}). \textbf{[L1]} Source: \texttt{code/results/metrics.csv}, \texttt{code/results/mega\_benchmark\_results.csv}, \texttt{tools/report\_stats/out/r3\_eigen.csv}, \texttt{r5\_median.csv}, \texttt{behar\_replication\_summary.csv}.}
 \label{tab:replication_scorecard}
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}lp{2.3cm}p{4.0cm}p{3.6cm}p{3.4cm}p{1.2cm}p{3.4cm}@{}}
+\begin{tabular}{@{}lp{2.3cm}p{4.0cm}p{3.6cm}p{3.6cm}p{1.2cm}p{3.6cm}@{}}
 \toprule
 \textbf{ID} & \textbf{Study} & \textbf{Published value (data set, metric)} & \textbf{Our setup} & \textbf{Our value} & \textbf{Tol.} & \textbf{Verdict and cause} \\
 \midrule
 R1 & Ahlstrom \etal~\cite{ahlstrom1985} & Filter design only; no detection metric & 4 SOS (8th-order) Butterworth bandpass 0.5--40\,Hz, $f_s = 250\,$Hz & $>56\,$dB at 0.1\,Hz, $>18\,$dB at 60\,Hz (computed from the coefficients) & -- & \textbf{QUALITATIVE ONLY}: design reproduced, nothing to compare \\
 R2 & Kanjilal \etal~\cite{kanjilal1997} & Qualitative extraction on real single-lead recordings; no F1 & Hankel SVD, rank-2 subtraction, one lead & TC1 $76.4\%$, TC3 $23.7\%$ & -- & \textbf{QUALITATIVE ONLY}: collapse at low SNR seen, no published F1 \\
-R3 & De Lathauwer \etal~\cite{delathauwer2000} & Qualitative BSS on real cutaneous recordings & 4-lead covariance eigen-decomposition & not measured (the mid-term energy shares were typed into the figure script) & -- & \textbf{QUALITATIVE ONLY} \\
+R3 & De Lathauwer \etal~\cite{delathauwer2000} & Qualitative BSS on real cutaneous recordings & 4-lead covariance eigen-decomposition, \texttt{sub01}--\texttt{sub07} & variance in $\mathbf{v}_1$--$\mathbf{v}_4$: $94.0$ / $5.3$ / $0.7$ / $0.0\%$; fetal energy $70.7\%$ in $\mathbf{v}_1$, $25.6\%$ in $\mathbf{v}_2$ & -- & \textbf{QUALITATIVE ONLY}: fetal signal not isolated in $\mathbf{v}_2$ (contradicts the mid-term claim) \\
 R4 & Widrow \etal~\cite{widrow1975}, Hasan \etal~\cite{hasan2009} & Reference-free single-lead adaptive cancellation described as unreliable; no F1 & SWT + LMS + SSNF on one lead & TC1 $15.1\%$, FHR MAE $46.6\,$bpm & -- & \textbf{QUALITATIVE ONLY}: failure mechanism consistent \\
-R5 & Andreotti \etal~\cite{andreotti2016} & FECGSYNDB, template subtraction, median F1 $96.0\%$ ($\pm 50\,$ms) & Fixed ensemble template on one lead, mid-term detector & 250 records: mean $59.4\%$; TC1 $76.4\%$, TC3 $23.9\%$ & $\pm 2$ & \textbf{FAIL}: our single-lead fixed-template implementation with the mid-term detector is far weaker than the published methods; mean vs median also differ \\
+R5 & Andreotti \etal~\cite{andreotti2016} & FECGSYNDB, template subtraction, median F1 $96.0\%$ ($\pm 50\,$ms) & Fixed ensemble template on one lead, mid-term detector, 250 records & median $61.3\%$ (mean $59.4\%$); TC1 $76.4\%$, TC3 $23.9\%$ & $\pm 5$ & \textbf{FAIL}: same statistic now, still $34.7$ points below; our single-lead fixed-template implementation with the mid-term detector is far weaker than the published methods \\
 R6 & Ronneberger \etal~\cite{ronneberger2015} & 2D U-Net, image segmentation; no ECG metric & 1D U-Net, test subjects \texttt{sub09}--\texttt{sub10} & test $83.9\%$ (1-ch), $97.5\%$ (4-ch) & -- & \textbf{QUALITATIVE ONLY}: architecture adapted; training split not verifiable \\
 R7 & Widrow \etal~\cite{widrow1975} & ANC with a thoracic maternal reference; no FECGSYNDB F1 in this paper & planned: NLMS with thoracic lead 32 & no in-house result & -- & \textbf{NOT RUN} \\
+R8 & Behar \etal~\cite{behar2013cinc} & CinC 2013 set-a, 68 records, mean F1 (Tab.~2, 10-Hz high-pass): TS $81.6\%$, TSpca $86.0\%$ & TS / TSpca from the paper's description, lowest-SMI channel, $\pm 50\,$ms, 2--58\,s & mean $63.9\%$ / $67.8\%$; median $89.3\%$ / $89.8\%$; 27 / 24 records below $50\%$ & $\pm 5$ & \textbf{FAIL}: bimodal; unspecified detector and channel-selection details (our choices) make whole records fail \\
 \bottomrule
 \end{tabular}%
 }
@@ -1295,7 +1127,7 @@ C-18: structure & mid-term Secs.~6--10 in the main text & moved to App.~\ref{app
     \item \textbf{Continuous Accuracy Verification and Automated Audit Harness:}
     \begin{enumerate}
         \item \textit{Frozen Benchmark Pipeline:} AI assisted in standardizing the evaluation harnesses (\texttt{src/run\_benchmark.py} for 35 Subject 1 runs and \texttt{src/run\_mega\_benchmark.py} for 2,250 runs across all 250 records), computing clinical performance metrics ($\text{PPV}$, $\text{Se}$, $F_1$-score, FHR MAE, and Bland-Altman limits).
-        \item \textit{Automated Consistency Audit:} AI helped author the automated checking scripts (\texttt{tools/check\_consistency.py}, \texttt{tools/make\_numbers\_tex.py}, and \texttt{tools/audit\_mtr8.py}) that execute an exhaustive 15-check audit (Table internal arithmetic, unweighted partition aggregations, 95\% clustered confidence intervals with $df=9$, eigen-spectrum preservation, and text-versus-table equality) directly against raw CSV outputs, eliminating manual transcription errors.
+        \item \textit{Automated Consistency Audit:} AI helped author the automated checking scripts (\texttt{tools/check\_consistency.py}, \texttt{tools/make\_numbers\_tex.py}, and \texttt{tools/audit\_mtr8.py}) that execute an exhaustive 15-check audit (Table internal arithmetic, unweighted partition aggregations, 95\% clustered confidence intervals with $df=9$, eigen-spectrum preservation, and text-versus-table equality) directly against raw CSV outputs, eliminating manual transcription errors. \fin{(Final-phase note: these checks covered the tables and text they were written for; several mid-term figures were still drawn from values typed into the figure script, see App.~\ref{app:midterm}.)}
         \item \textit{Fixed-Point Precision Tracking:} AI assisted in reviewing bit-true Q1.15 fixed-point software modeling in \texttt{src/fixed\_point\_model.py}, tracking signal-to-quantization-noise ratio ($+74.52\,\text{dB}$ SQNR) across 5,000 golden test vectors and deriving the theoretical null depth formula ($R_{\text{null}} \approx 20 \log_{10}[\sqrt{12} \cdot 2^{B-1}/\sqrt{C}]$).
     \end{enumerate}
     \item \textbf{Code Development, Mathematical Review, and Formatting:}
@@ -1488,7 +1320,7 @@ P.~P. Kanjilal, S.~Palit, and G.~Saha.
 \bibitem{delathauwer2000}
 L.~De~Lathauwer, B.~De~Moor, and J.~Vandewalle.
 \newblock Fetal electrocardiogram extraction by blind source subspace separation.
-\newblock {\em IEEE Transactions on Biomedical Engineering}, 47(5):567--572, 2000. \url{https://doi.org/10.1109/10.841333}
+\newblock {\em IEEE Transactions on Biomedical Engineering}, 47(5):567--572, 2000. \url{https://doi.org/10.1109/10.841326}
 
 \bibitem{sameni2007}
 R.~Sameni, M.~B. Shamsollahi, C.~Jutten, and G.~D. Clifford.
@@ -1554,14 +1386,19 @@ RealDigital.
 \newblock RealDigital Inc., 2023. \url{https://www.realdigital.org/hardware/boolean}
 
 \bibitem{edwin2022}
-D.~Edwin~Dhas and M.~Suchetha.
-\newblock Hardware-efficient neural-coprocessor-based adaptive filtering for real-time fetal ECG extraction on FPGA.
-\newblock {\em IEEE Transactions on Biomedical Circuits and Systems}, 16(5):981--990, 2022. \url{https://doi.org/10.1109/TBCAS.2022.3204439}
+\fin{D.~Edwin~Dhas and M.~Suchetha.
+\newblock Extraction of fetal ECG from abdominal and thorax ECG using a non-causal adaptive filter architecture.
+\newblock {\em IEEE Transactions on Biomedical Circuits and Systems}, 16(5):981--990, 2022. \url{https://doi.org/10.1109/TBCAS.2022.3204993}}
 
-\bibitem{pani2016}
-D.~Pani, G.~Barabino, and L.~Raffo.
-\newblock Real-time embedded JADE for fetal electrocardiogram extraction.
-\newblock {\em Biomedical Signal Processing and Control}, 27:84--95, 2016. \url{https://doi.org/10.1016/j.bspc.2016.02.001}
+\bibitem{muceli2007}
+\fin{S.~Muceli, D.~Pani, and L.~Raffo.
+\newblock Real-time foetal ECG extraction with JADE on floating point DSP.
+\newblock {\em Electronics Letters}, 43(18):963--965, 2007. \url{https://doi.org/10.1049/el:20071331}}
+
+\bibitem{vasudeva2020}
+\fin{B.~Vasudeva, P.~Deora, P.~M. Pradhan, and S.~Dasgupta.
+\newblock Efficient implementation of LMS adaptive filter-based FECG extraction on an FPGA.
+\newblock {\em Healthcare Technology Letters}, 7(5):125--131, 2020. \url{https://doi.org/10.1049/htl.2020.0016}}
 
 \bibitem{anthropic2024}
 Anthropic.
@@ -1595,6 +1432,11 @@ Anthropic.
 \newblock \url{https://www.anthropic.com/claude-code}
 
 }
+\bibitem{behar2013cinc}
+J.~Behar, J.~Oster, and G.~D. Clifford.
+\newblock Non-invasive {FECG} extraction from a set of abdominal sensors.
+\newblock In {\em Computing in Cardiology}, volume~40, pages 297--300, 2013. \url{https://physionet.org/files/challenge-2013/1.0.0/papers/0297.pdf}
+
 \end{thebibliography}
 }
 
@@ -1606,6 +1448,175 @@ Anthropic.
 \label{app:midterm}
 None of the resource, cycle or clock figures in this appendix describe the final hardware; they are the paper sizing of the mid-term beamformer, kept for the record. The final hardware is described in Secs.~\ref{sec:final_hw}--\ref{sec:final_v7} and Tab.~\ref{tab:v7_hw}. Several mid-term figures were drawn from values typed into the figure script (\texttt{report/mid\_term/tools/generate\_all\_audited\_figures.py}) rather than read from a result file: Figs.~\ref{fig:quantization_sweep}, \ref{fig:f1_comparison}, \ref{fig:snr_curve}, \ref{fig:heatmap}, \ref{fig:eigen_spectrum}, \ref{fig:fpga_scaling}, \ref{fig:hw_tradeoff} and~\ref{fig:radar_chart}. The single-channel rows of Fig.~\ref{fig:heatmap} agree with \texttt{code/results/metrics.csv}; the other values could not be traced to a result file and are not used anywhere in the final-phase sections.
 \end{finalpart}
+
+% =====================================================================
+\subsection{Problem Statement and Formal Engineering Objectives}
+\label{sec:midterm_problem}
+
+\noindent\textbf{Formal problem formulation.} Given $C=4$ continuous abdominal biopotential mixtures $\mathbf{x}[n] \in \mathbb{R}^C$ corrupted by maternal cardiac potentials $\mathbf{A}_m \mathbf{d}_m[n]$, ambient noise, and powerline interference, synthesize a spatial beamforming weight vector $\mathbf{w} \in \mathbb{R}^C$ such that the extracted fetal scalar estimate:
+\begin{equation}
+    \hat{f}[n] = \mathbf{w}^T \mathbf{x}[n]
+\end{equation}
+isolates the fetal cardiac dipole component while suppressing the dominant maternal interference direction $\mathbf{v}_1$. Under our spatial principal component heuristic, $\mathbf{w}$ is selected as the unit-norm second principal eigenvector ($\mathbf{w} = \mathbf{v}_2$) of the 4-channel mixture covariance matrix. Rather than achieving full mathematical nulling of the 3-dimensional maternal dipole subspace, this heuristic projection suppresses the dominant maternal axis $\mathbf{v}_1$ while preserving fetal biopotential energy.
+
+\noindent\textbf{Formal engineering objectives (O1--O5):}
+\begin{itemize}
+    \item \textbf{O1 (Algorithmic Resilience \tagLone/\tagLtwo):} Maintain fetal QRS F1-score $\ge 90\%$ down to $0\,$dB SNR and across uterine contraction stress, with FHR Mean Absolute Error $<1.0\,$bpm under clean baseline rhythm (\cref{tab:objective_status}).
+    \item \textbf{O2 (Bit-True Numerical Integrity \tagLtwo):} Formulate bit-accurate fixed-point representations demonstrating Signal-to-Quantization-Noise Ratio $\text{SQNR} \ge 60\,$dB with zero beat degradation relative to double-precision software.
+    \item \textbf{O3 (Latency and Determinism \tagLfour\ Target):} Size per-sample compute latency to $<10.0\,\mu$s on Spartan-7 at 100\,MHz, well below the 4,000\,$\mu$s real-time sample budget.
+    \item \textbf{O4 (FPGA Resource Efficiency \tagLfour\ Target):} Confine primary pipeline utilization to $<5\%$ of logic LUTs and $\le 1$ DSP48E1 slice on the Xilinx Spartan-7 XC7S50 FPGA.
+    \item \textbf{O5 (Hardware Demonstration Script \tagLfive\ Target):} Design complete UART streaming protocols, front-panel switch presets, and 4-digit 7-segment FHR display controls for Boolean Board bring-up in the final sprint. \fin{Final status: the UART link and the complete design run on the board (Sec.~\ref{sec:final_hw}); the live demonstration is described in Sec.~\ref{sec:final_demo}.}
+\end{itemize}
+
+% =====================================================================
+\subsection{Physiological Signal Model and Dataset}
+\label{sec:midterm_dataset}
+
+Under the standard cardiac volume-conduction model, surface potentials are linear combinations of equivalent cardiac source dipole vectors~\cite{sornmo_ecg,sameni2010}:
+\begin{equation}
+    \mathbf{x}[n] = \mathbf{A}_m\,\mathbf{d}_m[n] + \mathbf{b}_f\,f[n] + \mathbf{v}[n]
+\end{equation}
+where $\mathbf{d}_m[n] \in \mathbb{R}^3$ is the rotating maternal cardiac dipole vector, $\mathbf{A}_m \in \mathbb{R}^{C \times 3}$ is the maternal lead-field mixing matrix, $\mathbf{b}_f \in \mathbb{R}^C$ is the fetal lead-field vector, $f[n] \in \mathbb{R}$ is the scalar fetal cardiac source, and $\mathbf{v}[n]$ represents additive noise.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fmr_lead_topography_34ch.png}
+\caption{\tagLone\ 34-Channel Fetal-to-Maternal Ratio (FMR) topography evaluated strictly across training subjects (\texttt{sub01}--\texttt{sub07}) on PhysioNet FECGSYNDB~\cite{fecgsyndb,andreotti2016}\fin{: fetal/maternal RMS ratio of each lead, mean over the seven subjects (layout l1, condition c0), recomputed for this report from the separate fetal and maternal signals. Leads 19 and 18 have the highest FMR (0.61 and 0.60); the selected sub-array $[27, 26, 28, 25]$ (0-based indices, highlighted) ranks 4th, 3rd, 8th and 10th.}}
+\label{fig:fmr_topography}
+\end{figure}
+
+\noindent\textbf{PhysioNet FECGSYNDB benchmark.} We utilize the standardized PhysioNet Fetal ECG Synthetic Database (FECGSYNDB)~\cite{fecgsyndb,andreotti2016}, comprising 34 cutaneous channels (32 abdominal, 2 maternal thoracic references) sampled at $250\,$Hz with synchronized ground-truth fetal annotations, alongside companion synthetic arrhythmia recordings from NIFEADB~\cite{nifeadb}.
+
+\newcontent{\noindent\textbf{Training-set lead selection and FMR topography.} \fin{Fig.~\ref{fig:fmr_topography} shows the fetal-to-maternal RMS ratio of every lead, averaged over the training subjects (\texttt{sub01}--\texttt{sub07}). The highest values are on Leads 19 and 18 (0.61 and 0.60), followed by Leads 26 and 27 (0.52 and 0.51); Leads 28 and 25 rank 8th and 10th (0.43 and 0.40). The mid-term sub-array is therefore not the four leads with the highest FMR (mean FMR 0.46, against 0.56 for Leads 19, 18, 26 and 27). It was taken from an anatomical ranking (lower abdominal midline leads over a head-down fetus) as a block of four neighbouring lead indices, and all four leads are in the training top~10:}
+\begin{equation}
+    \fin{\mathcal{C}_{\text{sel}}} = \{ \text{Lead } 27, \text{Lead } 26, \text{Lead } 28, \text{Lead } 25 \}
+\end{equation}
+(0-based physical electrode indices, corresponding to 1-based leads $[28, 27, 29, 26]$), ensuring that no \texttt{sub09}--\texttt{sub10} data were used for lead selection, hyperparameters, or training.
+}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/butterworth_sos_frequency_response.png}
+\caption{\tagLone\ Frequency response of the causal 4th-order Butterworth Second-Order Section (SOS) bandpass filter ($0.5$--$40\,$Hz, 4 SOS biquads, 8th-order total) at $f_s = 250\,$Hz: $>56\,$dB attenuation at $0.1\,$Hz baseline wander, $>18\,$dB attenuation at $60\,$Hz powerline mains; group delay in physiological QRS band ($10$--$30\,$Hz) is $11.4$--$15.4\,$ms ($2.85$--$3.85$ samples at 250\,Hz; maximum edge group delay reaches $96\,$ms near 0.5\,Hz).}
+\label{fig:filter_responses}
+\end{figure}
+
+\newcontent{\noindent\textbf{Preprocessing cascade.} Each raw biopotential channel is conditioned by:
+\begin{enumerate}
+    \item \textbf{Butterworth SOS Bandpass Filter (0.5--40\,Hz):} Implemented as four cascaded Second-Order Sections (SOS) in Direct Form II (8th-order total transfer function). Fig.~\ref{fig:filter_responses} confirms $>56\,$dB baseline attenuation at $0.1\,$Hz and $>18\,$dB attenuation at $60\,$Hz. In the physiological fetal QRS passband ($10$--$30\,$Hz), the group delay is $\tau_g \approx 11.4$--$15.4\,$ms ($2.85$--$3.85$ samples at $250\,$Hz), while maximum transition group delay reaches $96\,$ms ($24$ samples) near the $0.5\,$Hz lower cutoff.
+    \item \textbf{Dual-Mode Notch Filter (50/60\,Hz):} A 2nd-order IIR notch ($Q=30$) selectable via board switch \texttt{SW[3]} for 50\,Hz (Indian grid) or 60\,Hz (US grid).
+\end{enumerate}
+}
+
+\newcontent{\noindent\textbf{Strict Disjoint Cross-Subject Data Split Protocol.} To establish rigorous scientific validity and prevent data contamination, the 250 database records are partitioned strictly at the subject level:
+\begin{itemize}
+    \item \textbf{Training Partition (70\%):} 175 records from Subjects \texttt{sub01}--\texttt{sub07} (1.79\,GB in 32-bit float). Used exclusively for U-Net weight optimization and algorithm hyperparameter freezing ($N=750$, detector thresholds, lead array $\mathcal{C}_{\text{opt}}$).
+    \item \textbf{Validation Partition (10\%):} 25 records from Subject \texttt{sub08} (0.26\,GB). Used for early stopping.
+    \item \textbf{Held-Out Test Partition (20\%):} 50 records from Subjects \texttt{sub09}--\texttt{sub10} (0.51\,GB). Completely untouched during design and hyperparameter tuning; evaluated only once to verify anatomical generalization.
+\end{itemize}
+On disk, raw 16-bit WFDB files occupy 1.28\,GB ($250 \times 75,000 \times 34 \times 2\,$bytes); expanded to 32-bit single-precision floating point, the uncompressed database is 2.55\,GB.
+}
+
+% =====================================================================
+\subsection{Multi-Channel Signal Processing Architectures}
+\label{sec:architectures}
+
+We implemented, benchmarked, and profiled nine distinct signal processing paradigms, summarized in Tab.~\ref{tab:method_inventory}.
+
+\begin{table}[t]
+\caption{Comprehensive inventory of nine implemented and benchmarked fetal ECG extraction architectures. \fin{\textbf{[L1]} Source: mid-term method list (code/src/methods/).}}
+\label{tab:method_inventory}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llccl@{}}
+\toprule
+\textbf{ID} & \textbf{Algorithm Name} & \textbf{Leads} & \textbf{Paradigm} & \textbf{Description / Section} \\
+\midrule
+\textbf{M1} & \textbf{Spatial PCA Beamforming} & \textbf{4-Ch} & Statistical & Primary architecture (Sec.~\ref{sec:pca_beamformer}) \\
+\textbf{M2} & \textbf{Deep 1D U-Net (4-Ch)} & 4-Ch & Learned & Multi-channel neural extractor (Sec.~\ref{sec:unet}) \\
+\textbf{M3} & Deep 1D U-Net (1-Ch) & 1-Ch & Learned & Single-channel neural baseline (Sec.~\ref{sec:unet}) \\
+\textbf{M4} & Multi-Lead Template Fusion & 4-Ch & Spatial Voting & 4-lead template subtraction with voting \\
+\textbf{M5} & Wavelet-Threshold Hybrid & 1-Ch & Wavelet/SWT & Stationary wavelet thresholding + LMS \\
+\textbf{M6} & Fixed Template Subtraction & 1-Ch & Subtraction & Classical single-lead template subtraction \\
+\textbf{M7} & Adaptive Template Subtraction& 1-Ch & Subtraction & EMA adaptive template subtraction \\
+\textbf{M8} & Hankel-SVD Variant 1 & 1-Ch & Matrix SVD & Fixed-period Hankel matrix SVD~\cite{kanjilal1997} \\
+\textbf{M9} & Hankel-SVD Variant 3 & 1-Ch & Matrix SVD & Moving-window Hankel matrix SVD \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsubsection{Method 1: Multi-Channel Spatial PCA Beamforming (Primary Architecture)}
+\label{sec:pca_beamformer}
+For our 4-lead array, the sample covariance matrix $\mathbf{R}_{xx} \in \mathbb{R}^{4 \times 4}$ is computed over an observation calibration window ($N=750$ samples, $3.0\,$s):
+\begin{equation}
+    \mathbf{R}_{xx} = \frac{1}{N} \sum_{n=1}^N \mathbf{x}[n]\,\mathbf{x}^T[n] \quad \in \mathbb{R}^{4 \times 4}
+\end{equation}
+Eigen-decomposition yields orthonormal eigenvectors $\mathbf{V} = [\mathbf{v}_1, \dots, \mathbf{v}_4]$ and sorted eigenvalues $\lambda_1 \ge \lambda_2 \ge \lambda_3 \ge \lambda_4$. The dominant eigenvector $\mathbf{v}_1$ spans the maternal dipole direction (capturing \fin{$94.0\%$} of total mixture \fin{variance, mean of the training subjects; Fig.~\ref{fig:eigen_spectrum}}). Selecting the weight vector $\mathbf{w} = \mathbf{v}_2$ extracts the fetal scalar signal into the subspace orthogonal to $\mathbf{v}_1$:
+\begin{equation}
+    \hat{f}[n] = \mathbf{w}^T \mathbf{x}[n] = \sum_{k=1}^4 w_k\,x_k[n]
+    \label{eq:inner_product}
+\end{equation}
+
+\newcontent{\noindent\textbf{Polarity alignment and sign ambiguity.} Because eigenvector decomposition leaves sign arbitrary ($\mathbf{w} = \pm \mathbf{v}_2$), the raw signed correlation with the reference fetal ECG across all 250 records yields a mean of $-0.135$ and a positive correlation rate of $41.2\%$ (mean absolute correlation $|\rho| = 0.513$). Skewness sign alignment is evaluated:
+\begin{equation}
+    \mathbf{w} \leftarrow \text{sgn}\left(\frac{1}{N} \sum_{n=1}^N (\hat{f}[n] - \mu_{\hat{f}})^3\right)\,\mathbf{w}
+\end{equation}
+Crucially, because the downstream fetal QRS detector applies a non-linear squaring operator $z[n] = y^2[n]$, peak detection and FHR calculation are mathematically invariant to eigenvector sign inversion ($\mathbf{w} \to -\mathbf{w}$). Polarity alignment is therefore maintained purely for visual telemetry display.}
+
+\newcontent{\noindent\textbf{System Partitioning (Host vs FPGA).} To optimize resource efficiency, we adopt a two-phase architecture:
+\begin{enumerate}
+    \item \textbf{Calibration Phase (Host):} During initial start-up, a 3-second buffer of 4-channel data is streamed over UART to the host PC, which computes $\mathbf{R}_{xx}$, performs eigen-decomposition, aligns polarity, and transmits the four Q1.15 weights $\mathbf{w}$ back to the FPGA.
+    \item \textbf{Real-Time Streaming Phase (FPGA):} The Spartan-7 FPGA executes real-time SOS filtering, 4-MAC spatial beamforming, peak detection, and FHR calculation on every arriving sample without host intervention.
+\end{enumerate}
+}
+
+\subsubsection{Peak-Energy Fetal QRS Detector}
+\label{sec:detector}
+\newcontent{All fetal QRS detection is performed by our standardized Peak-Energy Detector inspired by the Pan-Tompkins topology~\cite{pan1985}:
+\begin{enumerate}
+    \item \textbf{5-Point Derivative Filter:} Attenuates P and T waves while highlighting steep QRS slopes:
+    \begin{equation}
+        y[n] = \frac{1}{8} \left( 2x[n] + x[n-1] - x[n-3] - 2x[n-4] \right)
+    \end{equation}
+    \item \textbf{Nonlinear Squaring:} $z[n] = y^2[n]$, amplifying large QRS complexes and rectifying the biopotential (rendering detection invariant to signal sign).
+    \item \textbf{Moving Integration Window:} A rectangular window of length $W = 15$ samples ($60\,$ms), optimized on the training partition (\texttt{sub01}--\texttt{sub07}) to match the compact fetal QRS duration ($50\,$ms) rather than adult QRS ($150\,$ms).
+    \item \textbf{Adaptive Dual-Thresholding:} Dual running thresholds track signal peak level $\text{SPKI}$ and noise peak level $\text{NPKI}$:
+    \begin{align}
+        \text{SPKI} &\leftarrow 0.125 \cdot PK + 0.875 \cdot \text{SPKI} \\
+        \text{NPKI} &\leftarrow 0.125 \cdot PK + 0.875 \cdot \text{NPKI}
+    \end{align}
+    where $\text{SPKI}$ is updated upon accepted fetal QRS peak detections, and $\text{NPKI}$ is updated on rejected candidate peaks ($PK$ denotes the current peak amplitude). A candidate peak triggers detection when $z[n] > \text{NPKI} + 0.25(\text{SPKI} - \text{NPKI})$. Detection runs continuously without window resets.
+    \item \textbf{Refractory Blanking \& Offset Correction:} A refractory blanking period $\tau_{\text{ref}} = 50$ samples ($200\,$ms at 250\,Hz) prevents double-counting of split peaks (up to 300\,bpm). A fixed compensation offset of $W/2 + 2 = 9.5$ samples ($38\,$ms) aligns detected peaks with true R-peak centers.
+\end{enumerate}
+}
+
+\subsubsection{Method 2: Deep 1D Convolutional U-Net (Neural Extractor)}
+\label{sec:unet}
+\newcontent{To establish an upper bound on non-linear feature representation, we implemented an end-to-end 1D Convolutional U-Net containing 1,417,073 trainable parameters (adapted from the 2D architecture of Ronneberger \etal~\cite{ronneberger2015}):
+\begin{itemize}
+    \item \textbf{Encoder:} 4 contracting stages (Conv1D $\to$ BatchNorm $\to$ LeakyReLU $\to$ MaxPool1D), doubling channel depths from 32 to 256.
+    \item \textbf{Decoder:} 4 expanding stages (TransposedConv1D $\to$ Concatenate skip connection $\to$ Conv1D).
+    \item \textbf{Loss Function:} Stabilized Pearson correlation loss combined with soft-L1 penalty:
+    \begin{equation}
+        \mathcal{L}(f, \hat{f}) = 1 - \frac{\text{Cov}(f, \hat{f})}{\sigma_f \sigma_{\hat{f}} + \epsilon} + 0.1\,\|f - \hat{f}\|_1
+    \end{equation}
+\end{itemize}
+Trained on subjects \texttt{sub01}--\texttt{sub07} over an NVIDIA RTX 4060 GPU (Adam optimizer, batch size 32, learning rate $10^{-3}$, 50 epochs; 1-Ch model uses Lead 27). The best checkpoint on validation subject \texttt{sub08} was evaluated once on held-out test subjects \texttt{sub09}--\texttt{sub10}. \fin{(Final-phase note: the list of training records was not saved and the training script does not enforce this split, so it cannot be verified from the archive; see the deep-learning check in Sec.~\ref{sec:final_realdata}.)}
+}
+
+\subsubsection{Methods M4--M9: Classical Benchmark Baselines}
+\label{sec:baselines}
+\newcontent{To establish comparative benchmarks, seven classical algorithms were re-implemented:
+\begin{itemize}
+    \item \textbf{Multi-Lead Template Fusion (M4):} Subtracts maternal templates independently across 4 leads using a dedicated maternal Pan-Tompkins detector on epigastric channels, then applies spatial cluster voting ($\ge 35\%$ coincidence) to fuse detected peaks.
+    \item \textbf{Wavelet-Threshold Hybrid (M5):} Combines 4-level Stationary Wavelet Transform (SWT, \texttt{sym4}) decomposition with adaptive subband LMS filtering and non-linear thresholding.
+    \item \textbf{Fixed Ensemble Template Subtraction (M6):} Averages 30 maternal QRS complexes into a fixed template subtracted from each aligned maternal cycle on Lead 27.
+    \item \textbf{Adaptive EMA Template Subtraction (M7):} Updates maternal template via exponential moving average ($\alpha = 0.10$) to track amplitude fluctuations.
+    \item \textbf{Hankel-SVD Subspace Variants (M8, M9):} Forms trajectory matrix $\mathbf{A} \in \mathbb{R}^{m \times (N - m + 1)}$ with modal period $m=174$; rank-2 truncated reconstruction eliminates dominant maternal components~\cite{kanjilal1997}.
+\end{itemize}
+}
+
 
 \noindent \textbf{Analytical Hardware Sizing [L4 Target]:} Sized a single-DSP48E1 time-multiplexed schedule executing in 148 clock cycles ($1.48\,\mu$s at 100\,MHz), utilizing $\approx 3.0\%$ LUTs (990 of 32,600) and 1 BRAM, providing an estimated $2,702\times$ compute margin against the $4.0\,$ms sample interval. \fin{(Superseded: this was a paper estimate for the mid-term beamformer. The final RTL runs at 50\,MHz and needs a median of 1,485 cycles per sample; Sec.~\ref{sec:final_hw}.)}
 
@@ -1682,7 +1693,7 @@ Adaptive Threshold & Running SPKI / NPKI & 32-bit & Q6.26 & Bit-shift EMA ($\alp
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/quantization_null_depth.png}
-\caption{\tagLtwo\ Quantization word-length design sweep: Maternal subspace null depth vs weight word length $B$, comparing theoretical bound (Eq.~\ref{eq:null_bound}) against bit-true simulation. Target format ($B=16$) achieves $95.1\,$dB nulling, safely exceeding the $55\,$dB clinical requirement.}
+\caption{\tagLtwo\ Quantization word-length design sweep: Maternal subspace null depth vs weight word length $B$, comparing theoretical bound (Eq.~\ref{eq:null_bound}) against bit-true simulation. Target format ($B=16$): \fin{bound $95.1\,$dB, computed from Eq.~\ref{eq:null_bound}, above the $55\,$dB requirement. [L2] Illustrative, not traceable: the simulation curve was typed into the mid-term figure script and no result file exists.}}
 \label{fig:quantization_sweep}
 \end{figure}
 
@@ -1691,7 +1702,7 @@ Adaptive Threshold & Running SPKI / NPKI & 32-bit & Q6.26 & Bit-shift EMA ($\alp
     R_{\text{null}} \approx 20 \log_{10} \left( \frac{\sqrt{12} \cdot 2^{B-1}}{\sqrt{C}} \right) \quad \text{[dB]}
     \label{eq:null_bound}
 \end{equation}
-At our target format ($B=16$, Q1.15) with $C=4$ channels, Eq.~\eqref{eq:null_bound} evaluates to $95.1\,$dB. In bit-accurate simulation, empirical null depth reaches $95.0\,$dB (Fig.~\ref{fig:quantization_sweep}), safely exceeding the $55\,$dB requirement derived from suppressing $20$--$35\,$dB maternal amplitude excess with $\ge 20\,$dB margin below the fetal biopotential. At $B=12$, null depth is $71.0\,$dB; at $B=10$, it is $59.0\,$dB.
+At our target format ($B=16$, Q1.15) with $C=4$ channels, Eq.~\eqref{eq:null_bound} evaluates to $95.1\,$dB. \fin{The simulation curve of Fig.~\ref{fig:quantization_sweep} cannot be traced to a result file, so no simulated null depth is reported; the bound exceeds the} $55\,$dB requirement derived from suppressing $20$--$35\,$dB maternal amplitude excess with $\ge 20\,$dB margin below the fetal biopotential. At $B=12$, null depth is $71.0\,$dB; at $B=10$, it is $59.0\,$dB.
 
 \newcontent{\noindent\textbf{Bit-true verification on 5,000 golden vectors [L2].} We implemented a cycle-accurate Python fixed-point emulator (\texttt{fixed\_point\_model.py}) modeling DSP48E1 arithmetic, intermediate rounding, and saturation. Evaluating Signal-to-Quantization-Noise Ratio at the beamformer output node $\hat{f}[n]$ across 5,000 continuous golden samples:
 \begin{equation}
@@ -1828,7 +1839,7 @@ SWT-LMS Wavelet Filter & 1-Ch & 16.97\% & 46.92\,bpm & 14.7\% & 0.005 & High DSP
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/f1_comparison_all_methods.png}
-\caption{\tagLone\ Comparative F1-score performance across all seven extraction architectures on the five frozen PhysioNet stress test cases (TC1--TC5). Spatial PCA Beamforming and Deep U-Net achieve near-perfect detection on baseline cases, whereas single-channel temporal subtraction algorithms collapse under severe noise and arrhythmia. Deep U-Net bars represent in-sample baseline on Subject 1.}
+\caption{\tagLone\ Comparative F1-score performance across all seven extraction architectures on the five frozen PhysioNet stress test cases (TC1--TC5). Spatial PCA Beamforming and Deep U-Net achieve near-perfect detection on baseline cases, whereas single-channel temporal subtraction algorithms collapse under severe noise and arrhythmia. Deep U-Net bars represent in-sample baseline on Subject 1. \fin{[L1] Source: \texttt{code/results/metrics.csv} (single-channel methods), \texttt{code/results/multichannel\_scaling\_metrics.csv} (4-lead PCA and MC fusion), \texttt{code/results/mega\_benchmark\_results.csv} (U-Net, the sub01 records of TC1--TC5, a separate run); drawn by \texttt{report/final\_report/tools/ws4\_figures.py}.}}
 \label{fig:f1_comparison}
 \end{figure*}
 
@@ -1842,14 +1853,14 @@ SWT-LMS Wavelet Filter & 1-Ch & 16.97\% & 46.92\,bpm & 14.7\% & 0.005 & High DSP
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/snr_degradation_curve.png}
-\caption{\tagLone\ Algorithm robustness under input SNR degradation ($12\,\text{dB} \to 6\,\text{dB} \to 0\,\text{dB}$). Spatial PCA maintains $100\%$ detection down to $0\,$dB on Subject 1, while single-channel baselines degrade to $<25\%$.}
+\caption{\tagLone\ Algorithm robustness under input SNR degradation ($12\,\text{dB} \to 6\,\text{dB} \to 0\,\text{dB}$). Spatial PCA maintains $100\%$ detection down to $0\,$dB on Subject 1, while single-channel baselines degrade to $<25\%$. \fin{[L1] Source: as Fig.~\ref{fig:f1_comparison} (TC1--TC3).}}
 \label{fig:snr_curve}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/f1_heatmap.png}
-\caption{\tagLone\ Heatmap matrix of F1-scores across all methods and stress cases, confirming Spatial PCA and Deep U-Net dominance on Subject 1.}
+\caption{\tagLone\ Heatmap matrix of F1-scores across all methods and stress cases, \fin{with Spatial PCA and Deep U-Net highest on Subject 1. [L1] Source: as Fig.~\ref{fig:f1_comparison}; values in \texttt{tools/report\_stats/out/ws4\_subject1\_matrix.csv}. The U-Net row now comes from the mega-benchmark run; the earlier typed-in row ($99.7$, $99.8$, $99.4$, $99.6$, $94.5\%$) could not be traced.}}
 \label{fig:heatmap}
 \end{figure}
 
@@ -2033,12 +2044,12 @@ A fundamental theoretical question is: \textit{Why do 4 channels saturate perfor
 \end{equation}
 For $C < 4$, any spatial projection seeking to suppress maternal energy either has zero non-trivial solutions ($C \le 3$) or severely attenuates the fetal dipole biopotential. With $C=4$, the maternal subspace occupies 3 dimensions, leaving a 1-dimensional orthogonal complement into which the fetal dipole projects with maternal interference minimized. Under clean baseline conditions (TC1), 2 leads can cancel the planar projection ($95.3\%$), but 4 leads are required during physiological non-idealities (fetal motion, breathing, uterine contractions) where maternal dipole axes rotate in 3-D space.
 
-Crucially, our beamformer employs a heuristic second-principal-component projection ($\mathbf{w} = \mathbf{v}_2$) that suppresses the dominant maternal direction $\mathbf{v}_1$; it does not achieve a complete mathematical null of the full 3-D maternal subspace. Empirical evaluation on training records confirms that $\mathbf{v}_1$ accounts for $88.4\%$ of total mixture variance and holds $82.6\%$ of overlapping maternal energy, whereas $\mathbf{v}_2$ (capturing $7.8\%$ of total variance) contains $15.0\%$ of fetal signal energy while attenuating $\mathbf{v}_1$ maternal spikes. Eigenvectors $\mathbf{v}_3$ ($2.6\%$) and $\mathbf{v}_4$ ($1.2\%$) are dominated by high-frequency EMG noise. The first two components together capture $96.2\%$ of total energy (Fig.~\ref{fig:eigen_spectrum}).
+\fin{Our} beamformer employs a heuristic second-principal-component projection ($\mathbf{w} = \mathbf{v}_2$) that suppresses the dominant maternal direction $\mathbf{v}_1$; it does not achieve a complete mathematical null of the full 3-D maternal subspace. \fin{Computed on the training subjects (12-dB mixture, Fig.~\ref{fig:eigen_spectrum}), $\mathbf{v}_1$ accounts for $94.0\%$ of the mixture variance and $\mathbf{v}_2$ for $5.3\%$ (first two: $99.3\%$), but $\mathbf{v}_1$ also holds $70.7\%$ of the fetal energy and $\mathbf{v}_2$ only $25.6\%$. The earlier values ($88.4\%$, $7.8\%$, $82.6\%$, $15.0\%$, $96.2\%$) had been typed into the figure script and could not be reproduced. The data therefore do not support the claim that $\mathbf{w} = \mathbf{v}_2$ isolates the fetal signal; the projection mainly removes the maternal axis.}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/eigenvalue_subspace_spectrum.png}
-\caption{\tagLone\ Covariance eigen-spectrum and torso subspace dimensionality: (a)~4-Lead covariance eigen-spectrum ($[27, 26, 28, 25]$), showing maternal dipole energy concentrated in $\mathbf{v}_1$ ($88.4\%$) and fetal signal in $\mathbf{v}_2$ ($7.8\%$); (b)~Cumulative explained variance across 4-lead and 8-lead arrays, confirming that the first two components capture $>96\%$ of mixture variance.}
+\caption{\tagLone\ \fin{Covariance eigen-structure of the 12-dB mixture on leads $[27, 26, 28, 25]$, mean of the training subjects \texttt{sub01}--\texttt{sub07} (dots: subjects): (a)~share of the mixture variance, $\mathbf{v}_1$ $94.0\%$, $\mathbf{v}_2$ $5.3\%$, first two $99.3\%$; (b)~share of the fetal signal energy, $\mathbf{v}_1$ $70.7\%$, $\mathbf{v}_2$ $25.6\%$. [L1] Source: \texttt{tools/report\_stats/out/r3\_eigen.csv} (\texttt{tools/report\_stats/r3\_eigen.py}); replaces typed-in values.}}
 \label{fig:eigen_spectrum}
 \end{figure}
 
@@ -2118,21 +2129,21 @@ Deep 1D U-Net (Edge FPGA)$^\ddagger$ & 28,400 (87.1\%) & 22,000 (33.7\%) & 112 (
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/multichannel_fpga_resource_scaling.png}
-\caption{\tagLtwo/\tagLfour\ Hardware resource scaling and UART bus utilization across lead counts on Spartan-7 at 100\,MHz target clock. A 4-lead array requires only 1 DSP slice and consumes $<2.2\%$ of UART throughput at 921,600 baud.}
+\caption{\tagLtwo/\tagLfour\ \fin{Analytical resource model of the mid-term beamformer across lead counts (a model, not synthesis). With 4 leads the model gives 1 DSP slice, 830 LUTs and $3.0\%$ UART use at 921,600 baud (11-byte frame; the earlier $<2.2\%$ counted the 8-byte payload only). [L4 target, model] Source: \texttt{code/results/multichannel\_scaling\_metrics.csv} (\texttt{calculate\_fpga\_metrics} in \texttt{src/fecg/pipelines/multichannel\_study.py}, 50\,MHz); figure by \texttt{report/final\_report/tools/ws4\_figures.py}.}}
 \label{fig:fpga_scaling}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/hw_accuracy_tradeoff.png}
-\caption{\tagLone/\tagLtwo\ Hardware cost vs detection accuracy Pareto trade-off. Spatial PCA (4-Ch) provides the optimal trade-off: 93.00\% population mean F1 consuming $\approx 3.0\%$ LUTs (990 of 32,600) and 1 DSP slice on XC7S50.}
+\caption{\tagLone/\tagLtwo\ Hardware cost vs detection accuracy Pareto trade-off. \fin{Spatial PCA (4-Ch): $93.00\%$ population mean F1 at a paper estimate of 990 LUTs and 1 DSP slice. [L1 / L4 target] Source: F1 from \texttt{code/results/mega\_benchmark\_summary.csv}; the LUT values are paper estimates typed into the figure script and are not traceable to a synthesis report.}}
 \label{fig:hw_tradeoff}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/method_radar_comparison.png}
-\caption{\tagLone\ Multi-dimensional radar chart comparing six operational dimensions (F1 accuracy, noise robustness, arrhythmia resilience on $c4$, execution speed, hardware efficiency, and clinical agreement). Spatial PCA offers the most balanced profile for edge FPGA implementation.}
+\caption{\tagLone\ Multi-dimensional radar chart comparing six operational dimensions (F1 accuracy, noise robustness, arrhythmia resilience on $c4$, execution speed, hardware efficiency, and clinical agreement). \fin{Illustrative, not traceable: the axis scores were typed into the mid-term figure script; they are not used anywhere else in the report.}}
 \label{fig:radar_chart}
 \end{figure}
 

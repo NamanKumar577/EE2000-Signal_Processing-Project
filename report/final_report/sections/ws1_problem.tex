@@ -1,0 +1,12 @@
+% WS1: new Sec. 3 for the final design (replaces the mid-term problem statement, now in App. midterm)
+\begin{finalpart}
+\section{Problem Statement and Final Objectives}
+\label{sec:problem_statement}
+\noindent\textbf{Inputs.} Four abdominal ECG leads sampled at $250\,$Hz (recordings at other rates are decimated causally), streamed to the FPGA as int16 samples in 64-sample frames. No maternal thoracic reference lead is used.
+
+\noindent\textbf{Constraints.} Every decision at sample $n$ uses only samples $\le n$ (causal), plus a fixed, declared output delay for the look-ahead output; reference annotations are never used by the algorithm, only by the scoring script (label-free); all sample-rate processing runs in our own RTL on the Spartan-7 XC7S50, and the board output must be bit-exact with an integer C model.
+
+\noindent\textbf{Outputs.} (i) Live fetal beats and FHR, about 1.5--2\,s after each beat (v6.1 stream); (ii) final fetal beats and FHR from the on-chip look-ahead unit, about $13.5\,$s after each beat (median, at most $17.5\,$s; v7-DL stream). Both streams leave the board over UART; the RTL also drives the board displays with the final FHR (\texttt{v7\_disp.v}).
+
+\noindent\textbf{Targets.} The measurable targets and the values reached by the final design are listed in Tab.~\ref{tab:clinical_specs}. The mid-term objectives O1--O5 and their status at the mid-term are in App.~\ref{app:midterm} (\cref{tab:objective_status}); their final status is in \cref{tab:final_objectives}, and the re-baselined O3/O4 in \cref{tab:o3o4}.
+\end{finalpart}
