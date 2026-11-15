@@ -1095,24 +1095,31 @@ Published NIFECG extraction literature spans six major algorithmic and implement
 \section{Results Replicated from the Literature}
 \label{sec:replications}
 
-In compliance with the EE2000 course guidelines, we independently re-implemented and evaluated key published algorithms. Each replication was built directly from mathematical descriptions without third-party source code. Table~\ref{tab:replication_scorecard} presents our replication scorecard across 7 published literature algorithms.
+\begin{finalpart}
+We re-implemented seven published methods or ideas from their descriptions (no third-party code) during the mid-term phase. \Cref{tab:replication_scorecard} compares each with the published value where one exists on a comparable metric and data set.
+
+\noindent\textbf{Tolerance rule.} A result is within tolerance if our beat F1 is within $\pm 2$ points of the published F1 for the same data set and the same statistic (mean or median). Rows without a published number on a comparable metric and data set are \emph{qualitative only}. The rule was fixed after all results below were known; no tolerance was set per row. Our values come from \texttt{code/results/metrics.csv} (Subject 1 test cases) and \texttt{code/results/mega\_benchmark\_results.csv} (250 records); published values from the cited papers (table or page numbers not verified by us).
+
+\noindent\textbf{Summary: 0 of 7 within tolerance, 0 explained, 1 outside tolerance (R5), 5 qualitative only, 1 not run (R7).}
+\end{finalpart}
 
 \begin{table*}[t]
-\caption{\tagLone/\tagLtwo\ Comprehensive Literature Replication Scorecard comparing published baselines against our in-house implementations evaluated under identical PhysioNet FECGSYNDB conditions.}
+\fb
+\caption{\fb Replication scorecard (mid-term re-implementations, \tagLone). Verdicts follow the $\pm 2$-point rule stated in Sec.~\ref{sec:replications}, which was fixed after the results were known.}
 \label{tab:replication_scorecard}
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}lp{2.4cm}p{3.2cm}p{3.2cm}p{2.2cm}p{3.6cm}@{}}
+\begin{tabular}{@{}lp{2.3cm}p{4.0cm}p{3.6cm}p{3.4cm}p{1.2cm}p{3.4cm}@{}}
 \toprule
-\textbf{ID} & \textbf{Target Literature Study} & \textbf{Original Published Setup} & \textbf{In-House Setup on FECGSYNDB} & \textbf{Our Obtained Metric} & \textbf{Defensible Scientific Verdict} \\
+\textbf{ID} & \textbf{Study} & \textbf{Published value (data set, metric)} & \textbf{Our setup} & \textbf{Our value} & \textbf{Tol.} & \textbf{Verdict and cause} \\
 \midrule
-\textbf{R1} & Ahlstrom \etal~\cite{ahlstrom1985} & 4th-order Butterworth bandpass (0.5--40\,Hz) & 4 cascaded SOS \fin{(8th-order bandpass)} at $f_s = 250\,$Hz; causal Direct-Form II & $>56\,$dB at 0.1\,Hz, $>18\,$dB at 60\,Hz & \textbf{Implementation Verified} (exact transfer function matches Fig.~\ref{fig:filter_responses}) \\
-\textbf{R2} & Kanjilal \etal~\cite{kanjilal1997} & Hankel SVD rank-2 truncation on single abdominal lead & Hankel matrix $\mathbf{A} \in \mathbb{R}^{m \times (N-m+1)}$, rank-2 subtraction & TC1 F1 = 76.36\%, collapses to 23.72\% on TC3 & \textbf{Trend Replicated on Synthetic Benchmark} (suppresses maternal on clean cycles, collapses during QRS collision) \\
-\textbf{R3} & De Lathauwer \etal~\cite{delathauwer2000} & Blind subspace separation on cutaneous abdominal leads & 4-channel spatial covariance eigen-decomposition on suprapubic leads & Fetal dipole isolated in $\mathbf{v}_2$ (7.8\% energy, mat. 88.4\%) & \textbf{Subspace Principle Verified \& Extended} (4-channel spatial projection reduces maternal energy without fetal cancellation) \\
-\textbf{R4} & Widrow \etal~\cite{widrow1975} / Hasan~\cite{hasan2009} & Single-lead LMS adaptive filtering without reference & 32-tap transversal LMS on single abdominal channel & TC1 F1 = 15.06\%, FHR MAE = 46.6\,bpm & \textbf{Failure Mechanism Replicated} (confirms maternal residual and fetal distortion when abdominal maternal morphology lacks a dedicated reference lead) \\
-\textbf{R5} & Andreotti \etal~\cite{andreotti2016} & Template Subtraction on FECGSYNDB; reported $\approx 78\%$ at 12\,dB, $<35\%$ at 0\,dB & Fixed template subtraction on Lead 27 across TC1--TC3 & TC1 F1 = 76.36\%, dropping to 23.88\% at 0\,dB & \textbf{Matched Benchmark Partially Replicated} (confirms reported performance and severe low-SNR degradation on matched synthetic conditions) \\
-\textbf{R6} & Ronneberger \etal~\cite{ronneberger2015} & 2D U-Net biomedical segmentation adapted to 1D ECG & Multi-scale 1D U-Net evaluated on untouched test subjects \texttt{sub09}--\texttt{sub10} & Test F1: 83.93\% (1-Ch), 97.48\% (4-Ch), pop mean 90.76\% & \textbf{Architectural Paradigm Adapted to 1D} (evaluated on two held-out test subjects, $n=2$; high test score contrasted by training underfitting) \\
-\textbf{R7} & Widrow \etal~\cite{widrow1975} & Multi-channel ANC using thoracic maternal reference lead & 32-tap NLMS using Lead 32 (0-based thoracic reference) & Literature reported: $\approx 81.2\%$ (12\,dB), $\approx 42.1\%$ (0\,dB) & \textbf{Baseline Explored from Literature} (effective when chest reference exists, but requires extra hardware lead) \\
+R1 & Ahlstrom \etal~\cite{ahlstrom1985} & Filter design only; no detection metric & 4 SOS (8th-order) Butterworth bandpass 0.5--40\,Hz, $f_s = 250\,$Hz & $>56\,$dB at 0.1\,Hz, $>18\,$dB at 60\,Hz (computed from the coefficients) & -- & \textbf{QUALITATIVE ONLY}: design reproduced, nothing to compare \\
+R2 & Kanjilal \etal~\cite{kanjilal1997} & Qualitative extraction on real single-lead recordings; no F1 & Hankel SVD, rank-2 subtraction, one lead & TC1 $76.4\%$, TC3 $23.7\%$ & -- & \textbf{QUALITATIVE ONLY}: collapse at low SNR seen, no published F1 \\
+R3 & De Lathauwer \etal~\cite{delathauwer2000} & Qualitative BSS on real cutaneous recordings & 4-lead covariance eigen-decomposition & not measured (the mid-term energy shares were typed into the figure script) & -- & \textbf{QUALITATIVE ONLY} \\
+R4 & Widrow \etal~\cite{widrow1975}, Hasan \etal~\cite{hasan2009} & Reference-free single-lead adaptive cancellation described as unreliable; no F1 & SWT + LMS + SSNF on one lead & TC1 $15.1\%$, FHR MAE $46.6\,$bpm & -- & \textbf{QUALITATIVE ONLY}: failure mechanism consistent \\
+R5 & Andreotti \etal~\cite{andreotti2016} & FECGSYNDB, template subtraction, median F1 $96.0\%$ ($\pm 50\,$ms) & Fixed ensemble template on one lead, mid-term detector & 250 records: mean $59.4\%$; TC1 $76.4\%$, TC3 $23.9\%$ & $\pm 2$ & \textbf{FAIL}: our single-lead fixed-template implementation with the mid-term detector is far weaker than the published methods; mean vs median also differ \\
+R6 & Ronneberger \etal~\cite{ronneberger2015} & 2D U-Net, image segmentation; no ECG metric & 1D U-Net, test subjects \texttt{sub09}--\texttt{sub10} & test $83.9\%$ (1-ch), $97.5\%$ (4-ch) & -- & \textbf{QUALITATIVE ONLY}: architecture adapted; training split not verifiable \\
+R7 & Widrow \etal~\cite{widrow1975} & ANC with a thoracic maternal reference; no FECGSYNDB F1 in this paper & planned: NLMS with thoracic lead 32 & no in-house result & -- & \textbf{NOT RUN} \\
 \bottomrule
 \end{tabular}%
 }
@@ -1585,7 +1592,7 @@ Anthropic.
 \begin{finalpart}
 \section{Mid-term Design (Superseded)}
 \label{app:midterm}
-None of the resource, cycle or clock figures in this appendix describe the final hardware; they are the paper sizing of the mid-term beamformer, kept for the record. The final hardware is described in Secs.~\ref{sec:final_hw}--\ref{sec:final_v7} and Tab.~\ref{tab:v7_hw}.
+None of the resource, cycle or clock figures in this appendix describe the final hardware; they are the paper sizing of the mid-term beamformer, kept for the record. The final hardware is described in Secs.~\ref{sec:final_hw}--\ref{sec:final_v7} and Tab.~\ref{tab:v7_hw}. Several mid-term figures were drawn from values typed into the figure script (\texttt{report/mid\_term/tools/generate\_all\_audited\_figures.py}) rather than read from a result file: Figs.~\ref{fig:quantization_sweep}, \ref{fig:f1_comparison}, \ref{fig:snr_curve}, \ref{fig:heatmap}, \ref{fig:eigen_spectrum}, \ref{fig:fpga_scaling}, \ref{fig:hw_tradeoff} and~\ref{fig:radar_chart}. The single-channel rows of Fig.~\ref{fig:heatmap} agree with \texttt{code/results/metrics.csv}; the other values could not be traced to a result file and are not used anywhere in the final-phase sections.
 \end{finalpart}
 
 \noindent \textbf{Analytical Hardware Sizing [L4 Target]:} Sized a single-DSP48E1 time-multiplexed schedule executing in 148 clock cycles ($1.48\,\mu$s at 100\,MHz), utilizing $\approx 3.0\%$ LUTs (990 of 32,600) and 1 BRAM, providing an estimated $2,702\times$ compute margin against the $4.0\,$ms sample interval. \fin{(Superseded: this was a paper estimate for the mid-term beamformer. The final RTL runs at 50\,MHz and needs a median of 1,485 cycles per sample; Sec.~\ref{sec:final_hw}.)}
