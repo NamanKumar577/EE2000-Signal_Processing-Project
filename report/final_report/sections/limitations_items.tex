@@ -8,6 +8,6 @@
     \item \textbf{PC in the loop.} Five decisions on the PC; 7.8\,KB/s up and 9.2\,KB/s down (Tab.~\ref{tab:pc_traffic}). % source: tables/pc_link_traffic.csv
     \item \textbf{Timing margin.} Worst slack $+0.05\,$ns at 50\,MHz with $81.9\%$ LUT use (Tab.~\ref{tab:v7_hw}). % source: build/v7/timing.rpt, util.rpt
     \item \textbf{Calibration.} Maternal PCA once (first $10\,$s); spatial filters every $30\,$s, so a 60-s CinC record gets at most one recalibration.
-    \item \textbf{Not measured:} board power (only the Vivado on-chip estimate, $0.445\,$W); output SNR of the GEVD tracks against the true fetal signal; template-subtraction residual power; Vivado seed sweeps; a word-length study of the final RTL; twins and fetal bradycardia cases. Clinical agreement, the GEVD optimality check and the negative controls of the bit-exact test are now measured (Tab.~\ref{tab:clinical_specs}, Secs.~\ref{sec:analysis} and~\ref{sec:hw_summary}).
+    \item \textbf{Not measured:} board power (only the Vivado on-chip estimate, $0.445\,$W); output SNR of the GEVD tracks against the true fetal signal; template-subtraction residual power; a word-length study of the final RTL; twins and fetal bradycardia cases. Clinical agreement, the GEVD optimality check and the negative controls of the bit-exact test are now measured (Tab.~\ref{tab:clinical_specs}, Secs.~\ref{sec:analysis} and~\ref{sec:hw_summary}).
     \item \textbf{No analogue front end.} Recordings are streamed from files; electrodes, amplifier and ADC were not built.
 \end{enumerate}

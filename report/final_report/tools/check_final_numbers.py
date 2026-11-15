@@ -15,6 +15,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
 TEX = (ROOT / "report/final_report/fpr-8.tex").read_text(encoding="utf-8")
+TEX = re.sub(r"\\input\{(sections/[^}]+)\}",                  # include the section files
+             lambda m: (ROOT / "report/final_report" / (m.group(1) + ".tex")).read_text(encoding="utf-8"), TEX)
 TEX = re.sub(r"\\textbf\{([^{}]*)\}", r"\1", TEX)          # compare without bold markup
 ACC = ROOT / "tools/accuracy"
 B6 = ROOT / "fpga_implementation/v6/build"
@@ -199,6 +201,44 @@ up, dn = float(tr.loc["uplink_Bps", "bytes"]), float(tr.loc["answers_Bps", "byte
 check("PC link load up / down (KB/s) and share of 92,160 B/s", f"{up / 1e3:.1f}/{dn / 1e3:.1f}",
       f"{up / 1e3:.1f}\\,KB/s up and {dn / 1e3:.1f}\\,KB/s down",
       f"{int(100 * up / 92160)}--{round(100 * dn / 92160)}\\%")
+
+# ---- report revision (WS1-WS6): numbers recomputed from tools/report_stats/out
+OUT = ROOT / "tools/report_stats/out"
+bv7 = pd.read_csv(ROOT / "report/v61_v7/board_v7/board_cdev_ad_ctest_syn.csv")
+bv6 = pd.read_csv(ROOT / "report/rtl_pc_split/board_umem/board_cdev_ad_ctest_syn.csv")
+r7, r6 = bv7.record_s / bv7.stream_s, bv6.record_s / bv6.stream_s
+check("speed v7-DL: mean of per-record ratios / range", f"{r7.mean():.2f}",
+      f"{r7.mean():.2f}$\\times$", f"{r7.min():.1f}--{r7.max():.1f}$\\times$")
+check("speed v6: mean / range", f"{r6.mean():.2f}", f"{r6.mean():.2f}\\times", f"{r6.min():.1f}--{r6.max():.1f}$\\times$")
+ag = pd.read_csv(OUT / "ws5/agreement.csv").set_index(["version", "set"])
+check("clinical agreement v7-DL ctest / cdev / ad / syn", f"{ag.loc[('v7', 'ctest'), 'within5']:.1f}",
+      *[f"{ag.loc[('v7', s_), 'within5']:.1f}\\%" for s_ in ["ctest", "cdev", "ad", "syn"]])
+gv = (OUT / "ws5/gevd_check.txt").read_text()
+nsolve = re.search(r"GEVD solves (\d+)", gv).group(1)
+check("GEVD solves (J = lambda_max)", nsolve, f"{int(nsolve):,}")
+cp = pd.read_csv(OUT / "ws5/collision_proxy.csv")
+check("collision proxy CinC dev / ADFECGDB (pooled)", "",
+      *[f"{100 * (cp[cp.set == s_].measured / 100 * cp[cp.set == s_].n_fetal).sum() / cp[cp.set == s_].n_fetal.sum():.1f}" for s_ in ["cdev", "ad"]])
+check("maternal train found in all dev records", int(cp.n_maternal.min()), f"at least {int(cp.n_maternal.min())} maternal R peaks")
+bh = pd.read_csv(OUT / "behar_replication_summary.csv")
+b68 = bh[bh.records.str.startswith("68")].set_index("method")
+check("R8 Behar TS / TSpca mean (68 records)", f"{b68.loc['TS', 'mean_f1']:.1f}",
+      f"{b68.loc['TS', 'mean_f1']:.1f}", f"{b68.loc['TSpca', 'mean_f1']:.1f}")
+r5 = pd.read_csv(OUT / "r5_median.csv").iloc[0]
+check("R5 fixed TS median / mean", f"{r5['median']:.1f}", f"{r5['median']:.1f}\\%", f"{r5['mean']:.1f}")
+eg = pd.read_csv(OUT / "r3_eigen.csv").mean(numeric_only=True)
+check("R3 eigen variance v1/v2, fetal v1/v2", f"{eg.var_v1:.1f}",
+      f"{eg.var_v1:.1f}", f"{eg.var_v2:.1f}", f"{eg.fetal_v1:.1f}", f"{eg.fetal_v2:.1f}")
+am = pd.read_csv(OUT / "amplitude_measured.csv").iloc[0]
+check("Fig. 1 amplitude ratio / FMR range", f"{am.ratio:.1f}", f"${am.ratio:.1f}\\times$", f"{am.fmr_min:.2f}", f"{am.fmr_max:.2f}")
+fe = pd.read_csv(OUT / "front_end.csv").set_index("filter")
+check("front end: HP cut-off / maternal band / track band", f"{float(fe.iloc[0].f_low_3dB_Hz):.2f}",
+      f"{float(fe.iloc[0].f_low_3dB_Hz):.2f}\\,Hz", "5--25\\,Hz", "15--40\\,Hz")
+sl = pd.read_csv(OUT / "selection_loss.csv").set_index("set")
+check("selection loss CinC dev: final / best / oracle / candidate loss", f"{sl.loc['cdev', 'final']:.1f}",
+      f"{sl.loc['cdev', 'best_track']:.1f}\\%", f"{sl.loc['cdev', 'oracle']:.1f}\\%", f"{sl.loc['cdev', 'cand_loss']:.1f}")
+nb = (OUT / "ws5/negctrl_board.txt").read_text()
+check("negative control (board stream) passed", "PASSED" in nb, "bit flip")
 
 print(f"\n{'ALL CHECKS PASSED' if not fails else f'{fails} CHECK(S) FAILED'}")
 sys.exit(1 if fails else 0)

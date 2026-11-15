@@ -70,7 +70,7 @@ O4: resources & $<5\%$ LUTs, $\le 1$ DSP48E1 & 26,701 LUTs (81.9\%), 43 DSP, 71/
 
 \noindent\textbf{Negative controls of the bit-exact test.} (a) Flipping one bit of the v7-DL model stream of ADFECGDB r01 (2,466,548 bytes, MD5 equal to the saved board stream) makes the board-evaluation comparison report a mismatch, first at the flipped byte (\texttt{tools/report\_stats/out/ws5/negctrl\_board.txt}). (b) Changing the latency compensation from 13 to 12 samples in a copy of the C model makes the xsim system testbench report byte mismatches from byte 99,258 (an OUT frame whose beat time is one sample off) and stop after 20 errors, while the unchanged model gives 0 errors (\texttt{negctrl\_xsim\_lat12.log}, \texttt{negctrl\_xsim\_baseline.log}). The comparison can therefore fail and does detect a one-sample model change.
 
-\noindent\textbf{Implementation strategies.} A sweep of three placement and routing strategies for v7-DL (\texttt{tools/report\_stats/ws5/vivado/strategies\_v7.tcl}) was started; its results are not yet available.
+\noindent\textbf{Implementation strategies.} 3 placement and routing strategies of v7-DL (Default, Explore, ExtraNetDelay\_high; same RTL and constraints, \texttt{tools/report\_stats/ws5/vivado/strategies\_v7.tcl}) gave worst setup slack $+0.048$, $-0.078$, $+0.796$\,ns (\texttt{tools/report\_stats/out/ws5/vivado\_wns.csv}); not all of them meet timing at 50\,MHz.
 
 \noindent\textbf{Not done.} A word-length study for the final design and a measurement of board power were not done.
 \end{finalpart}
