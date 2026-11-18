@@ -1,0 +1,1289 @@
+\documentclass[11pt]{article}
+\usepackage{teamstyle}
+\renewcommand{\docshort}{Naman: data, tests, integration, web demo}
+% file names may break at / _ - . (local to these notes)
+\makeatletter\def\UrlBreaks{\do\/\do\_\do\-\do\.}\makeatother
+\urlstyle{tt}
+\renewcommand{\file}[1]{\path{#1}}
+
+\begin{document}
+\maketeamtitle{Naman's part}{Data, test set-up, integration and the live demo}{Study notes for Naman}
+
+\begin{simple}[How to use these notes]
+These notes are for you, Naman. They explain your part of the project from zero: the data, the test cases, the SVD methods of the mid-term, the scoring, the test suite, the web demonstration and the report assembly. Every number comes from the final report (\file{report/final_report/fpr-8.tex}), its tables, the logs or the code. Where two sources disagree, the report wins, and the notes say so.
+
+Read Sections 1--2 first (one evening). Then read Section 4 (your story) and Section 7 (the presentation). Use Sections 5, 6 and 8 to revise. The common PDF \file{team/pdf/00_Project_Explained_From_Zero.pdf} tells the whole project in more detail.
+\end{simple}
+
+\tableofcontents
+\newpage
+
+% =====================================================================
+\section{Start here}
+
+\subsection{Your part in one page}
+
+Our project finds the heartbeats of an unborn baby (the \term{fetus}) in four electrode signals recorded on the mother's belly, and it does this in real time on an FPGA chip. Four people built it. The report's contribution table calls your part \textbf{``Data, test set-up and integration''}. In plain words, you built the \emph{common ground} that the other three stood on:
+
+\begin{enumerate}
+  \item \textbf{The data.} You prepared the four databases: the synthetic FECGSYNDB, the real PhysioNet/CinC Challenge 2013 set-a, the real ADFECGDB and the real NIFEA. ``Prepared'' means: read the files, convert the units, read the reference beat times (annotations), lower the sampling rate from 1\,kHz to 250\,Hz, and choose the four leads.
+  \item \textbf{The test cases.} At the mid-term you wrote the shared \term{mixture builder} (it adds the mother, the baby and the noise into one belly signal) and fixed the five test cases \textbf{TC1--TC5} that every member used to compare methods.
+  \item \textbf{Your mid-term method: SVD.} You implemented three variants of singular value decomposition (SVD) extraction (Kanjilal et al.\ 1997). Two of them became methods M8 and M9 of the mid-term comparison.
+  \item \textbf{The package and the test suite.} You organised the Python code as the \file{src/fecg} package and built the automatic test suite in \file{tests/}. In the final phase it was extended with tests for v6.1 and v7: board match, causality and the delay bound. The latest run: \textbf{270 passed, 3 skipped}.
+  \item \textbf{The live web demonstration.} A local web page (\file{fpga_implementation/webdemo/}) takes any recording, streams it to the FPGA board in real time and shows the fetal heart rate. With v7-DL it shows the final FHR from the board and the live estimate under it.
+  \item \textbf{The reports.} You assembled the mid-term report and the final report (FPR-8), including the number checker and the submission zip.
+\end{enumerate}
+
+\begin{keyfact}[Key results of your part (report, contribution table)]
+\begin{itemize}
+  \item A \textbf{270-test suite} (273 collected; the 3 skipped ones are slow RTL simulations that run only on request).
+  \item A \textbf{common data and test basis} used by all members: the same loaders, the same scoring ($\pm 50$\,ms, from 20\,s), the same dev/test split.
+  \item A \textbf{web page streaming any recording to the board}. CinC a01 through the page gave exactly the batch board result: v6 F1 95.05\% with 101 beats; v7-DL F1 98.0\% with 102 final beats, identical to the C model.
+\end{itemize}
+\end{keyfact}
+
+\subsection{How your part connects to the other three}
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[every node/.style={font=\small},
+  box/.style={draw=tmblue, fill=tmlight, rounded corners=2pt, align=center, minimum width=3.6cm, minimum height=1.0cm},
+  me/.style={draw=tmorange, fill=tmorangel, rounded corners=2pt, align=center, minimum width=5.2cm, minimum height=1.25cm, very thick},
+  lab/.style={font=\scriptsize, text=tmgrey, align=center}]
+  \node[me] (n) at (0,0) {\textbf{Naman}: data, loaders, scoring,\\ test cases, test suite, web demo, reports};
+  \node[box] (a) at (-4.6,2.6) {\textbf{Anshu}\\ algorithm and accuracy\\ (v2--v5, v6.1 ideas, v7)};
+  \node[box] (v) at (4.6,2.6) {\textbf{Vivek}\\ fixed point, UART,\\ v5, board evaluation};
+  \node[box] (s) at (0,-3.0) {\textbf{Astitva}\\ RTL (v6, v6.1, \texttt{v7\_la}),\\ C model, testbenches};
+  \draw[-{Latex}, thick, tmgrey] (n.north west) -- node[lab, left=2mm]{same data,\\ same scoring} (a.south east);
+  \draw[-{Latex}, thick, tmgrey] (n.north east) -- node[lab, right=2mm]{loaders and harness\\ in the board script} (v.south west);
+  \draw[-{Latex}, thick, tmgrey] ([xshift=-6mm]n.south) -- node[lab, left]{tests guard the\\ C model and RTL} ([xshift=-6mm]s.north);
+  \draw[-{Latex}, thick, tmgrey] ([xshift=6mm]s.north) -- node[lab, right]{bitstream + PC brain\\ used by the web demo} ([xshift=6mm]n.south);
+\end{tikzpicture}}
+\end{center}
+
+\begin{itemize}
+  \item \textbf{Anshu} designed the algorithm and decided what to keep. Every decision was measured with \emph{your} loaders and \emph{your} scoring harness on the \emph{same} dev sets. If the scoring were wrong, every decision would be wrong.
+  \item \textbf{Vivek} wrote the board evaluation script \file{run_v6_board_eval.py}. It imports the scoring function \file{harness.score} and the data loaders (through \file{devbench.py}). Your web demo imports the frame functions from his script.
+  \item \textbf{Astitva} wrote the RTL and the C model. Your system tests run his C model and check that it still produces the bytes the board produced, that it is causal and that the v7 delay stays below the bound. The web demo needs his bitstream and the PC brain program.
+\end{itemize}
+
+\subsection{What you must be able to say in two minutes}
+
+\begin{lesson}[Your two-minute version (learn it nearly word by word)]
+``My part is the data, the test set-up and the integration. I prepared the four databases: FECGSYNDB with 1,248 usable synthetic records, CinC 2013 with 75 real one-minute records, ADFECGDB with 5 real five-minute records with a scalp-electrode reference, and NIFEA, which has no fetal labels. I convert every recording to the same form: four leads, 250 samples per second, int16 numbers at 3 counts per microvolt. The 1-kHz recordings are decimated with a causal filter.
+
+All of us score the same way: a beat counts if it is within 50 milliseconds of a reference beat, from 20 seconds to the end. CinC is split by record number: odd records for development, even records held out for the test.
+
+At the mid-term I built the mixture builder and the five test cases TC1 to TC5, and the SVD methods. SVD on one lead works on clean data, 76\% at 12 dB, but collapses to 24\% at 0 dB, because one lead cannot separate mother, baby and noise. That is why the team went multi-lead.
+
+For the final design I extended the test suite: 270 tests pass. They check that the C model still gives exactly the board's bytes, that the output is causal, and that the v7 delay stays under 17.5 seconds. Finally, I built the web page that streams any recording to the board in real time. On CinC a01 the page shows 102 final beats with F1 98\%, exactly what the C model gives.''
+\end{lesson}
+
+% =====================================================================
+\section{The whole project in four pages}
+
+The common PDF (\file{00_Project_Explained_From_Zero.pdf}) tells this story in full. Here is what you need so that this PDF stands on its own.
+
+\subsection{The problem}
+
+\begin{itemize}
+  \item Four electrodes on the mother's belly record a mixture: the mother's ECG, the baby's ECG and noise.
+  \item The baby's ECG is tiny: about 20--100\,$\mu$V, against 1--5\,mV for the mother. The mother is 10 to 250 times bigger (report, Introduction).
+  \item Both ECGs live in the same frequencies, about 0.5--40\,Hz. So an ordinary filter cannot keep the baby and remove the mother.
+  \item The two hearts beat independently. A fetal beat touches a maternal QRS about 17.5\% of the time (mother 75\,bpm, baby 140\,bpm; report, Introduction).
+  \item The output: every fetal beat time and the \term{fetal heart rate} (FHR) in beats per minute. It must be \term{causal} (use only the past), \term{label-free} (the algorithm never sees the correct answers) and run on the FPGA.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{fecgsyn_components.png}
+\caption{One FECGSYNDB record (sub01, 0\,dB) split into its parts: mother, baby, noise, and the sum that the electrode sees. Note the different vertical scales: the fetal peaks are about 0.07, the maternal about 2. This sum is exactly what your mixture builder computes.}
+\end{figure}
+
+\subsection{The versions, one line each}
+
+\begin{center}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{@{}l l X r r r r@{}}
+\toprule
+\textbf{Version} & \textbf{Date} & \textbf{What it is} & \textbf{Test} & \textbf{Dev} & \textbf{ADF} & \textbf{Syn} \\
+\midrule
+Mid-term (causal re-run) & Oct/Nov & 4-lead PCA beamformer + threshold detector & 16.7 & 22.8 & -- & 82.2 \\
+v2 & 7 Nov & same RTL, PC computes self-referencing GEVD weights & 41.2 & 42.0 & 37.0 & 95.6 \\
+v3 & 8 Nov & Python: per-lead maternal cancellation, trackers, selection & 49.9 & 59.4 & 78.6 & 95.0 \\
+v4 & 9 Nov & Python: wider band, dynamic maternal train & 53.1 & 68.4 & 91.3 & 92.1$^s$ \\
+v5 & 10 Nov & whole algorithm in C on a MicroBlaze in the FPGA & 65.8 & 75.3 & 93.4 & 91.5 \\
+v6 & 10--14 Nov & hand-written Verilog + PC brain (5 slow decisions) & 65.5 & 76.0 & 92.7 & 91.4 \\
+v6.1 & 14 Nov & v6 + robust maternal detector + recalibration & 71.9 & 80.4 & 92.9 & 91.9 \\
+v7-LA & 14 Nov & offline look-ahead on the PC (whole recording) & 75.6 & 84.6 & 95.8 & 94.3 \\
+\textbf{v7-DL} & \textbf{14 Nov} & \textbf{v6.1 + look-ahead unit on the FPGA (final)} & \textbf{76.9} & \textbf{84.7} & \textbf{96.1} & \textbf{93.7} \\
+\bottomrule
+\end{tabularx}
+
+\smallskip
+{\footnotesize Mean beat F1 in \%. Test/Dev = CinC test (37) / dev (38). ADF = ADFECGDB (5 records). Syn = all 1,248 FECGSYNDB records ($^s$v4: 60-record subset only). Source: report, Tab.\ ``Every design version under the same label-free scoring''.}
+\end{center}
+
+\begin{keyfact}[The story in one line]
+CinC held-out F1: \textbf{16.7 $\to$ 41.2 $\to$ 65.8 $\to$ 65.5 $\to$ 71.9 $\to$ 76.9} (mid-term $\to$ v2 $\to$ v5 $\to$ v6 $\to$ v6.1 $\to$ v7-DL). On the 33 test records with reliable references v7-DL reaches 82.0\%. Every board run is bit-exact with the C model on 140/140 records.
+\end{keyfact}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{fin_version_progression.png}
+\caption{Mean F1 of every version on every data set (report figure). Real-data accuracy rose step by step; synthetic accuracy fell a little after v3. This plot exists only because the data sets, the split and the scoring stayed the same for every version: that is your part.}
+\end{figure}
+
+\subsection{Why the story turned at the end of October}
+
+At the mid-term the spatial PCA beamformer scored 93.0\% on 250 synthetic records. But that test was \emph{batch} (the program saw the whole recording at once) and \emph{synthetic}. From 31 October the team applied four rules (report, ``Evaluation rules used from here on''):
+\begin{enumerate}
+  \item \textbf{Strictly causal}: a decision at sample $n$ uses only samples up to $n$.
+  \item \textbf{Label-free}: annotations are used only by the scoring script.
+  \item \textbf{Scoring}: beat Se, PPV and F1 with $\pm 50$\,ms tolerance, from 20\,s to the end; FHR error 0.5\,s after each true beat; no output counts as a full error.
+  \item \textbf{Dev and held-out data}: CinC odd records = dev (38), even records = test (37). CinC test is scored once per frozen design and never used for a decision.
+\end{enumerate}
+Under these rules the mid-term design fell to 82.2\% on all 1,248 synthetic records and to \textbf{16.7\%} on real held-out CinC. Real data needed a new algorithm. Rules 3 and 4 and the real data sets are exactly the things you prepared.
+
+\subsection{The final architecture (v7-DL) in one paragraph}
+
+The PC streams the recording to the board in frames of 64 samples (0.256\,s) over a serial link at 921,600 baud. All sample-rate work happens in hand-written Verilog on the Spartan-7 XC7S50 at 50\,MHz: filters, maternal R-peak detection, maternal cancellation per lead, 16 candidate fetal tracks with beat trackers, and the look-ahead unit \texttt{v7\_la}. A PC program (the ``brain'') answers only five slow questions: maternal PCA (once, at 10\,s), maternal train choice (every 5\,s), template basis (each maternal beat), GEVD calibration (at 15\,s, then every 30\,s) and track selection (every 2.5\,s). The FPGA waits for each answer, so the result does not depend on the PC's speed. The board sends two outputs: live beats (v6.1 stream) after 1.5--2\,s, and final beats from the look-ahead unit after about 13.5\,s (at most 17.5\,s).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{fin_startup_timeline.png}
+\caption{What happens in the first 40 seconds of a recording (report figure). The design needs about 20\,s before the first beat. This is why scoring starts at 20\,s.}
+\end{figure}
+
+\begin{keyfact}[Hardware numbers everyone must know]
+26,701 LUTs (82\%), 71/75 BRAM tiles, 43 DSP, 50\,MHz, worst slack +0.05\,ns, 0.445\,W (Vivado estimate). Board speed 4.04--4.54$\times$ real time per data set (mean of per-record ratios 4.35$\times$); RTL alone median 1,485 cycles per sample, about 135$\times$ real time.
+\end{keyfact}
+
+% =====================================================================
+\section{Ground zero: the background for your part}
+
+\subsection{ECG and fetal ECG}
+
+\begin{itemize}
+  \item The heart makes small electrical currents when it contracts. An \term{ECG} (electrocardiogram) is the voltage between two skin electrodes, plotted against time.
+  \item One beat has a small \term{P wave}, a sharp \term{QRS complex} and a slower \term{T wave}. The top of the QRS is the \term{R peak}. We use its time as ``the time of the beat''.
+  \item The \term{RR interval} is the time between two R peaks. Heart rate in bpm $= 60/\text{RR}$ (RR in seconds). At 250 samples per second: $\text{bpm} = 15000 / \text{RR in samples}$. Example: RR = 107 samples gives about 140\,bpm.
+  \item A \term{lead} is one electrode channel. We use 4 abdominal leads, so each moment gives 4 numbers.
+  \item The \term{fetal ECG} is recorded through the mother's belly. It is weak, it overlaps the mother's beats in time and frequency, and noise from muscles and electrodes is added.
+\end{itemize}
+
+\subsection{Sampling, ADC and units}
+
+\begin{simple}[Sampling]
+An electrode gives a continuous voltage. An \term{ADC} (analogue-to-digital converter) measures it at fixed times and outputs numbers. The \term{sampling rate} $f_s$ is how many numbers per second. At $f_s = 250$\,Hz there is one sample every 4\,ms. A 60-s record has 15,000 samples per lead; a 5-min record has 75,000.
+\end{simple}
+
+\textbf{Physical units versus ADC counts.} A file stores whole numbers (ADC counts). The header says how to turn counts into physical units:
+\[
+  \text{physical value} = \frac{\text{count} - \text{baseline}}{\text{gain}} .
+\]
+\begin{itemize}
+  \item \textbf{mV} (millivolt) $= 10^{-3}$\,V. \textbf{$\mu$V} (microvolt) $= 10^{-6}$\,V. So 1\,mV $=$ 1,000\,$\mu$V.
+  \item \term{int16}: a 16-bit signed integer, from $-32{,}768$ to $+32{,}767$. Our FPGA input is int16.
+  \item \textbf{Our device scale}: \textbf{3,000 counts per mV} $=$ 3 counts per $\mu$V. FECGSYNDB is stored with gain 3000 per ``normalised unit'' (nu), so its raw numbers are used as they are. Every real recording is converted to the same scale. Then a 5\,mV maternal peak becomes 15,000 counts, well inside int16, and a 20\,$\mu$V fetal peak is still 60 counts.
+\end{itemize}
+
+\begin{keyfact}[Unit conversion used everywhere (\texttt{eval\_cinc2013.py}, \texttt{adfecgdb.py}, web demo)]
+$\mu$V $\times 3$; \quad mV $\times 3000$; \quad V $\times 3{,}000{,}000$. Then round and clip to int16. The web demo's \file{to_counts()} function does exactly this, with $\mu$V as the default.
+\end{keyfact}
+
+\subsection{File formats as used in the code}
+
+\textbf{WFDB} (WaveForm DataBase, the PhysioNet format) stores one record in several files with the same name:
+\begin{itemize}
+  \item \file{.hea}: the header, a small text file. First line: record name, number of signals, sampling rate, number of samples. Then one line per signal: data file, format, gain/units, \dots, signal name.
+  \item \file{.dat}: the samples, binary, usually 16-bit integers, all channels interleaved (sample 1 of every channel, then sample 2 of every channel, \dots).
+  \item annotation files: \file{.qrs} (FECGSYNDB, ADFECGDB), \file{.fqrs} (CinC fetal QRS). They list the sample numbers of the reference beats.
+\end{itemize}
+
+Two real header lines from our data:
+\begin{lstlisting}
+a01 4 1000 60000                          <- CinC a01: 4 signals, 1000 Hz, 60000 samples
+a01.dat 16 10/uV 12 0 -33 14459 0 AECG1   <- format 16, gain 10 per uV, name AECG1
+sub01_snr00dB_l1_c0_mecg 34 250 75000    <- FECGSYNDB: 34 channels, 250 Hz, 5 min
+sub01_snr00dB_l1_c0_mecg.dat 16 3000(0)/nu 0 0 0 22199 0 ECG   <- gain 3000 per nu
+\end{lstlisting}
+
+The Python package \file{wfdb} reads these: \file{wfdb.rdrecord()} gives the signals (\file{p_signal} in physical units, plus \file{fs}, \file{units}, \file{sig_name}); \file{wfdb.rdann(path, "fqrs").sample} gives the annotation sample numbers.
+
+\textbf{EDF} (European Data Format) is used by ADFECGDB. One binary file has a 256-byte header, then one header block per signal (label, physical min/max, digital min/max, samples per block), then the data. Our loader \file{tools/accuracy/adfecgdb.py} contains a small EDF reader (\file{read_edf}) that converts digital values to physical ones:
+\[
+  \text{phys} = (\text{dig} - d_{\min}) \cdot \frac{p_{\max}-p_{\min}}{d_{\max}-d_{\min}} + p_{\min}.
+\]
+The annotations of ADFECGDB are WFDB files next to the EDF (\file{r01.edf.qrs}).
+
+\subsection{Annotations (labels)}
+
+\begin{itemize}
+  \item An \term{annotation} is a reference beat time, stored as a sample number.
+  \item FECGSYNDB: exact, from the simulator (both fetal and maternal beats).
+  \item CinC: fetal QRS marked by the challenge organisers (\file{.fqrs}). 7 records are flagged as inaccurate (Section \ref{sec:cinc}).
+  \item ADFECGDB: from a \emph{direct fetal scalp electrode}, an electrode on the baby's head during labour. Very reliable.
+  \item NIFEA: \textbf{no fetal annotations}. So no F1 is possible.
+  \item \textbf{Rule}: annotations go only to the scoring code, never to the algorithm.
+  \item When the sampling rate is lowered by 4, every annotation sample number is divided by 4 and rounded.
+\end{itemize}
+
+\subsection{Decimation: from 1 kHz to 250 Hz}
+
+\begin{simple}[Decimation]
+\term{Decimation} by 4 means: first a \term{low-pass filter} (it removes frequencies above the new limit), then keep every 4th sample. The filter is needed because of \term{aliasing}: after down-sampling, any content above half the new rate (125\,Hz) would fold back and look like a slower signal. ECG content is below about 40\,Hz, so 250\,Hz is enough.
+\end{simple}
+
+\begin{itemize}
+  \item The code uses \file{scipy.signal.decimate(sig, 4, ftype="iir", zero_phase=False)}. The default IIR filter is an 8th-order Chebyshev type I low-pass.
+  \item \file{zero_phase=False} is important: the filter runs \emph{forward only}, like a real ADC front end. That is \textbf{causal}. With \file{zero_phase=True} it would run forward and backward, which needs the future.
+  \item A causal filter delays the signal a little. We computed for these notes that this filter delays the QRS band (10--30\,Hz) by about 10\,ms, which is about 2.5 samples at 250\,Hz. The annotations are only divided by 4, not shifted. 10\,ms is far inside the $\pm 50$\,ms tolerance, and it is the same for every version. (This delay is our own calculation, not a number from the report.)
+  \item If a CSV or WFDB file in the web demo has a rate that is not a whole multiple of 250\,Hz, the page uses \file{resample_poly}, which is \emph{not} causal, and it says so on the page.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{naman_cinc_decimation.png}
+\caption{CinC a01, lead AECG1, 20--22\,s. Top: as stored (1\,kHz, header unit $\mu$V). Bottom: after causal decimation to 250\,Hz and scaling to 3 counts per $\mu$V. Dotted green lines: the reference fetal beats. The large spikes are maternal QRS complexes; the small bumps at the green lines are fetal. Made for these notes from the real data.}
+\end{figure}
+
+\subsection{Matrices, SVD and Hankel matrices (with a tiny example)}
+
+\textbf{A matrix} is a table of numbers with rows and columns. The \term{rank} of a matrix is the number of truly different rows (more exactly: independent directions). If every row is a multiple of one row, the rank is 1.
+
+\begin{simple}[SVD in plain words]
+The \term{singular value decomposition} writes any matrix $A$ as a sum of simple layers:
+\[
+  A = \sigma_1 \mathbf{u}_1 \mathbf{v}_1^T + \sigma_2 \mathbf{u}_2 \mathbf{v}_2^T + \dots
+\]
+Each layer is one \emph{pattern} $\mathbf{v}_k$ (a row shape) times one \emph{amount per row} $\mathbf{u}_k$, with a strength $\sigma_k$ (the \term{singular value}). The layers are sorted: $\sigma_1 \ge \sigma_2 \ge \dots$. The energy of layer $k$ is $\sigma_k^2$. Keeping only the first $r$ layers gives the best rank-$r$ approximation of $A$.
+\end{simple}
+
+\begin{analogy}
+Think of a choir where most singers sing the same tune. The first SVD layer is ``the tune everybody sings''. The small layers are the few singers who sing something different. Remove the first layer and you hear the soloists.
+\end{analogy}
+
+\textbf{Why this separates mother and baby.} Cut one lead into pieces of one maternal beat each and stack them as rows. Every row then contains nearly the same maternal shape (aligned at the maternal R peak), while the fetal beats fall at different places in each row, because the two hearts beat at different rates. So the maternal beat is the strong first layer, and the baby is mostly \emph{not} in it.
+
+\begin{tried}[Tiny worked example (computed for these notes)]
+Signal with a ``maternal'' beat \texttt{0 3 0 0} repeated three times, plus a small ``fetal'' blip of size 1 at different places in rows 2 and 3:
+\[
+A = \begin{pmatrix} 0 & 3 & 0 & 0\\ 0 & 3 & 1 & 0 \\ 1 & 3 & 0 & 0 \end{pmatrix}, \qquad
+\sigma = (5.26,\ 1.00,\ 0.57), \qquad \text{energy share } (95.4\%,\ 3.4\%,\ 1.1\%).
+\]
+The first pattern is $\mathbf{v}_1 = (0.11, 0.99, 0.11, 0)$: almost exactly the maternal beat. The rank-1 part is about $(0.33, 3.0, 0.33, 0)$ in every row, and the residual $A - A_1$ is
+\[
+\begin{pmatrix} -0.33 & 0.07 & -0.33 & 0\\ -0.34 & -0.04 & \mathbf{0.66} & 0 \\ \mathbf{0.66} & -0.04 & -0.34 & 0 \end{pmatrix}.
+\]
+The blips survive (0.66) but are smaller, and a bit of the blip leaked into the other rows ($-0.33$). That leak is exactly the weakness of SVD subtraction: the ``maternal'' layer also takes some fetal energy, and more so when fetal beats sit on the same place often.
+\end{tried}
+
+\textbf{Hankel (trajectory) matrix.} The textbook way to build a matrix from one signal $x_1, x_2, \dots, x_N$ is to put a window of length $m$ in each column and shift it by one sample each time:
+\[
+  x = (a,b,c,d,e,f),\ m = 3: \qquad
+  H = \begin{pmatrix} a & b & c & d \\ b & c & d & e \\ c & d & e & f \end{pmatrix} \in \mathbb{R}^{m \times (N-m+1)} .
+\]
+Every anti-diagonal has the same value; such a matrix is called a \term{Hankel} matrix. A signal that repeats with period $m$ gives a matrix of low rank, so again the repeating part sits in the first few SVD layers.
+
+\begin{warn}[What the report says and what our code does]
+The report describes M8/M9 as ``Hankel-SVD'' and writes the trajectory matrix $A \in \mathbb{R}^{m\times(N-m+1)}$ with $m = 174$. The code (\file{src/fecg/methods/svd.py}) builds a \emph{beat matrix}: one row per detected maternal beat, from 0.25\,s before to 0.45\,s after the R peak, which at 250\,Hz is $62 + 112 = 174$ samples. This is the period-aligned matrix of Kanjilal et al., and $m = 174$ is its row length. Both forms rest on the same idea (a repeating pattern gives a dominant SVD layer). If asked, say: ``the matrix stacks one maternal cycle per row, 174 samples each; that is the Kanjilal form of the trajectory matrix.''
+\end{warn}
+
+\subsection{Scoring: TP, FP, FN, Se, PPV, F1}
+\label{sec:scoring}
+
+\begin{itemize}
+  \item \term{TP} (true positive): a detected beat matched to a reference beat.
+  \item \term{FP} (false positive): a detected beat with no reference beat nearby.
+  \item \term{FN} (false negative): a reference beat that we missed.
+  \item \term{Se} (sensitivity) $= \text{TP}/(\text{TP}+\text{FN})$: what fraction of true beats we found.
+  \item \term{PPV} (positive predictive value) $= \text{TP}/(\text{TP}+\text{FP})$: what fraction of our beats are real.
+  \item \term{F1} $= 2\,\text{Se}\cdot\text{PPV}/(\text{Se}+\text{PPV})$. It is high only if both are high. This is our main number.
+\end{itemize}
+
+\textbf{Matching rule} (\file{harness.match}): go through the reference beats in time order. For each one, take the closest \emph{unused} detection within $\pm$TOL samples. Each detection can be used once. TOL = \textbf{13 samples} at 250\,Hz, i.e.\ $\pm 52$\,ms, our implementation of the $\pm 50$\,ms standard of the PhysioNet/CinC 2013 challenge.
+
+\begin{center}
+\begin{tikzpicture}[x=0.9cm, y=1cm, every node/.style={font=\scriptsize}]
+  \draw[-{Latex}] (0,0) -- (15.5,0) node[right]{time};
+  \foreach \x in {1,4,7,10,13} { \fill[tmgreen] (\x,0.35) circle (2.5pt); \draw[tmgreen!60, dashed] (\x-0.45,0.15) rectangle (\x+0.45,0.55);}
+  \node[tmgreen, left] at (0,0.35) {reference};
+  \foreach \x in {1.2,4.3,8.6,10.1,11.5} { \fill[tmred] (\x,-0.35) rectangle ++(0.14,0.14); }
+  \node[tmred, left] at (0,-0.3) {detected};
+  \node[above] at (1,0.6) {TP}; \node[above] at (4,0.6) {TP}; \node[above] at (7,0.6) {FN};
+  \node[above] at (10,0.6) {TP}; \node[above] at (13,0.6) {FN};
+  \node[below] at (8.65,-0.45) {FP}; \node[below] at (11.55,-0.45) {FP};
+\end{tikzpicture}
+
+{\footnotesize Dashed boxes = the $\pm 50$\,ms window around each reference beat. Here TP = 3, FP = 2, FN = 2.}
+\end{center}
+
+\begin{tried}[Worked example]
+100 true beats in the scored part. We output 90 beats, 80 of them correct. TP = 80, FP = 10, FN = 20. Se $= 80/100 = 80.0\%$, PPV $= 80/90 = 88.9\%$, F1 $= 2\cdot 0.8\cdot 0.889/(0.8+0.889) = 84.2\%$.
+
+Same record, but the detector outputs nothing: TP = 0, so F1 = 0. Same record, but we output 200 beats including all 100 true ones: Se = 100\%, PPV = 50\%, F1 = 66.7\%. F1 punishes both missing and inventing beats.
+\end{tried}
+
+\textbf{More scoring rules} (\file{tools/accuracy/harness.py}, function \file{score}):
+\begin{itemize}
+  \item \textbf{From 20 s}: only reference and detected beats from sample 5,000 (= 20\,s) to the end (minus 13 samples) are scored. Reason: the design calibrates until about 15\,s and the first beat appears at about 19.5\,s. The same rule holds for every version.
+  \item \textbf{FHR MAE} (mean absolute error, bpm): at every scored true beat, take the device's FHR 0.5\,s later (125 samples) and compare it with the true FHR $= 60 \cdot 250 / \text{median of the last 5 true RR}$. If the device shows nothing, its value counts as 0, so the error is the full FHR. Gaps hurt MAE a lot.
+  \item \textbf{Mean F1}: average of the per-record F1 values (each record counts equally).
+  \item \textbf{Records $\ge 90\%$}: number of records with F1 of at least 90.
+  \item \textbf{95\% CI}: bootstrap. Resample the records with replacement 10,000 times, recompute the mean each time, take the middle 95\% of these means. For FECGSYNDB the report resamples the 10 \emph{subjects}, because records of one subject are not independent.
+\end{itemize}
+
+\begin{warn}[A small detail worth knowing]
+The mid-term evaluation code (\file{src/fecg/core/evaluation.py}) computed the tolerance as \file{int(round(50 * 250 / 1000))}. Python rounds 12.5 to the even number 12, so the mid-term used $\pm 12$ samples ($\pm 48$\,ms). The final harness uses 13 ($\pm 52$\,ms). Both are ``$\pm 50$\,ms at 250\,Hz''; you only need this if an examiner asks how 50\,ms becomes samples.
+\end{warn}
+
+\subsection{Causal, label-free, dev and test}
+
+\begin{itemize}
+  \item \term{Causal}: at each sample the program uses only samples up to now. A live device has no choice: the future has not happened. v7-DL uses future samples only by \emph{waiting} for them (a fixed delay).
+  \item \term{Batch} (non-causal): the program sees the whole recording, for example zero-phase filtering or an SVD of the whole record. The mid-term numbers were batch.
+  \item \term{Development (dev) set}: records used to try ideas and choose parameters.
+  \item \term{Test (held-out) set}: records used only to report the final number of a frozen design.
+  \item \term{Overfitting to the test set}: keeping ideas because they raise the test score. Then the test score looks better than the truth.
+\end{itemize}
+
+\subsection{Software testing in plain words}
+
+\begin{itemize}
+  \item A \term{test} is a small program that runs a piece of our code on a known input and checks the output with an \texttt{assert}. If the check fails, the test fails.
+  \item \term{Unit test}: tests one small function alone (for example, beat matching on a made-up beat train).
+  \item \term{Integration test}: tests several parts together (for example, the causal pipeline end to end).
+  \item \term{Regression test}: protects a result that was correct once. If a later change alters it, the test fails. ``Regression'' means ``going backwards''.
+  \item \term{System test}: tests the whole design, here the C model of the FPGA on real recordings.
+  \item \term{pytest}: the Python tool that finds all files called \file{test_*.py}, runs every function called \file{test_*} and prints how many passed, failed or were skipped.
+  \item \term{Skip}: a test can decide not to run, for example when a needed file is missing or a slow test was not requested. A skip is not a failure.
+  \item \term{Fixture} and \term{parametrize}: a fixture prepares shared input for tests; the marker \texttt{parametrize} runs one test function several times with different inputs (e.g.\ three records), which counts as several tests.
+  \item \term{conftest.py}: a file pytest reads first. Ours puts \file{src/} and the repository root on Python's search path.
+  \item \term{MD5}: a 32-character fingerprint of a byte stream. Two streams with the same MD5 are, in practice, identical. We store the MD5 of each board output stream and compare against it.
+\end{itemize}
+
+\subsection{Web server, browser page and serial port}
+
+\begin{itemize}
+  \item A \term{web server} is a program that waits for requests and answers them. Ours is a small Python program on the laptop; the browser talks to it at \texttt{http://localhost:8050} (\term{localhost} = this same computer, 8050 = the port number).
+  \item The \term{browser page} (\file{index.html}) is the screen with buttons and plots. It asks the server for data with HTTP requests (\texttt{GET} to read, \texttt{POST} to send or start something).
+  \item \term{Server-Sent Events (SSE)}: one long-open connection on which the server keeps pushing small messages (``new chunk'', ``new beat'', ``stage changed''). The page updates live from them.
+  \item A \term{serial port} (here \texttt{COM5}) is a link that sends bytes one after the other. The board's USB cable shows up on Windows as a serial port. Only one program can open it at a time.
+  \item \term{UART} is the hardware that sends these bytes. At 921,600 \term{baud} with 8-N-1 (8 data bits, no parity, 1 stop bit) each byte takes 10 bit times, so about 92,160 bytes per second.
+  \item A \term{frame} is one message: \texttt{A5 5A cmd len16 payload xor8}. Two start bytes, a command byte, a 16-bit length, the data, and a checksum (all bytes XOR-ed together) that detects a corrupted byte.
+\end{itemize}
+
+% =====================================================================
+\section{Your part, step by step (with every attempt)}
+
+This section follows the calendar. Each ``What we tried'' box gives what was done, why, what happened (numbers) and what was decided.
+
+\subsection{September--October: proposal, work plan, shared test files}
+
+\begin{itemize}
+  \item 25--27 Sep: repository started; papers and project scope written down. The proposal (PPR-8) chose FECGSYNDB as the benchmark.
+  \item 13 and 21 Oct: work distribution. Your role in the code headers is ``Integration \& SVD Extraction Lead'' and ``Data Validation \& Evaluation Lead''.
+  \item 20--21 Oct: you committed the first test files (\file{sub01} records at 12, 6 and 0\,dB) and then the updated test cases.
+  \item 23 Oct: ``naman's phase3'': the TC1--TC5 result table (\file{code/results/metrics.csv}) and the plots of every single-lead method on every test case.
+  \item 24--27 Oct: mid-term report (MTR-8) assembled and submitted.
+\end{itemize}
+
+\subsection{The shared mixture builder and the five test cases}
+
+\begin{tried}[One mixture builder for everybody]
+\what{\file{build_mixture(mecg, fecg, noise1, noise2)} in \file{src/fecg/core/mixture.py}. It checks that the four parts have the same length and returns $\text{AECG} = \text{mecg} + \text{fecg} + \text{noise1} + \text{noise2}$ (no extra scaling), plus the estimated SNRs. \file{check_mixture_snr()} compares the maternal-to-noise SNR with the \texttt{\#SNRmn} value in the header (tolerance 1.5\,dB).}
+\why{FECGSYNDB does not store the belly signal. It stores the mother, the baby and the noise as separate files. If every member summed them differently (another scaling, forgetting \file{noise2}), the methods would be compared on different signals. The module header says it plainly: ``everyone MUST call build\_mixture()''.}
+\result{All mid-term methods ran on identical inputs. The clean fetal part is returned only as \file{fecg_ref} for evaluation, never as input to a method; the method interface (\file{base.py}) forbids it and marks any such use as ``oracle\_assisted''.}
+\decision{Kept for the whole project. The final loader \file{harness.load()} uses the same sum and adds the third noise file that the contraction records (c3) have.}
+\end{tried}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}l l l l X@{}}
+\toprule
+\textbf{Case} & \textbf{Record (sub01, l1)} & \textbf{SNR} & \textbf{Condition} & \textbf{What it tests} \\
+\midrule
+TC1 & \texttt{sub01\_snr12dB\_l1\_c0} & 12\,dB & c0 baseline & easier baseline, basic extraction check \\
+TC2 & \texttt{sub01\_snr06dB\_l1\_c0} & 6\,dB & c0 baseline & moderate noise \\
+TC3 & \texttt{sub01\_snr00dB\_l1\_c0} & 0\,dB & c0 baseline & difficult: signal and noise power equal \\
+TC4 & \texttt{sub01\_snr06dB\_l1\_c1} & 6\,dB & c1 fetal movement & the fetal heart moves \\
+TC5 & \texttt{sub01\_snr06dB\_l1\_c4} & 6\,dB & c4 ectopic beats & irregular beats \\
+\bottomrule
+\end{tabularx}
+
+{\footnotesize Source: \file{code/configs/tests.yaml}. Each case is 5\,min, 75,000 samples, about 716 fetal beats (715 in TC3).}
+\end{center}
+
+\textbf{Why these five?} TC1--TC3 change \emph{only} the noise (12 $\to$ 6 $\to$ 0\,dB) on the same subject and condition, so they show how a method degrades with noise. TC4 and TC5 keep 6\,dB and change the physiology. Together they form a small, fixed ``stress test'' that runs in seconds. The same five records are also in the submission zip, so an examiner can rerun them.
+
+\subsection{Your mid-term method: SVD extraction (three variants)}
+
+Your code follows Kanjilal, Palit and Saha (IEEE TBME 1997), ``Fetal ECG extraction from single-channel maternal ECG using singular value decomposition''. All three variants share these steps (\file{src/fecg/methods/svd.py}):
+
+\begin{enumerate}
+  \item \textbf{Find the maternal R peaks} in the single lead: 5--25\,Hz band-pass, a threshold at 0.45 of a robust amplitude scale (98th percentile), at least 400\,ms between peaks (at most 150\,bpm).
+  \item \textbf{Build the beat matrix} $A$: one row per maternal beat, 0.25\,s before to 0.45\,s after the R peak, 174 samples per row.
+  \item \textbf{SVD of $A$}, keep the strongest $k = 2$ layers (``rank-2'': the maternal shape plus one more axis, the code comment says ``morphology + respiratory axis'') as the maternal estimate.
+  \item \textbf{Put the rows back} on the time axis with smooth (cosine-tapered) overlap-add, subtract from the lead: residual = baby + noise + maternal left-overs.
+  \item \textbf{Enhance and detect}: 8--38\,Hz band-pass of the residual, then fetal peaks at least 280\,ms apart (at most 214\,bpm), threshold 0.35 of the robust scale.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.97\textwidth]{naman_svd_tc1.png}
+\caption{Variant 1 on TC1 (sub01, 12\,dB, baseline), lead 27, computed for these notes with the project code. (a) The beat matrix: every row is one maternal beat, all aligned at 0\,ms; the slanted dots are the fetal beats, which drift because the baby beats faster. (b) The first SVD layer holds 88\% of the energy. (c) The rank-2 maternal estimate follows the mother closely. (d) The residual contains the fetal beats. This is the easiest case; at 0\,dB the residual is dominated by noise.}
+\end{figure}
+
+\begin{tried}[Variant 1 (M8): fixed period]
+\what{All rows have the same fixed length (174 samples) around the R peak. One SVD of the whole matrix, rank 2 removed.}
+\why{The simplest form of Kanjilal's method; it works if maternal beats look alike.}
+\result{TC1 76.36\%, TC2 30.98\%, TC3 23.72\%, TC4 36.02\%, TC5 27.69\% (mean 38.96\%). FHR MAE 19.5\,bpm already on TC1. Population benchmark (250 records): 55.55\% [47.21, 63.89]. Runtime 75.9\,ms per 5-min record.}
+\decision{Kept as M8 in the comparison. It equals fixed template subtraction on TC1 \emph{exactly} (546 TP, 168 FP, 170 FN): with aligned beats, the first SVD layer is essentially the scaled average beat, which is what a template is. The tiny example above shows the same thing.}
+\end{tried}
+
+\begin{tried}[Variant 2: SVR spectrum and time resampling]
+\what{Use the \term{singular value ratio} spectrum $\text{SVR}(n) = \sigma_1^2/\sigma_2^2$ of the signal folded into rows of length $n$ ($n = 50$--200 samples) to find the most likely period, then resample every beat to that length before the SVD.}
+\why{Kanjilal's second method: maternal beats are not all the same length; stretching them to one length should align them better.}
+\result{TC1 56.15\% (worse than V1), TC2--TC4 exactly the same beat counts as V1, TC5 27.58\% (mean 34.89\%). These numbers are from \file{code/results/metrics.csv}; the logs do not explain why TC2--TC4 are identical to V1.}
+\decision{Not taken into the 250-record benchmark. The report does not give the reason; our reading is that it was never better than V1 on the test cases and costs one SVD per trial period.}
+\end{tried}
+
+\begin{tried}[Variant 3 (M9): moving window]
+\what{For each beat, an SVD of only the last 5 rows (beats); the last row of the rank-2 approximation is the local maternal beat.}
+\why{Kanjilal's third method: the maternal shape changes slowly (breathing, movement); a local window should follow it.}
+\result{TC1 42.86\%, TC2 26.35\%, TC3 24.09\%, TC4 27.72\%, TC5 25.05\% (mean 29.21\%). Population: 46.69\% [40.80, 52.59], 30.3\,ms per record.}
+\decision{Kept as M9 for the comparison, but worse than V1. With only 5 rows, the ``maternal'' layer also takes in noise and fetal energy, so the residual loses fetal beats.}
+\end{tried}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{TC3_svd_v1.png}
+\caption{Variant 1 on TC3 (0\,dB) from the mid-term run. Bottom: green triangles are the true fetal beats, red crosses our detections. Most detections are wrong: F1 23.7\%. One lead at 0\,dB does not contain enough information to separate the baby from the noise.}
+\end{figure}
+
+\begin{lesson}[Why single-lead SVD fails (be ready to explain this)]
+\begin{enumerate}
+  \item \textbf{One lead has no spatial information.} Mother and baby differ in \emph{where} their hearts are, which only several leads can see. One lead sees only time.
+  \item \textbf{Overlap.} When a fetal beat falls on the maternal QRS (about 17.5\% of fetal beats), the maternal layer removes part of it (the leak in the tiny example).
+  \item \textbf{Noise.} At 0\,dB the noise has the same power as the mother; it is not periodic, so SVD cannot remove it, and the weak fetal beats drown.
+  \item \textbf{It is batch.} The SVD of the whole recording and the zero-phase band-pass need the future; a causal version would be weaker still.
+  \item \textbf{Hardware.} The paper sizing for single-lead SVD was 4,200 LUTs (12.9\%) and 48 DSP (an analytical estimate), against about 990 LUTs and 1 DSP for the beamformer.
+\end{enumerate}
+The 4-lead spatial PCA scored 100\% on TC1--TC3 where SVD scored 76 $\to$ 24\%. This comparison is why the team chose a multi-lead design, and every later version kept 4 leads.
+\end{lesson}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{Method} & \textbf{TC1} & \textbf{TC2} & \textbf{TC3} & \textbf{TC4} & \textbf{TC5} & \textbf{Mean} & \textbf{250 rec.} \\
+\midrule
+Spatial PCA, 4 leads (M1) & 100.00 & 100.00 & 100.00 & 72.79 & 87.95 & 92.15 & 93.00 \\
+Template subtraction, fixed (M6) & 76.36 & 30.84 & 23.88 & 35.72 & 28.48 & 39.06 & 59.41 \\
+\textbf{SVD V1 (M8)} & \textbf{76.36} & \textbf{30.98} & \textbf{23.72} & \textbf{36.02} & \textbf{27.69} & \textbf{38.96} & \textbf{55.55} \\
+SVD V2 & 56.15 & 30.98 & 23.72 & 36.02 & 27.58 & 34.89 & -- \\
+\textbf{SVD V3 (M9)} & 42.86 & 26.35 & 24.09 & 27.72 & 25.05 & 29.21 & \textbf{46.69} \\
+\bottomrule
+\end{tabular}
+
+{\footnotesize F1 in \%. TC columns: single lead 27 (PCA: 4 leads), mid-term detector, batch. Sources: report master benchmark and population tables; V2 and V3 TC values and the V2/V3 means from \file{code/results/metrics.csv}.}
+\end{center}
+
+\begin{warn}[Mid-term numbers in perspective]
+All mid-term numbers are synthetic and batch. The report keeps them in the appendix ``Mid-term Design (Superseded)''. The mid-term also claimed +85.04\,dB SQNR for a fixed-point SVD model; that belongs to the superseded design too. Do not present SVD as part of the final system.
+\end{warn}
+
+\subsection{The causal re-run and the new scoring harness (31 Oct -- 7 Nov)}
+
+\begin{tried}[Re-scoring the old design honestly]
+\what{A new float research harness, \file{tools/accuracy/harness.py}, with the FECGSYNDB loader and a corrected scorer. The old evaluation script had computed the weights from the first 10\,s and applied them from sample 0, and it compared every detector RR with the record's single nominal FHR from the header.}
+\why{Both were wrong for a live device. The first uses the future. The second is meaningless during accelerations, and one missed beat made a huge outlier.}
+\result{New scoring: device starts with no calibration, beats scored from 20\,s, FHR compared with the true median-of-5 FHR at every true beat. The frozen mid-term design went from 93.0\% (batch, 250 records) to 82.2\% (causal, all 1,248), FHR MAE 18.8\,bpm. The report notes that three things changed at once (causal processing, scoring, 1,248 instead of 250 records) and does not split the drop.}
+\decision{This harness became the single scoring function of the project: v2 to v7, the board script and the web demo all call \file{harness.score}.}
+\end{tried}
+
+\subsection{Data set preparation}
+
+\subsubsection{FECGSYNDB (synthetic)}
+
+\begin{itemize}
+  \item PhysioNet Fetal ECG Synthetic Database. Each record: 34 channels (32 abdominal, 2 maternal reference), 250\,Hz, 5\,min.
+  \item We use 10 subjects $\times$ 5 SNRs (0, 3, 6, 9, 12\,dB) $\times$ 5 conditions (c0 baseline, c1 fetal movement, c2 heart-rate changes, c3 uterine contractions, c4 ectopic beats) $\times$ 5 repetitions (\texttt{l1}--\texttt{l5}) $=$ \textbf{1,250 records}. (The code calls \texttt{l1}--\texttt{l5} ``LAYOUTS''; the report calls them repetitions.)
+  \item The full database has 1,750 records. We do not use the 250 noise-free base records and the 250 twin records (c5): twins are not supported by our single-fetus design.
+  \item The mid-term used only \texttt{l1}: 10 $\times$ 5 $\times$ 5 = 250 records.
+\end{itemize}
+
+\begin{tried}[The four leads {[27, 26, 28, 25]}]
+\what{Leads 27, 26, 28, 25 in 0-based numbering (Python counts from 0), which are leads 28, 27, 29, 26 in 1-based numbering. \file{CHANNELS_4CH = [27, 26, 28, 25]} in \file{harness.py}; the pre-FPGA regression test checks this order.}
+\why{At the mid-term the leads were chosen from an anatomical ranking: lower abdominal midline leads over a head-down fetus, a block of four neighbouring leads. The choice used the training subjects sub01--sub07 only, so no test subject influenced it.}
+\result{The report later measured the fetal-to-maternal RMS ratio (FMR) of every lead on the training subjects. The chosen leads rank 4th, 3rd, 8th and 10th (Leads 26 and 27: 0.52 and 0.51; Leads 28 and 25: 0.43 and 0.40). The best leads are 19 and 18 (0.61 and 0.60). So the chosen set is \emph{not} the top four by FMR (mean 0.46 against 0.56 for Leads 19, 18, 26, 27), but all four are in the training top 10. In the mid-term multichannel study, 2 leads [27, 26] gave 95.3\% on TC1, and 4 leads gave 100\% on TC1--TC3 (92.15\% average over TC1--TC5).}
+\decision{Kept fixed for the whole project, so all FECGSYNDB numbers from mid-term to v7-DL use the same four leads. Say honestly that the choice was anatomical, not the FMR optimum.}
+\end{tried}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{fmr_lead_topography_34ch.png}
+\caption{Fetal-to-maternal ratio of each lead, mean over the training subjects (report figure). The selected leads 27, 26, 28, 25 are highlighted.}
+\end{figure}
+
+\begin{tried}[Why 1,248 ``usable'' records, not 1,250]
+\what{\file{harness.list_records()} keeps a record only if all four signal files exist (\file{_fecg1.dat}, \file{_mecg.dat}, \file{_noise1.dat}, \file{_noise2.dat}); \file{harness.load()} also returns nothing if any value is not finite.}
+\why{A record with a missing part cannot be mixed correctly. Skipping it is safer than inventing the missing part.}
+\result{We checked this for these notes (18 Nov). Exactly two records are dropped, both from sub09 at 0\,dB, repetition l5: \texttt{sub09\_snr00dB\_l5\_c0} (all four \file{.dat} signal files missing) and \texttt{sub09\_snr00dB\_l5\_c1} (the fetal and maternal \file{.dat} files missing). Their headers are present, and the database's own checksum list (\file{SHA256SUMS.txt}) names the missing files, so the files are missing from \emph{our downloaded copy}, not from the database itself.}
+\decision{Report all FECGSYNDB results on the 1,248 usable records, and say ``1,250 in total''. If asked: ``two records of sub09 at 0 dB had missing signal files in our copy, so the loader skips them''.}
+\end{tried}
+
+\textbf{The 60-record dev subset.} From v3 on, design decisions used every 21st of the 1,248 records (\file{H.list_records()[::21]} in \file{devbench.py}), which gives 60 records across all subjects, SNRs and conditions. It is quick enough for many experiments; the full 1,248 are scored only for frozen designs (C model, which equals the board).
+
+\subsubsection{CinC 2013 set-a (real, the main benchmark)}
+\label{sec:cinc}
+
+\begin{itemize}
+  \item 75 real recordings a01--a75, 60\,s each, 4 abdominal leads (AECG1--AECG4), 1\,kHz, header unit $\mu$V, reference fetal QRS in \file{.fqrs}.
+  \item On disk: \file{data/noninvasive-fetal-ecg-...-1.0.0/extracted/set-a/} holds a01--a25 and \file{set-a-ext/} the others (e.g.\ a73). \file{rec_path()} looks in both.
+  \item Loader (\file{tools/accuracy/eval_cinc2013.py}, \file{load()}): read with \file{wfdb.rdrecord}, replace missing values by 0, decimate by 4 causally, multiply $\mu$V by 3, annotations divided by 4 and rounded.
+\end{itemize}
+
+\begin{tried}[Odd records for development, even records for the test]
+\what{Odd record numbers $\to$ \textbf{CinC dev} (38 records); even $\to$ \textbf{CinC test} (37 records).}
+\why{A simple rule that anybody can check, fixed before the v3 redesign, with no choice of ``easy'' or ``hard'' records. All design decisions use dev; test is scored once per frozen design.}
+\result{The dev half turned out a little easier even for designs never tuned on it (mid-term 22.8 vs 16.7; v2 42.0 vs 41.2). For v7-DL: dev 84.68, test 76.91.}
+\decision{Kept from v3 to v7-DL. Honest caveat from the report's data-use ledger: CinC test was never used for a decision, but it has been scored for nine designs (mid-term causal, v2, v3, v4, v5, v6, v6.1, v7-LA, v7-DL), so it is not a fresh look at unseen data.}
+\end{tried}
+
+\begin{tried}[The 7 unreliable references]
+\what{Records \textbf{a33, a38, a47, a52, a54, a71, a74} are reported both with and without them (``reliable references'').}
+\why{The challenge organisers later found by visual inspection that the annotations of these 7 records are inaccurate and left them out of their own benchmark (Behar, Oster \& Clifford 2014, Physiol.\ Meas.\ 35:1569). Example: a54's annotations give an implausible flat 100\,bpm after 27\,s. The list is \emph{not} on the PhysioNet challenge page; it comes from that paper.}
+\result{Three are odd (a33, a47, a71: dev), four are even (a38, a52, a54, a74: test). Reliable references: 35 dev, 33 test, 68 in all. v7-DL CinC test: 76.9\% on all 37, 82.0\% on the reliable 33.}
+\decision{Always exclude \textbf{all seven}, never only the records we fail on, so the exclusion cannot look like cherry-picking. Two flagged records actually score well with v7-DL (a33 92.5\%, a47 79.6\%). The main number stays the one on all 37 records.}
+\end{tried}
+
+\subsubsection{ADFECGDB (real, scalp-electrode reference)}
+
+\begin{itemize}
+  \item 5 real recordings (r01, r04, r07, r08, r10), 5\,min, 4 abdominal leads plus a direct fetal scalp electrode, 1\,kHz, EDF format.
+  \item Loader (\file{tools/accuracy/adfecgdb.py}): own EDF reader, leads \texttt{Abdomen\_1}--\texttt{Abdomen\_4}, $\mu$V $\to$ mV ($/1000$) $\to$ $\times 3000$, causal decimation by 4, reference beats from \file{r01.edf.qrs} etc.\ divided by 4.
+\end{itemize}
+
+\begin{warn}[ADFECGDB caveat: say it before you are asked]
+The scalp-electrode reference is very reliable: if we score well there, we are really right. But there are only 5 records, and ADFECGDB was used as a \textbf{development set from v4 on} (v6.1 ideas and the v7 window were chosen on it). So the 96.10\% of v7-DL is \textbf{not an independent test}. The web page cannot load ADFECGDB, because it reads WFDB or CSV, not EDF.
+\end{warn}
+
+\subsubsection{NIFEA (real, no fetal labels)}
+
+\begin{tried}[Testing on NIFEA first (7 Nov)]
+\what{\file{tools/accuracy/eval_nifea.py}: the Non-Invasive Fetal ECG Arrhythmia database, 26 records at 1\,kHz. Two are duplicates (NR\_13 = ARR\_02, NR\_14 = NR\_07) and were dropped, leaving 24. First 10 minutes of each; channel 0 is a thoracic (chest) maternal lead, channels 1--4 the abdominal leads we use; units mV $\times$ 3000.}
+\why{It was the first real data we had after the mid-term. We wanted to know how the design behaves outside the simulator.}
+\result{NIFEA has \textbf{no fetal annotations}, so no F1 is possible. Only \emph{surrogate} measures: how often our beats coincide with maternal beats (found on the chest lead), and what fraction of the reported FHR lies in 110--160\,bpm. v2 no longer locked onto the mother: maternal coincidence 24\% against 33\% for the old design, with chance at about 15\%. But only about a third of the reported FHR values were in the normal range (mean over 24 records 32.6\% for v2, 16.6\% for the old design; \file{results_nifea.csv}).}
+\decision{A surrogate cannot tell a good design from a bad one precisely. The accuracy README concluded that ``an annotated real-data set is needed'', and the same day (7 Nov) we added CinC 2013, then ADFECGDB. NIFEA is not used for any number in the final results.}
+\end{tried}
+
+\begin{warn}[A wording error in the report's mid-term text]
+The mid-term paragraph kept in the report's appendix calls NIFEADB ``companion synthetic arrhythmia recordings''. NIFEA recordings are real clinical recordings (our loader's own description: ``Real clinical data''). If asked, say ``real recordings without fetal labels''.
+\end{warn}
+
+\subsubsection{The common form of every recording}
+
+\begin{keyfact}[After loading, every data set looks the same]
+\begin{itemize}
+  \item 4 leads, 250\,Hz, int16 counts at 3,000 per mV (FECGSYNDB: its own scale of 3,000 per nu);
+  \item reference beat sample numbers at 250\,Hz (scoring only);
+  \item for the C model and the board: one file \file{data/_cache_i16/<set>_<record>.i16} (int16, 4 leads interleaved) plus \file{<...>.fq.npy} with the reference beats, made by \file{devbench_v6.py}. The system tests read these cached files.
+\end{itemize}
+\end{keyfact}
+
+\subsection{The test suite: from the mid-term to v7}
+
+\begin{tried}[From \texttt{code/tests} to \texttt{tests/}]
+\what{At the mid-term the tests lived in \file{code/tests/} (loader, mixture, metrics, matching, FHR, detector, method interface, fixed point). On 4 Nov the code was restructured into the \file{src/fecg/} package (sub-packages \texttt{core}, \texttt{detection}, \texttt{methods}, \texttt{hardware}, \texttt{host}, \texttt{pipelines}, \texttt{telemetry}, \texttt{models}) and the tests into \file{tests/unit}, \file{integration}, \file{hardware}, \file{regression}; \file{tests/system} came with v6.}
+\why{One importable package means one copy of each function; every script and test uses the same code. Folders by test type make it clear what a failing test protects.}
+\result{273 tests collected today: unit 127, integration 50, hardware 45, regression 26, system 25.}
+\decision{The suite runs after every change; the board and report numbers are trusted only if it passes.}
+\end{tried}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{naman_test_suite.png}
+\caption{Tests per folder (counted with \texttt{pytest --collect-only} for these notes).}
+\end{figure}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Folder} & \textbf{What it protects} \\
+\midrule
+\file{tests/unit/} & beat matching ($\pm 50$\,ms, strict one-to-one), metrics, FHR and median-of-5, FHR range limits, data loader, mixture builder, preprocessing, QRS detector, the method interface (38 tests), calibration fallback; \file{test_v7_offline_and_scoring.py}: scoring harness, v7-LA clean-up, centred FHR, Viterbi, frame parsing \\
+\file{tests/integration/} & causal pipeline, UART protocol and the UART client, causal benchmark runner, QRS timing correction, end-to-end synthetic pipeline \\
+\file{tests/hardware/} & bit-accurate reference model, exact filter coefficients, fixed-point arithmetic, integer model, v2 causal system, adversarial checks; \file{test_v6_rtl_regression.py}: RTL in xsim against the C model (3 tests, opt-in) \\
+\file{tests/regression/} & 26 pre-FPGA results (channel order, sample rate, filters, quantisation, \dots) must not drift \\
+\file{tests/system/} & the final design: \file{test_v6_system_model.py} (25 tests, below) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsubsection{The system tests of the final design (what each checks)}
+
+These tests run the compiled C models (\file{v6_sim.exe}, \file{v61_sim.exe}, \file{v7_sim.exe}) on cached recordings. If a program or a cached file is missing, the helper \file{need()} makes the test \emph{skip}, not fail.
+
+\begin{enumerate}
+  \item \textbf{Board match} (v6, v6.1, v7; 3 records each). The model's complete output byte stream must have exactly the MD5 that the board's stream had in the saved board run. Proves: nobody changed the model since the board run, so ``model = board'' still holds.
+  \item \textbf{Causality prefix} (v6, v6.1). Run CinC a01 in full (60\,s) and cut to 7,488 samples (117 frames, about 30\,s). The output of the short run must be the first part of the long run, byte for byte (and longer than 10,000 bytes). If the program secretly looked ahead, cutting the future would change the past output.
+  \item \textbf{Determinism} (v6, v6.1). Two runs on a03 give the same bytes.
+  \item \textbf{v6.1 finds the mother} (a73). v6's maternal detector frames: exactly 0 (the bug). v6.1: at least 50 maternal R peaks (about 95 in 60\,s).
+  \item \textbf{Robustness} (v6.1, a01). Inverted polarity and halved gain may cost at most 5 F1 points; a dead lead at most 25.
+  \item \textbf{v7 leaves v6.1 untouched} (a29). Remove the OUT7 and END7 frames from the v7 output, rebuild the frames: the result must equal the v6.1 output byte for byte. Proves the look-ahead unit only listens.
+  \item \textbf{v7 live part is causal, END7 count} (a01). Cut to 10,048 samples (about 40\,s): everything up to the last DONE frame must equal the full run. And END7 must equal the number of OUT7 frames, in both runs.
+  \item \textbf{v7 delay bound} (a01, ADFECGDB r04). For every OUT7 beat: (time the board had reached + one 64-sample frame) $-$ (beat time) $\le 3750 + 625 + 13 + 64 = 4{,}452$ samples. That is the 15-s deadline (3,750) plus one 2.5-s decision step (625), i.e.\ 17.5\,s, plus the 13-sample output offset and one frame of slack (about 17.8\,s in total). At least 50 final beats must exist.
+  \item \textbf{Accuracy guards on ADFECGDB}: v6 must give exactly 92.73 ($\pm 0.05$, frozen); v6.1 $\ge 92.5$; v7-DL $\ge 95.5$ (dev value 96.10); v7-LA $\ge 95.0$. A change that silently lowers accuracy fails the suite.
+\end{enumerate}
+
+\begin{keyfact}[The latest full run]
+\textbf{270 passed, 3 skipped} (report and \file{report/v61_v7/LOG.md}; we reran it on 18 Nov: same result, about 2 minutes). The 3 skipped tests are the RTL simulations in Vivado xsim (one per design: v6, v6.1, v7, on CinC a01). They run only with \texttt{RUN\_RTL=1}, need Vivado and take minutes each. They pass when the output says ``0 byte errors'' and ``0 mismatches''.
+\end{keyfact}
+
+\begin{lesson}[What the tests can and cannot prove]
+The board-match and RTL tests prove that model, RTL and board compute the same bytes \emph{on the inputs we ran}. They do not prove that the algorithm is good (F1 does that), and not that the design is correct on recordings we never ran. The causality test is a strong check, but on one record (a01); the board itself was checked bit-exact on 140 records.
+\end{lesson}
+
+\subsection{The live web demonstration (14--15 Nov)}
+
+\begin{tried}[A page that streams any recording to the board]
+\what{\file{fpga_implementation/webdemo/server.py} (Python, standard library HTTP server plus \file{pyserial}, \file{wfdb}, \file{scipy}) and \file{index.html}. Upload a recording, press Start, watch the FPGA's answers live.}
+\why{The demo must show the \emph{hardware} working in real time on any recording, not a pre-recorded video or a PC simulation. The user choices (from our notes): WFDB or CSV input, board only, real-time playback, accuracy shown when annotations exist.}
+\result{CinC a01 through the page with v6: F1 95.05\%, 101 beats, FHR MAE 3.51\,bpm, identical to the batch board evaluation of the same record.}
+\decision{Kept as the final demonstration; extended for v7-DL (below). Described in the report section ``Final Demonstration: Live Web Page and On-Board Display''.}
+\end{tried}
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[every node/.style={font=\scriptsize}, box/.style={draw=tmblue, fill=tmlight, rounded corners=2pt, align=center, minimum height=1.2cm, font=\small},
+  lab/.style={font=\scriptsize, align=center}]
+  \node[box, minimum width=2.8cm] (br) at (0,0) {\textbf{Browser}\\ \texttt{index.html}\\ localhost:8050};
+  \node[box, minimum width=3.8cm] (sv) at (6.3,0) {\textbf{server.py}\\ load, convert, decimate,\\ pace 0.256\,s, score};
+  \node[box, minimum width=3.6cm] (fp) at (13.4,0) {\textbf{FPGA board}\\ v7-DL bitstream\\ COM5, 921,600 baud};
+  \node[box, minimum width=3.4cm] (bn) at (6.3,-3.2) {\textbf{PC brain}\\ \texttt{v7\_brain.exe}\\ 5 slow decisions};
+  \draw[-{Latex}, thick] ([yshift=3mm]br.east) -- node[lab, above]{upload, Start} ([yshift=3mm]sv.west);
+  \draw[{Latex}-, thick] ([yshift=-3mm]br.east) -- node[lab, below]{live events (SSE)} ([yshift=-3mm]sv.west);
+  \draw[-{Latex}, thick] ([yshift=3mm]sv.east) -- node[lab, above]{SAMPLES, FLUSH} ([yshift=3mm]fp.west);
+  \draw[{Latex}-, thick] ([yshift=-3mm]sv.east) -- node[lab, below]{OUT, OUT7, DONE,\\ requests} ([yshift=-3mm]fp.west);
+  \draw[-{Latex}, thick] ([xshift=-5mm]sv.south) -- node[lab, left]{FPGA requests} ([xshift=-5mm]bn.north);
+  \draw[{Latex}-, thick] ([xshift=5mm]sv.south) -- node[lab, right]{answers, sent on to the FPGA} ([xshift=5mm]bn.north);
+\end{tikzpicture}}
+\end{center}
+
+\textbf{How one run works} (function \file{Session._run}):
+\begin{enumerate}
+  \item \textbf{Board check first.} \file{Board._probe()}: send RESET (\texttt{0x01}), then one SAMPLES frame (\texttt{0x02}) of zeros; the FPGA must answer DONE (\texttt{0x8C}) within 1\,s. If not, the page refuses to run. There is \textbf{no software fallback}, so every number on the page comes from the hardware.
+  \item \textbf{Load.} WFDB (\file{.hea} + \file{.dat}, optional \file{.fqrs}/\file{.qrs}, or a \file{.zip}) or a CSV with 4 lead columns (optionally a time column first) plus its sample rate and unit. If the header has more than 4 signals, the server takes the 4 whose names contain ``abdom'' or ``aecg''. Units converted to counts; 1\,kHz decimated causally to 250\,Hz; uploaded files go to a temporary folder that is deleted after loading.
+  \item \textbf{Start the PC brain} (\file{<variant>_brain.exe}) as a child process. A second thread copies every answer of the brain to the serial port.
+  \item \textbf{Real-time pacing.} Send one 64-sample frame (0.256\,s) at its true time. Then read every frame the FPGA sends until DONE: requests go to the brain; OUT/OUT7 frames are beats.
+  \item \textbf{Live events} to the page: the 4 leads (every 2nd sample, 125\,Hz preview), new beats, maternal R peaks, requests, FHR, maternal heart rate, the processing stage, the FPGA time per frame, and (with annotations) the running Se, PPV, F1, FHR error every 8 frames from 22\,s on.
+  \item \textbf{End.} With v7: send FLUSH (\texttt{0x03}); the board finishes the last segments and sends END7 (\texttt{0x8E}). Then the final score.
+  \item \textbf{Save}: \file{webdemo/runs/<record>_<date>_<time>/beats.csv} (sample, time\_s, fhr\_bpm, track) and \file{summary.json}; both downloadable from the page.
+  \item \textbf{Errors}: if the FPGA is silent for 5\,s during a run, the run stops with ``FPGA stopped answering''.
+\end{enumerate}
+
+\begin{tried}[The v7-DL view]
+\what{With \texttt{V6\_VARIANT=v7} the server treats OUT (\texttt{0x8B}) as the \emph{live} v6.1 estimate and OUT7 (\texttt{0x8D}) as the \emph{final} beats. The page shows the design on the board in the header; the big FHR number is the final value from the FPGA with ``live estimate'' under it; a card shows the current look-ahead delay; the lead window follows the final beats; the heart-rate trend shows the final line, a dashed live line and a grey ``not final yet'' area; the log shows the stages and the FLUSH step.}
+\why{v7-DL gives two answers with different delays. Showing only the final one would leave the screen empty for the first 34\,s; showing only the live one would hide the final design.}
+\result{CinC a01: the 102 final beats on the page (F1 98.02\%) are identical to the model's OUT7 beats (times, FHR, track). CinC a03: live and final beats arrive separately; the first final beat appeared 14.4\,s after its beat time. The board's two 4-digit displays show the final FHR and the number of final beats (a01 ends with \texttt{0102}).}
+\decision{Final demo mode. Remember: during a v7 run the running F1 is too low, because the beats of the last $\sim$15\,s are not final yet; quote the F1 after FLUSH.}
+\end{tried}
+
+\begin{warn}[The V6\_VARIANT rule: bitstream and variant must match]
+The board runs one design; the PC programs must be the same design. \texttt{V6\_VARIANT} chooses the PC side: \texttt{v7} $\to$ \file{v7_brain.exe}/\file{v7_sim.exe} with \file{build/v7/v7.bit}; \texttt{v61} with \file{build/v61/v61.bit}; \texttt{v6} or unset with \file{build/v6.bit}. If it is not set, the scripts use v6, which gives wrong results on the v7 board. The server reads it once at start. The page's design label shows what the \emph{server} was started with; it does not read the FPGA (all three bitstreams answer the probe the same way). Real checks: Vivado's last line \texttt{PROGRAMMED .../v7.bit}, the displays (only v7 drives them), or a batch run with \texttt{--limit 1} that says \texttt{bit-exact True}.
+\end{warn}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}l l X@{}}
+\toprule
+\textbf{Code} & \textbf{Direction} & \textbf{Meaning} \\
+\midrule
+\texttt{0x01} RESET, \texttt{0x02} SAMPLES, \texttt{0x03} FLUSH & PC $\to$ FPGA & start, 64 samples $\times$ 4 leads int16, finish (v7) \\
+\texttt{0x80} COV & FPGA $\to$ PC & maternal PCA request (once, at 10\,s) \\
+\texttt{0x82} REQ\_MK & FPGA $\to$ PC & maternal train choice (every 5\,s) \\
+\texttt{0x84} SEG & FPGA $\to$ PC & maternal beat segment (template basis) \\
+\texttt{0x85} CALDATA, \texttt{0x86} REQ\_CAL & FPGA $\to$ PC & GEVD calibration data and request \\
+\texttt{0x8A} REQ\_SEL & FPGA $\to$ PC & track selection (every 2.5\,s) \\
+\texttt{0x83} MPK & FPGA $\to$ PC & a maternal R peak \\
+\texttt{0x8B} OUT & FPGA $\to$ PC & live beat: u32 time, u16 FHR$\times$10, u8 track \\
+\texttt{0x8C} DONE & FPGA $\to$ PC & frame finished (u32 sample count) \\
+\texttt{0x8D} OUT7, \texttt{0x8E} END7 & FPGA $\to$ PC & final beat (same fields; track 16 = filled beat), end + count \\
+\bottomrule
+\end{tabularx}
+
+{\footnotesize Frame: \texttt{A5 5A cmd len\_lo len\_hi payload xor8}. Codes from \file{server.py}; meanings from \file{proto.h} as summarised in the team notes.}
+\end{center}
+
+\subsection{Report assembly}
+
+\begin{tried}[Mid-term report (MTR-8, 24--27 Oct)]
+\what{\file{report/mid_term/build_full_report.py} generated the LaTeX of the mid-term report from the result files (\file{mega_benchmark_results.csv}, \file{metrics.csv}) and compiled the PDF. An audit pass checked numbers against the files.}
+\why{Many members' results in one document, in the CVPR-style template required by the course.}
+\result{Submitted 27 Oct. Later the final review found that several mid-term figures had been drawn from values typed into the figure script rather than read from a result file; the report now lists them and says they are not used in the final sections.}
+\decision{For the final report: every number must be recomputed from a saved file by a script (next box).}
+\end{tried}
+
+\begin{tried}[Final report (FPR-8, 15 Nov) and the number checker]
+\what{\file{report/final_report/fpr-8.tex} plus \file{sections/*.tex}; figure scripts in \file{report/final_report/tools/}; the checker \file{check_final_numbers.py}; pdflatex three times; \file{package_submission.py} for the zip.}
+\why{Course rules: one zip, all new text in blue, all AI prompts included. And our own rule: no number in the report that a script cannot recompute.}
+\result{The checker reads the per-record result files (board CSVs, CI tables, accuracy results, Vivado reports), recomputes each key number, and checks that the exact string appears in the \file{.tex}. It prints one PASS/FAIL line per check and ``ALL CHECKS PASSED'' at the end. We reran it on 18 Nov: 84 checks, all passed. The report is 50 pages; the last zip (15 Nov) was about 208\,MB.}
+\decision{Rule for the team: after any report change, rerun the checker and rebuild the zip.}
+\end{tried}
+
+% =====================================================================
+\section{Code walk-through}
+
+All commands run in PowerShell from the repository root (\texttt{D:\textbackslash signal\_project}) with the project's Python, \texttt{venv\textbackslash Scripts\textbackslash python.exe}. In the text, paths use forward slashes.
+
+\subsection{Data and scoring: \texttt{tools/accuracy/}}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{File / function} & \textbf{What it does} \\
+\midrule
+\file{harness.py} & constants \file{FS=250}, \file{CHANNELS_4CH=[27,26,28,25]}, \file{TOL=13}; \file{list_records()} (FECGSYNDB records with all four parts), \file{load(rec)} (mixture in counts, fetal and maternal reference beats), \file{match()}, \file{fhr_ref_stream()}, \file{score()}, \file{run_parallel()} \\
+\file{eval_cinc2013.py} & \file{UNRELIABLE} (the 7 records), \file{rec_path()} (set-a or set-a-ext), \file{load(rid)} (decimate, $\times 3$, annotations $/4$); as a script: scores the mid-term design and v2 on all 75 records \\
+\file{adfecgdb.py} & \file{RECORDS}, \file{read_edf()}, \file{load(rid)} \\
+\file{eval_nifea.py} & NIFEA loader and surrogate metrics (no labels) \\
+\file{devbench.py} & \file{items(sets)} (\texttt{syn} = every 21st FECGSYNDB record, \texttt{cdev}, \texttt{ctest}, \texttt{ad}), \file{_load(item)}; used by the board script \\
+\file{devbench_v6.py} & builds the C model variants, writes the int16 cache \file{data/_cache_i16/} \\
+\file{v5c.py} & \file{to_i16()} (round and clip), \file{beats_to_stream()} (beats $\to$ per-sample FHR for scoring) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[language=Python, caption={Scoring one result (the core of every evaluation).}]
+import harness as H
+r = H.score(fq, det, fhr_dev, n, 5000)   # 5000 samples = 20 s
+print(r["f1"], r["se"], r["ppv"], r["fhr_mae"], r["tp"], r["fp"], r["fn"])
+\end{lstlisting}
+
+\subsection{The package \texttt{src/fecg/}}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Module} & \textbf{Content} \\
+\midrule
+\file{core/data_loader.py} & \file{load_record()}, \file{load_annotations()}, \file{validate_record()} (rate, length, finite values), \file{load_test_case()} \\
+\file{core/mixture.py} & \file{build_mixture()}, \file{check_mixture_snr()} \\
+\file{core/evaluation.py} & mid-term beat matching and metrics \\
+\file{core/preprocessing.py} & mid-term filters (0.5--40\,Hz band-pass, notch) \\
+\file{methods/base.py} & \file{BaseExtractor}: the interface every mid-term method follows (\file{extract()} returns the estimate and metadata; forbids the clean fetal input) \\
+\file{methods/svd.py} & \file{SVDExtractorV1}, \file{V2}, \file{V3} and the helpers \file{_detect_rpeaks}, \file{_build_matrix_fixed_period}, \file{_svd_subtract}, \file{_svr_dominant_period}, \file{_moving_window_svd_subtract} \\
+\file{methods/template_subtraction.py}, \file{alternative.py}, \file{swt_lms_ssnf.py} & the other members' single-lead methods \\
+\file{detection/}, \file{pipelines/}, \file{hardware/}, \file{host/}, \file{telemetry/} & QRS detector and FHR; causal pipeline and multichannel study; bit-accurate and integer models (v2 era); the v2 host beamformer; the UART protocol \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[language=Python, caption={Running SVD Variant 1 on one lead (how the mid-term benchmark calls it).}]
+from fecg.methods.svd import SVDExtractorV1
+fecg_est, meta = SVDExtractorV1(fs=250).extract(lead27)
+print(meta["parameter_notes"])   # "Modal period n=174 samples, ..."
+\end{lstlisting}
+
+The mid-term runners: \file{src/run_benchmark.py --tc TC1 --method svd_v1} (one test case) and \file{src/run_mega_benchmark.py} (250 records). The original mid-term copy of the methods is in \file{code/src/methods/}; it differs from \file{src/fecg/methods/svd.py} only in one import line.
+
+\subsection{Tests}
+
+\begin{lstlisting}[caption={Commands (PowerShell, repository root).}]
+venv\Scripts\python.exe -m pytest -q tests                       # all: 270 passed, 3 skipped
+venv\Scripts\python.exe -m pytest -q tests\system                # only the final-design tests
+venv\Scripts\python.exe -m pytest -q tests\unit\test_v7_offline_and_scoring.py
+$env:PATH = 'C:\Program Files\Git\bin;' + $env:PATH            # RTL tests need Git Bash
+$env:RUN_RTL = '1'
+venv\Scripts\python.exe -m pytest -q tests\hardware\test_v6_rtl_regression.py   # 3 passed
+Remove-Item Env:RUN_RTL
+\end{lstlisting}
+
+Output of a full run (18 Nov):
+\begin{lstlisting}
+..........................................sss........................... [ 26%]
+........................................................................ [ 52%]
+........................................................................ [ 79%]
+.........................................................                [100%]
+270 passed, 3 skipped in 124.38s (0:02:04)
+\end{lstlisting}
+Each dot is a passed test, each \texttt{s} a skipped one (the three RTL tests).
+
+\subsection{Web demo and the board script}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Function / part} & \textbf{What it does} \\
+\midrule
+\file{to_counts(sig, units)} & physical units $\to$ counts (3 per $\mu$V) \\
+\file{to_250(sig, fs)} & causal decimation if the rate is a multiple of 250, else \file{resample_poly} with a warning \\
+\file{load_wfdb(files)}, \file{load_csv(...)} & read the upload, pick 4 abdominal leads, find annotations \\
+\file{Board.probe()} & RESET + one empty SAMPLES frame, DONE within 1\,s; sets the status \texttt{connected / no\_answer / no\_port / busy} \\
+\file{Session._run()} & the real-time loop, brain process and thread, FLUSH for v7, scoring, saving \\
+\file{Events} & the event log sent to the page by SSE; a new run clears it \\
+HTTP routes & GET \texttt{/}, \texttt{/api/status}, \texttt{/api/events}, \texttt{/api/download/beats.csv}; POST \texttt{/api/upload}, \texttt{/api/start}, \texttt{/api/stop}, \texttt{/api/port} \\
+from \file{uart_host/run_v6_board_eval.py} & \file{frame()}, \file{read_frame()} (checks xor8), \file{CHUNK=64}, \file{MODEL}, \file{VARIANT} (from \texttt{V6\_VARIANT}) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[caption={Start the demo in v7 mode and check it.}]
+Set-Location D:\signal_project
+$env:V6_VARIANT = 'v7'
+venv\Scripts\python.exe fpga_implementation\webdemo\server.py      # --port COM6, --http 8051
+#  Board: v7-DL RTL answering on COM5
+#  Open http://localhost:8050
+(Invoke-RestMethod http://localhost:8050/api/status).board | Format-List state, detail, variant
+\end{lstlisting}
+
+The batch board evaluation (Vivek's script) uses the same loaders and scoring:
+\begin{lstlisting}
+$env:V6_VARIANT = 'v7'
+venv\Scripts\python.exe fpga_implementation\uart_host\run_v6_board_eval.py --sets cdev --limit 3 --out "$env:TEMP\v7_eval"
+#  cdev  a01   F1  98.02  beats  102  uplink   444487 B  bit-exact True   12.6s for    60s
+venv\Scripts\python.exe fpga_implementation\uart_host\run_v6_model_eval.py --sets cdev --limit 3   # C model only, no board
+\end{lstlisting}
+
+\subsection{Report tools}
+
+\begin{lstlisting}
+venv\Scripts\python.exe report\final_report\tools\check_final_numbers.py   # ... ALL CHECKS PASSED
+Set-Location report\final_report; pdflatex fpr-8.tex; pdflatex fpr-8.tex; pdflatex fpr-8.tex
+Set-Location D:\signal_project
+venv\Scripts\python.exe report\final_report\tools\package_submission.py   # writes fpr-8.zip
+\end{lstlisting}
+
+\textbf{What \file{package_submission.py} puts in the zip} (folder \file{fpr-8/} inside): the report PDF and \file{AI_PROMPTS.pdf} at the top; every file tracked by git (minus old v1--v4 code, archives, duplicate results, literature PDFs and folders listed in \file{.git/info/exclude}); the compiled C models and brains for v6, v6.1 and v7; the RTL test inputs; and data: all 75 CinC records, all 5 ADFECGDB records and 6 FECGSYNDB records (TC1--TC5 plus \texttt{sub01\_snr00dB\_l5\_c1} for the RTL regression), with a \file{data/DATA.md} that gives the download links for the full sets. The full FECGSYNDB (about 34\,GB unpacked) is too large to include.
+
+\subsection{Logs to know}
+
+\file{report/night_20261109/LOG.md} (v5 night), \file{report/rtl_pc_split/LOG.md} (v6), \file{report/v61_v7/LOG.md} (v6.1, v7; Part 4 has the web demo and the tests), \file{tools/accuracy/README.md} (scoring fixes, bugs found, NIFEA and CinC first results).
+
+% =====================================================================
+\section{Numbers you must know}
+
+{\small
+\begin{longtable}{@{}p{7.2cm} p{8.3cm}@{}}
+\toprule
+\textbf{Item} & \textbf{Value} \\
+\midrule
+\endhead
+\multicolumn{2}{@{}l}{\textbf{Data}} \\
+FECGSYNDB & 10 subjects $\times$ 5 SNRs $\times$ 5 conditions $\times$ 5 repetitions = 1,250; \textbf{1,248 usable}; 34 channels; 250\,Hz; 5\,min (75,000 samples) \\
+FECGSYNDB leads & \textbf{[27, 26, 28, 25]} 0-based (= 28, 27, 29, 26 1-based); FMR ranks 4, 3, 8, 10 \\
+FECGSYNDB dev subset & every 21st record = \textbf{60} \\
+Mid-term split & sub01--07 train (175), sub08 val (25), sub09--10 test (50) of 250 (\texttt{l1} only) \\
+CinC 2013 set-a & \textbf{75} records, 60\,s, 4 leads, 1\,kHz $\to$ 250\,Hz; odd = dev \textbf{38}, even = test \textbf{37} \\
+Unreliable CinC references & \textbf{a33, a38, a47, a52, a54, a71, a74} (3 dev, 4 test); reliable: 35 dev, 33 test, 68 all \\
+ADFECGDB & \textbf{5} records (r01, r04, r07, r08, r10), 5\,min, 1\,kHz, scalp reference; dev set from v4 \\
+NIFEA & 26 records, 24 unique, no fetal labels; surrogate only \\
+Device scale & 3,000 counts per mV (3 per $\mu$V), int16 \\
+Board test set & 140 records = 60 + 38 + 37 + 5 \\
+\multicolumn{2}{@{}l}{\textbf{Scoring}} \\
+Tolerance & $\pm 50$\,ms = \textbf{13 samples} at 250\,Hz (mid-term code: 12) \\
+Scoring start & \textbf{20 s} (sample 5,000); first beat at about 19.5\,s \\
+FHR MAE & device FHR 0.5\,s after each true beat vs true median-of-5 FHR; no output = full error \\
+CI & bootstrap, 10,000 resamples (FECGSYNDB: over the 10 subjects) \\
+\multicolumn{2}{@{}l}{\textbf{Mid-term (your SVD)}} \\
+SVD V1 TC1 / TC3 & \textbf{76.36\% / 23.72\%}; mean TC1--TC5 38.96\% \\
+SVD V1 / V3 on 250 records & \textbf{55.55\%} [47.21, 63.89] / \textbf{46.69\%} [40.80, 52.59] \\
+Spatial PCA (4 leads) & 100\% on TC1--TC3; 93.00\% on 250 records (batch) \\
+Beat matrix & 174 samples per row (0.25\,s before, 0.45\,s after R); rank 2 removed \\
+\multicolumn{2}{@{}l}{\textbf{Test suite}} \\
+Latest run & \textbf{270 passed, 3 skipped} (273 collected), about 2\,min \\
+Per folder & unit 127, integration 50, hardware 45, regression 26, system 25 \\
+Delay test bound & 4,452 samples = 17.5\,s + offset + one frame \\
+ADFECGDB guards & v6 = 92.73; v6.1 $\ge$ 92.5; v7-DL $\ge$ 95.5; v7-LA $\ge$ 95.0 \\
+Report number checker & 84 checks, ALL CHECKS PASSED \\
+\multicolumn{2}{@{}l}{\textbf{Web demo}} \\
+Address, port & \texttt{http://localhost:8050}, \texttt{COM5}, 921,600 baud \\
+Frame & 64 samples = 0.256\,s; one frame sent every 0.256\,s (real time) \\
+Board check & RESET + empty frame, DONE within 1\,s; stop if silent 5\,s in a run \\
+a01, v6 & F1 95.05\%, 101 beats, FHR MAE 3.51\,bpm (= batch board run) \\
+a01, v7-DL & \textbf{102 final beats, F1 98.0\%} (= C model); display 1 shows \texttt{0102} \\
+a03, v7-DL & first final beat 14.4\,s after its beat time \\
+\multicolumn{2}{@{}l}{\textbf{Final results (v7-DL, board)}} \\
+CinC test & \textbf{76.91\%} [68.3, 84.7]; reliable 81.95\%; median 87.3\%; 18 records $\ge 90\%$ \\
+CinC dev / ADFECGDB & 84.68\% / 96.10\% \\
+FECGSYNDB subset / all & 93.39\% / 93.69\% (all: C model = board) \\
+FHR MAE & CinC test 11.53, dev 6.45, ADFECGDB 2.13, FECGSYNDB all 3.98\,bpm \\
+v7-DL vs live v6.1 & CinC test 33 records better, 1 worse (by more than 1 point) \\
+Delay & live 1.5--2\,s; final median 13.5\,s, max 17.5\,s \\
+Bit-exact & 140/140 records, v6, v6.1, v7-DL (v7: 207,603,379 uplink bytes) \\
+Speed & board 4.04--4.54$\times$ real time per data set (mean of per-record ratios 4.35$\times$); RTL alone about 135$\times$ \\
+\bottomrule
+\end{longtable}}
+
+% =====================================================================
+\section{How to present your part}
+
+\subsection{Speaking script (2--3 minutes)}
+
+\begin{simple}[Script]
+\textbf{1. What I did (15 s).} ``My part is data, test set-up and integration: the data sets, the scoring, the test suite and the live demo.''
+
+\textbf{2. Data (40 s).} ``We used three annotated databases. FECGSYNDB is synthetic: 1,248 usable five-minute records with perfect labels, under five noise levels and five clinical conditions. CinC 2013 has 75 real one-minute records; it is our main real benchmark. ADFECGDB has five real records with a scalp-electrode reference, the most reliable labels. A fourth, NIFEA, has no fetal labels, which is why we moved to CinC. I bring every recording into one form: four leads, 250 Hz, int16 at 3 counts per microvolt, with causal decimation from 1 kHz.''
+
+\textbf{3. Fair scoring (30 s).} ``A beat counts if it is within 50 ms of a reference beat. We score from 20 seconds, because the design calibrates first. CinC is split by record number: odd for development, even held out. Seven CinC references are flagged as inaccurate by the challenge organisers; we always report with and without all seven.''
+
+\textbf{4. Mid-term (30 s).} ``At the mid-term I built the mixture builder and the five test cases, and the SVD methods. SVD on one lead reached 76\% at 12 dB but 24\% at 0 dB. One lead cannot separate mother, baby and noise. This is why the team went multi-lead.''
+
+\textbf{5. Tests (25 s).} ``270 tests pass. The key ones check that the C model still gives the exact bytes of the board, that cutting a recording short never changes earlier output, so the design is causal, and that the v7 delay stays below 17.5 seconds.''
+
+\textbf{6. Demo (20 s).} ``Now the live demo: I upload CinC a01 and stream it to the board in real time. Every number you see comes from the FPGA.''
+\end{simple}
+
+\subsection{Which figures or slides to show}
+
+\begin{enumerate}
+  \item The data-set table (Section 4.5, or the report's data-use ledger).
+  \item \file{fecgsyn_components.png}: mother + baby + noise = mixture (the mixture builder in one picture).
+  \item The scoring sketch (TP/FP/FN with the $\pm 50$\,ms window) from Section \ref{sec:scoring}.
+  \item \file{TC1_svd_v1.png} and \file{TC3_svd_v1.png} side by side (12\,dB works, 0\,dB fails), or the SVD figure in these notes.
+  \item \file{fin_synthetic_vs_real.png}: why real data matters (U-Net 90.0\% synthetic $\to$ 17.7\% real).
+  \item One slide ``Tests'': the bar chart of tests per folder and the three key system tests.
+  \item The live page itself.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{fin_synthetic_vs_real.png}
+\caption{Report figure: synthetic accuracy does not carry over to real recordings. The U-Net and the v2 beamformer both score at least 90\% on the same 179 synthetic records but 17.7\% and 37.0\% on real ADFECGDB; the final algorithm keeps about 92\% on both. This is the strongest argument for the real data sets you prepared.}
+\end{figure}
+
+\subsection{Running the live demo}
+
+\textbf{15 minutes before} (full steps in the team command sheet, \file{team/README.md}):
+\begin{enumerate}
+  \item Board powered, USB in. Check that Windows shows \texttt{USB Serial Port (COM5)}.
+  \item Stop every old web server and batch script (they hold COM5).
+  \item Program the board with v7 (after \emph{every} power-off): \file{program_v7.tcl} in Vivado batch mode. Success: \texttt{PROGRAMMED .../build/v7/v7.bit}; displays show \texttt{----} and \texttt{0000}.
+  \item \texttt{\$env:V6\_VARIANT = 'v7'}, start \file{server.py}, open \texttt{http://localhost:8050}, press Ctrl+F5.
+  \item Header: ``Design: v7-DL'', green ``FPGA connected''.
+  \item Do one full dry run with a01 (about 65\,s).
+\end{enumerate}
+
+\textbf{During the demo} with a01 (\file{set-a/a01.hea}, \file{a01.dat}, \file{a01.fqrs}; Load; Start):
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Time} & \textbf{What to point at} \\
+\midrule
+0--10\,s & ``The board is learning the mother: it stores 10\,s for the maternal PCA.'' The 4 leads scroll. \\
+$\sim$10\,s & Log ``FPGA asked the PC brain: maternal PCA''. Maternal heart rate appears. Board displays clear. \\
+$\sim$15\,s & ``GEVD calibration'': the 16 candidate filters are computed. LED5 lights. \\
+$\sim$20\,s & ``Monitoring: live beats''. The live estimate appears; track selection every 2.5\,s. \\
+$\sim$34\,s & First \textbf{final} beats, about 14--15\,s after the beat. Big number = final FHR. Delay card about 13--15\,s. Display 1 starts counting. \\
+60\,s & FLUSH: the FPGA finishes the last part. ``Finished: 102 final fetal beats''. F1 about 98.0\%. Display 1 = \texttt{0102}. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Good records: \textbf{a01} (clean, live 95.0 $\to$ final 98.0), \textbf{a03} (look-ahead fixes live mistakes: 88.6 $\to$ 96.5), \textbf{a73} (honest hard case: 22.4 $\to$ 43.5, reliable reference, still fails).
+
+\begin{warn}[If the demo fails]
+\begin{itemize}
+  \item \textbf{``FPGA not answering'' (yellow)}: the board lost its bitstream (power-off or BTN0). Program v7 again, click Reconnect.
+  \item \textbf{``COM5 not found''}: cable or power; check the COM number, use the port list on the page or \texttt{--port COMx}.
+  \item \textbf{``Access is denied'' on COM5}: another server or script holds the port. Stop all of them, start one server.
+  \item \textbf{No final beats, wrong-looking results}: \texttt{V6\_VARIANT} does not match the bitstream. Restart the server with \texttt{v7}.
+  \item \textbf{Running F1 low during the run}: normal for v7 (the last 15\,s are not final yet). Read the number after FLUSH.
+  \item \textbf{Nothing works}: show the saved run of a01 (\file{webdemo/runs/}) and the batch board log line \texttt{cdev a01 F1 98.02 beats 102 bit-exact True}. Say calmly: ``The page refuses to run without the board, by design, so I show the saved board run.'' Never pretend a C-model run is the board.
+\end{itemize}
+\end{warn}
+
+% =====================================================================
+\section{Viva questions}
+
+\subsection{About your part}
+
+\begin{viva}
+\q{Which data sets did you use and why these?}
+\ans{FECGSYNDB (synthetic, 1,248 usable records, perfect labels, controlled noise and conditions), CinC 2013 set-a (75 real one-minute records, many mothers, our main real benchmark), ADFECGDB (5 real records with a scalp-electrode reference, the most trustworthy labels). Synthetic data alone misled us at the mid-term (93\% synthetic, 16.7\% real), so every design from v3 on was judged on real recordings.}
+\end{viva}
+
+\begin{viva}
+\q{Why 1,248 and not 1,250 FECGSYNDB records?}
+\ans{The loader uses a record only if all four signal files (fetal, maternal, two noise) exist and all values are finite. In our downloaded copy two records of sub09 at 0\,dB, repetition l5 (conditions c0 and c1) have missing signal files; the database's checksum list includes them, so the files were lost in our download. The loader skips these two.}
+\end{viva}
+
+\begin{viva}
+\q{Why leads 27, 26, 28, 25?}
+\ans{They were chosen at the mid-term from an anatomical ranking (lower abdominal midline over a head-down fetus), on the training subjects only. Later we measured the fetal-to-maternal ratio: they rank 4th, 3rd, 8th and 10th, so they are good but not the top four (19 and 18 are best). We kept them fixed so that all synthetic results stay comparable.}
+\end{viva}
+
+\begin{viva}
+\q{How do you convert units, and why 3,000 counts per mV?}
+\ans{Physical value times 3 for $\mu$V, times 3,000 for mV, then round and clip to int16. FECGSYNDB is stored at 3,000 counts per unit, so we use the same scale for real data. A 5\,mV maternal peak is 15,000 counts (fits int16) and a 20\,$\mu$V fetal peak is still 60 counts.}
+\end{viva}
+
+\begin{viva}
+\q{How do you go from 1 kHz to 250 Hz, and is that causal?}
+\ans{\texttt{scipy.signal.decimate} by 4 with an IIR (8th-order Chebyshev) low-pass run forward only (\texttt{zero\_phase=False}), then every 4th sample. Forward-only means causal, like an ADC front end. Annotations are divided by 4 and rounded. The filter delays the QRS band by about 10\,ms (our calculation), well inside the $\pm 50$\,ms tolerance and the same for all versions.}
+\end{viva}
+
+\begin{viva}
+\q{Why is the low-pass filter needed before keeping every 4th sample?}
+\ans{To prevent aliasing: anything above 125\,Hz (half the new rate) would fold back into the 0--125\,Hz band and look like a real signal. ECG content is below about 40\,Hz, so nothing useful is lost.}
+\end{viva}
+
+\begin{viva}
+\q{Why $\pm 50$ ms, and how many samples is that?}
+\ans{$\pm 50$\,ms is the standard of the PhysioNet/CinC 2013 challenge, so our numbers are comparable to the literature. At 250\,Hz it is 12.5 samples; our harness uses 13.}
+\end{viva}
+
+\begin{viva}
+\q{Isn't starting the scoring at 20 s cheating?}
+\ans{No. The design needs 10\,s to learn the mother and calibrates its spatial filters at 15\,s; the first beat comes at about 19.5\,s. The rule is the same for every version and is written in the report. A device would show ``warming up'' for those 20 seconds, and the web page shows this openly.}
+\end{viva}
+
+\begin{viva}
+\q{How exactly do you match beats?}
+\ans{Greedy one-to-one matching in time order: for each reference beat, take the closest unused detection within 13 samples. A detection can be used only once. Matched = TP, unmatched detections = FP, unmatched references = FN.}
+\end{viva}
+
+\begin{viva}
+\q{Why F1 and not just sensitivity?}
+\ans{Sensitivity alone rewards outputting many beats: 200 guesses can find all 100 true beats. F1 combines Se and PPV and is high only when we find the beats \emph{and} do not invent beats.}
+\end{viva}
+
+\begin{viva}
+\q{How is FHR MAE computed, and why is ``no output = full error'' fair?}
+\ans{At each true beat we read the device's FHR 0.5\,s later and compare it with the true FHR, 60$\cdot$250 over the median of the last five true RR intervals. If the device shows nothing, its value is 0. A monitor that goes blank has failed the clinician, so a gap must count as an error, otherwise a design could look good by staying silent.}
+\end{viva}
+
+\begin{viva}
+\q{Why odd/even for dev/test?}
+\ans{A simple, pre-defined rule with no human choice of records, which anyone can check. Odd records were used for all design decisions; even records only to score each frozen design once.}
+\end{viva}
+
+\begin{viva}
+\q{Did anybody tune on the test set?}
+\ans{No decision used CinC test. But to be honest: it has been scored for nine designs, so knowing earlier results could indirectly steer the work. It is not a fresh test set any more; a clean claim would need new data.}
+\end{viva}
+
+\begin{viva}
+\q{What are the 7 unreliable records and who says so?}
+\ans{a33, a38, a47, a52, a54, a71, a74. The challenge organisers found by visual inspection that their annotations are inaccurate and left them out of their own benchmark (Behar, Oster and Clifford, 2014). Example: a54's annotations give a flat 100\,bpm after 27\,s. We always exclude all seven, never only the ones we fail on; two of them (a33, a47) actually score well.}
+\end{viva}
+
+\begin{viva}
+\q{Why is ADFECGDB not an independent test?}
+\ans{It was used as a development set from v4 on: v6.1 ideas and the v7 window were chosen partly on it. So 96.1\% shows that the design works on these 5 records with very reliable labels, but it is not an unbiased estimate.}
+\end{viva}
+
+\begin{viva}
+\q{What did NIFEA show and why did you stop using it?}
+\ans{It has no fetal annotations, so only surrogate measures: v2 coincided with maternal beats 24\% of the time against 33\% for the old design (chance about 15\%), but only about a third of its FHR values were in 110--160\,bpm. Surrogates cannot measure accuracy, so we added the annotated CinC 2013 and ADFECGDB.}
+\end{viva}
+
+\begin{viva}
+\q{What does the mixture builder do and why was one shared builder important?}
+\ans{It adds the four FECGSYNDB parts (mother, baby, two noise signals) into the belly signal and checks lengths and SNR. With one shared builder every member's method ran on exactly the same input, and the clean fetal part was kept only for scoring.}
+\end{viva}
+
+\begin{viva}
+\q{What are TC1 to TC5?}
+\ans{Five fixed FECGSYNDB records of subject 1: baseline at 12, 6 and 0\,dB (TC1--TC3), fetal movement at 6\,dB (TC4) and ectopic beats at 6\,dB (TC5). TC1--TC3 change only the noise, TC4--TC5 the physiology. All mid-term methods were compared on them.}
+\end{viva}
+
+\begin{viva}
+\q{Explain SVD extraction in one minute.}
+\ans{Find the maternal R peaks in one lead, cut one maternal beat per row (174 samples), and take the SVD. The first layers are the shape all rows share, the maternal beat. Rebuild them, subtract from the lead, and what is left is the fetus plus noise; then band-pass and detect peaks. It is like removing the tune the whole choir sings to hear the soloist.}
+\end{viva}
+
+\begin{viva}
+\q{What were the three variants and which was best?}
+\ans{V1 fixed period (one SVD of all beats), V2 period from the singular value ratio spectrum with resampling, V3 moving window of 5 beats. V1 was best: 76.4\% on TC1 and 55.6\% on 250 records; V3 46.7\%. V2 was never better than V1 on the test cases.}
+\end{viva}
+
+\begin{viva}
+\q{Why does SVD give exactly the same result as template subtraction on TC1?}
+\ans{When the rows are aligned beats, the strongest SVD layer is essentially the scaled average beat, which is what a template is. Both subtract the same maternal shape, leave the same residual and feed the same detector, so the beat counts match (546 TP, 168 FP, 170 FN).}
+\end{viva}
+
+\begin{viva}
+\q{Why does single-lead SVD fail at 0 dB?}
+\ans{One lead has no spatial information; noise is not periodic so SVD cannot remove it; and when a fetal beat overlaps the maternal QRS (about 17.5\% of beats) the maternal layer removes part of it. The 4-lead spatial PCA scored 100\% on the same cases, which is why we chose a multi-lead design.}
+\end{viva}
+
+\begin{viva}
+\q{Is it Hankel or not? Your report says ``Hankel-SVD''.}
+\ans{The textbook Hankel matrix puts a shifted window in each column. Our code stacks one maternal cycle per row, 174 samples, which is the period form used by Kanjilal et al. Both rely on the same fact: a repeating pattern gives a dominant SVD component. The report's $m = 174$ is that row length.}
+\end{viva}
+
+\begin{viva}
+\q{What does the causality test prove?}
+\ans{We run a recording in full and cut short at about 30\,s. The output of the short run must equal the start of the long run byte for byte. If the design used any future sample, the missing future would change the earlier output. For v7 the same is checked for everything before FLUSH.}
+\end{viva}
+
+\begin{viva}
+\q{What does ``the model matches the board'' test do?}
+\ans{The board run saved the MD5 fingerprint of the complete output stream of each record. The test runs the current C model on the same input and compares MD5s. If anyone changes the model, the test fails, so ``model = board'' is guaranteed for all later model-only results, such as all 1,248 FECGSYNDB records.}
+\end{viva}
+
+\begin{viva}
+\q{Why are 3 tests skipped? Isn't that hiding something?}
+\ans{They are the RTL simulations in Vivado xsim, one per design. They need Vivado and take minutes each, so they run only with \texttt{RUN\_RTL=1}; they pass with 0 byte errors. Skipping them by default keeps the normal suite at about two minutes.}
+\end{viva}
+
+\begin{viva}
+\q{How do you check the delay bound of v7?}
+\ans{For each final beat the test computes how far the board had read when the beat was sent, minus the beat time. It must be at most 4,452 samples: the 15-s deadline plus one 2.5-s decision step (17.5\,s) plus a 13-sample offset and one 64-sample frame. Checked on CinC a01 and ADFECGDB r04.}
+\end{viva}
+
+\begin{viva}
+\q{How do you know the web page shows hardware results and not a simulation?}
+\ans{The page refuses to run if the board does not answer the probe (reset plus one empty frame, DONE within 1\,s); there is no software fallback. And the results match: a01 with v6 gave exactly the batch board result (95.05\%, 101 beats), and with v7 the 102 final beats equal the C model's beats, which is bit-exact with the board.}
+\end{viva}
+
+\begin{viva}
+\q{Why does the running F1 on the page drop during a v7 run?}
+\ans{The final beats come about 13.5\,s late, so during the run the last $\sim$15\,s of reference beats have no final beats yet and count as missed. After FLUSH the board finishes the last part and the F1 is correct (a01: 98.0\%).}
+\end{viva}
+
+\begin{viva}
+\q{What is FLUSH?}
+\ans{A frame (\texttt{0x03}) the PC sends at the end of a recording. It tells the look-ahead unit that no more future will come, so it finishes the remaining segments with the data it has and sends END7 with the number of final beats.}
+\end{viva}
+
+\begin{viva}
+\q{What happens if you start the server with the wrong V6\_VARIANT?}
+\ans{The PC brain does not match the bitstream. With v7 on a v6 board the page gets no final beats; with v6 on a v7 board the brain answers wrongly and results are not bit-exact. The page label shows only what the server was started with, so we check the Vivado message or the board displays.}
+\end{viva}
+
+\begin{viva}
+\q{What does the report number checker do?}
+\ans{It recomputes the key numbers from the saved per-record files (board CSVs, CI tables, accuracy files, Vivado reports) and checks that exactly that text appears in the report. 84 checks, all passed. It stops typos and stale numbers.}
+\end{viva}
+
+\begin{viva}
+\q{Can an examiner rerun your results from the zip?}
+\ans{Yes for the real data: all 75 CinC and 5 ADFECGDB records, the compiled C models and the scripts are in the zip; the C model gives the same bytes as the board. FECGSYNDB is too large (about 34\,GB), so only TC1--TC5 and one RTL regression record are included, with download instructions; all per-record results are in the zip.}
+\end{viva}
+
+\begin{viva}
+\q{Did you use AI tools for your part?}
+\ans{Yes, as programming aids, as the report discloses (Antigravity from 31 Oct to 6 Nov, Claude Code from 7 Nov; all prompts are in \file{AI_PROMPTS.pdf}). We set the rules and checked everything: the test suite, the number checker against saved files, and the board-versus-model byte comparison.}
+\end{viva}
+
+\subsection{General project questions}
+
+\begin{viva}
+\q{Why not just filter out the mother?}
+\ans{Mother and baby share the 0.5--40\,Hz band. A filter that removes the mother removes the baby too. We need their different timing and their different spatial patterns on the 4 leads.}
+\end{viva}
+
+\begin{viva}
+\q{Why did the mid-term results not hold?}
+\ans{They were batch and synthetic. Causally the same design gave 82.2\% on all 1,248 synthetic records and 16.7\% on real held-out CinC. Even the best possible single 4-lead filter reaches only 60\% on CinC.}
+\end{viva}
+
+\begin{viva}
+\q{What does the final algorithm do, in short?}
+\ans{Remove the mother beat by beat on each lead; build 16 candidate fetal tracks from self-calibrated GEVD filters; follow each with an RR-predictive beat tracker; choose the best track without labels every 2.5\,s; and in v7-DL, wait about 13.5\,s and use the future context to pick and clean the final beats.}
+\end{viva}
+
+\begin{viva}
+\q{What does the PC do?}
+\ans{Five slow decisions: maternal PCA, maternal train choice, template basis, GEVD calibration (and recalibration every 30\,s), track selection. It never receives the raw recording, and the FPGA waits for each answer, so timing does not change the result.}
+\end{viva}
+
+\begin{viva}
+\q{What is bit-exact and how was it checked?}
+\ans{Every output byte of the board equals the byte of our integer C model for the same input. The complete output streams were compared for all 140 records (v7: 207,603,379 bytes), and every byte in RTL simulation.}
+\end{viva}
+
+\begin{viva}
+\q{Is it real time?}
+\ans{Yes. The board runs 4.04--4.54$\times$ faster than real time per data set (mean of per-record ratios 4.35$\times$) including the serial link and the PC; the RTL alone needs a median of 1,485 cycles per sample (about 135$\times$ real time). v7-DL adds a fixed delay, not a slowdown.}
+\end{viva}
+
+\begin{viva}
+\q{Why is v7-DL not cheating by looking into the future?}
+\ans{It only uses the future by waiting for it: final beats come about 13.5\,s later (at most 17.5\,s). A test checks that cutting a recording short never changes output produced before FLUSH.}
+\end{viva}
+
+\begin{viva}
+\q{How sure are you of 76.9\%?}
+\ans{The 95\% bootstrap interval is [68.3, 84.7], about $\pm 8$ points, because CinC test has only 37 records. The comparison with v6.1 on the same records is much stronger: 33 records better and 1 worse by more than one point.}
+\end{viva}
+
+\begin{viva}
+\q{Where does it still fail?}
+\ans{Of the 15 CinC records below 70\%, 5 have flagged references. On CinC dev the final output (84.7\%) is close to the best single candidate track (85.0\%), so choosing is no longer the main loss: in the failing records no candidate track contains the fetal beats well. The next gain must come from better candidates. On synthetic data, ectopic beats (c4, 84\%) remain the weakest case.}
+\end{viva}
+
+\begin{viva}
+\q{Is it clinical grade?}
+\ans{No, not yet. 76.9\% on held-out CinC (82.0\% on reliable references) is far better than 16.7\%, but not good enough for clinical use. The test sets are small, the PC is still in the loop, and we streamed recordings from files without our own analogue front end.}
+\end{viva}
+
+% =====================================================================
+\section{Glossary}
+
+{\small
+\begin{longtable}{@{}p{3.6cm} p{11.9cm}@{}}
+\toprule
+\textbf{Term} & \textbf{Meaning} \\
+\midrule
+\endhead
+ADC & analogue-to-digital converter: turns a voltage into numbers at a fixed rate \\
+ADFECGDB & Abdominal and Direct Fetal ECG Database: 5 real records with a scalp-electrode reference \\
+Aliasing & fast content folding into slow frequencies after down-sampling without a low-pass filter \\
+Annotation & reference beat time (sample number) in a file; used only for scoring \\
+Batch & processing that sees the whole recording at once (not causal) \\
+Baud & symbols per second on a serial link; 921,600 baud $\approx$ 92 KB/s with 8-N-1 \\
+Bit-exact & every output byte of the board equals that of the C model \\
+Bootstrap CI & spread of the mean when records are resampled with replacement many times \\
+Causal & uses only past and present samples \\
+CinC 2013 & PhysioNet/Computing in Cardiology Challenge 2013, set-a: 75 real 60-s records \\
+Count & one step of the integer scale; ours is 3 counts per $\mu$V \\
+Decimation & low-pass filter, then keep every $q$-th sample \\
+Dev / test set & records for decisions / records only for final scoring \\
+EDF & European Data Format, used by ADFECGDB \\
+F1 & $2\,\text{Se}\cdot\text{PPV}/(\text{Se}+\text{PPV})$, main score \\
+FECGSYNDB & Fetal ECG Synthetic Database (PhysioNet), 34 channels, 250\,Hz \\
+FHR, MAE & fetal heart rate (bpm); mean absolute error \\
+FLUSH, OUT7, END7 & v7 frames: finish the recording; one final beat; end with the count \\
+FMR & fetal-to-maternal RMS ratio of a lead \\
+Frame & one message on the link: \texttt{A5 5A cmd len payload xor8} \\
+GEVD & generalised eigenvalue decomposition: filters that maximise fetal-beat power over total power \\
+Hankel matrix & matrix whose columns are shifted windows of one signal (constant anti-diagonals) \\
+int16 & 16-bit signed integer, $-32{,}768$ to $32{,}767$ \\
+Label-free & the algorithm never uses annotations \\
+Lead & one electrode channel \\
+MD5 & 32-character fingerprint of a byte stream \\
+Mixture builder & adds mother, baby and noise into the belly signal (\file{build_mixture}) \\
+NIFEA & Non-Invasive Fetal ECG Arrhythmia database: real records, no fetal labels \\
+PC brain & the PC program answering the FPGA's five slow questions \\
+PPV & positive predictive value, TP/(TP+FP) \\
+pytest & Python test runner; pass / fail / skip \\
+QRS, R peak, RR & sharp part of a beat; its top; time between two R peaks \\
+Rank & number of independent rows/directions of a matrix \\
+Regression test & test that protects an earlier correct result from changing \\
+Se & sensitivity, TP/(TP+FN) \\
+Serial port, COM5 & byte-by-byte link; the board's USB cable on Windows \\
+SNR & signal-to-noise ratio in dB; 0\,dB = equal power \\
+SSE & Server-Sent Events: server pushes live updates to the page \\
+SVD & singular value decomposition: matrix = sum of layers sorted by strength \\
+SVR & singular value ratio $\sigma_1^2/\sigma_2^2$, used by SVD Variant 2 to find the period \\
+TC1--TC5 & the five fixed mid-term test cases (sub01) \\
+TP, FP, FN & correct beat, invented beat, missed beat \\
+Unreliable references & a33, a38, a47, a52, a54, a71, a74, flagged by the challenge organisers \\
+\texttt{V6\_VARIANT} & environment variable choosing v6 / v61 / v7 PC programs; must match the bitstream \\
+WFDB & PhysioNet format: \file{.hea} header, \file{.dat} samples, annotation files \\
+\bottomrule
+\end{longtable}}
+
+\end{document}

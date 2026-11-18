@@ -1,0 +1,121 @@
+% teamstyle.sty -- shared look for the Team 8 study PDFs (team/latex/*.tex)
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{teamstyle}[2026/11/18 Team 8 study notes]
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{lmodern}
+\RequirePackage[a4paper,margin=2.2cm,headheight=14pt]{geometry}
+\RequirePackage{microtype}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{graphicx}
+\RequirePackage{float}
+\RequirePackage{booktabs,tabularx,longtable,array,multirow}
+\RequirePackage[table]{xcolor}
+\RequirePackage{enumitem}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,backgrounds}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{listings}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{caption}
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage{bookmark}
+
+% Figures: the final report's figures, plus figures made only for these notes.
+\graphicspath{{../../report/final_report/figures/}{figs/}}
+
+% Colours
+\definecolor{tmblue}{HTML}{1F4E79}
+\definecolor{tmlight}{HTML}{E8F0F8}
+\definecolor{tmgreen}{HTML}{2E7D32}
+\definecolor{tmgreenl}{HTML}{E8F5E9}
+\definecolor{tmorange}{HTML}{B85C00}
+\definecolor{tmorangel}{HTML}{FFF3E0}
+\definecolor{tmred}{HTML}{B71C1C}
+\definecolor{tmredl}{HTML}{FDECEA}
+\definecolor{tmgrey}{HTML}{555555}
+\definecolor{tmgreyl}{HTML}{F4F4F4}
+\definecolor{tmpurple}{HTML}{5E35B1}
+\definecolor{tmpurplel}{HTML}{EDE7F6}
+
+\hypersetup{colorlinks=true,linkcolor=tmblue,urlcolor=tmblue,citecolor=tmblue}
+
+% Headings
+\titleformat{\section}{\Large\bfseries\color{tmblue}}{\thesection}{0.8em}{}[\vspace{-0.4em}\textcolor{tmblue}{\rule{\linewidth}{0.8pt}}]
+\titleformat{\subsection}{\large\bfseries\color{tmblue}}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{tmgrey}}{\thesubsubsection}{0.6em}{}
+\setcounter{tocdepth}{2}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlist{itemsep=0.15em,topsep=0.3em}
+\renewcommand{\arraystretch}{1.18}
+
+% Header / footer
+\pagestyle{fancy}
+\fancyhf{}
+\newcommand{\docshort}{Team 8 study notes}
+\fancyhead[L]{\small\color{tmgrey}\docshort}
+\fancyhead[R]{\small\color{tmgrey}EE2000 Fetal ECG on an FPGA}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+% Code
+\lstset{basicstyle=\ttfamily\small,breaklines=true,frame=single,rulecolor=\color{tmgrey!50},
+  backgroundcolor=\color{tmgreyl},columns=fullflexible,keepspaces=true,showstringspaces=false,
+  commentstyle=\color{tmgreen},keywordstyle=\color{tmblue}\bfseries,xleftmargin=2pt,xrightmargin=2pt}
+
+% ---------------------------------------------------------------
+% Boxes. Usage: \begin{simple}[optional title] ... \end{simple}
+% simple   : plain-words explanation of a concept
+% keyfact  : a number or fact to remember for the viva
+% tried    : one attempt; use \what{}, \why{}, \result{}, \decision{} inside
+% lesson   : what we learned
+% warn     : a common mistake / honest caveat
+% viva     : a likely question with its answer; use \q{} and \ans{}
+% analogy  : an everyday comparison
+% ---------------------------------------------------------------
+\tcbset{tmbase/.style={enhanced,breakable,boxrule=0.6pt,arc=2pt,left=6pt,right=6pt,top=4pt,bottom=4pt,
+  fonttitle=\bfseries\small,before skip=0.7em,after skip=0.7em}}
+\newtcolorbox{simple}[1][In simple words]{tmbase,colback=tmlight,colframe=tmblue,title={#1}}
+\newtcolorbox{keyfact}[1][Remember]{tmbase,colback=tmgreenl,colframe=tmgreen,title={#1}}
+\newtcolorbox{tried}[1][What we tried]{tmbase,colback=tmorangel,colframe=tmorange,title={#1}}
+\newtcolorbox{lesson}[1][Lesson]{tmbase,colback=tmpurplel,colframe=tmpurple,title={#1}}
+\newtcolorbox{warn}[1][Careful]{tmbase,colback=tmredl,colframe=tmred,title={#1}}
+\newtcolorbox{viva}[1][Viva question]{tmbase,colback=white,colframe=tmblue!70,title={#1}}
+\newtcolorbox{analogy}[1][Everyday comparison]{tmbase,colback=tmgreyl,colframe=tmgrey,title={#1}}
+
+\newcommand{\what}[1]{\textbf{What:} #1\par}
+\newcommand{\why}[1]{\textbf{Why:} #1\par}
+\newcommand{\result}[1]{\textbf{Result:} #1\par}
+\newcommand{\decision}[1]{\textbf{Decision:} #1\par}
+\newcommand{\q}[1]{\textbf{Q: }#1\par}
+\newcommand{\ans}[1]{\textbf{A: }#1\par}
+
+% Small helpers
+\newcommand{\file}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\term}[1]{\textbf{\color{tmblue}#1}}
+\newcommand{\num}[1]{\textbf{#1}}
+
+% Title page. \maketeamtitle{Title}{Subtitle}{For whom}
+\newcommand{\maketeamtitle}[3]{%
+  \thispagestyle{empty}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[tmblue] (current page.north west) rectangle ([yshift=-7.5cm]current page.north east);
+  \end{tikzpicture}
+  \vspace*{0.6cm}
+  {\color{white}\small EE2000 Signal Processing Project \textbullet{} Team 8 \textbullet{} IIT Hyderabad\par}
+  \vspace{0.7cm}
+  {\color{white}\Huge\bfseries #1\par}
+  \vspace{0.4cm}
+  {\color{white}\Large #2\par}
+  \vspace{2.6cm}
+  {\large\color{tmgrey} #3\par}
+  \vspace{0.4cm}
+  {\color{tmgrey} Fetal ECG extraction on a Spartan-7 FPGA \textbullet{} final design v7-DL\par}
+  {\color{tmgrey} Private team study notes, November 2026\par}
+  \vspace{0.8cm}
+}
+
+\endinput

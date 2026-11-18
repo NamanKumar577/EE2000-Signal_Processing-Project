@@ -1,0 +1,1602 @@
+\documentclass[11pt]{article}
+\usepackage{teamstyle}
+\usetikzlibrary{decorations.pathreplacing}
+\renewcommand{\docshort}{Vivek: fixed point, UART, v5, board evaluation}
+
+\begin{document}
+
+\maketeamtitle{Your Part, From Zero}{Fixed point, the UART link and protocol, v5 on the MicroBlaze, and the board evaluation}{For Vivek}
+
+\begin{simple}[How to use these notes]
+These notes explain your part of the project from the very beginning. You need only school maths.
+Every new word is explained the first time it appears, and the glossary at the end repeats them.
+\begin{itemize}
+  \item Read Sections~\ref{sec:start} and~\ref{sec:project} first: your part in one page, then the whole project in a few pages.
+  \item Section~\ref{sec:ground} is the background (numbers in bits, fixed point, processors, serial links, bit-exactness).
+  \item Section~\ref{sec:story} tells your part in time order, with every attempt, its numbers and the decision.
+  \item Sections~\ref{sec:code}--\ref{sec:viva} are for the demo and the viva: code, numbers, a speaking script and 43 questions.
+\end{itemize}
+The common PDF \file{team/pdf/00_Project_Explained_From_Zero.pdf} tells the whole project in more detail. Where these notes and the final report (\file{report/final_report/fpr-8.tex}) disagree, the report wins; Section~\ref{sec:numbers} lists the few places where sources differ.
+\end{simple}
+
+\tableofcontents
+\clearpage
+
+% =====================================================================
+\section{Start here: your part in one page}
+\label{sec:start}
+
+The report's table ``Contribution of Each Member'' gives your part the title \term{Fixed-point design and first full FPGA version}. In plain words, you did five things:
+
+\begin{enumerate}
+  \item \textbf{Mid-term method.} You built one of the nine methods compared at the mid-term: a single-lead method that removes the mother's heartbeat with an \emph{SVD template} and then keeps the fetal frequency band. In the report it is called the \emph{Wavelet-Threshold Hybrid}.
+  \item \textbf{First fixed-point model and feasibility study.} You showed that the signal processing can be done with 16-bit whole numbers instead of decimal numbers, and you estimated how much of the FPGA chip it would need (the report quotes $+74.52$\,dB SQNR on 5,000 golden vectors, a 148-cycle schedule on one DSP block, about 990 LUTs).
+  \item \textbf{The serial link (UART) and the message protocol.} You brought up the serial link between the laptop and the Spartan-7 board and designed the message format that every later version uses: \texttt{A5 5A cmd len16 payload xor8} at 921,600 baud.
+  \item \textbf{v5 on the MicroBlaze.} You ported the whole algorithm to C on a processor built inside the FPGA, squeezed it into the chip's memory (254.6 of 256\,KB) and made it $3.5\times$ faster.
+  \item \textbf{The board evaluation script.} You wrote the script that streams every recording to the board, scores the result and checks that the board's output is \emph{bit-exact} with the C model, extended it for v7 (FLUSH, OUT7, END7), and ran v6.1 and v7-DL on all 140 board records.
+\end{enumerate}
+
+\begin{keyfact}[Your three headline results (from the report)]
+\begin{itemize}
+  \item UART at \num{921,600 baud}, 8-N-1, about 92\,KB/s in each direction.
+  \item v5 on the board: \num{$3.5\times$ faster} after optimisation (163k $\to$ 46.8k clock cycles per sample).
+  \item v5, v6.1 and v7-DL: \num{bit-exact on 140 of 140 records} on the board.
+\end{itemize}
+\end{keyfact}
+
+\subsection*{How your part connects to the others}
+
+\begin{center}
+\begin{tikzpicture}[node distance=6mm and 6mm, box/.style={draw=tmblue,fill=tmlight,rounded corners=2pt,align=center,font=\small,minimum height=10mm,text width=3.6cm},
+  me/.style={draw=tmorange,fill=tmorangel,very thick,rounded corners=2pt,align=center,font=\small,minimum height=10mm,text width=3.6cm}]
+\node[box] (n) {\textbf{Naman}\\data sets, scoring, tests, web demo, report};
+\node[box, right=of n] (a) {\textbf{Anshu}\\the algorithm (v2--v5, v6.1 ideas, v7)};
+\node[box, right=of a] (s) {\textbf{Astitva}\\final hardware (v6 RTL, C model, \texttt{v7\_la})};
+\node[me, below=16mm of a] (v) {\textbf{You (Vivek)}\\fixed point, UART + protocol, v5 port, board evaluation};
+\draw[-{Latex},thick,tmgrey] (n.south) -- node[pos=0.45,left=1mm,font=\scriptsize]{scoring code} (v.north west);
+\draw[-{Latex},thick,tmgrey] (a) -- node[pos=0.45,right,font=\scriptsize]{algorithm} (v);
+\draw[{Latex}-{Latex},thick,tmgrey] (s.south) -- node[pos=0.45,right=1mm,font=\scriptsize]{link, board runs} (v.north east);
+\end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+  \item \textbf{Anshu} designed the algorithm. You turned it into something that runs on the chip (v5) and fitted it into the memory.
+  \item \textbf{Astitva} wrote the final hand-made hardware (v6, v6.1, v7-DL). It talks to the PC through \emph{your} link and protocol, and it is checked on the board by \emph{your} evaluation script.
+  \item \textbf{Naman} made the data sets and the scoring function. Your script calls that scoring function for every record.
+\end{itemize}
+
+\begin{keyfact}[What you must be able to say in two minutes]
+``My part is how the numbers are stored and how the board talks to the PC. At the mid-term I built a single-lead SVD-template method and the first fixed-point model: 16-bit integers lose almost nothing (SQNR $+74.5$\,dB). I brought up the UART and designed the frame \texttt{A5 5A cmd len payload xor8} at 921,600 baud, used by every version since. In v5 I ported the whole algorithm to C on a MicroBlaze inside the FPGA; to fit 256\,KB I stored samples as int16, envelopes as bf16 and beat snapshots as int8, shared buffers, and replaced a $20\times20$ Jacobi solver by an incremental one, which made it $3.5\times$ faster. Finally I wrote the board evaluation script: it streams each recording in 64-sample frames, waits for DONE, runs the PC brain, scores the beats and compares the board's whole output byte stream with the C model. v5, v6.1 and v7-DL are bit-exact on all 140 records; the board runs 4.0--4.5$\times$ faster than real time.''
+\end{keyfact}
+
+% =====================================================================
+\section{The whole project in a few pages}
+\label{sec:project}
+
+\subsection{The problem}
+
+A pregnant mother wears four electrodes (metal stickers) on her belly. Each electrode records a voltage that changes over time; such a recording is called a \term{lead}. Inside it are two heartbeats: the mother's and the baby's. The electrical trace of a heartbeat is the \term{ECG} (electrocardiogram). The sharp spike in each beat is called the \term{QRS complex}; its tip is the \term{R peak}. We want to find every fetal beat and report the \term{fetal heart rate} (\term{FHR}) in beats per minute (bpm).
+
+\begin{simple}[Why this is hard]
+\begin{itemize}
+  \item \textbf{The baby is tiny.} The fetal ECG is about 20--100\,$\mu$V (millionths of a volt); the mother's is about 1--5\,mV. The mother is 10 to 250 times bigger.
+  \item \textbf{Same frequencies.} Both live in about 0.5--40\,Hz, so a simple filter cannot keep one and remove the other.
+  \item \textbf{Same time.} The two hearts beat independently, so their beats often overlap.
+  \item \textbf{Noise.} Muscles, movement and mains hum add on top. And real recordings behave differently from simulated ones.
+\end{itemize}
+\end{simple}
+
+\textbf{Rules of the final project.} Every version after the mid-term follows four rules:
+\begin{itemize}
+  \item \term{Causal}: at each moment the design uses only the past. (The final v7-DL uses the future only by \emph{waiting} for it: it outputs each beat about 13.5\,s late.)
+  \item \term{Label-free}: the correct beat times (``labels'' or ``annotations'') are used only to score, never inside the algorithm.
+  \item \textbf{Scoring}: a detected beat counts as correct if it is within $\pm 50$\,ms of a true beat; scoring starts at 20\,s. We report the \term{F1 score} (Section~\ref{sec:f1}).
+  \item \textbf{Development vs held-out test}: the 75 real CinC 2013 recordings are split into odd records (38, ``CinC dev'') for design decisions and even records (37, ``CinC test''), scored once per frozen design.
+\end{itemize}
+
+\textbf{Data sets.} FECGSYNDB: 1,248 usable simulated 5-minute records (a subset of 60, every 21st, is used on the board). CinC 2013 set-a: 75 real 60-s records. ADFECGDB: 5 real 5-minute records with a scalp electrode reference. The board evaluation uses $60+38+5+37 = 140$ records.
+
+\begin{warn}[Honesty guards you must keep]
+\begin{itemize}
+  \item The design is \textbf{not yet clinical grade}. CinC test F1 is 76.9\%, far from a medical device.
+  \item ADFECGDB was used \textbf{during development} (from v4 on). It is not an independent test.
+  \item The challenge organisers flag 7 of the 75 CinC references as unreliable (Behar, Oster \& Clifford 2014). We report CinC with and without them.
+  \item The CinC test half has been scored once for each of several designs, so it is no longer a perfectly fresh test set.
+\end{itemize}
+\end{warn}
+
+\subsection{The versions, one line each}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}l l X r@{}}
+\toprule
+\textbf{Version} & \textbf{Date} & \textbf{What it is} & \textbf{CinC test F1} \\
+\midrule
+Mid-term & Oct & 4-lead PCA beamformer + peak detector, sized on paper; your method was one of 9 compared & 16.7\% \\
+v2 & 7 Nov & same hardware with fixes; PC computes better (GEVD) weights; ran on the board & 41.2\% \\
+v3, v4 & 8--9 Nov & new algorithm in Python (maternal cancellation, trackers, selection) & 49.9, 53.1\% \\
+\textbf{v5} & \textbf{9--10 Nov} & \textbf{whole algorithm in C on a MicroBlaze inside the FPGA (your port)} & \textbf{65.8\%} \\
+v6 & 10--14 Nov & hand-written Verilog + a PC ``brain'' for 5 slow decisions & 65.5\% \\
+v6.1 & 14 Nov & v6 + robust maternal detector + recalibration every 30\,s & 71.9\% \\
+v7-DL & 14 Nov & v6.1 + on-chip look-ahead unit, final beats about 13.5\,s later (\textbf{final}) & 76.9\% \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The mid-term number is the mid-term design re-run causally on real data. In the mid-term (batch, synthetic) it had scored 93.0\%; causally on all 1,248 synthetic records 82.2\%; on real CinC test only 16.7\%. That shock started the final phase.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{fin_version_progression.png}
+\caption{Mean beat F1 of every version on every data set (from the report). v5 is your port; v6, v6.1 and v7-DL were measured on the board with your evaluation script.}
+\end{figure}
+
+\subsection{The final design (v7-DL) in one picture}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fin_v6_architecture.png}
+\caption{Architecture of v6 (v6.1 and v7-DL add units). Everything at the sample rate is hand-written Verilog on the Spartan-7. The FPGA asks the PC five kinds of questions and waits for each answer. All arrows between the two sides travel over your UART link in your frame format.}
+\end{figure}
+
+The steps of the algorithm, very briefly (Anshu's and Astitva's notes go deeper):
+\begin{enumerate}
+  \item \textbf{Front end}: filters remove baseline drift and high-frequency noise on each lead.
+  \item \textbf{Maternal R peaks}: a PCA of the first 10\,s gives four combinations of the leads, each with a peak detector; the PC picks the one that looks like a mother.
+  \item \textbf{Maternal cancellation}: for each maternal beat a template (mean + 2 main shapes of the last 20 beats) is fitted and subtracted, lead by lead.
+  \item \textbf{Calibration at 15\,s}: the PC computes 16 spatial filters (GEVD) from the design's own detections.
+  \item \textbf{16 candidate tracks}: each is followed by a beat tracker.
+  \item \textbf{Selection every 2.5\,s}: the PC picks the best-looking track, without labels (live output).
+  \item \textbf{v7-DL look-ahead}: an RTL unit waits about 13.5\,s, uses future context to choose and clean the beats, and sends the final beats (OUT7 frames).
+\end{enumerate}
+
+\begin{keyfact}[Final results to know (report)]
+v7-DL on the board, mean beat F1: CinC test \num{76.9\%} [95\% CI 68.3, 84.7], CinC dev 84.7\%, ADFECGDB 96.1\%, FECGSYNDB subset 93.4\%; all 1,248 FECGSYNDB (C model) 93.7\%. Hardware: 26,701 LUTs (81.9\%), 43 DSP, 71 of 75 BRAM tiles, 50\,MHz, worst slack $+0.048$\,ns, 0.445\,W (estimate). Bit-exact 140/140. Board speed 4.04--4.54$\times$ real time per data set.
+\end{keyfact}
+
+% =====================================================================
+\section{Background from ground zero}
+\label{sec:ground}
+
+This section builds every idea you need, starting from how a computer stores a number.
+
+\subsection{Bits, bytes and binary numbers}
+
+A \term{bit} is a single 0 or 1. A \term{byte} is 8 bits. A computer stores every number as a row of bits.
+
+In \term{binary} (base 2) each position is worth twice the one to its right: $\dots, 8, 4, 2, 1$. So
+\[
+1011_2 = 1\cdot 8 + 0\cdot 4 + 1 \cdot 2 + 1 \cdot 1 = 11.
+\]
+With $n$ bits you can write $2^n$ different patterns: 8 bits give 256 patterns (0 to 255), 16 bits give 65,536.
+
+\term{Hexadecimal} (``hex'', base 16) is a short way to write bits: each hex digit stands for 4 bits, using 0--9 and A--F (A$=10$, \dots, F$=15$). So one byte is two hex digits: \texttt{A5} $= 1010\,0101_2 = 165$. We write hex with a prefix: \texttt{0xA5}. You will see hex everywhere in the protocol.
+
+\begin{analogy}
+A car's odometer with only digits 0 and 1. Each wheel turns over the next one when it passes 1, exactly as an ordinary odometer turns over at 9.
+\end{analogy}
+
+\subsection{Negative numbers: two's complement}
+
+Hardware stores negative whole numbers in \term{two's complement}. The rule: the leftmost bit is worth a \emph{negative} amount. For 8 bits the positions are worth $-128, 64, 32, 16, 8, 4, 2, 1$.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Number & 8-bit pattern & Check \\
+\midrule
+$5$ & \texttt{0000 0101} & $4+1$ \\
+$-5$ & \texttt{1111 1011} & $-128+64+32+16+8+2+1 = -5$ \\
+$127$ (largest) & \texttt{0111 1111} & \\
+$-128$ (smallest) & \texttt{1000 0000} & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+To negate a number: flip every bit and add 1. The nice property: ordinary binary addition works for negative numbers too, so the hardware needs only one adder.
+
+Common sizes and their ranges:
+\begin{center}
+\begin{tabular}{@{}llr@{}}
+\toprule
+Name & Bits & Range \\
+\midrule
+\term{int8} & 8 & $-128 \dots 127$ \\
+\term{int16} & 16 & $-32{,}768 \dots 32{,}767$ \\
+\term{s24} (signed 24-bit) & 24 & $-8{,}388{,}608 \dots 8{,}388{,}607$ \\
+\term{int32} & 32 & about $\pm 2.1$ billion \\
+int64 & 64 & about $\pm 9.2\times 10^{18}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+``u'' in front (u8, u16, u32) means \emph{unsigned}: no negative numbers, so u16 is $0\dots 65{,}535$.
+
+\textbf{Little-endian.} A 16-bit number needs two bytes. ``Little-endian'' sends the low byte first. Example: $512 = \texttt{0x0200}$ is sent as \texttt{00 02}. Our protocol is little-endian everywhere (\file{proto.h}: ``All multi-byte fields little-endian'').
+
+\subsection{Three ways to store a real number}
+
+Signals are real numbers like $0.0123$\,mV. There are three ways to store them:
+
+\begin{enumerate}
+  \item \term{Integer}: whole numbers only. Cheap and exact, but no fractions.
+  \item \term{Fixed point}: an integer with an \emph{agreed} scale. ``The integer 16,384 means 1.0.'' The position of the binary point is fixed by agreement; the hardware just sees integers.
+  \item \term{Floating point}: like scientific notation, $1.23 \times 10^{-2}$, but in base 2: a sign, an exponent and a mantissa (the significant digits). The C type \texttt{float} has 32 bits: 1 sign, 8 exponent, 23 mantissa bits. It covers huge and tiny numbers, but the hardware to add and multiply it is large and slow.
+\end{enumerate}
+
+\begin{analogy}
+Fixed point is like doing all money sums in paise instead of rupees: Rs~12.50 is stored as the whole number 1250. You never need a decimal point; you just remember ``divide by 100 at the end''. Floating point is like writing every amount in scientific notation.
+\end{analogy}
+
+\begin{simple}[Why integers matter so much in this project]
+\begin{itemize}
+  \item \textbf{Size}: an integer adder or multiplier is far smaller on an FPGA than a floating-point one.
+  \item \textbf{Exactness}: integer arithmetic gives the same bits on every machine. A C program on the PC and Verilog on the FPGA can therefore agree \emph{bit for bit}. This is what makes ``bit-exact'' checking possible (Section~\ref{sec:bitexact}).
+\end{itemize}
+\end{simple}
+
+\subsection{Q formats}
+\label{sec:q}
+
+A \term{Q format} says how many bits are fraction bits. In \term{Q$n$}, the stored integer $k$ means $k/2^n$. In the notation \term{Q$m.n$}, $m$ bits (including the sign) are in front of the binary point and $n$ behind it; the word has $m+n$ bits.
+
+\begin{center}
+\begin{tikzpicture}[x=6.2mm,y=7mm]
+\fill[tmorangel] (0,0) rectangle (1,1);
+\foreach \i in {1,...,15} { \fill[tmlight] (\i,0) rectangle (\i+1,1); }
+\foreach \i in {0,...,15} { \draw[tmgrey] (\i,0) rectangle (\i+1,1); }
+\node[font=\scriptsize] at (0.5,0.5) {s};
+\foreach \i in {1,...,15} { \node[font=\scriptsize] at (\i+0.5,0.5) {$b$}; }
+\draw[very thick,tmred] (1,-0.2) -- (1,1.2);
+\node[font=\scriptsize,below] at (0.5,-0.05) {$-1$};
+\node[font=\scriptsize,below] at (1.5,-0.05) {$\tfrac12$};
+\node[font=\scriptsize,below] at (2.5,-0.05) {$\tfrac14$};
+\node[font=\scriptsize,below] at (3.5,-0.05) {$\tfrac18$};
+\node[font=\scriptsize,below] at (15.5,-0.05) {$2^{-15}$};
+\node[font=\small,right] at (16.3,0.5) {Q1.15: 1 sign bit, 15 fraction bits};
+\node[font=\scriptsize,tmred,above] at (1,1.2) {binary point};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Q1.15 (16 bits).} Value $= k/32{,}768$. Range $-1$ to $+0.99997$; the smallest step is $2^{-15}\approx 0.0000305$.
+\begin{itemize}
+  \item $0.5 \to 16{,}384$ (\texttt{0x4000});\quad $-0.25 \to -8{,}192$ (\texttt{0xE000}).
+  \item $+1.0$ cannot be stored; the nearest is $32{,}767$. So a filter coefficient like $a_1 \approx -1.97$ needs Q2.14 (range $\pm 2$), as the mid-term table says.
+\end{itemize}
+
+The formats you must know:
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{Format} & \textbf{Meaning} & \textbf{Where it is used} \\
+\midrule
+Q1.15 & 16 bits, value $k/2^{15}$, range $[-1,1)$ & mid-term model: input samples and beamformer weights \\
+Q2.14 & 16 bits, value $k/2^{14}$, range $[-2,2)$ & mid-term filter coefficients \\
+Q3.12 & 16 bits, value $k/2^{12}$, range $[-8,8)$ & your hybrid's fixed-point model and the 5,000 hex test vectors \\
+Q14 & value $k/2^{14}$; in int16 range $[-2,2)$, $1.0 = 16{,}384$ & v6: spatial weights, maternal PCA projections \\
+Q8 in int32 & 8 fraction bits inside a 32-bit integer & v6: data inside the filters \\
+Q28 & 28 fraction bits & v6: SOS filter coefficients (64-bit accumulators) \\
+s24, Q22 & signed 24-bit, value $k/2^{22}$, $|v|\le 1$ & v6: template basis sent by the PC (RSP\_BASIS) \\
+int16 & plain integer & raw samples; v5/v6 $z$ and $x_f$ rings \\
+Q8 log2 & 8 fraction bits & v7-DL: log-quality in the look-ahead unit \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Example (Q14).} A spatial weight $0.7071$ is stored as $\mathrm{round}(0.7071 \times 16{,}384) = 11{,}585$. The error is at most half a step: $0.5/16{,}384 \approx 0.00003$.
+
+\subsection{Arithmetic in fixed point: multiply, shift, round, saturate}
+
+\textbf{Multiplying.} Two Q1.15 numbers are integers $a$ and $b$ meaning $a/2^{15}$ and $b/2^{15}$. Their product $a\cdot b$ means $ab/2^{30}$, so it is in Q2.30 and needs 32 bits. To get back to Q1.15 you \term{shift right} by 15 bits (divide by $2^{15}$ and drop the remainder). A shift is free in hardware: it is only wiring.
+
+\textbf{Accumulating.} When many products are added, the sum grows. Extra top bits called \term{guard bits} stop it from overflowing. The mid-term design used a 48-bit accumulator with 4 guard bits; v6 uses 64-bit accumulators.
+
+\textbf{Rounding.} Shifting right just drops bits, which always rounds down. To round to the nearest value: add half of the last kept step, then shift: $(v + 2^{s-1}) \gg s$. A tie (exactly half) can go to the even neighbour (\term{round-to-nearest-even}); the mid-term model did this so that ties do not all go one way.
+
+\textbf{Overflow.} If a result is too big for its bits, two's complement \emph{wraps around}: in int8, $127+1 = -128$. A huge positive value suddenly becomes a huge negative one. That is a disaster in a filter.
+
+\textbf{Saturation.} Instead of wrapping, clip to the largest (or smallest) value: $127+1 \to 127$. The mid-term quantiser was
+\[
+x_q = \mathrm{clip}\big(\mathrm{round}(x\cdot 2^{15}), -32768, 32767\big)\cdot 2^{-15}.
+\]
+In v6 the approach is different: the C model checks every value against its declared width on every record, and no value ever overflowed. So the widths are simply big enough.
+
+\begin{warn}[Saturation vs overflow: a common viva trap]
+Saturation is a \emph{deliberate} rule that limits damage; overflow is the \emph{accident} it prevents. ``No overflow on any record'' (v6) means the chosen widths were wide enough; it is not the same as ``we saturate''.
+\end{warn}
+
+\textbf{Comparisons without fractions.} The final design replaces tests like ``$e > 0.25 \times m$'' by ``$4e > m$''. Both sides are integers, so the answer is exact and the C model and the Verilog can never disagree.
+
+\subsection{Quantisation noise and SQNR}
+
+Storing a real number in a fixed format rounds it to the nearest step. The difference is the \term{quantisation error}. Over a long signal it looks like a small random noise of at most half a step.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\linewidth]{vivek_quant_demo.png}
+\caption{A wave stored with only 3 bits (8 levels, orange) and the error (bottom). The error never exceeds half a step. With 16 bits there are 65,536 levels, so the error is 8,192 times smaller than here. (Figure made for these notes.)}
+\end{figure}
+
+\term{SQNR} (signal-to-quantisation-noise ratio) compares the power of the signal with the power of the error, on the \term{decibel} (dB) scale:
+\[
+\mathrm{SQNR} = 10\log_{10}\frac{\sum_n f_\text{float}[n]^2}{\sum_n \big(f_\text{float}[n]-f_\text{fixed}[n]\big)^2}\ \text{dB}.
+\]
+Here $f_\text{float}$ is the output of the same algorithm in normal floating point and $f_\text{fixed}$ is the output of the integer version.
+
+\begin{simple}[Reading decibels]
+Every 10\,dB is a factor 10 in power; every 20\,dB is a factor 10 in amplitude. So $+74.52$\,dB means the error power is about $3.5\times10^{-8}$ of the signal power, and the typical error is about $1/5{,}300$ of the typical signal size. A rule of thumb: each extra bit gives about 6\,dB, so 74.5\,dB is roughly 12 ``clean'' bits. The mid-term target was $\ge 60$\,dB.
+\end{simple}
+
+\subsection{Smaller numbers to save memory: bf16, envelope codes, int8, block floating point}
+\label{sec:smallfloats}
+
+On the MicroBlaze (v5) memory was the hard limit, so you used smaller formats where precision did not matter.
+
+\textbf{bf16 (``brain float 16'').} Keep only the top 16 bits of a 32-bit \texttt{float}: 1 sign, 8 exponent, 7 mantissa bits. The range is the same as \texttt{float}, but only about 2--3 significant decimal digits remain (relative step $2^{-8}\approx 0.4\%$). It halves the memory. In \file{fecg_v5.c}: \texttt{f2bf} rounds to nearest even, \texttt{bf2f} pads 16 zero bits back.
+\begin{itemize}
+  \item Example: $\pi = 3.14159$ as float is \texttt{0x40490FDB}. Its top half \texttt{0x4049} (the lower half \texttt{0x0FDB} is less than half, so no round-up) decodes to $3.140625$. The error is 0.03\%.
+  \item Why this is fine for envelopes: an envelope (signal energy) is only compared with thresholds and medians; 0.4\% precision changes nothing important. The report says accuracy stayed within 0.3 points after all memory changes.
+\end{itemize}
+
+\textbf{The v6 envelope code (Astitva's RTL, same idea).} v6 stores envelopes as a 16-bit ``monotonic code'' with 8 significant bits (\texttt{enc\_e} in \file{proto.h}): values below 256 are stored as they are; larger values keep their top 8 bits and an exponent. Bigger value $\Rightarrow$ bigger code, so comparisons still work directly on the codes. Example: $1000 \to$ code 506 $\to$ decodes to 1000 exactly; $1001 \to 506 \to 1000$ (error 1). The largest code ever seen is 7,423, so 13 bits are enough.
+
+\textbf{int8 snapshots.} For each beat, v5 keeps a 31-sample snapshot of the band-passed signal, used to judge how similar beats look. Only the \emph{shape} matters, so each snapshot is scaled so that its largest absolute value is 127 and stored as int8 (\texttt{capture\_features}). That is 4 times smaller than float.
+
+\textbf{int16 rings.} The sample histories ($z$, the signal after maternal cancellation, and $x_f$, the filtered input) are stored as int16 (the input itself is int16), half the size of float.
+
+\textbf{Block floating point} (v6 trackers). A whole block of numbers shares one exponent (one scale), and each number keeps its own 15-bit mantissa. Cheaper than full floating point, more range than plain fixed point.
+
+\subsection{Scoring: sensitivity, PPV and F1}
+\label{sec:f1}
+
+Compare the detected beats with the true beats ($\pm 50$\,ms tolerance):
+\begin{itemize}
+  \item \term{TP} (true positive): detected and true. \term{FP} (false positive): detected, but no true beat. \term{FN} (false negative): a true beat that was missed.
+  \item \term{Sensitivity} $\mathrm{Se} = \frac{TP}{TP+FN}$ (how many true beats we found). \term{PPV} $= \frac{TP}{TP+FP}$ (how many of our beats are real).
+  \item \term{F1} $= 2\cdot\frac{\mathrm{Se}\cdot\mathrm{PPV}}{\mathrm{Se}+\mathrm{PPV}}$, one number that is high only if both are high.
+  \item \term{FHR MAE}: mean absolute error of the heart rate in bpm.
+\end{itemize}
+Example: 553 TP, 162 FP, 163 FN (your hybrid on TC1): $\mathrm{Se}=553/716=77.2\%$, $\mathrm{PPV}=553/715=77.3\%$, F1 $=77.3\%$.
+
+\subsection{Background for your mid-term method: filters, templates, SVD, wavelets}
+
+\textbf{Frequency and filters.} Any signal can be seen as a sum of waves of different frequencies (in hertz, Hz = cycles per second). A \term{band-pass filter} keeps a band (for example 8--38\,Hz) and weakens the rest. A \term{biquad} or \term{second-order section} (\term{SOS}) is a small filter with 5 multiply-adds per sample; longer filters are chains of them. Sampling: our signals are measured 250 times per second (250\,Hz), so one \term{sample} every 4\,ms.
+
+\textbf{Template subtraction.} The mother's beats look very similar to each other. Average many maternal beats into a \term{template}, place it on each maternal R peak, and subtract it. What is left contains the baby (plus noise).
+
+\textbf{SVD template.} Put the maternal beats as rows of a table (a matrix): row $i$ = beat $i$, columns = time samples around the R peak. The \term{singular value decomposition} (\term{SVD}) splits this matrix into a few ``main shapes'' ordered by how much of the beats they explain. Keeping only the top 2 shapes (``rank 2'') and rebuilding each beat from them gives a clean maternal beat that may still change slowly from beat to beat (for example in height). The baby's beats fall at random places in the rows, so they do not form a main shape and are \emph{not} rebuilt, which is exactly what we want: subtracting the rebuilt mother leaves the baby.
+
+\begin{analogy}
+Twenty photos of the same face from slightly different angles. The ``average face'' plus ``how the face turns'' describes all twenty photos well. A small fly that appears in a different place in each photo is not part of either, so ``photo minus rebuilt face'' shows the fly.
+\end{analogy}
+
+\textbf{Wavelets and thresholding (the name of your method).} A \term{wavelet transform} splits a signal into several frequency bands (``scales''), each still in time order. \term{Thresholding} keeps only the large values in a band (likely real QRS spikes) and sets small ones (likely noise) to zero. Your code does the band split in a simpler way: a single 8--38\,Hz band-pass that keeps the fetal QRS band after the maternal template is removed (Section~\ref{sec:midterm}).
+
+\subsection{Hardware words: FPGA, LUT, DSP, BRAM, clock, cycles per sample}
+
+\begin{itemize}
+  \item \term{FPGA} (field-programmable gate array): a chip full of small logic blocks and wires that you connect by loading a configuration file, the \term{bitstream}. You describe the circuit in a hardware language (Verilog); this description is called \term{RTL}. Our chip: Xilinx/AMD Spartan-7 XC7S50 on a RealDigital Boolean Board.
+  \item \term{LUT} (look-up table): the basic logic cell; any small logic function of up to 6 inputs. The XC7S50 has 32,600.
+  \item \term{Flip-flop}: a 1-bit memory cell (65,200 on the chip).
+  \item \term{DSP} block (DSP48E1): a ready-made multiplier plus adder ($25\times18$-bit multiply, 48-bit accumulate). 120 on the chip.
+  \item \term{BRAM} (block RAM): on-chip memory blocks of 36\,kbit (4.5\,KB). 75 tiles, about 300\,KB in total. The chip has \emph{no} other memory, and the board has no external RAM.
+  \item \term{Clock}: a steady tick. 50\,MHz = 50 million ticks per second; one tick is a \term{clock cycle}.
+  \item \term{Cycles per sample}: how many clock ticks the design needs to process one input sample. At 250\,Hz and 50\,MHz there are $50{,}000{,}000/250 = 200{,}000$ cycles per sample available. At 73.728\,MHz (v5) there are 294,912.
+  \item \term{Real-time factor}: how many times faster than real life the system processes a recording. ``$4\times$ real time'' means a 60-s recording is processed in 15\,s. Anything above $1\times$ is real time.
+  \item \term{Time multiplexing}: one piece of hardware (for example one DSP) does many jobs one after another, instead of having one piece per job. Saves area, costs cycles.
+\end{itemize}
+
+\subsection{Processors: CPU, soft processor, FPU, memory map}
+
+\begin{itemize}
+  \item A \term{processor} (CPU) runs a program: a list of instructions (add, multiply, load from memory, jump). Programs are written in C and translated by a \term{compiler}. Software that runs on a small embedded processor is called \term{firmware}.
+  \item A \term{soft processor} is a processor built \emph{from FPGA logic}, not a separate chip. Xilinx's soft processor is the \term{MicroBlaze}. In v5 it used 3,340 LUTs, 5 DSPs and ran at 73.728\,MHz.
+  \item An \term{FPU} (floating-point unit) is extra hardware that does \texttt{float} arithmetic quickly. Without it, each float operation would be done slowly in software.
+  \item A \term{memory map} says which addresses belong to which memory or device. In v5: 256\,KB \term{LMB} memory (fast ``local memory bus'') at \texttt{0x00000000}, 32\,KB \term{AXI} BRAM (slower, on the general bus) at \texttt{0xC0000000}, the UART at \texttt{0x44A00000}, a timer, LEDs.
+  \item \term{Stack}: memory the program uses for temporary variables of running functions (v5: 16\,KB).
+\end{itemize}
+
+\subsection{Serial links and the UART}
+\label{sec:uart}
+
+The board talks to the laptop over one USB cable. On the board a small chip (a USB-to-UART bridge) turns USB into two plain wires: one for each direction. On each wire bits are sent one after another; that is a \term{serial} link. The circuit that does this is a \term{UART} (universal asynchronous receiver-transmitter).
+
+\textbf{How one byte travels (8-N-1).} The idle line is 1. A byte is sent as:
+\begin{enumerate}
+  \item one \term{start bit} (0) to say ``a byte begins'';
+  \item 8 data bits, least significant bit first;
+  \item \textbf{N}o parity bit;
+  \item one \term{stop bit} (1).
+\end{enumerate}
+So each byte costs \textbf{10 bits} on the wire. ``8-N-1'' means 8 data bits, no parity, 1 stop bit.
+
+\begin{center}
+\begin{tikzpicture}[x=9mm,y=7mm]
+\draw[thick,tmblue] (0,1) -- (2,1) -- (2,0) -- (3,0) -- (3,1) -- (4,1) -- (4,0) -- (5,0) -- (5,1) -- (6,1) -- (6,0) -- (8,0) -- (8,1) -- (9,1) -- (9,0) -- (10,0) -- (10,1) -- (13,1);
+\foreach \x/\l in {2.5/start,3.5/1,4.5/0,5.5/1,6.5/0,7.5/0,8.5/1,9.5/0,10.5/1,11.5/stop} { \node[font=\scriptsize] at (\x,-0.5) {\l}; }
+\foreach \x/\l in {3.5/$D_0$,4.5/$D_1$,5.5/$D_2$,6.5/$D_3$,7.5/$D_4$,8.5/$D_5$,9.5/$D_6$,10.5/$D_7$} { \node[font=\scriptsize,tmgrey] at (\x,1.5) {\l}; }
+\foreach \x in {2,...,12} { \draw[tmgrey!50,dashed] (\x,-0.2) -- (\x,1.2); }
+\node[font=\scriptsize,left] at (0,0.5) {line};
+\node[font=\scriptsize] at (1,1.4) {idle};
+\draw[{Latex}-{Latex}] (3,-1.0) -- node[below,font=\scriptsize]{one bit $= 1/921{,}600$\,s $\approx 1.085\,\mu$s} (4,-1.0);
+\end{tikzpicture}
+\end{center}
+The figure shows the byte \texttt{0xA5} $= 1010\,0101_2$, sent least significant bit first: 1,0,1,0,0,1,0,1.
+
+\textbf{Baud and throughput.} The \term{baud} rate is the number of bits per second on the line. At 921,600 baud:
+\[
+\frac{921{,}600 \text{ bits/s}}{10 \text{ bits/byte}} = 92{,}160 \text{ bytes/s} \approx 92\,\text{KB/s in each direction}.
+\]
+The two directions are separate wires, so both can run at full speed at the same time (\term{full duplex}).
+
+\textbf{No shared clock (``asynchronous'').} The sender and receiver have their own clocks. The receiver waits for the falling edge of the start bit, waits half a bit, checks the line is still 0 (a short glitch is rejected), then samples each bit in its middle. The bit timing is made by counting clock cycles: \texttt{CLKS\_PER\_BIT} $=$ clock $/$ baud. Small errors are fine because the clocks only need to agree for 10 bits (the usual tolerance is a few percent):
+\begin{center}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+Design & Clock & Cycles per bit & Actual rate (error) \\
+\midrule
+bring-up (100\,MHz) & 100\,MHz & 109 & 917,431 baud ($-0.45\%$) \\
+v5 MicroBlaze & 73.728\,MHz & $16\times5$ (UART16550) & exactly 921,600 \\
+v6/v7 RTL (\file{v6_uart.v}) & 50\,MHz & 54 & 925,926 baud ($+0.47\%$, our arithmetic) \\
+\bottomrule
+\end{tabular}
+\end{center}
+The v5 clock 73.728\,MHz was chosen because $73{,}728{,}000 = 16\times5\times921{,}600$, so the divider is exact (v5 README).
+
+\subsection{Frames, checksums, FIFOs and flow control}
+
+A serial link only moves a stream of bytes. To send \emph{messages} you need rules on top:
+
+\begin{itemize}
+  \item A \term{frame} is one message with a fixed layout: a header so the receiver can find the start, a type, a length, the content (\term{payload}) and a check.
+  \item A \term{checksum} is a small number computed from the message. The receiver recomputes it; if it differs, the message was damaged. Our checksum is \term{xor8}: the bitwise exclusive-or of all bytes. (XOR of two bits is 1 when they differ.) Any single flipped bit changes the xor8, so every single-bit error is caught. Two errors in the same bit position of two bytes cancel and are \emph{not} caught. A \term{CRC} (cyclic redundancy check), used in the mid-term/v2 packets, is stronger but more work.
+  \item A \term{FIFO} (first in, first out) is a queue in memory: bytes or samples wait in it until the next stage takes them. It absorbs short bursts. v6 has a 512-sample input FIFO and a 4\,KB transmit FIFO.
+  \item \term{Flow control} stops the sender from overrunning the receiver. Ours is \emph{lock-step}: the PC sends one 64-sample SAMPLES frame and waits for the board's \texttt{DONE} (0x8C) before it sends the next; when the board asks the PC a question it \emph{stalls} until the answer arrives.
+\end{itemize}
+
+\begin{analogy}
+Lock-step is like dictating a long number to a friend over a bad phone line: you read four digits, wait for ``got it'', then read the next four. It is slower than reading non-stop, but nothing can ever be lost and the result does not depend on how fast your friend writes.
+\end{analogy}
+
+\subsection{The frame and the full message table}
+\label{sec:msgtable}
+
+Every frame, in both directions, since v5 (\file{proto.h}):
+
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,f/.style={draw=tmblue,fill=tmlight,minimum height=9mm,align=center,font=\small}]
+\node[f,minimum width=12mm] (a) at (0,0) {\texttt{A5}};
+\node[f,minimum width=12mm,right=0mm of a] (b) {\texttt{5A}};
+\node[f,minimum width=14mm,right=0mm of b,fill=tmorangel] (c) {\texttt{cmd}};
+\node[f,minimum width=16mm,right=0mm of c] (d) {\texttt{len\_lo}};
+\node[f,minimum width=16mm,right=0mm of d] (e) {\texttt{len\_hi}};
+\node[f,minimum width=36mm,right=0mm of e,fill=tmgreenl] (p) {payload\\(\texttt{len} bytes)};
+\node[f,minimum width=14mm,right=0mm of p,fill=tmpurplel] (x) {\texttt{xor8}};
+\draw[decorate,decoration={brace,amplitude=4pt,mirror},thick] ([yshift=-1mm]a.south west) -- node[below=2mm,font=\scriptsize]{sync header} ([yshift=-1mm]b.south east);
+\draw[decorate,decoration={brace,amplitude=4pt,mirror},thick] ([yshift=-1mm]d.south west) -- node[below=2mm,font=\scriptsize]{16-bit length, little-endian} ([yshift=-1mm]e.south east);
+\draw[decorate,decoration={brace,amplitude=4pt},thick] ([yshift=1mm]c.north west) -- node[above=2mm,font=\scriptsize]{XOR of cmd, both length bytes and every payload byte} ([yshift=1mm]p.north east);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Worked examples.}
+\begin{itemize}
+  \item RESET, no payload: \texttt{A5 5A 01 00 00 01} (the xor of \texttt{01 00 00} is \texttt{01}).
+  \item FLUSH (v7), no payload: \texttt{A5 5A 03 00 00 03}.
+  \item SAMPLES with 64 samples: 64 samples $\times$ 4 leads $\times$ 2 bytes $=512 = \texttt{0x0200}$ bytes, so \texttt{A5 5A 02 00 02} + 512 bytes + xor8. The frame is 518 bytes long.
+\end{itemize}
+
+\begin{center}
+\small
+\begin{longtable}{@{}l l l p{7.2cm}@{}}
+\toprule
+\textbf{Dir.} & \textbf{Code} & \textbf{Name} & \textbf{Payload and meaning} \\
+\midrule
+\endhead
+PC$\to$FPGA & \texttt{0x01} & RESET & none; start a new recording \\
+ & \texttt{0x02} & SAMPLES & $n\times4$ int16 raw samples ($n\le256$; we send 64 $=0.256$\,s) \\
+ & \texttt{0x03} & FLUSH & none; (v7) end of recording: finish the look-ahead and send END7 \\
+ & \texttt{0x10} & RSP\_V & maternal PCA: 4 projections $\times$ 4 leads, int16 Q14 \\
+ & \texttt{0x11} & RSP\_MK & u8 chosen maternal train \\
+ & \texttt{0x12} & RSP\_BASIS & per lead u8 count, then count$\times150$ s24 Q22 (orthonormal template basis) \\
+ & \texttt{0x13} & RSP\_CAL & u8 number of tracks; per track kind, source, blanking and 4 weights Q14 \\
+ & \texttt{0x14} & RSP\_SEL & u8 selected track \\
+\midrule
+FPGA$\to$PC & \texttt{0x80} & COV & $10\times$ s64: maternal-band $4\times4$ covariance (upper triangle) \\
+ & \texttt{0x81} & MDET & u8 train, u32 peak: a maternal detector peak \\
+ & \texttt{0x82} & REQ\_MK & u32 $t$: ``choose the maternal train now'' \\
+ & \texttt{0x83} & MPK & u32: an emitted maternal R peak \\
+ & \texttt{0x84} & SEG & u32 peak + $150\times4$ int16: aligned maternal beat (1,204 bytes) \\
+ & \texttt{0x85} & CALDATA & u32 start, u16 $n$, $n\times$(4 $z$ + 4 $x_f$) int16: calibration data \\
+ & \texttt{0x86} & REQ\_CAL & ``calibrate now'' \\
+ & \texttt{0x87} & BEAT & u8 track, u32 time: a track beat \\
+ & \texttt{0x88} & FEAT & u8 track, u32 time, 31 s32 snapshot (Q8), u16 envelope code \\
+ & \texttt{0x89} & BMED & u8 track, u16: 125-sample envelope block median (code) \\
+ & \texttt{0x8A} & REQ\_SEL & u32 $t$: ``choose a track now'' \\
+ & \texttt{0x8B} & OUT & u32 time, u16 FHR$\times$10, u8 track: \textbf{live beat} \\
+ & \texttt{0x8C} & DONE & u32 $T$: all samples received so far are processed \\
+ & \texttt{0x8D} & OUT7 & u32 time, u16 FHR$\times$10, u8 track (16 = filled-in beat): \textbf{final beat} (v7) \\
+ & \texttt{0x8E} & END7 & u32 number of OUT7 frames sent (v7) \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+Notice the pattern: commands to the FPGA are small numbers; frames from the FPGA have the top bit set (\texttt{0x80} and up). The three v7 additions reuse free codes and change nothing else, so v6.1 traffic is untouched.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\small]
+\node[draw=tmblue,fill=tmlight,minimum width=26mm,minimum height=8mm] (pc) at (0,0) {Eval script (PC)};
+\node[draw=tmblue,fill=tmlight,minimum width=26mm,minimum height=8mm] (fp) at (6.2,0) {FPGA};
+\node[draw=tmpurple,fill=tmpurplel,minimum width=26mm,minimum height=8mm] (br) at (-4.6,0) {PC brain (\texttt{.exe})};
+\draw[thick,tmgrey] (pc.south) -- (0,-8.6); \draw[thick,tmgrey] (fp.south) -- (6.2,-8.6); \draw[thick,tmgrey] (br.south) -- (-4.6,-8.6);
+\draw[-{Latex},thick] (0,-1.0) -- node[above,font=\scriptsize]{RESET} (6.2,-1.0);
+\draw[-{Latex},thick] (0,-1.8) -- node[above,font=\scriptsize]{SAMPLES (64 samples)} (6.2,-1.8);
+\draw[-{Latex},thick,tmgreen] (6.2,-2.6) -- node[above,font=\scriptsize]{BEAT, FEAT, OUT, \dots} (0,-2.6);
+\draw[-{Latex},thick,tmgreen] (6.2,-3.4) -- node[above,font=\scriptsize]{DONE (0x8C)} (0,-3.4);
+\draw[-{Latex},thick] (0,-4.2) -- node[above,font=\scriptsize]{next SAMPLES} (6.2,-4.2);
+\draw[-{Latex},thick,tmgreen] (6.2,-5.0) -- node[above,font=\scriptsize]{REQ\_SEL (FPGA stalls)} (0,-5.0);
+\draw[-{Latex},thick,tmpurple] (0,-5.4) -- node[above,font=\scriptsize]{forward} (-4.6,-5.4);
+\draw[-{Latex},thick,tmpurple] (-4.6,-6.2) -- node[above,font=\scriptsize]{RSP\_SEL} (0,-6.2);
+\draw[-{Latex},thick,tmpurple] (0,-6.6) -- node[above,font=\scriptsize]{RSP\_SEL (FPGA resumes)} (6.2,-6.6);
+\draw[-{Latex},thick,tmgreen] (6.2,-7.4) -- node[above,font=\scriptsize]{\dots, DONE} (0,-7.4);
+\draw[-{Latex},thick] (0,-8.2) -- node[above,font=\scriptsize]{v7 only: FLUSH \quad then OUT7\dots END7} (6.2,-8.2);
+\end{tikzpicture}
+\caption{Lock-step flow of one recording (simplified). The PC never sends the next SAMPLES frame before DONE; the FPGA stops processing while it waits for a PC answer. So speed can vary, but the output bytes cannot.}
+\label{fig:lockstep}
+\end{figure}
+
+\subsection{Bit-exact: what it means and how it is checked}
+\label{sec:bitexact}
+
+\term{Bit-exact} means: every byte the board sends equals the byte the C model produces for the same input. Not ``close'', not ``within 1'', but identical.
+
+\begin{itemize}
+  \item The \term{C model} (\file{fpga_model.c} + \file{brain.c}, built as \file{v7_sim.exe} etc.) is an integer program that does exactly what the hardware does, in the same order. It is the \emph{specification}.
+  \item For each record the script collects the whole \term{uplink} (all bytes from the FPGA to the PC: requests, beats, DONE frames, OUT7, END7) and compares it byte by byte with the model's uplink for the same int16 input.
+  \item It also stores an \term{MD5} of the uplink. MD5 is a ``fingerprint'' function: any change of even one bit gives a completely different 32-hex-digit fingerprint. Equal MD5 = equal streams (for practical purposes). It is handy for comparing runs months apart without storing gigabytes.
+\end{itemize}
+
+\begin{simple}[Why bit-exact is so valuable]
+\begin{enumerate}
+  \item The accuracy of the C model \emph{is} the accuracy of the hardware. That is how the report can give results on all 1,248 synthetic records without streaming them all to the board.
+  \item Debugging is easy: the first differing byte points to the frame and the unit with the bug.
+  \item Any later change can be checked against a fixed reference.
+\end{enumerate}
+It does \emph{not} prove that the algorithm is good, that the model has no design mistake, or anything about inputs never run. Timing safety comes from Vivado's timing analysis, not from bit-exactness.
+\end{simple}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\small,node distance=5mm and 9mm,b/.style={draw=tmblue,fill=tmlight,rounded corners=2pt,align=center,minimum height=9mm,text width=3.1cm}]
+\node[b] (in) at (0,0) {recording $\to$ int16 \\ (4 leads, 250\,Hz)};
+\node[b] (bd) at (5.4,1.1) {board + PC brain \\ (lock-step UART)};
+\node[b] (md) at (5.4,-1.1) {C model \\ (\texttt{v7\_sim.exe})};
+\node[b,fill=tmgreenl,draw=tmgreen] (cmp) at (11,0) {\texttt{up == upm}?\\ byte by byte; MD5};
+\draw[-{Latex},thick] (in) -- (bd); \draw[-{Latex},thick] (in) -- (md);
+\draw[-{Latex},thick] (bd.east) -- node[above,sloped,font=\scriptsize]{uplink} (cmp.west);
+\draw[-{Latex},thick] (md.east) -- node[below,sloped,font=\scriptsize]{model uplink} (cmp.west);
+\end{tikzpicture}
+\caption{How the evaluation script checks bit-exactness.}
+\end{figure}
+
+% =====================================================================
+\section{Your part, step by step}
+\label{sec:story}
+
+This section follows the calendar: mid-term (October), the causal shock and the UART bring-up (early November), v2 on the board (7 November), the v5 night (9--10 November), and the board evaluations of v6, v6.1 and v7-DL (10--15 November).
+
+\subsection{Mid-term (October): your single-lead method}
+\label{sec:midterm}
+
+At the mid-term each member built one method, and all nine were compared on the same synthetic data (FECGSYNDB) with the same detector and scoring. The primary design was a 4-lead PCA beamformer (M1). Yours was a single-lead method (1 electrode).
+
+\begin{tried}[Your mid-term method: ``Wavelet-Threshold Hybrid'' / SVD-template subtraction]
+\what{\file{code/src/methods/alternative.py}, class \texttt{AlternativeExtractor} (``Single-channel Adaptive SVD-Template Subtraction + Sub-band Filtering''). Four steps on one lead:
+\begin{enumerate}
+  \item find the maternal R peaks: band-pass 5--25\,Hz, square, smooth, pick peaks at least 0.4\,s apart (\texttt{\_detect\_maternal\_peaks});
+  \item cut each maternal beat from $-0.25$ to $+0.45$\,s, stack the beats into a matrix, keep the rank-2 SVD reconstruction (the mother's main shapes), taper the edges with a cosine window (\texttt{\_cancel\_maternal\_ecg});
+  \item subtract the rebuilt mother from the lead;
+  \item band-pass the rest to 8--38\,Hz to keep the fetal QRS (``multi-scale sub-band refinement'').
+\end{enumerate}}
+\why{Template subtraction is the classic way to remove the mother from one lead. A rank-2 SVD template can follow slow changes of the maternal beat shape that a single average cannot.}
+\result{On the five Subject-1 stress cases TC1--TC5 (5-minute records): F1 77.3\% (TC1, 12\,dB, baseline), 31.4\% (TC2, 6\,dB), 24.6\% (TC3, 0\,dB), 36.8\% (TC4, fetal movement), 28.1\% (TC5, ectopic beats); average 39.64\%. On all 250 records of the mid-term benchmark: \textbf{60.52\%} mean F1 (95\% clustered CI [53.43, 67.60]), the best of the single-lead methods but far below the 4-lead PCA beamformer (93.00\%).}
+\decision{Not chosen. One lead has no spatial information, so when the fetal and maternal QRS overlap or noise is high, subtraction also destroys the fetal beat. The team continued with the 4-lead design.}
+\end{tried}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{TC3_alternative.png}
+\caption{Your method on TC3 (0\,dB): mixture (top), true fetal ECG (middle, used only for scoring), extracted signal with true (green) and detected (red) peaks. At 0\,dB the detections are often off the true beats: F1 24.6\%.}
+\end{figure}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Case} & \textbf{TP} & \textbf{FP} & \textbf{FN} & \textbf{Se \%} & \textbf{PPV \%} & \textbf{F1 \%} \\
+\midrule
+TC1 (12\,dB, c0) & 553 & 162 & 163 & 77.2 & 77.3 & 77.29 \\
+TC2 (6\,dB, c0) & 230 & 519 & 486 & 32.1 & 30.7 & 31.40 \\
+TC3 (0\,dB, c0) & 180 & 566 & 535 & 25.2 & 24.1 & 24.64 \\
+TC4 (6\,dB, c1 movement) & 270 & 480 & 446 & 37.7 & 36.0 & 36.83 \\
+TC5 (6\,dB, c4 ectopic) & 209 & 565 & 507 & 29.2 & 27.0 & 28.05 \\
+\bottomrule
+\end{tabular}
+\end{center}
+(Source: report, mid-term benchmark table; \file{code/results/metrics.csv}.)
+
+\begin{warn}[A name trap: ``wavelet'' vs what the code does]
+The report's method list describes M5 ``Wavelet-Threshold Hybrid'' as ``4-level stationary wavelet transform (SWT, sym4) with adaptive sub-band LMS filtering and thresholding''. The code that produced the ``Wavelet-Threshold Hybrid'' rows (\file{alternative.py}, called from \file{run_mega_benchmark.py}) does \emph{not} contain an SWT or LMS: it is SVD-template subtraction followed by an 8--38\,Hz Butterworth band-pass. The SWT + LMS + SSNF method is a separate row (``SWT-LMS Wavelet Filter'', Astitva's, 15.06\% on TC1). If asked, describe what your code does, and say the method's name comes from the idea of a sub-band (multi-scale) refinement after subtraction. That is why the contribution table calls your work ``wavelet-threshold hybrid and SVD-template methods''.
+\end{warn}
+
+\subsection{The first fixed-point model and the golden test vectors (23 October)}
+
+\begin{tried}[A bit-accurate fixed-point model of your method]
+\what{\file{code/src/fixed_point_model.py}: \texttt{to\_fixed} (round, then saturate to 16 bits), \texttt{from\_fixed}, \texttt{fixed\_point\_sos\_filter} (a chain of Direct-Form-II biquads computed only with integers and right shifts) and \texttt{FixedPointAlternativeExtractor.run}. Samples in Q3.12, filter coefficients in Q2.14, taper window in Q1.15, 32-bit style accumulators. A test (\file{code/tests/test_fixed_point_verification.py}) runs float and fixed versions on TC1.}
+\why{Before any hardware is built you must know whether 16-bit integers are precise enough. If the integer version gave different beats, the hardware would fail no matter how well it was written.}
+\result{In your feasibility note (now \nolinkurl{docs/archive/fpga_reports/VIVEK_FPGA_FEASIBILITY_AND_HARDWARE_REPORT.md}): F1 on TC1 77.29\% (float) $\to$ 77.10\% (fixed), a loss of 0.19 points; SQNR $+42.8$\,dB for this model.}
+\decision{16-bit fixed point is adequate. Use cascaded biquads (SOS), not one high-order filter, because a high-order integer IIR filter easily becomes unstable.}
+\end{tried}
+
+\begin{tried}[Golden test vectors for an RTL testbench]
+\what{\file{code/results/fpga_test_vectors/}: \texttt{input\_stimulus\_tc1\_hex.txt} (5,000 words, 20\,s of TC1 at 250\,Hz, 16-bit hex), \texttt{golden\_output\_fecg\_tc1\_hex.txt} (the expected 5,000 output words) and \texttt{expected\_fetal\_peaks\_tc1.txt} (48 beats), plus a README with a Verilog testbench template that reads them with \texttt{\$readmemh}.}
+\why{A hardware designer needs inputs and the exact expected outputs to test a circuit in simulation. This ``golden vector'' idea is the seed of the later bit-exact flow.}
+\result{Vectors delivered. The final hardware did not use them (the algorithm changed completely), but the method (``model produces golden output; hardware must match it'') became the core of the project's verification.}
+\decision{Keep the principle; the v6 flow later compared every uplink byte instead of a few thousand words.}
+\end{tried}
+
+\textbf{What the report says (quote these numbers).} The report's mid-term appendix gives the word-length table of the beamformer pipeline (Q1.15 input and weights, Q2.14 coefficients, 24-bit filter states, 48-bit accumulator with 4 guard bits, round-to-nearest-even with saturation) and states:
+
+\begin{keyfact}[Mid-term fixed-point result (report)]
+A cycle-accurate Python fixed-point emulator, evaluated on 5,000 continuous golden samples, gave \num{SQNR $+74.52$\,dB} at the beamformer output (and $+85.04$\,dB for the Hankel SVD), with 100\% beat concordance and zero degraded peaks against double precision. Mid-term objective O2 (SQNR $\ge 60$\,dB) was therefore \textbf{met}. The theoretical null-depth bound for 16-bit weights on 4 leads is 95.1\,dB (71.0\,dB at 12 bits, 59.0\,dB at 10 bits), above the 55\,dB requirement.
+\end{keyfact}
+
+\begin{warn}[Two SQNR numbers]
+$+74.52$\,dB (report) is for the \emph{beamformer} output in Q1.15; $+42.8$\,dB (your October note) is for \emph{your hybrid} in Q3.12. They are different pipelines, not a contradiction. In the viva, quote the report's $+74.52$\,dB as the project result and explain the difference if asked. Also note: the report marks the null-depth \emph{simulation} curve (Fig.~\ref{fig:qnull}) as illustrative and not traceable; only the formula's bound (95.1\,dB) is quoted.
+\end{warn}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\linewidth]{quantization_null_depth.png}
+\caption{Mid-term word-length sweep: how deep the beamformer can null the mother with $B$-bit weights. Only the theoretical bound is used in the report (95.1\,dB at $B=16$); the simulated curve is marked as not traceable.}
+\label{fig:qnull}
+\end{figure}
+
+The bound comes from the rounding noise of the weights. With step $\Delta = 2^{-(B-1)}$ the noise has variance $\Delta^2/12$; spread over $C$ leads this limits the null depth to about
+\[
+R_\text{null} \approx 20\log_{10}\frac{\sqrt{12}\cdot 2^{B-1}}{\sqrt{C}}\ \text{dB}, \qquad B=16,\ C=4:\ 20\log_{10}\frac{3.464\times 32{,}768}{2} \approx 95.1\ \text{dB}.
+\]
+
+\subsection{The FPGA feasibility study (October)}
+
+\begin{tried}[Sizing the hardware on paper]
+\what{Count, stage by stage, how many clock cycles and how much logic one sample needs, assuming a single DSP block reused for every multiplication (time multiplexing) at 100\,MHz.}
+\why{To know, before writing Verilog, whether the design fits the XC7S50 and is fast enough.}
+\result{For the mid-term beamformer (report, mid-term appendix): 4 leads $\times$ 4 SOS $\times$ 5 multiply-adds $=80$ cycles; notch 20; beamformer 4; derivative 5; squaring 1; integrator 2; thresholds 4; refractory 2; DSP pipeline latency 30; total \textbf{148 cycles} $=1.48\,\mu$s at 100\,MHz. Available: $100\,\text{MHz}/250\,\text{Hz} = 400{,}000$ cycles per sample, so $400{,}000/148 = 2{,}702\times$ margin. Area: about \textbf{990 LUTs} (3.0\%), 720 flip-flops, \textbf{1 DSP}, 1 BRAM. For your hybrid the report's table gives 1,320 LUTs, 4 DSPs, 4 BRAM, 280 cycles.}
+\decision{The mid-term design was declared feasible (objectives O3 and O4 ``sized estimate, L4''). Building it was left to the final sprint.}
+\end{tried}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{dsp_time_multiplexing_schedule.png}
+\caption{The 148-cycle single-DSP schedule of the mid-term design (paper sizing).}
+\end{figure}
+
+\textbf{UART budget at the mid-term.} The mid-term sized the link too: 8 bytes per 4-lead sample take $80/921{,}600 \approx 86.8\,\mu$s, i.e.\ 2.17\% of the 4\,ms sample period. The final report corrected this to 3.0\% because a real frame has 11 bytes, not 8 (header and check bytes count too). A good example of the rule ``count every byte on the wire''.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.55\linewidth]{lut_estimates.png}
+\caption{An early planning chart of LUTs per Verilog module (not in the final report; guesses, not synthesis). Shown only so you recognise it.}
+\end{figure}
+
+\begin{lesson}[How the paper estimates compare with the real designs]
+\begin{center}
+\small
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Design} & \textbf{LUTs} & \textbf{DSP} & \textbf{BRAM} & \textbf{Cycles/sample, clock} \\
+\midrule
+Mid-term beamformer (paper) & 990 & 1 & 1 & 148 at 100\,MHz \\
+Your hybrid (report table, paper) & 1,320 & 4 & 4 & 280 at 100\,MHz \\
+v2 (built) & 3,881 & 39 & 0 & 25\,MHz pipeline \\
+v5 MicroBlaze (built) & 3,340 & 5 & 72/75 & 46.8k at 73.7\,MHz \\
+v6 (built) & 18,127 & 33 & 60/75 & median 1,485 at 50\,MHz \\
+v7-DL final (built) & 26,701 & 43 & 71/75 & (v6 datapath) at 50\,MHz \\
+\bottomrule
+\end{tabular}
+\end{center}
+The estimates were about right \emph{for the mid-term algorithm}. But that algorithm failed on real data (16.7\%), and the real-data algorithm needs maternal cancellation, 16 tracks and look-ahead: about $27\times$ the LUTs and $10\times$ the cycles of the estimate. The report says this openly: objectives O3 ($<10\,\mu$s per sample) and O4 ($<5\%$ LUTs, $\le 1$ DSP) are not met by the final design and were re-baselined. Your answer in the viva: ``The paper sizing was correct for the design it sized; the design had to change.''
+\end{lesson}
+
+\begin{warn}[Small errors in the October note]
+Your October note says the XC7S50 has 43,360 LUTs; the report (from Vivado) uses \textbf{32,600}. The note also estimated 45 cycles, 3,240 LUTs and 16 DSPs for your engine, while the report's table gives 280 cycles, 1,320 LUTs and 4 DSPs. All are superseded paper numbers; quote the report and the built designs.
+\end{warn}
+
+\subsection{The causal shock (31 October -- 6 November)}
+
+Before the hardware sprint the team re-ran the mid-term design under the new rules (causal, label-free, real data, held-out split). It fell from 93.0\% (batch, synthetic, 250 records) to 82.2\% (causal, all 1,248 synthetic records) and to \textbf{16.7\%} on real CinC test. This is why the final algorithm (and therefore v5, v6 and v7) looks nothing like the mid-term design. Your link and protocol work survived the change because a link does not care what the bytes mean.
+
+\subsection{UART bring-up on the Spartan-7 (3--4 November)}
+
+\begin{tried}[A stand-alone UART loop-back on the board]
+\what{A small separate design (\file{archive/uart_bringup/}) with only a UART receiver (\file{uart_rx.v}), transmitter (\file{uart_tx.v}) and a top level (\file{uart_top.v}) that echoes every received byte back through a 16-entry FIFO. LEDs show RX/TX activity, a sticky framing-error flag and a sticky FIFO-overflow flag. A laptop script (\file{python/uart_test.py}) lists COM ports, runs automatic echo tests and offers an interactive terminal; \file{sim/run_sim.py} runs the testbenches.}
+\why{Bring up one thing at a time. If the full design does not answer, you cannot tell whether the algorithm, the protocol, the pins or the baud rate is wrong. A loop-back tests only the wire and the UART.}
+\result{Simulation: 12 of 12 checks passed (reset, receiving \texttt{0x41} and \texttt{0x55}, glitch rejection, framing-error detection, transmitter framing LSB-first, echo of single bytes, the burst ``SPARTAN7'', all 256 byte values \texttt{0x00}--\texttt{0xFF}, clean error flags). During bring-up the transmitter's bit timing was corrected so that each new bit is driven exactly on the bit boundary (commit ``checkpoint: before UART TX timing correction'', 4 Nov). Then: hardware verification on the Spartan-7 (commit of 4 November). The report: ``loop-back echo, then framed packets at 921,600 baud, verified from the laptop. All later versions use this link.''}
+\decision{Use this UART design style (2-flip-flop synchroniser, start-bit check at mid-bit, mid-bit sampling, framing-error flag) in every later version; build the message protocol on top.}
+\end{tried}
+
+\begin{simple}[Design details of the bring-up UART worth knowing]
+\begin{itemize}
+  \item \textbf{Synchroniser}: the incoming line passes two flip-flops before use, so a change exactly at a clock edge cannot upset the logic (``metastability'').
+  \item \textbf{Glitch rejection}: after a falling edge, wait half a bit and check the line is still 0; otherwise it was noise.
+  \item \textbf{Mid-bit sampling}: read each bit in its middle, where it is most stable.
+  \item \textbf{Framing error}: if the stop bit reads 0, the byte is rejected and a sticky LED lights.
+  \item \textbf{Divider}: at 100\,MHz, 868 cycles per bit for 115,200 baud ($+0.006\%$) and 109 for 921,600 ($-0.45\%$); both far inside the tolerance. The laptop test script defaults to 115,200 baud; the design supports 115,200, 230,400, 460,800 and 921,600.
+\end{itemize}
+\end{simple}
+
+\subsection{v2 on the board (7 November): the first real host-FPGA system}
+
+v2 was the mid-term hardware with fixes, plus a PC that computes better beamformer weights (Anshu's GEVD) while the recording streams. It was the first time the PC and the FPGA worked together on whole recordings.
+
+\begin{tried}[v2 hardware validation]
+\what{Bitstream \file{fecg_multichannel_top.bit} (25\,MHz, 3,881 LUTs, 39 DSP, 0 BRAM, slack $+12.58$\,ns). The PC streamed samples at 250\,Hz over the UART at 115,200 baud; the host sent weight packets (\texttt{0xC3}) and a detector-restart packet (\texttt{0xC4}), with CRC-8 checks; a bit-exact Python model mirrored the board (\file{run_v2_hardware_validation.py}).}
+\why{Prove that the board computes exactly what the model computes, sample by sample.}
+\result{6 records, \textbf{165,000 samples with 0 LSB difference}, 0 lost packets, 0 CRC errors; \textbf{1,116 beats} with every time stamp identical to the model. FHR agreed on 1,114 of 1,116 beats; the other 2 were the first two beats after power-up, where the board correctly sends FHR $=0$ and the model's hold stream shows a 140.0\,bpm placeholder.}
+\decision{The host/board/model triangle works. But real-data accuracy was only 41.2\% (CinC test): the architecture itself was the limit, so v3--v5 changed the algorithm.}
+\end{tried}
+
+\begin{lesson}
+Even a ``difference'' of 2 beats was explained, not ignored: it was a placeholder value in the model's display stream, not a hardware error. Bit-exactness is only useful if every difference is chased to its cause.
+\end{lesson}
+
+\subsection{The final message protocol: design choices}
+\label{sec:protocol}
+
+From v5 on, both directions use one frame format: \texttt{A5 5A cmd len\_lo len\_hi payload xor8}. Each choice has a reason:
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+\textbf{Choice} & \textbf{Reason} \\
+\midrule
+Two sync bytes \texttt{A5 5A} & A receiver that loses its place scans for \texttt{A5} followed by \texttt{5A}. Two bytes make a false start in the data less likely than one. (\texttt{0xA5} = 1010\,0101, an alternating pattern.) \\
+One command byte & Up to 256 message types; PC$\to$FPGA codes are small, FPGA$\to$PC codes have the top bit set, so the direction is visible at a glance. \\
+16-bit length & Payloads from 0 bytes (RESET) to 1,204 (SEG) and more; 8 bits (max 255) would not be enough. The parser knows exactly how many bytes to read. \\
+xor8 checksum & One XOR per byte in Verilog and C, no tables. Detects every single-bit error. The mid-term/v2 packets used CRC-8; the logs do not say why xor8 replaced it. Our reasoning: the link is a short USB cable with rare errors, and any error that slipped through would still be caught by the end-to-end bit-exact comparison. \\
+Little-endian & Matches the PC (x86) and the MicroBlaze, so C code can copy bytes directly. \\
+Lock-step (wait for DONE) & The result can never depend on speed, so the board run is exactly reproducible and comparable with the model. \\
+FPGA stalls on requests & Same reason: a slow PC or a USB hiccup changes the run time, never the output. \\
+64-sample SAMPLES frames (v6) & 0.256\,s of signal per frame; small enough for the 512-sample input FIFO and fine-grained enough to stream at true speed in the web demo (v5 used 250-sample blocks). \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{How the protocol grew.}
+\begin{itemize}
+  \item \textbf{v5} (MicroBlaze): RESET \texttt{0x01}$\to$\texttt{0x81}; SAMPLES \texttt{0x02} ($N\le256$)$\to$\texttt{0x82} (cycles used, beat list); PING \texttt{0x03}$\to$\texttt{0x83} (``FECG-v5 73728000 921600''); BENCH \texttt{0x04}; MEMTEST \texttt{0x05}; any bad checksum or unknown command $\to$ \texttt{0xEE}.
+  \item \textbf{v6} (RTL + PC brain): the same frame, new codes for the five PC decisions (requests \texttt{0x80}--\texttt{0x8A} up, answers \texttt{0x10}--\texttt{0x14} down), live beats OUT \texttt{0x8B}, DONE \texttt{0x8C}.
+  \item \textbf{v7-DL}: FLUSH \texttt{0x03} down; OUT7 \texttt{0x8D} and END7 \texttt{0x8E} up. (In v6/v7 \texttt{0x03} is FLUSH; the v5 PING is gone.)
+\end{itemize}
+
+\textbf{Error handling.} In the RTL (\file{v6_link.v}) a frame whose xor8 does not match is not acted on, and a sticky \texttt{err} flag is set (also on input-FIFO overflow); it drives LED7 (``link error''). On the PC, \texttt{read\_frame} raises \texttt{IOError("checksum error ...")}, and if the board is silent for 20\,s the script stops with \texttt{TimeoutError("FPGA silent for 20 s")}. A run is never silently wrong.
+
+\textbf{Is the link fast enough?} Measured traffic of v7-DL on ADFECGDB r01 (report): 7.8\,KB/s up and 9.2\,KB/s down per second of recording, i.e.\ 8.5\% and 10.0\% of 92.16\,KB/s. The samples alone are $518 \text{ bytes} / 0.256\,\text{s} \approx 2.0$\,KB/s; the template bases (RSP\_BASIS) are the largest part of the downlink (59.1\% of the PC-decision traffic). So the link could carry about $10\times$ real time.
+
+\subsection{The v5 night (9--10 November): the whole algorithm inside the FPGA}
+\label{sec:v5}
+
+\textbf{Goal of the night} (\file{report/night_20261109/LOG.md}): ``the PC only streams the recording; the FPGA does all the processing''. Anshu improved the algorithm; you built the platform and the port. Times are from the log.
+
+\begin{tried}[21:45 -- Decision: a MicroBlaze soft processor]
+\what{Put a MicroBlaze processor with a hardware FPU inside the XC7S50 and run the algorithm as C firmware.}
+\why{The new algorithm has GEVD calibration, SVD template fitting, 12 trackers and a selection with logs and medians. Writing all of that as hand-made Verilog in one night was not feasible. A processor runs C, and the same C file can be compiled on the PC as the reference model.}
+\result{The plan worked; the whole night's design ran on the board by 01:45.}
+\decision{v5 = MicroBlaze. (Hand-written RTL came later, in v6, as Astitva's work.)}
+\end{tried}
+
+\begin{tried}[23:40 -- Port the algorithm to streaming C]
+\what{\file{fpga_implementation/v5/algo/fecg_v5.c} (1,118 lines): float32, only static memory (no \texttt{malloc}), strictly causal, one call per sample: \texttt{fecg\_push(x[4], out, max\_out)}; \texttt{fecg\_reset()} starts a record. The processing timeline runs a fixed 176 samples (0.70\,s) behind the input; a selection for a window ending at $t$ is made at $t+150$; beats are reported about 1.5--2\,s after they happen. The PC build (\file{host_main.c} $\to$ \file{fecg_v5_host.exe}) is the reference model.}
+\why{A streaming program that sees one sample at a time is exactly what the hardware does. Fixed delays replace any look into the future.}
+\result{Dev sets (syn / CinC dev / ADFECGDB): \textbf{C 78.73 / 70.84 / 91.68} vs Python 78.8 / 72.8 / 92.3. The differences come from strict causality, a block-median approximation and int16 input.}
+\decision{The C model becomes the development platform; all later accuracy changes were made in C.}
+\end{tried}
+
+\begin{tried}[01:20 -- The MicroBlaze platform comes up]
+\what{\file{build_v5.tcl}: MicroBlaze v11 (5-stage pipeline, no caches) with extended FPU, barrel shifter, hardware multiplier and divider; 73.728\,MHz from a clock generator (100\,MHz in); 256\,KB LMB memory + 32\,KB AXI BRAM (72 of 75 BRAM tiles); UART16550 at 921,600 baud; timer counting CPU cycles; LEDs. Firmware \file{fw/main.c} implements the lock-step framed protocol.}
+\why{Each piece has a reason: the FPU makes float fast; the timer measures cycles per sample; the 16550 UART because Vivado's UART Lite only goes up to 230,400 baud; 73.728\,MHz because it gives an exact 921,600-baud divider.}
+\result{Timing met (slack $+1.91$\,ns at 13.563\,ns). 3,340 LUTs (10.3\%), 2,883 flip-flops, 5 DSP. Self-test with a stub algorithm: PING answers; 15,000 samples in 250-sample blocks in 1.92\,s, \textbf{7,800 samples/s = $31\times$ real time}; all 150 stub beats correct; AXI memory test 0 errors. Benchmarks: a dependent float multiply-add about 18 cycles; float division about 42; \texttt{sqrtf} about 50; an AXI memory word about 17 cycles vs 1--2 for LMB.}
+\decision{The link and platform are fast enough. The budget: 294,912 cycles per sample at real time; about 9,400 cycles of algorithm time per sample before the UART (7,800 samples/s) is no longer the limit. Heavier code just runs slower than $31\times$, never wrong (lock-step).}
+\end{tried}
+
+\begin{simple}[How to make float results identical on two different processors]
+The MicroBlaze and the PC must produce the \emph{same bits}. The v5 README lists the rules you followed:
+\begin{itemize}
+  \item use \texttt{float} only (\texttt{double} is emulated in software on the MicroBlaze);
+  \item on the PC use SSE maths (\texttt{-msse2 -mfpmath=sse}), not the old x87 unit, which computes with extra hidden precision;
+  \item \texttt{-ffp-contract=off}: forbid the compiler from fusing multiply and add (a fused operation rounds once instead of twice and gives different bits);
+  \item $+,-,\times,\div$ and \texttt{sqrtf} are correctly rounded by the IEEE standard on both sides, so they agree; library functions like \texttt{logf} differ between libraries, so the code uses its own \texttt{mylogf} compiled on both sides;
+  \item \term{denormals} (extremely tiny floats near $10^{-38}$): the MicroBlaze FPU flushes them to zero, x86 keeps them; the PC build sets the FTZ/DAZ flags to flush them too.
+\end{itemize}
+\end{simple}
+
+\begin{tried}[01:30 -- Fitting into 256\,KB]
+\what{Memory tricks in \file{fecg_v5.c}:
+\begin{itemize}
+  \item \textbf{int16 sample rings}: the $z$ and $x_f$ histories stored as int16, 3,072 samples deep (enough to cover the start-up burst back to the calibration start);
+  \item \textbf{bf16 envelope rings}: each of the 16 tracks keeps 1,280 envelope values as bf16 (\texttt{f2bf}/\texttt{bf2f});
+  \item \textbf{int8 beat snapshots}: 96 snapshots of 31 samples per track, peak-normalised to $\pm127$;
+  \item \textbf{shared buffers}: the calibration buffers (used only before 15\,s) and the 16 trackers (used only after 15\,s) live in the same memory (a C \texttt{union});
+  \item \textbf{rarely used data in the slow AXI BRAM}: the 20-beat canceller history and its Gram matrices (\texttt{SLOWMEM}, linker section \texttt{.bigdata}).
+\end{itemize}}
+\why{The chip has 75 BRAM tiles (about 300\,KB); 64 tiles form the 256\,KB LMB and 8 the 32\,KB AXI BRAM, because each memory must be a power of two; 288\,KB is the practical maximum, and there is no external RAM.}
+\result{Fits: LMB 253.8\,KB of 256 at this point (final frozen design: \textbf{254.6\,KB of 256}, including code and a 16\,KB stack; AXI 30.4 of 32\,KB). Accuracy 91.59 / 73.29 / 93.10, unchanged within noise. Tried at the same time: a running (EMA) template instead of the 20-beat history, to save memory: CinC dev $-1.1$, \textbf{rejected}.}
+\decision{Adopt all memory tricks; keep the 20-beat template.}
+\end{tried}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{vivek_v5_memory.png}
+\caption{What the three smaller formats save (our arithmetic from the array sizes in \file{fecg_v5.c}: $2\times3{,}072\times4$ int16; $16\times1{,}280$ bf16; $16\times96\times31$ int8). As floats, these three alone would need 362\,KB, more than the whole 256\,KB memory; packed they need 135\,KB. The shared calibration buffers (about 94\,KB) are not counted twice.}
+\end{figure}
+
+\begin{tried}[01:45 -- First run of the full algorithm on the FPGA]
+\what{Stream ADFECGDB r01 (5 minutes) to the board and compare the beats with the PC build.}
+\result{F1 96.86\%, board output \textbf{bit-exact} with the PC build. But \textbf{163k cycles per sample}, only $1.7\times$ real time: too close to the limit.}
+\decision{Find where the cycles go and speed it up.}
+\end{tried}
+
+\begin{tried}[02:00 -- The $3.5\times$ speed-up]
+\what{\begin{itemize}
+  \item \textbf{Incremental Gram matrix + top-2 subspace iteration instead of a $20\times20$ Jacobi solver.} The template needs the mean and the 2 main shapes of the last 20 maternal beats. The old code rebuilt a $20\times20$ matrix of beat-to-beat dot products and diagonalised it fully with Jacobi rotations (all 20 eigenvectors) for every maternal beat. The new code updates only the row and column of the new beat (\texttt{GRAW}) and runs a short ``power iteration'' for just the top 2 vectors, warm-started from the previous beat's answer (\texttt{top2}).
+  \item \textbf{Exact int32 history sums} (\texttt{hsum}): the mean beat is kept as a running integer sum, so it is exact and cheap.
+  \item \textbf{Running moving-window integrator} (add the new value, subtract the oldest) instead of re-summing the window.
+  \item \textbf{Quickselect medians} (\texttt{fselect}): find the middle value without sorting the whole list.
+  \item \textbf{Ring indexing}: circular buffers instead of copying data.
+\end{itemize}}
+\why{Jacobi computes 20 eigenvectors when only 2 are needed, and recomputes everything when only one beat changed. Sorting for a median does far more work than needed.}
+\result{\textbf{46.8k cycles per sample}: $163/46.8 = 3.5\times$ faster; the board ran at \textbf{$5.4\times$ real time} and used about 16\% of the 294,912-cycle budget. Accuracy unchanged (91.65 / 73.18 / 93.15). Still bit-exact.}
+\decision{Adopted. The report: ``accuracy within 0.3 points, $3.5\times$ faster''.}
+\end{tried}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{vivek_v5_speed.png}
+\caption{Cycles per input sample on the MicroBlaze (night log and v5 README). The real-time budget at 73.728\,MHz and 250\,Hz is 294,912 cycles.}
+\end{figure}
+
+\begin{analogy}[Why the incremental solver is faster]
+To know the two most common shapes in your last 20 photos, you do not re-compare all 20 photos with each other every time a new one arrives. You compare only the new one with the other 19, and you start your search from yesterday's answer, which is already almost right.
+\end{analogy}
+
+\begin{tried}[03:20 -- An intermediate board run, and a lesson]
+\what{Run CinC dev and ADFECGDB on the board with an intermediate firmware (v5a).}
+\result{73.18 / 93.15, $5.2$--$5.5\times$ real time. But the bit-exact column of this run is \textbf{invalid}: the PC model was rebuilt in the middle of the run, so the board and the model were no longer the same program.}
+\decision{Freeze first, then run. At 03:30 the design was frozen and fingerprinted: \file{fecg_v5.c} MD5 \texttt{b5726755\dots}, bitstream \file{download_v5_final.bit} MD5 \texttt{8a266869\dots}.}
+\end{tried}
+
+\begin{tried}[04:00--05:45 -- Final v5 board runs]
+\what{\file{run_v5_board_eval.py} on all four sets with the frozen firmware. The CinC test half was touched for the first and only time for v5.}
+\result{CinC test \textbf{65.75\%} (Se 64.68, PPV 67.33, FHR MAE 17.94\,bpm), 37/37 bit-exact, $5.0\times$ real time. CinC dev 75.26\%, ADFECGDB 93.44\%, 43/43 bit-exact. FECGSYNDB subset 91.92\%, 60/60 bit-exact, $3.8\times$. \textbf{All 140/140 records bit-exact.} All 1,248 FECGSYNDB (PC model of the same C): 91.46\%.}
+\decision{v5 frozen: the first version that ran the whole real-data algorithm on the FPGA.}
+\end{tried}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Set} & \textbf{Rec.} & \textbf{Old design} & \textbf{v2} & \textbf{v4 (Python)} & \textbf{v5 (board)} \\
+\midrule
+CinC test (held out) & 37 & 16.7 & 41.2 & 53.1 & \textbf{65.8} \\
+CinC test, reliable refs & 33 & 17.5 & 43.2 & 56.0 & \textbf{70.9} \\
+CinC dev & 38 & -- & 42.0 & 68.4 & \textbf{75.3} \\
+ADFECGDB & 5 & -- & 37.0 & 91.3 & \textbf{93.4} \\
+FECGSYNDB all (PC model) & 1,248 & 82.2 & 95.6 & 92.1 (subset) & 91.5 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{lesson}[Why the team moved on from v5]
+\begin{itemize}
+  \item \textbf{It was a processor we did not design.} The course project is the hardware design; in v5 the ``hardware'' was mostly Xilinx's CPU running our C.
+  \item \textbf{The memory was full}: 254.6 of 256\,KB, 72 of 75 BRAM tiles. Any new idea (recalibration, look-ahead) would not fit.
+  \item \textbf{Speed headroom was small}: 16\% of the budget, against about 1\% for the later RTL (1,485 of 200,000 cycles).
+\end{itemize}
+v6 moved every sample-rate step into Astitva's hand-written RTL and left the PC five slow decisions. The v5 C code was the starting point of the v6 C model, and v6 matched v5's accuracy within $\pm0.8$ points.
+\end{lesson}
+
+\subsection{The board evaluation script}
+\label{sec:evalscript}
+
+\begin{tried}[v5 version: \file{run_v5_board_eval.py}]
+\what{For each record: load it, convert to int16 (\texttt{v5c.to\_i16}), \texttt{board.reset()}, stream in 250-sample blocks (\texttt{V5Board.run}), score the board's beats with the shared scoring function (\texttt{harness.score}, from 20\,s, $\pm50$\,ms), run the PC build of the same C on the same int16 data (\texttt{v5c.run\_c}) and compare the two \textbf{beat lists} (time, FHR$\times10$, track).}
+\result{140/140 equal beat lists for frozen v5. The CSV also stores cycles per sample and the time per record.}
+\decision{For v6 compare more than the beats: compare everything the board says.}
+\end{tried}
+
+\begin{tried}[v6 version: \file{run_v6_board_eval.py} (216 lines)]
+\what{\begin{enumerate}
+  \item Start the PC brain (\file{v6_brain.exe}, or \file{v61_}/\file{v7_brain.exe}) as a child process connected by pipes, and a background thread that copies every frame from the brain to the serial port.
+  \item For each record: send RESET to the board and to the brain; send 64-sample SAMPLES frames; after each, read board frames until DONE. OUT beats are collected; every other frame is appended to the uplink record \emph{and} forwarded to the brain, which may answer (RSP\_V, RSP\_BASIS, \dots).
+  \item Run the C system model (\file{v6_sim.exe}) on the same int16 data with \texttt{V6\_DUMP} set, which writes the model's uplink bytes as hex.
+  \item \texttt{bit\_exact = (up == upm)}: the board's complete uplink equals the model's, byte for byte. Store \texttt{uplink\_bytes} and \texttt{uplink\_md5}.
+  \item Score the beats; write one CSV row per record (F1, Se, PPV, FHR MAE, beats, bit\_exact, uplink bytes and MD5, \texttt{stream\_s}, \texttt{record\_s}); print a summary per set with \texttt{rt\_factor} $=$ total record time / total streaming time.
+\end{enumerate}}
+\why{Comparing every byte, including every request to the PC, checks the entire hardware, not just its final answer. Two designs could give the same beats by luck; they cannot give the same 1.5 million bytes by luck.}
+\result{v6 on the board: \textbf{140/140 bit-exact}; F1 91.83 (syn), 76.04 (CinC dev), 92.73 (ADFECGDB), 65.48 (CinC test); 4.3--5.1$\times$ real time per set (report). After Astitva's block-RAM change the new bitstream gave the \emph{same MD5} for every record as the old one.}
+\decision{This script is the board's acceptance test for every later version.}
+\end{tried}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\small,b/.style={draw=tmblue,fill=tmlight,rounded corners=2pt,align=center,minimum height=9mm}]
+\node[b,text width=3.0cm] (main) {main thread\\ \texttt{V6System.run}};
+\node[b,text width=2.4cm,right=34mm of main] (ser) {serial port\\ COM5 $\leftrightarrow$ FPGA};
+\node[b,text width=2.6cm,below=10mm of main,fill=tmpurplel,draw=tmpurple] (brain) {PC brain\\ \texttt{v7\_brain.exe}};
+\node[b,text width=2.6cm,right=34mm of brain] (thr) {thread\\ \texttt{\_brain\_to\_fpga}};
+\draw[-{Latex},thick] ([yshift=2mm]main.east) -- node[above,font=\scriptsize]{SAMPLES, FLUSH} ([yshift=2mm]ser.west);
+\draw[-{Latex},thick,tmgreen] ([yshift=-2mm]ser.west) -- node[below,font=\scriptsize]{all frames} ([yshift=-2mm]main.west-|main.east);
+\draw[-{Latex},thick] (main) -- node[left,font=\scriptsize,align=right]{forward frames\\(not OUT/OUT7/END7)} (brain);
+\draw[-{Latex},thick,tmpurple] (brain) -- node[below,font=\scriptsize]{answers} (thr);
+\draw[-{Latex},thick,tmpurple] (thr) -- node[right,font=\scriptsize]{write (with lock)} (ser);
+\end{tikzpicture}
+\caption{Data flow inside \file{run_v6_board_eval.py}. A lock makes sure the main thread and the brain thread never write to the serial port at the same time.}
+\end{figure}
+
+\subsection{Extending the script for v7-DL: FLUSH, OUT7, END7}
+
+v7-DL outputs two things in the same run: the \emph{live} v6.1 beats (OUT, 0x8B), about 1.5--2\,s late, and the \emph{final} look-ahead beats (OUT7, 0x8D), about 13.5\,s late. At the end of a recording the last final beats are still waiting for future data that will never come.
+
+\begin{tried}[The v7 extension (\texttt{V6\_VARIANT=v7})]
+\what{\begin{itemize}
+  \item \texttt{V6\_VARIANT} chooses the matching brain and model (\file{v7_brain.exe}, \file{v7_sim.exe}); \texttt{V7 = (VARIANT == "v7")}.
+  \item After the last SAMPLES frame the script sends \textbf{FLUSH} (\texttt{0x03}) and reads frames until \textbf{END7} (\texttt{0x8E}).
+  \item \texttt{\_frames\_until} collects OUT and OUT7 beats separately; END7 is not forwarded to the brain.
+  \item The final beats (OUT7) are scored as the result; the live OUT beats of the same run are scored too and stored as \texttt{f1\_causal} and \texttt{fhr\_mae\_causal}.
+  \item The bit-exact comparison now covers OUT7, FLUSH-triggered output and END7 as well.
+\end{itemize}}
+\why{Without FLUSH the last 10--15\,s of final beats would never be sent. Without END7 the PC would not know when the board has finished. Scoring both outputs in one run gives a fair live-vs-final comparison on identical input.}
+\result{v7-DL board run: 140/140 bit-exact, 207,603,379 uplink bytes. A test checks that END7 equals the number of OUT7 frames.}
+\decision{Kept; the web demo uses the same FLUSH step.}
+\end{tried}
+
+\begin{warn}[The one rule: bitstream and \texttt{V6\_VARIANT} must match]
+If \texttt{V6\_VARIANT} is not set, the scripts use v6. With a v7 board the comparison is \texttt{False}; with \texttt{V6\_VARIANT=v7} on a non-v7 board the run hangs after the first record and stops with ``FPGA silent for 20 s'' (no END7 ever comes). \texttt{bit-exact False} almost always means a wrong variant, a board that was not reprogrammed after power-off, or a rebuilt \texttt{.exe}.
+\end{warn}
+
+\subsection{The board runs of v6.1 and v7-DL (14--15 November)}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+ & & \multicolumn{3}{c}{\textbf{v6.1 board}} & \multicolumn{3}{c}{\textbf{v7-DL board (final)}} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+\textbf{Set} & \textbf{Rec.} & \textbf{F1} & \textbf{FHR MAE} & \textbf{Speed} & \textbf{F1} & \textbf{FHR MAE} & \textbf{Speed} \\
+\midrule
+CinC dev & 38 & 80.41 & 8.91 & 4.53$\times$ & \textbf{84.68} & 6.45 & 4.54$\times$ \\
+ADFECGDB & 5 & 92.87 & 1.72 & 4.34$\times$ & \textbf{96.10} & 2.13 & 4.36$\times$ \\
+CinC test & 37 & 71.94 & 11.16 & 4.52$\times$ & \textbf{76.91} & 11.53 & 4.53$\times$ \\
+FECGSYNDB subset & 60 & 91.64 & 5.36 & 3.99$\times$ & \textbf{93.39} & 4.23 & 4.04$\times$ \\
+\midrule
+Bit-exact & & \multicolumn{3}{c}{140/140; 207,020,008 uplink bytes} & \multicolumn{3}{c}{140/140; 207,603,379 uplink bytes} \\
+Total board time & & \multicolumn{3}{c}{5,851\,s (1.6\,h)} & \multicolumn{3}{c}{5,789\,s (1.6\,h)} \\
+\bottomrule
+\end{tabular}
+\end{center}
+(F1 in \%, FHR MAE in bpm. Speeds are total record time / total streaming time per set, from the board CSVs \file{report/v61_v7/board_v61/} and \file{board_v7/}. The report rounds them to ``4.04--4.54$\times$ (v7-DL) and 3.99--4.53$\times$ (v6.1)''.)
+
+More v7-DL facts from the same run:
+\begin{itemize}
+  \item CinC test on the 33 reliable references: 81.95\%. 18 records $\ge 90\%$ (v6.1: 15).
+  \item Against the live v6.1 output of the same runs: 33 CinC test records better and 1 worse by more than 1 point (all 75 CinC: 63 better, 2 worse).
+  \item Per record the speed ranges from 3.4 to 5.6$\times$ real time, mean of per-record ratios $4.35\times$.
+  \item Time per record: about 13\,s for a 60-s CinC record (11--16\,s), about 69\,s for a 5-minute ADFECGDB record, 60--90\,s (mean 74\,s) for a 5-minute synthetic record.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{vivek_board_speed_v7.png}
+\caption{v7-DL board run: speed per record (dots) and per set (black bar, with the number on the right). Every record runs faster than real time. Data: \file{report/v61_v7/board_v7/board_cdev_ad_ctest_syn.csv}.}
+\end{figure}
+
+\begin{simple}[Why only $4$--$4.5\times$ when the RTL alone is about $135\times$?]
+The report: ``every sample and every PC request crosses the 921,600-baud UART and waits for the PC; the logic is not the bottleneck''. The RTL needs a median of 1,485 cycles per sample (30\,$\mu$s at 50\,MHz) out of 200,000. But each 64-sample frame is a round trip: send, wait for the FPGA, wait for DONE; and each PC question (the template basis alone is requested once per maternal beat, 1--1.5 times per second) stops the FPGA until the brain's answer has crossed the USB link. The link itself is only 8--10\% busy. We did not measure the split of the waiting time further.
+\end{simple}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{fin_board_speed.png}
+\caption{For comparison: the v6 board run (report figure): 3.7--9.4$\times$ real time per record, mean 4.8$\times$. Seven CinC test records ran at about $8$--$9\times$; the report does not analyse why.}
+\end{figure}
+
+% =====================================================================
+\section{Code walk-through}
+\label{sec:code}
+
+All paths are relative to \file{D:/signal_project}. Commands are PowerShell, run from the repository root, with the venv's Python called directly (\file{venv/Scripts/python.exe}).
+
+\subsection{Mid-term code (\texttt{code/})}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+\textbf{File} & \textbf{What to know} \\
+\midrule
+\file{code/src/methods/alternative.py} & Your method. \texttt{\_detect\_maternal\_peaks}: 5--25\,Hz band-pass, polarity from the 99th percentiles, squared and smoothed envelope, peaks $\ge0.4$\,s apart, refined to the local maximum. \texttt{\_cancel\_maternal\_ecg}: beat matrix ($-0.25\dots+0.45$\,s), \texttt{np.linalg.svd}, keep \texttt{n\_svd\_components=2}, cosine taper (40\,ms), overlap-add, subtract. \texttt{extract}: then 8--38\,Hz band-pass and rescale. Note \texttt{IS\_CAUSAL = False} (it uses zero-phase \texttt{filtfilt}, allowed at the mid-term, not in the final rules). \\
+\file{code/src/fixed_point_model.py} & \texttt{to\_fixed(val, frac\_bits, word\_len)}: round and clip; \texttt{fixed\_point\_sos\_filter}: integer biquads, \texttt{>> coeff\_frac}; \texttt{FixedPointAlternativeExtractor}: the hybrid in Q3.12 / Q2.14. \\
+\file{code/tests/test_fixed_point_verification.py} & runs float vs fixed on TC1 and checks the fixed F1 stays above 0.60 and outputs are finite. \\
+\file{code/results/fpga_test_vectors/} & the 5,000-word hex stimulus and golden output, 48 expected peaks, Verilog testbench template. \\
+\file{code/src/run_benchmark.py} & runs any method on TC1--TC5 (method name \texttt{alternative} is yours). \\
+\file{code/src/run_mega_benchmark.py} & the 250-record benchmark; your method appears as \texttt{Wavelet\_Threshold\_Hybrid}. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[language=Python,caption={The heart of your fixed-point model (from \texttt{fixed\_point\_model.py})}]
+def to_fixed(val, frac_bits=12, word_len=16):
+    scale = 1 << frac_bits
+    q_val = np.round(val * scale)                     # round to nearest
+    max_val = (1 << (word_len - 1)) - 1               # 32767
+    min_val = -(1 << (word_len - 1))                  # -32768
+    return np.clip(q_val, min_val, max_val).astype(np.int64)   # saturate
+
+# one Direct-Form-II biquad, integers only
+w0 = xi - ((a1_q * w1 + a2_q * w2) >> coeff_frac)
+yi = (b0_q * w0 + b1_q * w1 + b2_q * w2) >> coeff_frac
+\end{lstlisting}
+
+How to run (mid-term environment, from \file{code/}):
+\begin{lstlisting}
+python src/run_benchmark.py --tc TC1 --method alternative
+python src/fixed_point_model.py
+pytest tests/test_fixed_point_verification.py -v
+\end{lstlisting}
+
+\subsection{UART bring-up (\texttt{archive/uart\_bringup/})}
+
+\begin{itemize}
+  \item \file{rtl/uart_rx.v}, \file{rtl/uart_tx.v}: parameterised 8-N-1 receiver/transmitter (\texttt{CLKS\_PER\_BIT}); states IDLE, START, DATA, STOP.
+  \item \file{rtl/uart_top.v}: loop-back echo with a 16-entry FIFO and diagnostic LEDs.
+  \item \file{tb/*.v} and \file{sim/run_sim.py}: self-checking testbenches (12/12 checks).
+  \item \file{scripts/run_production_build.tcl}, \file{program_hw.tcl}: batch build and JTAG programming.
+  \item \file{python/uart_test.py} \texttt{--list} / \texttt{--port COM5 --baud 115200 --all} / \texttt{--interactive}.
+\end{itemize}
+It is archived: the final designs contain their own UART (\file{fpga_implementation/v6/rtl/v6_uart.v}, \texttt{CLKS\_PER\_BIT = 54} at 50\,MHz).
+
+\subsection{v5 (\texttt{fpga\_implementation/v5/})}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+\textbf{File} & \textbf{What to know} \\
+\midrule
+\file{build_v5.tcl} & Vivado block design: MicroBlaze + FPU, 256\,KB LMB, 32\,KB AXI BRAM, UART16550, timer, GPIO; about 7 minutes. \\
+\file{build_fw.sh} & compiles the firmware with \texttt{-O2 -ffp-contract=off -mhard-float \dots} and merges the ELF into the bitstream with \texttt{updatemem} (seconds, no re-synthesis). \\
+\file{program_v5.tcl} & programs the board. \\
+\file{fw/main.c} & lock-step framed protocol, BENCH, MEMTEST. \\
+\file{fw/lscript.ld} & linker script; checks both memory limits at link time; section \texttt{.bigdata} for the AXI BRAM. \\
+\file{algo/fecg_v5.c} & the algorithm. Look at: \texttt{f2bf}/\texttt{bf2f} (bf16), \texttt{sat16}, \texttt{top2} (subspace iteration), \texttt{cancel\_beat}, \texttt{capture\_features} (int8 snapshots), \texttt{mylogf}, the \texttt{union U} (shared memory), \texttt{SLOWMEM}, \texttt{fecg\_push}, \texttt{fecg\_reset}. \\
+\file{algo/host_main.c} & PC build = reference model (\texttt{fecg\_v5\_host.exe}). \\
+\file{uart_host/v5_client.py} & \texttt{V5Board}: \texttt{ping}, \texttt{reset}, \texttt{bench}, \texttt{memtest}, \texttt{run(X)}. \\
+\file{uart_host/run_v5_board_eval.py} & board evaluation of v5 (beat-list comparison). \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[language=C,caption={bf16 in \texttt{fecg\_v5.c}: keep the top 16 bits of a float, rounding to nearest even}]
+static uint16_t f2bf(float f)
+{
+    uint32_t u; memcpy(&u, &f, 4);
+    return (uint16_t)((u + 0x7FFFu + ((u >> 16) & 1u)) >> 16);
+}
+static float bf2f(uint16_t b)
+{
+    uint32_t u = (uint32_t)b << 16; float f; memcpy(&f, &u, 4);
+    return f;
+}
+\end{lstlisting}
+Read \texttt{f2bf} like this: adding \texttt{0x7FFF} plus the lowest kept bit and then dropping 16 bits is ``round to nearest, ties to even'' for the discarded lower half.
+
+\begin{lstlisting}[language=C,caption={Shared memory: calibration buffers and trackers are never alive at the same time}]
+static union {
+    struct {
+        int16_t Zc[CAL_LEN][NL], Xc[CAL_LEN][NL];
+        union { float Ym[MAT_INIT][NL]; float Yc[CAL_LEN][NL]; } u;
+    } c;                    /* used before calibration (< 15 s) */
+    track_t tr[MAXTR];      /* used after calibration          */
+} U;
+\end{lstlisting}
+
+Self-test of a v5 board (only with the v5 bitstream on the board):
+\begin{lstlisting}
+venv\Scripts\python.exe fpga_implementation\uart_host\v5_client.py --port COM5 --baud 921600 --seconds 60
+\end{lstlisting}
+Expected: \texttt{PING : FECG-v5 73728000 921600}, a BENCH table, MEMTEST with 0 errors, then the streaming rate.
+
+\subsection{The protocol (\texttt{proto.h})}
+
+One header shared by the C model and the PC brain. It contains the message codes (\texttt{enum \{ C\_RESET = 0x01, \dots, C\_FLUSH = 0x03, C\_OUT7 = 0x8D, C\_END7 = 0x8E \}}), the constants of the algorithm (\texttt{FS 250}, \texttt{SEL\_HOP 625} = 2.5\,s, \texttt{LAT\_OUT 13}, \texttt{W\_FRAC 14}, \texttt{BO\_FRAC 22}), the version switches (\texttt{-DV61}, \texttt{-DV7}), the envelope code \texttt{enc\_e}/\texttt{dec\_e} and the little-endian helpers \texttt{put16}, \texttt{put24}, \texttt{put32}, \texttt{get16s}, \texttt{get24s}, \texttt{get32}. The Verilog side is \file{rtl/v6_link.v} (frame parser, 512-sample FIFO, response buffers, message writer, 4\,KB TX FIFO, sticky \texttt{err}) and \file{rtl/v6_uart.v}.
+
+\subsection{The board evaluation (\texttt{run\_v6\_board\_eval.py})}
+
+\begin{lstlisting}[language=Python,caption={Building and parsing a frame (from the script)}]
+def frame(cmd, payload=b""):
+    n = len(payload)
+    x = cmd ^ (n & 255) ^ (n >> 8)          # xor8 over cmd and both length bytes
+    for b in payload:
+        x ^= b                              # ... and every payload byte
+    return bytes([0xA5, 0x5A, cmd, n & 255, n >> 8]) + payload + bytes([x])
+
+def read_frame(read):
+    while True:                              # resynchronise on A5 5A
+        if read(1) != b"\xA5": continue
+        if read(1) != b"\x5A": continue
+        h = read(3); cmd, n = h[0], h[1] | (h[2] << 8)
+        p = read(n); x = read(1)[0]
+        c = h[0] ^ h[1] ^ h[2]
+        for v in p: c ^= v
+        if c != x: raise IOError(f"checksum error in frame {cmd:02X}")
+        return cmd, p, b"\xA5\x5A" + h + p + bytes([x])
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python,caption={One recording (simplified from \texttt{V6System.run} and \texttt{main})}]
+ser.write(frame(0x01)); brain.stdin.write(frame(0x01))      # RESET both
+for c0 in range(0, len(xi), 64):                            # 64-sample frames
+    ser.write(frame(0x02, xi[c0:c0+64].astype("<i2").tobytes()))
+    _frames_until(0x8C, up, outs)       # read until DONE; OUT/OUT7 kept,
+                                        # other frames forwarded to the brain
+if V7:
+    ser.write(frame(0x03))              # FLUSH
+    _frames_until(0x8E, up, outs)       # read until END7
+bm, upm = model_stream(xi)              # C model on the same int16 input
+exact = (up == upm)                     # the bit-exact check
+row["uplink_md5"] = hashlib.md5(up).hexdigest()
+\end{lstlisting}
+
+\textbf{How to run} (from the team command sheet; stop the web server first, both need COM5; always give \texttt{--out} so saved results are not overwritten):
+\begin{lstlisting}
+Set-Location D:\signal_project
+$env:V6_VARIANT = 'v7'
+venv\Scripts\python.exe fpga_implementation\uart_host\run_v6_board_eval.py --sets cdev --limit 3 --out "$env:TEMP\v7_eval"
+\end{lstlisting}
+Options: \texttt{--sets} (any of \texttt{cdev}, \texttt{ctest}, \texttt{ad}, \texttt{syn}), \texttt{--limit N}, \texttt{--port COM5}, \texttt{--out DIR}. Expected output for v7 (from \file{report/v61_v7/board_v7.log}):
+\begin{lstlisting}
+cdev  a01   F1  98.02  beats  102  uplink   444487 B  bit-exact True   12.6s for    60s
+cdev  a03   F1  96.47  beats   85  uplink   472019 B  bit-exact True   14.5s for    60s
+cdev  a05   F1  98.82  beats   89  uplink   420085 B  bit-exact True   12.7s for    60s
+\end{lstlisting}
+then a summary per set with \texttt{f1}, \texttt{se}, \texttt{ppv}, \texttt{fhr\_mae}, \texttt{records}, \texttt{bit\_exact} (share of records, 1.0 = all), \texttt{rt\_factor} and, for v7, \texttt{f1\_causal}, \texttt{fhr\_mae\_causal}.
+
+\textbf{Without the board} (same scoring, C model only, gives the same F1):
+\begin{lstlisting}
+$env:V6_VARIANT = 'v7'
+venv\Scripts\python.exe fpga_implementation\uart_host\run_v6_model_eval.py --sets cdev --limit 3
+\end{lstlisting}
+\file{run_v6_model_eval.py} (48 lines) imports \texttt{model\_stream} from the board script, runs only the C model and prints F1, Se, PPV and FHR MAE per record and per set.
+
+\textbf{Programming the board} (after every power-off; JTAG, not COM5):
+\begin{lstlisting}
+Set-Location D:\signal_project\fpga_implementation\v6
+& C:\AMDDesignTools\2025.2\Vivado\bin\vivado.bat -mode batch -nojournal -nolog -source program_v7.tcl
+\end{lstlisting}
+Success ends with \texttt{PROGRAMMED .../build/v7/v7.bit}; the v7 displays show \texttt{----} and \texttt{0000}.
+
+\begin{center}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Set} & \textbf{Records} & \textbf{v7 board time} & \\
+\midrule
+\texttt{cdev} & 38 & about 13\,s per record, 8.4\,min & \\
+\texttt{ctest} & 37 & about 13\,s per record, 8.2\,min & \\
+\texttt{ad} & 5 & about 69\,s per record, 5.7\,min & \\
+\texttt{syn} & 60 & 60--90\,s per record (mean 74\,s), 74\,min & \\
+all four & 140 & about 1.6\,h (5,789\,s): never in the demo & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section{Numbers you must know}
+\label{sec:numbers}
+
+\begin{center}
+\small
+\begin{longtable}{@{}p{6.4cm} p{8.6cm}@{}}
+\toprule
+\textbf{Item} & \textbf{Value} \\
+\midrule
+\endhead
+\multicolumn{2}{@{}l}{\textbf{Mid-term}} \\
+Your method, TC1 / Subject 1 average & F1 77.29\% / 39.64\% \\
+Your method, 250 records & 60.52\% [53.43, 67.60] (PCA beamformer 93.00\%) \\
+SQNR, mid-term fixed-point model (report) & $+74.52$\,dB (beamformer, 5,000 golden samples); $+85.04$\,dB Hankel SVD; target $\ge 60$\,dB \\
+Your hybrid in fixed point (your note) & F1 77.29 $\to$ 77.10\%; SQNR $+42.8$\,dB; Q3.12 / Q2.14 \\
+Null-depth bound, 16-bit weights, 4 leads & 95.1\,dB (requirement 55\,dB) \\
+Feasibility (paper) & 148 cycles = 1.48\,$\mu$s at 100\,MHz; 400,000 available; $2{,}702\times$ margin; 990 LUTs (3.0\%), 720 FF, 1 DSP, 1 BRAM \\
+Test vectors & 5,000 words (20\,s of TC1), 48 expected beats \\
+\multicolumn{2}{@{}l}{\textbf{Link and protocol}} \\
+UART & 921,600 baud, 8-N-1, 10 bits per byte, 92,160 bytes/s per direction \\
+Frame & \texttt{A5 5A cmd len\_lo len\_hi payload xor8}; little-endian \\
+SAMPLES frame & 64 samples $\times$ 4 leads $\times$ int16 = 512 + 6 = 518 bytes per 0.256\,s \\
+Link load (v7-DL, ADFECGDB r01) & 7.8\,KB/s up, 9.2\,KB/s down = 8.5\%, 10.0\% \\
+Traffic share of PC decisions & template basis 59.1\%, selection 28.7\%, GEVD 11.6\%, maternal 0.6\% \\
+New v7 frames & FLUSH 0x03, OUT7 0x8D, END7 0x8E; live beats OUT 0x8B; DONE 0x8C \\
+v2 on the board & 115,200 baud, CRC-8 packets; 165,000 samples, 0 LSB difference; 1,116 beats identical \\
+\multicolumn{2}{@{}l}{\textbf{v5 (MicroBlaze)}} \\
+Platform & MicroBlaze v11 + FPU, 73.728\,MHz, 256\,KB LMB + 32\,KB AXI, UART16550; 3,340 LUTs, 5 DSP, 72/75 BRAM; slack $+1.91$\,ns \\
+Memory used & 254.6 of 256\,KB LMB; 30.4 of 32\,KB AXI \\
+Speed & 163k $\to$ 46.8k cycles/sample ($3.5\times$); $1.7\times\to5.4\times$ real time; budget 294,912 cycles \\
+Stub test & 7,800 samples/s = $31\times$ real time \\
+Accuracy (board) & CinC test 65.8, dev 75.3, ADFECGDB 93.4, syn subset 91.9; FECGSYNDB all 91.5 (PC model) \\
+Bit-exact & 140/140 (37 + 43 + 60) \\
+\multicolumn{2}{@{}l}{\textbf{Board evaluation, v6 / v6.1 / v7-DL}} \\
+Bit-exact & 140/140 for each \\
+Uplink bytes & v6.1: 207,020,008; v7-DL: 207,603,379 \\
+Speed per set & v7-DL 4.04--4.54$\times$; v6.1 3.99--4.53$\times$; v6 4.3--5.1$\times$ \\
+Speed per record, v7-DL & 3.4--5.6$\times$, mean 4.35$\times$ (v6: 3.7--9.4$\times$, mean 4.81$\times$) \\
+Time & 60-s CinC $\approx$ 13\,s; 5-min synthetic $\approx$ 74\,s; 140 records $\approx$ 1.6\,h \\
+RTL alone & median 1,485 cycles/sample of 200,000 = $135\times$ real time (30\,$\mu$s) \\
+\multicolumn{2}{@{}l}{\textbf{Accuracy (F1 \%, board)}} \\
+CinC test & 16.7 $\to$ 41.2 (v2) $\to$ 65.8 (v5) $\to$ 65.5 (v6) $\to$ 71.9 (v6.1) $\to$ \textbf{76.9} (v7-DL) \\
+v7-DL & dev 84.7, ADFECGDB 96.1, syn subset 93.4, all 1,248 synthetic 93.7; CinC test reliable refs 82.0 \\
+v7-DL 95\% CI CinC test & [68.3, 84.7] \\
+\multicolumn{2}{@{}l}{\textbf{Final hardware (v7-DL)}} \\
+Resources & 26,701 LUTs (81.9\%), 15,970 FF, 43 DSP, 71/75 BRAM, 50\,MHz, slack $+0.048$\,ns, 0.445\,W (estimate) \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\begin{warn}[Where sources differ, and what to say]
+\begin{itemize}
+  \item \textbf{RTL speed}: the report says $135\times$ (median 1,485 cycles; $142\times$ for a whole simulated 30-s run); the team notes say ``about $140\times$''. Say $135\times$.
+  \item \textbf{Board speed}: the team notes say ``4.0--4.5$\times$''; the report gives 4.04--4.54$\times$ per set and 3.4--5.6$\times$ per record (mean 4.35$\times$). Both are right; say which one you mean.
+  \item \textbf{v5 budget share}: the night log says ``63\% of the real-time budget'' next to 46.8k cycles; the v5 README says 16\%. $46{,}800/294{,}912 = 16\%$, so use 16\%.
+  \item \textbf{v6 per-set speed}: the work log gives 4.3--5.0$\times$, the report's v6 table 4.3--5.1$\times$; use the report.
+  \item \textbf{Mid-term SQNR}: $+74.52$\,dB (report, beamformer) vs $+42.8$\,dB (your note, hybrid). Different pipelines.
+  \item \textbf{Method name}: ``Wavelet-Threshold Hybrid'' is described as SWT + LMS in the report's method list, but your code is SVD-template + band-pass.
+\end{itemize}
+\end{warn}
+
+% =====================================================================
+\section{How to present your part}
+\label{sec:present}
+
+\subsection{A 2--3 minute speaking script}
+
+\begin{simple}[Say this (about 2.5 minutes)]
+\textbf{1. Fixed point (30\,s).} ``An FPGA does integer arithmetic cheaply and exactly, so the first question was whether 16-bit integers are precise enough. I wrote a bit-accurate fixed-point model with rounding and saturation. In Q1.15 the beamformer output had an SQNR of 74.5\,dB against floating point, with no beat lost, so 16 bits are enough. I also made 5,000 golden test vectors and a feasibility study: 148 cycles on one time-multiplexed DSP block. That sizing was right for the mid-term design; after the real-data shock the algorithm grew, and the final RTL needs 1,485 cycles per sample, still 135 times faster than needed.''
+
+\textbf{2. Link and protocol (40\,s).} [Show the frame figure.] ``Next I brought up the serial link: first a stand-alone loop-back on the board, then framed messages. Every message in both directions is A5 5A, a command byte, a 16-bit length, the payload and an XOR checksum, at 921,600 baud: about 92 kilobytes per second, of which the final design uses about 10\%. The protocol is lock-step: the PC sends 64 samples and waits for DONE, and when the FPGA asks the PC something it stalls until the answer comes. So the result never depends on timing.''
+
+\textbf{3. v5 (40\,s).} [Show the memory and speed figures.] ``In v5 the whole algorithm ran in C on a MicroBlaze processor inside the FPGA, and the PC only streamed samples. It did not fit at first. I stored samples as int16, envelopes as bf16, beat snapshots as int8, shared the calibration buffers with the trackers, and replaced a 20-by-20 Jacobi solver with an incremental one. It fitted in 254.6 of 256 KB, became 3.5 times faster, and was bit-exact with the PC build on all 140 records; CinC test went to 65.8\%.''
+
+\textbf{4. Board evaluation (40\,s).} [Show the speed figure and one console line.] ``Finally the board evaluation script: it streams each recording, runs the PC brain, scores the beats and compares the board's entire output byte stream with the C model. For v7 I added FLUSH at the end and the OUT7 and END7 frames. v6.1 and v7-DL were bit-exact on all 140 records, 207 million bytes, running 4 to 4.5 times faster than real time. Bit-exact means the accuracy of the C model is the accuracy of the hardware.''
+\end{simple}
+
+\subsection{Which figures to show}
+\begin{enumerate}
+  \item The frame layout and the lock-step diagram (Section~\ref{sec:msgtable}, Figure~\ref{fig:lockstep}).
+  \item \file{vivek_v5_memory.png} and \file{vivek_v5_speed.png} (v5 fitting and speed-up).
+  \item \file{vivek_board_speed_v7.png} or the report's \file{fin_board_speed.png}.
+  \item If asked about the mid-term: \file{TC3_alternative.png} and the DSP schedule.
+\end{enumerate}
+
+\subsection{If asked to show bit-exactness live}
+\begin{enumerate}
+  \item Check the board was programmed with v7 after the last power-off (displays \texttt{----} / \texttt{0000}).
+  \item Stop the web server (it holds COM5).
+  \item Run one record: \texttt{\$env:V6\_VARIANT='v7'} then \texttt{run\_v6\_board\_eval.py --sets cdev --limit 1 --out "\$env:TEMP\textbackslash v7\_eval"} (about 15\,s).
+  \item Point at \texttt{bit-exact True} and \texttt{uplink 444487 B}: ``these 444,487 bytes are identical, byte for byte, to what the C model produces.''
+  \item Open the CSV and show \texttt{uplink\_md5}: ``the fingerprint of the stream; it equals the saved board stream of the full run.''
+  \item If they want proof that the check can fail: the report's negative control: flipping one bit of the saved stream makes the comparison report a mismatch at exactly that byte; and a one-sample change in a copy of the C model makes the xsim testbench fail from byte 99,258.
+\end{enumerate}
+
+% =====================================================================
+\section{Viva questions}
+\label{sec:viva}
+
+\subsection{About your part}
+
+\begin{viva}
+\q{What is fixed point, and why use it on an FPGA?}
+\ans{A real number stored as an integer with an agreed scale; in Q$n$ the integer $k$ means $k/2^n$. Integer adders and multipliers are small and fast in FPGA logic, while floating point needs large units. Integers also give identical bits on every machine, which makes bit-exact checking between C and Verilog possible.}
+\end{viva}
+
+\begin{viva}
+\q{What does Q1.15 mean? What is its range and step?}
+\ans{16 bits: a sign bit and 15 fraction bits. Value $= k/32{,}768$, range $-1$ to $+0.99997$, step $2^{-15}\approx 3\times10^{-5}$. $+1.0$ itself cannot be stored.}
+\end{viva}
+
+\begin{viva}
+\q{What happens when you multiply two Q1.15 numbers?}
+\ans{The integer product is in Q2.30 and needs 32 bits. Shift right by 15 (with rounding) to return to Q1.15. Sums of many products need guard bits; the mid-term design had a 48-bit accumulator with 4 guard bits, v6 uses 64-bit accumulators.}
+\end{viva}
+
+\begin{viva}
+\q{Rounding, saturation, overflow: explain the difference.}
+\ans{Rounding chooses the nearest representable value (add half a step, then shift). Overflow is a result too big for its bits; in two's complement it wraps around, e.g.\ $127+1=-128$ in 8 bits. Saturation is the deliberate rule to clip to the largest or smallest value instead. In v6 the C model checked every value against its width on every record and nothing overflowed.}
+\end{viva}
+
+\begin{viva}
+\q{What is SQNR and what does $+74.52$\,dB mean?}
+\ans{Signal power divided by the power of the difference between the float and the fixed-point output, in decibels. 74.5\,dB means the error power is about $3.5\times10^{-8}$ of the signal power, i.e.\ the error is about 1/5,300 of the signal size; roughly 12 clean bits. The target was 60\,dB, and no beat changed.}
+\end{viva}
+
+\begin{viva}
+\q{Why Q14 for the v6 weights and Q22 for the basis?}
+\ans{The weights and projections are normalised numbers of size about 1 or less; Q14 in 16 bits covers $\pm2$ with a step of $6\times10^{-5}$. The basis vectors are orthonormal, so every entry is at most 1; 24 bits with 22 fraction bits give fine resolution for the template fit. (The logs state the formats; this reasoning is ours.)}
+\end{viva}
+
+\begin{viva}
+\q{What is bf16 and why was it acceptable for the envelopes?}
+\ans{The top 16 bits of a 32-bit float: same range, but only 8 significant bits (about 0.4\% precision). Envelopes are only compared with thresholds and medians, so 0.4\% does not change decisions. It halved the envelope memory (80\,KB to 40\,KB for 16 tracks). All memory changes together kept accuracy within 0.3 points.}
+\end{viva}
+
+\begin{viva}
+\q{Why int8 for the beat snapshots?}
+\ans{They are used to measure how similar beat shapes are (correlation), which does not depend on scale. Each 31-sample snapshot is scaled so that its peak is $\pm127$; that keeps the shape with 4 times less memory than float (186\,KB to 46.5\,KB for 16 tracks $\times$ 96 beats).}
+\end{viva}
+
+\begin{viva}
+\q{Describe your mid-term method and why it was not chosen.}
+\ans{Single lead: detect maternal R peaks, stack maternal beats, keep the rank-2 SVD reconstruction as the template, subtract it, band-pass 8--38\,Hz. 77.3\% on TC1, 60.5\% over 250 records, best single-lead method, but far below the 4-lead beamformer (93.0\%). One lead has no spatial information, so overlapping beats and noise defeat it.}
+\end{viva}
+
+\begin{viva}
+\q{Your feasibility study said 148 cycles and 990 LUTs. The final design uses 26,701 LUTs. Was the study wrong?}
+\ans{It was a paper sizing of the mid-term beamformer, and for that design it was reasonable. That design scored 16.7\% on real data, so the algorithm was replaced by one with maternal cancellation, 16 tracks and a look-ahead unit. The report re-baselines objectives O3 and O4 openly. Even so, the final RTL needs only 1,485 of 200,000 cycles per sample.}
+\end{viva}
+
+\begin{viva}
+\q{Explain 8-N-1 and how you get 92\,KB/s.}
+\ans{Each byte is a start bit, 8 data bits, no parity, 1 stop bit: 10 bits. $921{,}600/10 = 92{,}160$ bytes per second, in each direction at the same time.}
+\end{viva}
+
+\begin{viva}
+\q{Why 921,600 baud?}
+\ans{The logs give no reason beyond ``fast enough''. Our reasoning: it is the highest of the standard rates the bring-up design and the USB-UART bridge supported; it gives about $10\times$ the needed bandwidth (the design uses 8--10\%); its divider is exact at 73.728\,MHz (v5) and within 0.5\% at 50\,MHz (54 cycles per bit), well inside the tolerance of a few percent.}
+\end{viva}
+
+\begin{viva}
+\q{How did you bring up the UART?}
+\ans{Step by step: a stand-alone loop-back design (receiver, transmitter, 16-byte FIFO, error LEDs) verified in simulation (12/12 checks: glitch rejection, framing error, all 256 byte values), a transmitter bit-timing correction, then on the board from a laptop script, then framed packets. Only after that did the algorithm traffic go over it.}
+\end{viva}
+
+\begin{viva}
+\q{Walk me through the frame format.}
+\ans{\texttt{A5 5A} to find the start; one command byte; a 16-bit little-endian length; the payload; xor8 of the command, both length bytes and the payload. Example: RESET is \texttt{A5 5A 01 00 00 01}. A 64-sample SAMPLES frame is 518 bytes.}
+\end{viva}
+
+\begin{viva}
+\q{What if a byte is corrupted?}
+\ans{The xor8 catches any single-bit error. The FPGA does not act on the bad frame, sets a sticky error flag (LED7), and the PC side raises a checksum error or, if the board stays silent, a 20-s timeout. And any error that escaped the checksum would change the uplink and make the bit-exact check fail. A run is never silently wrong.}
+\end{viva}
+
+\begin{viva}
+\q{Why xor8 and not a CRC?}
+\ans{The logs do not record the reason (v2 still used CRC-8). xor8 is one XOR per byte in Verilog and C, catches every single-bit error, and the link is a short USB cable. Its weakness: two errors in the same bit position of two bytes cancel. The end-to-end byte comparison is the stronger safety net.}
+\end{viva}
+
+\begin{viva}
+\q{Why does the result not depend on PC speed or timing?}
+\ans{Lock-step: the PC sends the next 64 samples only after DONE, and the FPGA stalls on every request until the answer arrives. A slow PC changes the run time, never the bytes.}
+\end{viva}
+
+\begin{viva}
+\q{What are FLUSH, OUT7 and END7?}
+\ans{v7 additions. FLUSH (0x03, PC$\to$FPGA): the recording has ended; finish the look-ahead with the data you have. OUT7 (0x8D): a final beat: u32 time, u16 FHR$\times$10, u8 track (16 = filled-in beat). END7 (0x8E): u32 number of OUT7 frames sent, so the PC knows the board is done; a test checks it equals the OUT7 count.}
+\end{viva}
+
+\begin{viva}
+\q{Why a soft processor in v5 and not hand-written RTL?}
+\ans{One night was not enough to write GEVD, SVD template fitting and 12 trackers in Verilog. A MicroBlaze with an FPU runs the C directly, and the same C on the PC is the reference model. It got the whole real-data algorithm onto the FPGA and gave the team a bit-exact baseline for v6.}
+\end{viva}
+
+\begin{viva}
+\q{Why 73.728\,MHz?}
+\ans{$73{,}728{,}000 = 16\times5\times921{,}600$, so the UART16550's divider gives exactly 921,600 baud. Vivado's UART Lite only goes to 230,400 baud, so the 16550 was used.}
+\end{viva}
+
+\begin{viva}
+\q{How can a float program give the same bits on a MicroBlaze and on a PC?}
+\ans{Use only float, SSE maths on the PC (not x87), no fused multiply-add (\texttt{-ffp-contract=off}), only correctly rounded operations ($+-\times\div$, sqrt), our own \texttt{mylogf} instead of library \texttt{logf}, and flush denormals to zero on the PC like the MicroBlaze FPU.}
+\end{viva}
+
+\begin{viva}
+\q{What made v5 $3.5\times$ faster?}
+\ans{Mostly replacing a full $20\times20$ Jacobi eigen-solver per maternal beat with an incremental Gram matrix (only the new beat's row and column) and a warm-started subspace iteration for the top 2 vectors. Also exact int32 running sums, a running moving-window integrator, quickselect medians and ring indexing. 163k $\to$ 46.8k cycles per sample, $1.7\times\to5.4\times$ real time, accuracy unchanged.}
+\end{viva}
+
+\begin{viva}
+\q{What was the memory limit, and how full was it?}
+\ans{75 BRAM tiles of 4\,KB. The MicroBlaze used a 256\,KB local memory (64 tiles) and a 32\,KB AXI BRAM (8 tiles); 72 of 75 tiles. Final use: 254.6 of 256\,KB (code, data and a 16\,KB stack) and 30.4 of 32\,KB. No external RAM on the board.}
+\end{viva}
+
+\begin{viva}
+\q{What did you try that did not work, or was rejected?}
+\ans{A running (EMA) template to save memory: $-1.1$ on CinC dev, rejected. The intermediate v5a board run had an invalid bit-exact column because the PC model was rebuilt during the run; lesson: freeze, fingerprint (MD5), then run. In the mid-term, the single-lead method itself lost to the 4-lead design.}
+\end{viva}
+
+\begin{viva}
+\q{What exactly does the evaluation script compare for bit-exactness?}
+\ans{v5: the board's beat list (time, FHR$\times$10, track) against the PC build. v6 onwards: the complete uplink byte stream of each record (every request, feature, beat, DONE, OUT7, END7) against the C model's stream for the same int16 input; \texttt{bit\_exact = (up == upm)}, plus the MD5.}
+\end{viva}
+
+\begin{viva}
+\q{Why compare all bytes, not just the beats?}
+\ans{The beats are only the end of a long chain. Comparing every request and feature checks every unit and every PC answer, and the first differing byte points to the bug. Two designs can give similar beats by chance, not 207 million identical bytes.}
+\end{viva}
+
+\begin{viva}
+\q{What does bit-exact not prove?}
+\ans{That the algorithm is good (F1 measures that), that the model has no design mistake, behaviour on inputs never run, anything about real electrodes and analogue noise, or timing safety (that comes from static timing analysis).}
+\end{viva}
+
+\begin{viva}
+\q{The RTL is $135\times$ real time but the board only $4$--$4.5\times$. Why?}
+\ans{Lock-step round trips over the UART and the waits for the PC brain on every request; the logic is not the bottleneck. The link itself is only 8--10\% busy. It is still faster than real time on every record (minimum 3.4$\times$ for v7-DL).}
+\end{viva}
+
+\begin{viva}
+\q{How long does a full board evaluation take, and how many bytes?}
+\ans{About 1.6\,h for 140 records (5,789\,s for v7-DL): about 13\,s per 60-s CinC record, about 74\,s per 5-minute synthetic record. v7-DL: 207,603,379 uplink bytes; v6.1: 207,020,008.}
+\end{viva}
+
+\begin{viva}
+\q{What is \texttt{V6\_VARIANT}?}
+\ans{An environment variable that chooses which PC brain and C model the scripts use (\texttt{v6}, \texttt{v61}, \texttt{v7}). It must match the bitstream on the board; otherwise the comparison fails, or with v7 on a non-v7 board the run hangs and stops with ``FPGA silent for 20 s''.}
+\end{viva}
+
+\begin{viva}
+\q{Can you trust results on 1,248 synthetic records that never ran on the board?}
+\ans{Yes, for the hardware question: the board is bit-exact with the C model on all 140 records we streamed (and the RTL matched it byte for byte in simulation on 8--9 records), so the model's output on the other records is what the board would output. The accuracy question (is 93.7\% good?) is separate.}
+\end{viva}
+
+\begin{viva}
+\q{What did v2 on the board show?}
+\ans{The first full PC-plus-FPGA system at 115,200 baud with CRC-8 packets: 165,000 samples with 0 LSB difference from the model and 1,116 beats with identical time stamps. The two FHR differences were the first two beats after power-up, a placeholder in the model, not a hardware error.}
+\end{viva}
+
+\begin{viva}
+\q{Did you use AI tools?}
+\ans{Yes, as the report discloses: AI coding assistants helped write and debug code and documents. The goals and rules were ours, every experiment and board run was ours, and every number in the report was checked against saved result files.}
+\end{viva}
+
+\subsection{General questions about the project}
+
+\begin{viva}
+\q{Why not simply filter out the mother?}
+\ans{Both ECGs share 0.5--40\,Hz. A filter that removes the mother removes the baby too.}
+\end{viva}
+
+\begin{viva}
+\q{Why did the mid-term results not hold?}
+\ans{They were batch (non-causal) and synthetic. Causally: 82.2\% on synthetic and 16.7\% on real CinC test. Even the best possible single 4-lead filter reaches only 60\% on CinC.}
+\end{viva}
+
+\begin{viva}
+\q{Did the algorithm use labels?}
+\ans{No. Labels are used only by the scoring script. The GEVD uses the design's own detections.}
+\end{viva}
+
+\begin{viva}
+\q{Did you tune on the test set?}
+\ans{No decision used CinC test; it was scored once per frozen design. But it has been scored for several designs, so it is no longer fresh.}
+\end{viva}
+
+\begin{viva}
+\q{What does the PC do in the final design?}
+\ans{Five slow decisions: maternal PCA (once, 10\,s), maternal train choice (every 5\,s), template basis (each maternal beat), GEVD calibration (15\,s, then every 30\,s), track selection (every 2.5\,s). It never receives the raw recording.}
+\end{viva}
+
+\begin{viva}
+\q{What is the final result?}
+\ans{v7-DL on the board: CinC test 76.9\% [68.3, 84.7], 82.0\% on the 33 reliable references; CinC dev 84.7\%; ADFECGDB 96.1\%; all 1,248 synthetic 93.7\%.}
+\end{viva}
+
+\begin{viva}
+\q{Is it clinical grade?}
+\ans{No. 76.9\% on held-out real data is far from a medical device, ADFECGDB was a development set, no analogue front end was built, and the 7 unreliable CinC references (flagged by the challenge organisers, Behar, Oster \& Clifford 2014) limit the scoring.}
+\end{viva}
+
+\begin{viva}
+\q{Is v7-DL ``cheating'' by looking into the future?}
+\ans{No. It waits for the future (median 13.5\,s, at most 17.5\,s). Output already sent is never changed; a test cuts recordings short and checks the earlier output is identical.}
+\end{viva}
+
+\begin{viva}
+\q{Where does the design still fail?}
+\ans{Of the 15 CinC records below 70\%: 5 have unreliable references, 8 have no candidate track above 70\%, 2 have a best track of only 71--73\%. None had a good track that was not chosen. On synthetic data, ectopic beats (c4, 84.0\%).}
+\end{viva}
+
+\begin{viva}
+\q{Why hand-written RTL in the end instead of keeping v5?}
+\ans{v5 was a processor we did not design, its memory was full, and the course project is the hardware design. v6 put every sample-rate operation in our own Verilog with the same accuracy (within $\pm0.8$ points) and about 135$\times$ real-time headroom in the logic.}
+\end{viva}
+
+% =====================================================================
+\section{Glossary}
+\label{sec:gloss}
+
+\begin{center}
+\small
+\begin{longtable}{@{}p{3.6cm} p{11.4cm}@{}}
+\toprule
+\textbf{Term} & \textbf{Meaning} \\
+\midrule
+\endhead
+ADFECGDB & 5 real 5-minute recordings with a fetal scalp-electrode reference; a development set. \\
+AXI BRAM & the slower 32\,KB memory of v5 on the general AXI bus (about 17 cycles per word). \\
+Baud & bits per second on a serial line. \\
+bf16 & 16-bit float: top half of a 32-bit float (8 exponent, 7 mantissa bits). \\
+Bit-exact & every output byte equals the C model's byte for the same input. \\
+Bitstream & the configuration file loaded into the FPGA. \\
+Block floating point & a block of numbers sharing one exponent. \\
+BRAM & block RAM, 36\,kbit memory tiles on the FPGA (75 on the XC7S50). \\
+C model & integer C program that does exactly what the hardware does; the specification. \\
+Causal & uses only past and present samples. \\
+Checksum & small number computed from a message to detect damage. \\
+CinC 2013 & 75 real 60-s recordings; odd = dev (38), even = test (37). \\
+Clock cycle & one tick of the clock; 20\,ns at 50\,MHz. \\
+CRC & cyclic redundancy check, a stronger checksum (CRC-8 in v2 packets). \\
+DONE (0x8C) & board frame: all samples received so far are processed; the PC may send more. \\
+DSP block & hard multiplier-accumulator on the FPGA (DSP48E1). \\
+ECG & electrocardiogram: the electrical trace of the heartbeat. \\
+END7 (0x8E) & v7 board frame: number of OUT7 frames sent; marks the end. \\
+F1 & $2\,\mathrm{Se}\cdot\mathrm{PPV}/(\mathrm{Se}+\mathrm{PPV})$. \\
+FHR & fetal heart rate in bpm. \\
+FIFO & first-in first-out queue. \\
+Firmware & software running on an embedded processor. \\
+Fixed point & integer with an agreed scale (Q format). \\
+FLUSH (0x03) & v7 PC command: recording ended, finish and send END7. \\
+FPGA & reconfigurable chip; ours is a Spartan-7 XC7S50. \\
+FPU & floating-point unit. \\
+Frame & one message: \texttt{A5 5A cmd len payload xor8}. \\
+GEVD & generalised eigen-decomposition, used for the fetal spatial filters. \\
+Golden vectors & inputs and exact expected outputs for testing hardware. \\
+Gram matrix & table of dot products between all pairs of beats. \\
+Jacobi solver & classic method computing all eigenvectors by repeated rotations. \\
+Lead & one electrode's recorded signal. \\
+Little-endian & low byte first. \\
+LMB & fast local memory of the MicroBlaze (256\,KB in v5). \\
+Lock-step & send, then wait for the acknowledgement (DONE) before sending more. \\
+LUT & look-up table, the basic logic cell (32,600 on the XC7S50). \\
+MD5 & fingerprint of a byte stream; any change gives a different MD5. \\
+MicroBlaze & Xilinx soft processor built from FPGA logic. \\
+OUT (0x8B) & live beat frame (time, FHR$\times$10, track). \\
+OUT7 (0x8D) & final (look-ahead) beat frame in v7. \\
+Overflow & a value too large for its bits; wraps around in two's complement. \\
+PC brain & the C program on the PC that answers the FPGA's five kinds of questions. \\
+PPV & positive predictive value: share of detected beats that are real. \\
+Q format & Q$n$: integer $k$ means $k/2^n$; Q$m.n$: $m$ integer (incl.\ sign) and $n$ fraction bits. \\
+Quantisation error & difference between a value and its stored (rounded) version. \\
+Real-time factor & record duration divided by processing time. \\
+RTL & register-transfer level: the hardware described in Verilog. \\
+Saturation & clipping to the largest/smallest value instead of wrapping. \\
+Se & sensitivity: share of true beats found. \\
+Soft processor & a CPU built from FPGA logic. \\
+SOS / biquad & second-order filter section, 5 multiply-adds per sample. \\
+SQNR & signal-to-quantisation-noise ratio in dB. \\
+Stall & the FPGA stops processing until a PC answer arrives. \\
+SVD & singular value decomposition: splits a matrix into main shapes. \\
+Template subtraction & subtract an average maternal beat at each maternal R peak. \\
+Time multiplexing & one hardware unit does several jobs one after another. \\
+Two's complement & standard way to store negative integers. \\
+UART & serial transmitter/receiver; 8-N-1 at 921,600 baud here. \\
+Uplink & all bytes from the FPGA to the PC. \\
+\texttt{V6\_VARIANT} & environment variable choosing v6 / v61 / v7 brain and model. \\
+xor8 & checksum: XOR of all bytes. \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\end{document}
